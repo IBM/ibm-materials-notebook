@@ -5,7 +5,7 @@ export default defineUserConfig({
   lang: "en-US",
   title: "IBM Materials Notebook",
   description: "Documentation for IBM Materials Notebook",
-  base: "/ibm-materials/ibm-materials-notebook/",
+  base: "/ibm-materials-notebook/",
 
   plugins: [
     shikiPlugin({
