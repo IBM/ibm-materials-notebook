@@ -1,0 +1,32 @@
+.reaction-scheme {
+	display: flex;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+}
+
+.reaction-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 1em;
+}
+
+.display-main {
+	display: flex;
+}
+
+.polymer-tree {
+	display: flex;
+	justify-content: space-around;
+}
+
+.connection {
+	display: flex;
+	flex-direction: column;
+}
+
+.polymer-tree-node {
+	padding: 1em;
+	margin-bottom: 1.5em;
+	flex-direction: column;
+}

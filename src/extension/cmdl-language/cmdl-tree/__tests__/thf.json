@@ -1,0 +1,12 @@
+{
+    "THF": {
+            "name": "THF",
+            "type": "chemical",
+            "data": {
+                "structure": "C1COCC1",
+                "molecular_weight": 123.12,
+                "density": 0.718,
+                "state": "liquid"
+            }
+        }
+}
