@@ -30,7 +30,7 @@ After running the command a blank, untitled notebook document with the extension
 
 By default, adding a new cell by clicking the new cell button on the notebook document (or useing a keyboard command) will create a new CMDL code cell.
 
-![Create New Cell](/images/create_new_cell.gif)
+<!-- ![Create New Cell](/images/create_new_cell.gif) -->
 
 Now you may start writing CMDL directly into the cell. While it is certainly possible to enter in all the experimental values in a single CMDL cell, it is likely better to separate it accross multiple cells for ease of visualization and interpretation by others. See the [tutorial](./tutorial.md) for more details.
 
@@ -38,11 +38,11 @@ Now you may start writing CMDL directly into the cell. While it is certainly pos
 
 As with other notebooking applications, markdown cells are also supported within CMDL notebooks. This allows users to add additional text, headers, titles, and links alongside CMDL cells, providing a rich medium for experimental data documentation and sharing. A markdown cell can be added in the same manner as a CMDL cell.
 
-![Create Markdown Cell](/images/create_markdown_cell.gif)
+<!-- ![Create Markdown Cell](/images/create_markdown_cell.gif) -->
 
 Alternatively, the cell type can also be changed. This is not recommended if CMDL text has already been entered.
 
-![Change Cell Type](/images/change_cell_type.gif)
+<!-- ![Change Cell Type](/images/change_cell_type.gif) -->
 
 ::: warning
 Currently the CMDL kernel does not interpret any text or data written into markdown cells and such data will not be exported to any compiled experimental record. This will likely change in future versions of the notebook extension. Stay tuned.

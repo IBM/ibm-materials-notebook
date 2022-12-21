@@ -62,7 +62,7 @@ chemical THF {
 
 The autocomplete features will automatically prompt with acceptable values for for a given property. If an incorrect value is given for a property such as a negative mass or a fictional unit, the compiler will automatically highlight the error. See the following for an example.
 
-![Error Creation](/images/error_creation.gif)
+<!-- ![Error Creation](/images/error_creation.gif) -->
 
 ### Running the CMDL cell
 
