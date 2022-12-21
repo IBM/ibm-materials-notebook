@@ -62,8 +62,6 @@ chemical THF {
 
 The autocomplete features will automatically prompt with acceptable values for for a given property. If an incorrect value is given for a property such as a negative mass or a fictional unit, the compiler will automatically highlight the error. See the following for an example.
 
-<!-- ![Error Creation](/images/error_creation.gif) -->
-
 ### Running the CMDL cell
 
 With the THF reference defined, we can execute the CMDL cell and see the output. By default the cell output will be displayed in JSON format.
