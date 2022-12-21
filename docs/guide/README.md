@@ -42,7 +42,7 @@ As with other notebooking applications, markdown cells are also supported within
 
 The cell type can also be changed by clicking the cell type in the lower right hand side and selecting the cell type from the dropdown menu.
 
-![Change Cell Type](/images/change_cell_type.gif)
+![Change Cell Type](/images/change_cell_type.png)
 
 ::: warning
 Currently the CMDL kernel does not interpret any text or data written into markdown cells and such data will not be exported to any compiled experimental record. This will likely change in future versions of the notebook extension. Stay tuned.

@@ -15,7 +15,7 @@ export const renderSMILES = (smiles: string, id: string): void => {
     parse(
       smiles,
       function (tree: any) {
-        drawerInstance.draw(tree, `${id}`, "light", false);
+        drawerInstance.draw(tree, `${id}`, "dark", false);
       },
       function (error: any) {
         console.warn(error);
