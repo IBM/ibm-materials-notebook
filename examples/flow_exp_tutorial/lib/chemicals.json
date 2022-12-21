@@ -1,0 +1,53 @@
+[
+  {
+    "name": "THF",
+    "type": "chemical",
+    "aliases": ["tetrahydrofuran"],
+    "smiles": "C1COCC1",
+    "molecular_weight": {
+      "value": "123.12",
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "density": {
+      "value": "0.718",
+      "unit": "g/ml",
+      "uncertainty": null
+    },
+    "state": "liquid"
+  },
+  {
+    "name": "PhMe",
+    "aliases": ["toluene"],
+    "type": "chemical",
+    "smiles": "C1COCC1",
+    "molecular_weight": {
+      "value": "72.11",
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "density": {
+      "value": "0.8183",
+      "unit": "g/ml",
+      "uncertainty": null
+    },
+    "state": "liquid"
+  },
+  {
+    "name": "EtOAc",
+    "aliases": ["ethyl acetate"],
+    "type": "chemical",
+    "smiles": "C1COCC1",
+    "molecular_weight": {
+      "value": "123.12",
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "density": {
+      "value": "0.718",
+      "unit": "g/ml",
+      "uncertainty": null
+    },
+    "state": "liquid"
+  }
+]

@@ -1,0 +1,117 @@
+[
+  {
+    "name": "THF",
+    "type": "chemical",
+    "aliases": ["tetrahydrofuran"],
+    "smiles": "C1COCC1",
+    "molecular_weight": {
+      "value": "123.12",
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "density": {
+      "value": "0.718",
+      "unit": "g/ml",
+      "uncertainty": null
+    },
+    "state": "liquid"
+  },
+  {
+    "name": "PhMe",
+    "aliases": ["toluene"],
+    "type": "chemical",
+    "smiles": "C1COCC1",
+    "molecular_weight": {
+      "value": "72.11",
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "density": {
+      "value": "0.8183",
+      "unit": "g/ml",
+      "uncertainty": null
+    },
+    "state": "liquid"
+  },
+  {
+    "name": "EtOAc",
+    "aliases": ["ethyl acetate"],
+    "type": "chemical",
+    "smiles": "C1COCC1",
+    "molecular_weight": {
+      "value": "123.12",
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "density": {
+      "value": "0.718",
+      "unit": "g/ml",
+      "uncertainty": null
+    },
+    "state": "liquid"
+  },
+  {
+    "name": "MeO-pTMC20",
+    "type": "polymer",
+    "tree": {
+      "name": "TMC-Graph",
+      "connections": [
+        {
+          "source": "TMC-Graph.eg_MeO.R",
+          "target": "TMC-Graph.TMC_Block.p_TMC.R",
+          "weight": 0.0455,
+          "quantity": "1"
+        }
+      ],
+      "parent": null,
+      "children": [
+        {
+          "name": "TMC-Graph.eg_MeO",
+          "mw": 31.02,
+          "smiles": "CO[R:1]",
+          "parent": "TMC-Graph"
+        },
+        {
+          "name": "TMC_Block",
+          "connections": [
+            {
+              "source": "TMC-Graph.TMC_Block.p_TMC.Q",
+              "target": "TMC-Graph.TMC_Block.p_TMC.R",
+              "weight": 0.9091,
+              "quantity": "1"
+            }
+          ],
+          "parent": "TMC-Graph",
+          "children": [
+            {
+              "name": "TMC-Graph.TMC_Block.p_TMC",
+              "mw": 102.3,
+              "smiles": "O=C([R:1])OCCCO[Q:2]",
+              "parent": "TMC_Block",
+              "degree_poly": {
+                "value": "20",
+                "unit": null,
+                "uncertainty": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "state": "solid",
+    "mn_avg": [
+      {
+        "value": "2000",
+        "unit": "g/mol",
+        "uncertainty": null
+      }
+    ],
+    "dispersity": [
+      {
+        "value": "1.12",
+        "unit": null,
+        "uncertainty": null
+      }
+    ]
+  }
+]

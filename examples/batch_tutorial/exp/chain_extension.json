@@ -1,0 +1,81 @@
+[
+  {
+    "name": "CE-I-1-MeO-pTMC200",
+    "type": "polymer",
+    "time_point": {
+      "value": "200",
+      "unit": "s",
+      "uncertainty": null
+    },
+    "sampleId": "CE-I-1",
+    "state": "solid",
+    "mn_avg": [
+      {
+        "value": "20001",
+        "unit": "g/mol",
+        "uncertainty": null,
+        "source": "CE-I-1A",
+        "technique": "nmr"
+      },
+      {
+        "value": "14000",
+        "unit": "g/mol",
+        "uncertainty": null,
+        "source": "CE-I-1B",
+        "technique": "gpc"
+      }
+    ],
+    "tree": {
+      "name": "TMC-Graph",
+      "connections": [
+        {
+          "source": "TMC-Graph.eg_MeO.R",
+          "target": "TMC-Graph.TMC_Block.p_TMC.R",
+          "weight": 0.005,
+          "quantity": "1"
+        }
+      ],
+      "parent": null,
+      "children": [
+        {
+          "name": "TMC-Graph.eg_MeO",
+          "mw": 31.02,
+          "smiles": "CO[R:1]",
+          "parent": "TMC-Graph"
+        },
+        {
+          "name": "TMC_Block",
+          "connections": [
+            {
+              "source": "TMC-Graph.TMC_Block.p_TMC.Q",
+              "target": "TMC-Graph.TMC_Block.p_TMC.R",
+              "weight": 0.9901,
+              "quantity": "1"
+            }
+          ],
+          "parent": "TMC-Graph",
+          "children": [
+            {
+              "name": "TMC-Graph.TMC_Block.p_TMC",
+              "mw": 102.3,
+              "smiles": "O=C([R:1])OCCCO[Q:2]",
+              "parent": "TMC_Block",
+              "degree_poly": {
+                "value": "200",
+                "unit": null,
+                "uncertainty": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "base_name": "MeO-pTMC200",
+    "source": {
+      "title": "Chain extension of poly(trimethylene carbonate)",
+      "record_id": null,
+      "notebook_id": "dc698612-d9ee-40d6-bf2e-e15550c6375b",
+      "lastUpdated": "2022-12-20T20:51:53.396Z"
+    }
+  }
+]
