@@ -4,7 +4,8 @@ import { shikiPlugin } from "@vuepress/plugin-shiki";
 export default defineUserConfig({
   lang: "en-US",
   title: "IBM Materials Notebook",
-  description: "Documentation for IBM Materials Notebook",
+  description:
+    "Custom Notebook Extension for VS Code for Enabling Experimental Documentation",
   base: "/ibm-materials-notebook/",
 
   plugins: [

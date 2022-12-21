@@ -1,10 +1,10 @@
 # Introduction
 
-IBM Materials Notebook is a custom notebook extension to VS Code designed to facilitate facile recording of experimental data. Specifically, allowing the user to attach measured property values (e.g. conversion, yield, Mn, dispersity, etc.) to outputs and inputs within a single experiment. The notebook uses a domain specific language termed Chemical Markdown Language (CMDL) to enable facile recording of experimental reaction data while enforcing allowable data types (see [CMDL](../cmdl/README.md)).
+IBM Materials Notebook is a custom notebook extension to [VS Code](https://code.visualstudio.com/) designed to facilitate facile recording of experimental data. Specifically, allowing the user to attach measured property values (e.g. conversion, yield, M<sub>n</sub>, dispersity, etc.) to outputs and inputs within a single experiment. The notebook uses a domain specific language termed Chemical Markdown Language (CMDL) to enable facile recording of experimental reaction data while enforcing allowable data types (see [CMDL](../cmdl/README.md)).
 
 ## General Setup
 
-IBM Materials Notebook can be installed as a VS Code extension from the extension marketplace. Workspaces for experimental data can be organized in a similar matter to other workspaces with a focus on a single project. Below is the default workspace setup.
+IBM Materials Notebook can be installed as a VS Code extension from the [extension marketplace](https://marketplace.visualstudio.com/VSCode). Workspaces for experimental data can be organized in a similar matter to other workspaces with a focus on a single project. Below is the default workspace setup.
 
 ```bash
 └─ workspace
