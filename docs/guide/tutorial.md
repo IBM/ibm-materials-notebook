@@ -76,7 +76,7 @@ The mime type of the cell output can be changed to the custom IBM Materials Note
 
 Changing the display type can be accomplished by clicking the change output renderer and selecting the IBM Materials Notebook mime type.
 
-![Change Cell Mime Type](/images/change_mime_type.gif)
+<!-- ![Change Cell Mime Type](/images/change_mime_type.gif) -->
 
 ### Creating additional chemical references
 
