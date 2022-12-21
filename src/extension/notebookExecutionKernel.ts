@@ -9,7 +9,7 @@ import { NOTEBOOK, LANGUAGE } from "./languageProvider";
 export class MaterialsKernel {
   readonly controllerId = "materials-notebook-kernel";
   readonly notebookType = NOTEBOOK;
-  readonly label = "My Notebook";
+  readonly label = "CMDL";
   readonly supportedLanguages = [LANGUAGE];
 
   private readonly _controller: vscode.NotebookController;

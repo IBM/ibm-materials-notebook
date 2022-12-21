@@ -17,8 +17,8 @@ The path and name for each of these folders can be changed in the VS Code extens
 
 ## Creating a Notebook
 
-Once the workspace folder has been setup, the easiest way to create a new IBM Materials Notebook is through the VS Code Command Pallete.
-The command pallete can be accessed using the keyboard shortcut: `command` + `shift` + `P`
+Once the workspace folder has been setup, the easiest way to create a new IBM Materials Notebook is through the [VS Code Command Palette](https://code.visualstudio.com/api/ux-guidelines/command-palette).
+The command palette can be accessed using the keyboard shortcut: `command` + `shift` + `P`
 
 ![Create New Screenshot](/images/create_new_cmd.png)
 
@@ -28,21 +28,21 @@ After running the command a blank, untitled notebook document with the extension
 
 ## Adding a CMDL Cell
 
-By default, adding a new cell by clicking the new cell button on the notebook document (or useing a keyboard command) will create a new CMDL code cell.
+By default, adding a new cell by clicking the new `+ Cell` button on the notebook document (or useing a keyboard command) will create a new CMDL code cell. The type of cell is indicated in the lower right hand corner of the cell.
 
-<!-- ![Create New Cell](/images/create_new_cell.gif) -->
+![Create New Cell](/images/create_new_cmdl_cell.png)
 
 Now you may start writing CMDL directly into the cell. While it is certainly possible to enter in all the experimental values in a single CMDL cell, it is likely better to separate it accross multiple cells for ease of visualization and interpretation by others. See the [tutorial](./tutorial.md) for more details.
 
 ## Adding a Markdown Cell
 
-As with other notebooking applications, markdown cells are also supported within CMDL notebooks. This allows users to add additional text, headers, titles, and links alongside CMDL cells, providing a rich medium for experimental data documentation and sharing. A markdown cell can be added in the same manner as a CMDL cell.
+As with other notebooking applications, markdown cells are also supported within CMDL notebooks. This allows users to add additional text, headers, titles, and links alongside CMDL cells, providing a rich medium for experimental data documentation and sharing. A markdown cell can be added in the same manner as a CMDL cell by clicking the `+ Markdown` button either on the notebook document itself or in the notebook global toolbar.
 
-<!-- ![Create Markdown Cell](/images/create_markdown_cell.gif) -->
+![Create Markdown Cell](/images/create_new_markdown_cell.png)
 
-Alternatively, the cell type can also be changed. This is not recommended if CMDL text has already been entered.
+The cell type can also be changed by clicking the cell type in the lower right hand side and selecting the cell type from the dropdown menu.
 
-<!-- ![Change Cell Type](/images/change_cell_type.gif) -->
+![Change Cell Type](/images/change_cell_type.gif)
 
 ::: warning
 Currently the CMDL kernel does not interpret any text or data written into markdown cells and such data will not be exported to any compiled experimental record. This will likely change in future versions of the notebook extension. Stay tuned.

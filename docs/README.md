@@ -3,7 +3,7 @@ home: true
 title: IBM Materials Notebook
 actions:
   - text: Get Started
-    link: /guide/;
+    link: /guide/
     type: primary
   - text: CMDL
     link: /cmdl/
