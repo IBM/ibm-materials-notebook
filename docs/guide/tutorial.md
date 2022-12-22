@@ -49,7 +49,7 @@ chemical THF {
 }
 ```
 
-With the group created we can define additional properties on the chemical to enable it to be used for reaction stochiometry calculations down the line. See the CMDL guide for available properties for a chemical reference.
+With the group created we can define additional properties on the chemical to enable it to be used for reaction stochiometry calculations down the line. See the CMDL guide for available properties for a chemical reference. Note: the `state` property must be included on all chemical or polymer references that are involved in any kind of stochiometry calculation as this indicates how the CMDL interpreter should treat the chemcial or polymer reference.
 
 ```cmdl
 chemical THF {
@@ -100,6 +100,10 @@ chemical lLactide {
 
 Now all of the small molecule references are ready to be used inside the batch experiment. Next we will define the polymer product of the reaction as well as the macroinitiator.
 
+The additional chemical references cell should look as follows:
+
+![Batch Chem Refs](/images/batch_chem_refs.png)
+
 ## Polymer References
 
 Before defining the polymerization reaction itself, we must define the polymeric macroinitiator and the polymer product references that can be referenced in the reaction and any experimental results. Before defining the polymer references themselves, we'll first create graph representations of their structure so we may reference their components later.
@@ -132,25 +136,25 @@ Before defining the polymer graph structure itself, we need to create references
 
 ```cmdl
 fragment eg_MeO {
-	molecular_weight: 31.02 g/mol;
-	smiles: "CO[R]";
+   molecular_weight: 31.02 g/mol;
+   smiles: "CO[R]";
 
-	point R {
-		quantity: 1;
-	};
+   point R {
+      quantity: 1;
+   };
 }
 
 fragment p_PEO {
-	molecular_weight: 44.05 g/mol;
-	smiles: "[Q]OCC[R]";
+   molecular_weight: 44.05 g/mol;
+   smiles: "[Q]OCC[R]";
 
-	point R {
-		quantity: 1;
-	};
+   point R {
+      quantity: 1;
+   };
 
-	point Q {
-		quantity: 1;
-	};
+   point Q {
+      quantity: 1;
+   };
 }
 ```
 
@@ -237,15 +241,16 @@ We can add the lactide block, the lactide repeat unit edge, and the edge between
 polymer_graph PEG_PLLA_Base {
    nodes: [ @eg_MeO ];
    <@eg_MeO.R => @PEG_Block.p_PEO.R>;
+   <@PEG_Block.p_PEO.Q => @Lactide_Block.p_Llac.R>;
 
    container PEG_Block {
       nodes: [ @p_PEO ];
       <@p_PEO.Q => @p_PEO.R>;
    };
 
-   container PLLA_Block {
-      nodes: [ @p_Llac ];
-      <@p_Llac.Q => @p_Llac.R>;
+   container Lactide_Block {
+     nodes: [ @p_Llac ];
+     <@p_Llac.Q => @p_Llac.R>;
    };
 }
 ```
@@ -264,16 +269,18 @@ polymer mPEG-PLLA {
 }
 ```
 
-Since we'll be using `mPEG-OH` as an initiator in the batch polymerization reaction, we can define an M<sub>n</sub> value on the polymer itself. This will allow for the CMDL intepreter to estimate the stochiometry when the `mPEG-OH` is referenced in the reaction itself.
+Since we'll be using `mPEG-OH` as an initiator in the batch polymerization reaction, we can define an M<sub>n</sub> value on the polymer itself. This will allow for the CMDL intepreter to estimate the stochiometry when the `mPEG-OH` is referenced in the reaction itself. The `state` property
 
 ```cmdl{3}
 polymer mPEG-OH {
    tree: @PEG_BASE;
    mn_avg: 5000 g/mol;
+   state: "solid";
 }
 
 polymer mPEG-PLLA {
    tree: @PEG_PLLA_Base;
+   state: "solid";
 }
 ```
 
@@ -283,22 +290,26 @@ We can also define DP<sub>n</sub> on the `p_PEO` node repeat unit both in the `m
 polymer mPEG-OH {
    tree: @PEG_BASE;
    mn_avg: 5000 g/mol;
+   state: "solid";
 
    @PEG_BASE.PEG_Block.p_PEO {
-      degree_poly: 112.8
+      degree_poly: 112.8;
    };
 }
 
 polymer mPEG-PLLA {
    tree: @PEG_PLLA_Base;
+   state: "solid";
 
-   @PEG_BASE.PEG_Block.p_PEO {
-      degree_poly: 112.8
+   @PEG_PLLA_Base.PEG_Block.p_PEO {
+      degree_poly: 112.8;
    };
 }
 ```
 
 With these values set, the CMDL interpreter will compute the weights for all of the edges within the polymer graph. As the targeted product is `mPEG-PLLA`, any characterization properties measured for the product will be set later.
+
+![Polymer Refs](/images/poly_refs.png)
 
 ## Batch Reactions
 
@@ -400,7 +411,7 @@ No quantity information should be provided here for any of the products. The rea
 
 With all of the values properly defined on `BatchRxn` we can now run the reaction cell and inspect the output. If you set the output MIME type to **x-application/ibm-materials-notebook**, you should see something like the following:
 
-_screenshot_
+![Rxn Group Output](/images/batch_tutorial_rxn_output.png)
 
 The exact values for the stoichiometry may differ based on the quantity values entered for each reagent.
 
@@ -509,7 +520,7 @@ sample Test-I-123A {
 
       @mPEG-PLLA.PLLA_Block.p_lLac {
          degree_poly: 60.3;
-      }
+      };
    };
 
    gpc Test-I-123A-gpc {
@@ -558,7 +569,7 @@ sample Test-I-123B {
 
 Executing the cell containing samples `Test-I-123A` and `Test-I-123B` will provide an output the looks like the following:
 
-_sample screenshot_
+![Batch Sample Output](/images/batch_sample_output.png)
 
 ## Experimental Protocols
 
@@ -594,18 +605,12 @@ To the metadata group, we can add additional information such as the record `tit
 metadata {
    title: "Batch Experiment Tutorial";
    date: "11/18/22";
-   exp_id: `Test-I-123`;
-   template: `batch_experiment`;
+   exp_id: "Test-I-123";
+   template: "batch_experiment";
 }
 ```
 
 Details surrounding the nature of these fields can be found in the CMDL reference.
-
-### Running the Metadata cell
-
-Running the cell containing the `metadata` group will provide an output similar to the following:
-
-_metadata screenshot_
 
 ### Saving and exporting the CMDL notebook
 

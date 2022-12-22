@@ -2,6 +2,7 @@ import { ChemicalSet } from "../chemicals";
 import { ChemicalOutput } from "../chemicals/chemical-factory";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
+import { cmdlLogger } from "../../logger";
 
 interface ReactionOutput {
   name: string;
