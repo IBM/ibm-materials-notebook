@@ -1,29 +1,29 @@
 [
   {
-    "name": "Test-I-123A-mPEG-PLLA",
+    "name": "Test-II-123A-mPEG-PLLA",
     "type": "polymer",
     "time_point": {
       "value": "5",
       "unit": "s",
       "uncertainty": null
     },
-    "sampleId": "Test-I-123A",
+    "sampleId": "Test-II-123A",
     "state": "solid",
     "dispersity": [
       {
-        "value": "1.34",
+        "value": "1.4",
         "unit": null,
         "uncertainty": null,
-        "source": "Test-I-123A-gpc",
+        "source": "Test-II-123A-gpc",
         "technique": "gpc"
       }
     ],
     "mn_avg": [
       {
-        "value": "27000",
+        "value": "52000",
         "unit": "g/mol",
         "uncertainty": null,
-        "source": "Test-I-123A-gpc",
+        "source": "Test-II-123A-gpc",
         "technique": "gpc"
       }
     ],
@@ -33,13 +33,13 @@
         {
           "source": "PEG_PLLA_Base.eg_MeO.R",
           "target": "PEG_PLLA_Base.PEG_Block.p_PEO.R",
-          "weight": 0.0033,
+          "weight": 0.0022,
           "quantity": "1"
         },
         {
           "source": "PEG_PLLA_Base.PEG_Block.p_PEO.Q",
           "target": "PEG_PLLA_Base.Lactide_Block.p_Llac.R",
-          "weight": 0.0033,
+          "weight": 0.0022,
           "quantity": "1"
         }
       ],
@@ -57,7 +57,7 @@
             {
               "source": "PEG_PLLA_Base.Lactide_Block.p_Llac.Q",
               "target": "PEG_PLLA_Base.Lactide_Block.p_Llac.R",
-              "weight": 0.6182,
+              "weight": 0.7501,
               "quantity": "1"
             }
           ],
@@ -69,7 +69,7 @@
               "smiles": "O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C",
               "parent": "Lactide_Block",
               "degree_poly": {
-                "value": "187.5",
+                "value": "347.5",
                 "unit": null,
                 "uncertainty": null
               }
@@ -82,7 +82,7 @@
             {
               "source": "PEG_PLLA_Base.PEG_Block.p_PEO.Q",
               "target": "PEG_PLLA_Base.PEG_Block.p_PEO.R",
-              "weight": 0.3719,
+              "weight": 0.2435,
               "quantity": "1"
             }
           ],
@@ -108,7 +108,7 @@
       "title": "Batch Experiment Tutorial",
       "record_id": null,
       "notebook_id": "b84127da-ee76-4efe-a695-36291eab6689",
-      "lastUpdated": "2022-12-22T02:11:21.454Z"
+      "lastUpdated": "2022-12-22T17:21:41.841Z"
     }
   }
 ]

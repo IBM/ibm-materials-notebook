@@ -3,13 +3,13 @@
   "date": "11/18/22",
   "metadata": {
     "notebookId": "b84127da-ee76-4efe-a695-36291eab6689",
-    "dateCreated": "2022-12-22T02:11:21.454Z",
+    "dateCreated": "2022-12-22T17:21:41.841Z",
     "template": "batch_experiment",
     "exp_id": "Test-I-123"
   },
   "reactions": [
     {
-      "name": "ABC",
+      "name": "ChainExt",
       "volume": null,
       "temperature": {
         "value": "22",
@@ -28,19 +28,19 @@
       ],
       "reactants": [
         {
-          "name": "mPEG-OH",
-          "mw": "5000",
+          "name": "Test-I-123A-mPEG-PLLA",
+          "mw": "27000",
           "density": null,
-          "smiles": "CO[R].[Q]OCC[R]",
+          "smiles": "CO[R].O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C.[Q]OCC[R]",
           "mass": {
-            "value": 20,
+            "value": 135,
             "unit": "mg",
             "uncertainty": null
           },
           "volume": null,
           "moles": {
             "unit": "mcmol",
-            "value": 4,
+            "value": 5,
             "uncertainty": null
           },
           "pressure": null,
@@ -50,20 +50,20 @@
           ],
           "molarity": {
             "unit": "mol/l",
-            "value": 0.003435,
+            "value": 0.002193,
             "uncertainty": null
           },
           "molality": {
             "unit": "mol/kg",
-            "value": 0.004507,
+            "value": 0.002817,
             "uncertainty": null
           },
           "moles_vol": {
             "unit": "mol/l",
-            "value": 0.004,
+            "value": 0.0025,
             "uncertainty": null
           },
-          "limiting": true
+          "limiting": false
         },
         {
           "name": "kOtBu",
@@ -82,23 +82,23 @@
             "uncertainty": null
           },
           "pressure": null,
-          "ratio": 1.45,
+          "ratio": 1.16,
           "roles": [
             "catalyst"
           ],
           "molarity": {
             "unit": "mol/l",
-            "value": 0.004974,
+            "value": 0.002541,
             "uncertainty": null
           },
           "molality": {
             "unit": "mol/kg",
-            "value": 0.006526,
+            "value": 0.003263,
             "uncertainty": null
           },
           "moles_vol": {
             "unit": "mol/l",
-            "value": 0.005793,
+            "value": 0.002896,
             "uncertainty": null
           },
           "limiting": false
@@ -120,55 +120,55 @@
             "uncertainty": null
           },
           "pressure": null,
-          "ratio": 249.79,
+          "ratio": 199.83,
           "roles": [
             "monomer"
           ],
           "molarity": {
             "unit": "mol/l",
-            "value": 0.8579,
+            "value": 0.4383,
             "uncertainty": null
           },
           "molality": {
             "unit": "mol/kg",
-            "value": 1.1257,
+            "value": 0.5628,
             "uncertainty": null
           },
           "moles_vol": {
             "unit": "mol/l",
-            "value": 0.9992,
+            "value": 0.4996,
             "uncertainty": null
           },
           "limiting": false
         },
         {
           "name": "THF",
-          "mw": "72.11",
-          "density": "0.8876",
-          "smiles": "C1CCOC1",
+          "mw": 72.11,
+          "density": 0.8876,
+          "smiles": "C1COCC1",
           "mass": {
-            "value": 0.8876,
+            "value": 1.7752,
             "unit": "g",
             "uncertainty": null
           },
           "volume": {
-            "value": 1,
+            "value": 2,
             "unit": "ml",
             "uncertainty": null
           },
           "moles": {
-            "value": 0.0123,
+            "value": 0.0246,
             "unit": "mol",
             "uncertainty": null
           },
           "pressure": null,
-          "ratio": 3077.24,
+          "ratio": 4923.59,
           "roles": [
             "solvent"
           ],
           "molarity": {
             "unit": "mol/l",
-            "value": 10.5688,
+            "value": 10.799,
             "uncertainty": null
           },
           "molality": {
@@ -188,24 +188,26 @@
   ],
   "references": [
     {
-      "name": "THF",
+      "name": "tetrahydrofuran",
       "type": "chemical",
+      "alias": "THF",
+      "smiles": "C1COCC1",
       "molecular_weight": {
-        "value": "72.11",
+        "value": 72.11,
         "unit": "g/mol",
         "uncertainty": null
       },
       "density": {
-        "value": "0.8876",
+        "value": 0.8876,
         "unit": "g/ml",
         "uncertainty": null
       },
-      "state": "liquid",
-      "smiles": "C1CCOC1"
+      "state": "liquid"
     },
     {
-      "name": "kOtBu",
+      "name": "potassium_tert-butoxide",
       "type": "chemical",
+      "alias": "kOtBu",
       "molecular_weight": {
         "value": "112.212",
         "unit": "g/mol",
@@ -215,8 +217,9 @@
       "smiles": "[K+].CC(C)(C)[O-]"
     },
     {
-      "name": "lLactide",
+      "name": "dimethyl-1-4-dioxane-2-5-dione",
       "type": "chemical",
+      "alias": "lLactide",
       "molecular_weight": {
         "value": "144.12",
         "unit": "g/mol",
@@ -226,41 +229,98 @@
       "smiles": "C[C@H]1C(=O)O[C@H](C(=O)O1)C"
     },
     {
-      "name": "mPEG-OH",
+      "name": "Test-I-123A-mPEG-PLLA",
       "type": "polymer",
-      "smiles": "CO[R].[Q]OCC[R]",
+      "smiles": "CO[R].O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C.[Q]OCC[R]",
+      "alias": null,
+      "time_point": {
+        "value": "5",
+        "unit": "s",
+        "uncertainty": null
+      },
+      "sampleId": "Test-I-123A",
+      "state": "solid",
+      "dispersity": [
+        {
+          "value": "1.34",
+          "unit": null,
+          "uncertainty": null,
+          "source": "Test-I-123A-gpc",
+          "technique": "gpc"
+        }
+      ],
+      "mn_avg": [
+        {
+          "value": "27000",
+          "unit": "g/mol",
+          "uncertainty": null,
+          "source": "Test-I-123A-gpc",
+          "technique": "gpc"
+        }
+      ],
       "tree": {
-        "name": "PEG_BASE",
+        "name": "PEG_PLLA_Base",
         "connections": [
           {
-            "source": "PEG_BASE.eg_MeO.R",
-            "target": "PEG_BASE.PEG_Block.p_PEO.R",
-            "weight": 0.0087,
+            "source": "PEG_PLLA_Base.eg_MeO.R",
+            "target": "PEG_PLLA_Base.PEG_Block.p_PEO.R",
+            "weight": 0.0033,
+            "quantity": "1"
+          },
+          {
+            "source": "PEG_PLLA_Base.PEG_Block.p_PEO.Q",
+            "target": "PEG_PLLA_Base.Lactide_Block.p_Llac.R",
+            "weight": 0.0033,
             "quantity": "1"
           }
         ],
         "parent": null,
         "children": [
           {
-            "name": "PEG_BASE.eg_MeO",
+            "name": "PEG_PLLA_Base.eg_MeO",
             "mw": 31.02,
             "smiles": "CO[R]",
-            "parent": "PEG_BASE"
+            "parent": "PEG_PLLA_Base"
+          },
+          {
+            "name": "Lactide_Block",
+            "connections": [
+              {
+                "source": "PEG_PLLA_Base.Lactide_Block.p_Llac.Q",
+                "target": "PEG_PLLA_Base.Lactide_Block.p_Llac.R",
+                "weight": 0.6182,
+                "quantity": "1"
+              }
+            ],
+            "parent": "PEG_PLLA_Base",
+            "children": [
+              {
+                "name": "PEG_PLLA_Base.Lactide_Block.p_Llac",
+                "mw": 144.04,
+                "smiles": "O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C",
+                "parent": "Lactide_Block",
+                "degree_poly": {
+                  "value": "187.5",
+                  "unit": null,
+                  "uncertainty": null
+                }
+              }
+            ]
           },
           {
             "name": "PEG_Block",
             "connections": [
               {
-                "source": "PEG_BASE.PEG_Block.p_PEO.Q",
-                "target": "PEG_BASE.PEG_Block.p_PEO.R",
-                "weight": 0.9826,
+                "source": "PEG_PLLA_Base.PEG_Block.p_PEO.Q",
+                "target": "PEG_PLLA_Base.PEG_Block.p_PEO.R",
+                "weight": 0.3719,
                 "quantity": "1"
               }
             ],
-            "parent": "PEG_BASE",
+            "parent": "PEG_PLLA_Base",
             "children": [
               {
-                "name": "PEG_BASE.PEG_Block.p_PEO",
+                "name": "PEG_PLLA_Base.PEG_Block.p_PEO",
                 "mw": 44.05,
                 "smiles": "[Q]OCC[R]",
                 "parent": "PEG_Block",
@@ -274,26 +334,13 @@
           }
         ]
       },
-      "mn_avg": {
-        "value": "5000",
-        "unit": "g/mol",
-        "uncertainty": null
-      },
-      "state": "solid",
-      "treeValues": [
-        {
-          "name": "PEG_BASE",
-          "path": [
-            "PEG_Block",
-            "p_PEO"
-          ],
-          "degree_poly": {
-            "value": "112.8",
-            "unit": null,
-            "uncertainty": null
-          }
-        }
-      ]
+      "base_name": "mPEG-PLLA",
+      "source": {
+        "title": "Batch Experiment Tutorial",
+        "record_id": null,
+        "notebook_id": "b84127da-ee76-4efe-a695-36291eab6689",
+        "lastUpdated": "2022-12-22T02:11:21.454Z"
+      }
     },
     {
       "name": "mPEG-PLLA",
@@ -373,7 +420,7 @@
       "state": "solid",
       "treeValues": [
         {
-          "name": "PEG_PLLA_Base",
+          "name": "egMeO-p_PEO-p_LLac",
           "path": [
             "PEG_Block",
             "p_PEO"
@@ -390,11 +437,11 @@
   "samples": [
     {
       "name": "lLactide",
-      "sampleId": "Test-I-123A"
+      "sampleId": "Test-II-123A"
     },
     {
       "name": "mPEG-PLLA",
-      "sampleId": "Test-I-123A"
+      "sampleId": "Test-II-123A"
     }
   ],
   "results": {
@@ -407,7 +454,7 @@
           "unit": "s",
           "uncertainty": null
         },
-        "sampleId": "Test-I-123A",
+        "sampleId": "Test-II-123A",
         "molecular_weight": {
           "value": "144.12",
           "unit": "g/mol",
@@ -417,10 +464,10 @@
         "state": "solid",
         "conversion": [
           {
-            "value": "75",
+            "value": "80",
             "unit": "%",
             "uncertainty": null,
-            "source": "Test-I-123A-nmr",
+            "source": "Test-II-123A-nmr",
             "technique": "nmr"
           }
         ]
@@ -435,23 +482,23 @@
           "unit": "s",
           "uncertainty": null
         },
-        "sampleId": "Test-I-123A",
+        "sampleId": "Test-II-123A",
         "state": "solid",
         "dispersity": [
           {
-            "value": "1.34",
+            "value": "1.4",
             "unit": null,
             "uncertainty": null,
-            "source": "Test-I-123A-gpc",
+            "source": "Test-II-123A-gpc",
             "technique": "gpc"
           }
         ],
         "mn_avg": [
           {
-            "value": "27000",
+            "value": "52000",
             "unit": "g/mol",
             "uncertainty": null,
-            "source": "Test-I-123A-gpc",
+            "source": "Test-II-123A-gpc",
             "technique": "gpc"
           }
         ],
@@ -461,13 +508,13 @@
             {
               "source": "PEG_PLLA_Base.eg_MeO.R",
               "target": "PEG_PLLA_Base.PEG_Block.p_PEO.R",
-              "weight": 0.0033,
+              "weight": 0.0022,
               "quantity": "1"
             },
             {
               "source": "PEG_PLLA_Base.PEG_Block.p_PEO.Q",
               "target": "PEG_PLLA_Base.Lactide_Block.p_Llac.R",
-              "weight": 0.0033,
+              "weight": 0.0022,
               "quantity": "1"
             }
           ],
@@ -485,7 +532,7 @@
                 {
                   "source": "PEG_PLLA_Base.Lactide_Block.p_Llac.Q",
                   "target": "PEG_PLLA_Base.Lactide_Block.p_Llac.R",
-                  "weight": 0.6182,
+                  "weight": 0.7501,
                   "quantity": "1"
                 }
               ],
@@ -497,7 +544,7 @@
                   "smiles": "O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C",
                   "parent": "Lactide_Block",
                   "degree_poly": {
-                    "value": "187.5",
+                    "value": "347.5",
                     "unit": null,
                     "uncertainty": null
                   }
@@ -510,7 +557,7 @@
                 {
                   "source": "PEG_PLLA_Base.PEG_Block.p_PEO.Q",
                   "target": "PEG_PLLA_Base.PEG_Block.p_PEO.R",
-                  "weight": 0.3719,
+                  "weight": 0.2435,
                   "quantity": "1"
                 }
               ],
@@ -537,8 +584,8 @@
   "charData": [
     {
       "technique": "nmr",
-      "name": "Test-I-123A-nmr",
-      "sampleId": "Test-I-123A",
+      "name": "Test-II-123A-nmr",
+      "sampleId": "Test-II-123A",
       "references": [
         "lLactide",
         "mPEG-PLLA.Lactide_Block.p_Llac"
@@ -547,8 +594,8 @@
     },
     {
       "technique": "gpc",
-      "name": "Test-I-123A-gpc",
-      "sampleId": "Test-I-123A",
+      "name": "Test-II-123A-gpc",
+      "sampleId": "Test-II-123A",
       "references": [
         "mPEG-PLLA"
       ]

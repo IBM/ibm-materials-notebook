@@ -1,8 +1,7 @@
 [
   {
-    "name": "THF",
+    "name": "tetrahydrofuran",
     "type": "chemical",
-    "aliases": ["tetrahydrofuran"],
     "smiles": "C1COCC1",
     "molecular_weight": {
       "value": "123.12",
