@@ -14,11 +14,11 @@ In a new cell in the notebook add the following imports, metadata, and polymer r
 
 ```cmdl
 import tetrahydrofuran as THF from "cmdl.lib";
-import 1-3-bis-3-5-bis-trifluoromethylurea as UreaCatalyst from "cmdl.lib";
+import bis-3-5-bistrifluoromethylphenylurea from "cmdl.lib";
 import potassium_methoxide as KOMe from "cmdl.lib";
 import benzoic_acid as BzOH from "cmdl.lib";
-import bis-mpa_benzyl_carbonate as TMC-Bn from "cmdl.lib";
-import MeO-TMC-Bn-Graph from "cmdl.lib";
+import benzyl_5-methyl-2-oxo-1_3-dioxane-5-carboxylate as TMC-Bn from "cmdl.lib";
+import egMeO-pTMC-Bn from "cmdl.lib";
 
 metadata {
     title: "Flow Tutorial Experiment";
@@ -28,7 +28,7 @@ metadata {
 }
 
 polymer MeO-pTMC-Bn {
-    tree: @MeO-TMC-Bn-Graph;
+    tree: @egMeO-pTMC-Bn;
 }
 ```
 
@@ -328,7 +328,7 @@ solution Catalyst_Solution {
         roles: [ "catalyst" ];
     };
 
-    @UreaCatalyst {
+    @bis-3-5-bistrifluoromethylphenylurea {
         mass: 500 mg;
         roles: [ "catalyst" ];
     };
@@ -354,7 +354,7 @@ solution Quench_Solution {
 
 Running the cell will compute the stoichiometry for each stock solution and provide an output similar to the following:
 
-_stock solution output_
+![Stock Solution Output](/images/stock_solution_output.png)
 
 ### Flow Reaction
 
@@ -396,7 +396,7 @@ flow_reaction FlowTest {
 }
 ```
 
-For the CMDL interpreter to compute the reaction stoichiometry, each stock solution must be assinged to a input on the reactor. On the reactor `ReactorTest` we have three input nodes, namely: `Monomer_Syringe`, `Catalyst_Syringe`, and `Quench_Syringe`. We can add a `input` property to each stock solution reference group to assign them to the proper reactor graph node.
+For the CMDL interpreter to compute the reaction stoichiometry, each stock solution must be assinged to a input on the reactor. On the reactor `ReactorTest` we have three input nodes, namely: `Monomer_Syringe`, `Catalyst_Syringe`, and `Quench_Syringe`. We can add a `input` property to each stock solution reference group to assign them to the proper reactor graph node. Finally, we can also add the product of the flow reaction, `MeO-pTMC-Bn` as well.
 
 ```cmdl
 flow_reaction FlowTest {
@@ -405,28 +405,55 @@ flow_reaction FlowTest {
 
     @Monomer_Solution {
         flow_rate: 10 ml/min;
-        input: @ReactorTest.Monomer_Syringe
+        input: @ReactorTest.Monomer_Syringe;
     };
 
     @Catalyst_Solution {
         flow_rate: 10 ml/min;
-        input: @ReactorTest.Catalyst_Syringe
+        input: @ReactorTest.Catalyst_Syringe;
     };
 
     @Quench_Solution {
         flow_rate: 10 ml/min;
-        input: @ReactorTest.Quench_Syringe
+        input: @ReactorTest.Quench_Syringe;
     };
+
+	@MeO-pTMC-Bn {
+		roles: ["product"];
+	};
 }
 ```
 
 With this we can run the flow reaction cell and see an cell output similar to the following:
 
-_flow output screenshot_
+![Flow Reactor Output](/images/flow_reactor_output.png)
 
 ### Defining the Samples and Results
 
-As with the batch experiment tutorials, we can create sample groups to assign characterization values to chemical inputs and outputs from the reaction. The main difference being that an additional property of `collection_time` may be added to the sample group to describe the elapsed time of the flow reaction under the defined conditions the sample was collected. Below is an example;
+As with the batch experiment tutorials, we can create sample groups to assign characterization values to chemical inputs and outputs from the reaction.
+
+```cmdl
+sample Flow-Rxn-I-123 {
+    time_point: 2 s;
+
+    nmr Flow-Rxn-I-123-nmr {
+        @TMC-Bn {
+            conversion: 99%;
+        };
+
+        @MeO-pTMC-Bn.Carbonate_Block.p_TMCBn {
+            degree_poly: 53;
+        };
+    };
+
+    gpc Flow-Rxn-I-123-gpc {
+        @MeO-pTMC-Bn {
+            dispersity: 1.12;
+            mn_avg: 12000 g/mol;
+        };
+    };
+}
+```
 
 ### Next Steps
 
