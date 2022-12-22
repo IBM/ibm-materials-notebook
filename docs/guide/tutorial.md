@@ -39,6 +39,10 @@ Your root directory should now have a new file:
 
 References are a key component underlying all experiment documentation in CMDL. References are simply entities that are either used or produced by experiments. This includes chemicals, materials, or physical hardware such as continuous-flow reactors. References can have multiple roles inside an experiment. For instance, a reference specifying ethyl acetate may be used as both a solvent in a chemical reaction and as a solvent in the experimental workup.
 
+::: warning
+Currently reference names starting with numbers, such as `1-pyrenebutanol` are not supported.
+:::
+
 ### Create a chemical reference
 
 For this tutorial let's first define references for the small-molecule chemicals being used in the polymerization experiment. [Add a CMDL cell](./README.md) to the _batch_experiment.cmdnb_ and create a chemical group for tetrahydrofuran (THF):
