@@ -1,9 +1,12 @@
 {
   "name": "ibm-materials-notebook",
   "displayName": "ibm-materials-notebook",
-  "publisher": "IBM",
-  "description": "",
-  "version": "0.0.1",
+  "publisher": "IBM Materials",
+  "description": "Custom notebook extension for experimental data representation and management",
+  "repository": {
+    "url": "https://github.com/IBM/ibm-materials-notebook"
+  },
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.70.0"
   },
