@@ -3,6 +3,7 @@
   "displayName": "ibm-materials-notebook",
   "publisher": "IBM Materials",
   "description": "Custom notebook extension for experimental data representation and management",
+  "icon": "media/notebook_logo.png",
   "repository": {
     "url": "https://github.com/IBM/ibm-materials-notebook"
   },
