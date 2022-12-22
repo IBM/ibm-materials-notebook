@@ -1,43 +1,42 @@
 [
   {
-    "fullName": "eg(p-Me-Bn-OH)-p(L-lac)",
-    "name": "eg_p-Me-Bn-OH-p_L-lac",
+    "name": "egMeO-pTMC-Bn",
     "type": "polymer_graph",
     "tree": {
       "name": "BASE",
       "connections": [
         {
-          "source": "BASE.eg_pMeBnOH.R",
-          "target": "BASE.Lactide_Block.p_Llac.R",
-          "weight": 1,
+          "source": "BASE.eg_MeO.R",
+          "target": "BASE.Carbonate_Block.p_TMCBn.R",
+          "weight": 0.5,
           "quantity": "1"
         }
       ],
       "parent": null,
       "children": [
         {
-          "name": "BASE.eg_pMeBnOH",
-          "mw": 121.07,
-          "smiles": "CC1=CC=C(CO[R:1])C=C1",
+          "name": "BASE.eg_MeO",
+          "mw": 31.02,
+          "smiles": "CO[R:1]",
           "parent": "BASE"
         },
         {
-          "name": "Lactide_Block",
+          "name": "Carbonate_Block",
           "connections": [
             {
-              "source": "BASE.Lactide_Block.p_Llac.Q",
-              "target": "BASE.Lactide_Block.p_Llac.R",
-              "weight": 1,
+              "source": "BASE.Carbonate_Block.p_TMCBn.Q",
+              "target": "BASE.Carbonate_Block.p_TMCBn.R",
+              "weight": 0,
               "quantity": "1"
             }
           ],
           "parent": "BASE",
           "children": [
             {
-              "name": "BASE.Lactide_Block.p_Llac",
-              "mw": 144.04,
-              "smiles": "O=C(O[C@H](C([R:1])=O)C)[C@@H](O[Q:2])C",
-              "parent": "Lactide_Block"
+              "name": "BASE.Carbonate_Block.p_TMCBn",
+              "mw": 250.08,
+              "smiles": "CC(CO[Q:2])(C(OCC1=CC=CC=C1)=O)COC([R:1])=O",
+              "parent": "Carbonate_Block"
             }
           ]
         }

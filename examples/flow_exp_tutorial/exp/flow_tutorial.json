@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Flow-Rxn-I-123-MeO-pTMC-Bn",
+    "type": "polymer",
+    "time_point": {
+      "value": "2",
+      "unit": "s",
+      "uncertainty": null
+    },
+    "sampleId": "Flow-Rxn-I-123",
+    "dispersity": [
+      {
+        "value": "1.12",
+        "unit": null,
+        "uncertainty": null,
+        "source": "Flow-Rxn-I-123-gpc",
+        "technique": "gpc"
+      }
+    ],
+    "mn_avg": [
+      {
+        "value": "12000",
+        "unit": "g/mol",
+        "uncertainty": null,
+        "source": "Flow-Rxn-I-123-gpc",
+        "technique": "gpc"
+      }
+    ],
+    "tree": {
+      "name": "BASE",
+      "connections": [
+        {
+          "source": "BASE.eg_MeO.R",
+          "target": "BASE.Carbonate_Block.p_TMCBn.R",
+          "weight": 0.0182,
+          "quantity": "1"
+        }
+      ],
+      "parent": null,
+      "children": [
+        {
+          "name": "BASE.eg_MeO",
+          "mw": 31.02,
+          "smiles": "CO[R:1]",
+          "parent": "BASE"
+        },
+        {
+          "name": "Carbonate_Block",
+          "connections": [
+            {
+              "source": "BASE.Carbonate_Block.p_TMCBn.Q",
+              "target": "BASE.Carbonate_Block.p_TMCBn.R",
+              "weight": 0.9636,
+              "quantity": "1"
+            }
+          ],
+          "parent": "BASE",
+          "children": [
+            {
+              "name": "BASE.Carbonate_Block.p_TMCBn",
+              "mw": 250.08,
+              "smiles": "CC(CO[Q:2])(C(OCC1=CC=CC=C1)=O)COC([R:1])=O",
+              "parent": "Carbonate_Block",
+              "degree_poly": {
+                "value": "53",
+                "unit": null,
+                "uncertainty": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "base_name": "MeO-pTMC-Bn",
+    "source": {
+      "title": "Flow Tutorial Experiment",
+      "record_id": null,
+      "notebook_id": "f60759ad-3278-4177-aac1-cb9aec4e9ebe",
+      "lastUpdated": "2022-12-22T19:05:09.101Z"
+    }
+  }
+]
