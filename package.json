@@ -104,7 +104,7 @@
     ]
   },
   "scripts": {
-    "deploy": "vsce publish --npm",
+    "deploy": "vsce publish",
     "vscode:prepublish": "npm run package",
     "compile": "webpack --mode none",
     "watch": "webpack --watch",
