@@ -104,7 +104,7 @@
     ]
   },
   "scripts": {
-    "deploy": "vsce publish --yarn",
+    "deploy": "vsce publish --npm",
     "vscode:prepublish": "npm run package",
     "compile": "webpack --mode none",
     "watch": "webpack --watch",
