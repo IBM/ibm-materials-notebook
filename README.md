@@ -6,7 +6,7 @@ Documentation and features for the extension and CMDL can be found here: https:/
 
 ![Notebook Screenshot](/docs/.vuepress/public/images/notebook_screenshot.png)
 
-The extension can be found on the VS Code Marketplace here: https://marketplace.visualstudio.com/items?itemName=IBMMaterials.ibm-materials-notebook
+The extension can be found on the VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=IBMMaterials.ibm-materials-notebook
 
 ## References
 
