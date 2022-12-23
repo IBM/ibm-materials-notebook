@@ -1,7 +1,7 @@
 {
   "name": "ibm-materials-notebook",
   "displayName": "ibm-materials-notebook",
-  "publisher": "IBM Materials",
+  "publisher": "IBMMaterials",
   "pricing": "Free",
   "description": "Custom notebook extension for experimental data representation and management",
   "icon": "media/notebook_logo.png",
