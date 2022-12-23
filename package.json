@@ -128,6 +128,7 @@
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
     "@vscode/test-electron": "^2.1.5",
+    "@vscode/vsce": "^2.16.0",
     "@vuepress/plugin-shiki": "^2.0.0-beta.53",
     "css-loader": "^6.7.1",
     "eslint": "^8.20.0",
