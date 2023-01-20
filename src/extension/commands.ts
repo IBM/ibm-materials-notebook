@@ -274,7 +274,18 @@ export function registerCommands(repo: Repository): vscode.Disposable {
     vscode.commands.registerCommand(
       "ibm-materials-notebook.parseGeneratedPolymers",
       async () => {
-        const folderPath = "/Users/npark/generated_polymers";
+        const folderURI = await vscode.window.showOpenDialog({
+          canSelectFolders: true,
+          canSelectFiles: false,
+          canSelectMany: false,
+        });
+
+        if (!folderURI) {
+          return;
+        }
+
+        const folderPath = folderURI[0].fsPath;
+
         const csvToLoad = await vscode.window.showOpenDialog({
           canSelectFiles: true,
           canSelectMany: false,
