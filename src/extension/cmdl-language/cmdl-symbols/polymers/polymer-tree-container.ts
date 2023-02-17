@@ -1,4 +1,4 @@
-import { PolymerComponent } from "./polymer-tree";
+import { PolymerComponent } from "./polymer-types";
 import { PolymerEdge } from "./polymer-edge";
 import {
   EdgeWeightor,

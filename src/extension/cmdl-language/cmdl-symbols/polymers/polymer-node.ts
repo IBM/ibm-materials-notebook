@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { PolymerComponent } from "./polymer-tree";
+import { PolymerComponent } from "./polymer-types";
 import { Container } from "./polymer-tree-container";
 import { PolymerTreeVisitor } from "./polymer-weights";
 

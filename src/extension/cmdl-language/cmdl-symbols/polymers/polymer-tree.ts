@@ -4,62 +4,13 @@ import { PolymerEdge } from "./polymer-edge";
 import { Container } from "./polymer-tree-container";
 import { PolymerNode } from "./polymer-node";
 import { PolymerTreeVisitor } from "./polymer-weights";
-import { logger } from "../../../../logger";
-// import { cmdlLogger as logger } from "../../logger";
-
-export interface Serializable {
-  /**
-   * Converts to string for logging purposes
-   */
-  print(): string;
-
-  /**
-   * Converts to object for export
-   */
-  toJSON(): any;
-}
-
-/**
- * Interface for defining components within the polymer tree
- */
-export interface PolymerComponent extends Serializable {
-  /**
-   * Properties of the particular tree node eg. DP, mol fraction, etc.
-   */
-  properties: Map<string, any>;
-
-  /**
-   * Method to determine whether component is a container or entity
-   */
-  isContainer(): boolean;
-
-  /**
-   * Sets provided polymer component as the parent of component calling the method
-   * @param arg PolymerComponent
-   */
-  setParent(arg: PolymerComponent): void;
-
-  /**
-   * Generates absolute path for the entity compenent and sets as name
-   */
-  setName(): void;
-
-  /**
-   * Parent component of the node
-   */
-  parent: PolymerComponent | null;
-
-  /**
-   * Name of the node
-   */
-  name: string;
-
-  /**
-   * Accepts a tree visitor for computation of weights
-   * @param visitor TreeVisitor
-   */
-  accept(visitor: PolymerTreeVisitor): void;
-}
+import {
+  CMDLPolymerTree,
+  CMDLPolymerContainer,
+  CMDLPolymerConnection,
+  PolymerComponent,
+  CMDLRef,
+} from "./polymer-types";
 
 /**
  * Tree representation of polymer structure. The tree representation enables facile conversion to a graph representation.
@@ -81,9 +32,9 @@ export class PolymerTree {
    * @param treeConfig Object
    * @param record ModelActivationRecord
    */
-  initialize(treeConfig: any, record: ModelActivationRecord) {
-    const queue = [treeConfig];
-    let curr: any;
+  initialize(treeConfig: CMDLPolymerTree, record: ModelActivationRecord) {
+    const queue: (CMDLPolymerTree | CMDLPolymerContainer)[] = [treeConfig];
+    let curr: CMDLPolymerTree | CMDLPolymerContainer | undefined;
 
     while (queue.length) {
       curr = queue.shift();
@@ -112,10 +63,10 @@ export class PolymerTree {
         }
 
         if (curr?.containers?.length) {
-          curr.containers.forEach((el: any) => {
-            el.parent = curr.name;
-            queue.unshift(el);
-          });
+          for (const cont of curr.containers) {
+            cont.parent = curr.name;
+            queue.unshift(cont);
+          }
         }
       }
 
@@ -123,11 +74,11 @@ export class PolymerTree {
     }
   }
 
-  private createEdges(conn: any, container: Container) {
+  private createEdges(conn: CMDLPolymerConnection, container: Container) {
     const newSources = this.parseConnectionPaths(conn.sources);
     const newTargets = this.parseConnectionPaths(conn.targets);
 
-    let source: any;
+    let source: string[] | undefined;
 
     while (newSources.length) {
       source = newSources.shift();
@@ -141,7 +92,7 @@ export class PolymerTree {
           sourcePath: source,
           targetPath: target,
           weight: 1,
-          quantity: conn.quantity,
+          quantity: parseInt(conn.quantity),
         });
 
         container.connections.push(edge);
@@ -151,11 +102,11 @@ export class PolymerTree {
 
   /**
    * Converts parsed connection paths to an array of string arrays
-   * @param arr any[][]
+   * @param arr CMDLRef[][]
    * @returns string[][]
    */
-  private parseConnectionPaths(arr: any[]) {
-    return arr.map((el: any) => {
+  private parseConnectionPaths(arr: CMDLRef[]) {
+    return arr.map((el: CMDLRef) => {
       return [el.ref.slice(1), ...el.path];
     });
   }
@@ -275,6 +226,11 @@ export class PolymerTree {
     return smiles;
   }
 
+  /**
+   * Creates polymer tree from JSON representation
+   * @param element any
+   * @param parent Container
+   */
   fromJSON(element: any, parent?: Container) {
     if (element?.connections) {
       const newContainer = new Container(element.name);

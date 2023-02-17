@@ -16,12 +16,7 @@
     "Notebooks"
   ],
   "activationEvents": [
-    "onNotebook:ibm-materials-notebook",
-    "onCommand:ibm-materials-notebook.new",
-    "onCommand:ibm-materials-notebook.exportWorkspace",
-    "onCommand:ibm-materials-notebook.parseGeneratedPolymers",
-    "onCommand:ibm-materials-notebook.toCSV",
-    "onCommand:ibm-materials-notebook.loadCSV"
+    "onNotebook:ibm-materials-notebook"
   ],
   "main": "./dist/extension.js",
   "contributes": {

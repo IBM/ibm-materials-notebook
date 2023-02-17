@@ -1,5 +1,6 @@
 import { cmdlLogger as logger } from "../../logger";
-import { PolymerTree, PolymerComponent } from "./polymer-tree";
+import { PolymerTree } from "./polymer-tree";
+import { PolymerComponent } from "./polymer-types";
 import { Container } from "./polymer-tree-container";
 import { PolymerNode } from "./polymer-node";
 import { PolymerEdge } from "./polymer-edge";
