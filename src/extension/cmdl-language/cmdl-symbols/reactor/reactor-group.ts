@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { QtyUnit } from "../units";
+import { Quantity } from "../symbol-types";
 import { ReactorComponent } from "./reactor-component";
 import { ChemicalConfig, ChemicalOutput } from "../chemicals/chemical-factory";
 import { ReactorChemicals } from "./reactor-chemicals";
@@ -7,15 +7,15 @@ import { ReactorChemicals } from "./reactor-chemicals";
 export interface ReactorNode {
   name: string;
   parent: ReactorNode | null;
-  volume: QtyUnit | null;
+  volume: Quantity | null;
   setParent(arg: ReactorNode): void;
   getInputs(): any;
 }
 
 export class Reactor implements ReactorNode {
-  volume: QtyUnit | null = null;
-  flowRate: QtyUnit | null = null;
-  residenceTime: QtyUnit | null = null;
+  volume: Quantity | null = null;
+  flowRate: Quantity | null = null;
+  residenceTime: Quantity | null = null;
   reactorOutput: ChemicalOutput[] = [];
   outputNode: ReactorComponent | null = null;
   parent: ReactorNode | null = null;

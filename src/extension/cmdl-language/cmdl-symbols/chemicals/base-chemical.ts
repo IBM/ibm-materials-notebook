@@ -1,8 +1,8 @@
-import { Unit, QtyUnit } from "../units";
+import { Unit } from "../units";
+import { Quantity } from "../symbol-types";
 import Big from "big.js";
 import { handleRounding } from "../../cmdl-tree/utils";
 import { UNITS } from "../../cmdl-types/units";
-import { Quantity } from "../units/unit-types";
 import { ChemicalConfig, ChemicalOutput } from "./chemical-factory";
 import { cmdlLogger } from "../../logger";
 
@@ -73,7 +73,7 @@ export abstract class BaseChemical {
   }
 
   computeConcentration(
-    totalQty: QtyUnit | null,
+    totalQty: Quantity | null,
     type: "molarity" | "molality" | "moles_vol"
   ) {
     if (!totalQty || !this.moles) {
@@ -134,7 +134,7 @@ export abstract class BaseChemical {
     return { ...finalMoles.output(), uncertainty: null };
   }
 
-  protected combineMoles(chemical: BaseChemical): QtyUnit {
+  protected combineMoles(chemical: BaseChemical): Quantity {
     if (this.name !== chemical.name) {
       throw new Error(`\n-Cannot merge two different chemicals`);
     }

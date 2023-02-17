@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { Quantity } from "../../units/unit-types";
+import { CMDLUnit, Quantity } from "../../symbol-types";
 import { Reactor } from "../reactor-group";
 import { ReactorComponent } from "../reactor-component";
 import { testChemicals } from "./reactor-chem.test";
@@ -47,10 +47,10 @@ const NODE_C = "node_c";
 const NODE_D = "node_d";
 const NODE_E = "node_e";
 
-const nodeVolume: Quantity = {
+const nodeVolume: CMDLUnit = {
   uncertainty: null,
   unit: "mcl",
-  value: Big(500),
+  value: "500",
 };
 
 export const flowRate: Quantity = {

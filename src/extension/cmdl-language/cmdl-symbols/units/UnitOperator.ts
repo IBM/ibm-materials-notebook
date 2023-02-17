@@ -1,15 +1,15 @@
-import Unit from './Unit';
-import { isCompatible } from './comparators';
-import Big from 'big.js';
-import { UnitPrefixes } from './unitConversions';
-import { Quantity as QtyUnit } from './unit-types';
-import BaseUnit from './BaseUnit';
+import Unit from "./Unit";
+import { isCompatible } from "./comparators";
+import Big from "big.js";
+import { UnitPrefixes } from "./unitConversions";
+import { Quantity } from "../symbol-types";
+import BaseUnit from "./BaseUnit";
 
 /**
  *Performs basic unit operations
  */
 export default class UnitOperator {
-  static sum(unitList: Unit[], scale: UnitPrefixes = 'base') {
+  static sum(unitList: Unit[], scale: UnitPrefixes = "base") {
     if (!unitList.length) {
       return null;
     }
@@ -25,7 +25,7 @@ export default class UnitOperator {
       throw new Error(`Attempting to add incompatible units: ${unitList}`);
     }
 
-    let sumObject: QtyUnit = unitList.reduce(
+    let sumObject: Quantity = unitList.reduce(
       (acc, item) => {
         item.scaleTo(scale);
 
@@ -33,7 +33,7 @@ export default class UnitOperator {
         acc.value = acc.value ? acc.value.plus(item.value) : Big(item.value);
         return acc;
       },
-      { unit: '', value: new Big(0), uncertainty: null }
+      { unit: "", value: new Big(0), uncertainty: null }
     );
     return sumObject;
   }
@@ -78,9 +78,9 @@ export default class UnitOperator {
         let exponent = unitMap[curr];
         let newUnit =
           exponent > 1 || exponent < 0 ? `${curr}^${exponent}` : curr;
-        let currString = acc.length ? `${acc}*` : '';
+        let currString = acc.length ? `${acc}*` : "";
         return `${currString}${newUnit}`;
-      }, '');
+      }, "");
 
     return newUnitString;
   }

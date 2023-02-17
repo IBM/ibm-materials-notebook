@@ -1,7 +1,7 @@
-import BaseUnit from './BaseUnit';
-import Big from 'big.js';
-import { UnitPrefixes } from './unitConversions';
-import { Quantity as QtyUnit } from './unit-types';
+import BaseUnit from "./BaseUnit";
+import Big from "big.js";
+import { UnitPrefixes } from "./unitConversions";
+import { Quantity } from "../symbol-types";
 
 export default class Unit {
   unit: string;
@@ -10,7 +10,7 @@ export default class Unit {
   numerator: BaseUnit[];
   denominator: BaseUnit[];
 
-  constructor({ unit, value }: QtyUnit) {
+  constructor({ unit, value }: Quantity) {
     this._value = new Big(value);
     this.unit = unit;
     this.subUnits = [];
@@ -35,7 +35,7 @@ export default class Unit {
    * Parses unit string into component base units
    */
   parseUnit(unit: string) {
-    let componentUnits = unit.split('*');
+    let componentUnits = unit.split("*");
     this.subUnits = componentUnits.map((item) => new BaseUnit(item));
     this.numerator = this.subUnits.filter((unit) => unit.exponent > 0);
     this.denominator = this.subUnits.filter((unit) => unit.exponent < 0);
@@ -48,7 +48,7 @@ export default class Unit {
     if (newUnit === this.unit) {
       return;
     }
-    let componentUnits = newUnit.split('*');
+    let componentUnits = newUnit.split("*");
     const newSubUnits = componentUnits.map((item) => new BaseUnit(item));
 
     if (newSubUnits.length === this.subUnits.length) {
@@ -58,11 +58,11 @@ export default class Unit {
         let exp = newSubUnits[index].exponent;
 
         if (base !== sub.base) {
-          throw new Error('Invalid unit base conversion');
+          throw new Error("Invalid unit base conversion");
         }
 
         if (sub.exponent !== exp) {
-          throw new Error('Invalid unit exponent conversion');
+          throw new Error("Invalid unit exponent conversion");
         }
 
         return sub.scaleTo(prefix);
@@ -157,9 +157,9 @@ export default class Unit {
     let finalUnit = this.subUnits
       .sort((a, b) => b.exponent - a.exponent)
       .reduce((acc, curr) => {
-        let currString = acc.length ? `${acc}*` : '';
+        let currString = acc.length ? `${acc}*` : "";
         return `${currString}${curr.unit}`;
-      }, '');
+      }, "");
 
     return finalUnit;
   }
@@ -171,7 +171,7 @@ export default class Unit {
     if (this.subUnits.length === 1) {
       return this.subUnits[0].prefix;
     } else {
-      console.warn('Cannot get prefix of compound unit');
+      console.warn("Cannot get prefix of compound unit");
     }
   }
 

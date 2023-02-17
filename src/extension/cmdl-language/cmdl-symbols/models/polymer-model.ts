@@ -1,5 +1,4 @@
 import { ModelActivationRecord } from "./model-AR";
-import { cmdlLogger as logger } from "../../logger";
 import { BaseModel } from "./base-model";
 import { PolymerContainer } from "../polymers";
 

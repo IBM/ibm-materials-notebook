@@ -2,7 +2,7 @@ import Gas from "./gas";
 import Solid from "./solid";
 import Liquid from "./liquid";
 import { ChemPropKey } from "./base-chemical";
-import { Quantity } from "../units/unit-types";
+import { NumberQuantity, Quantity } from "../symbol-types";
 import Big from "big.js";
 
 export enum ChemStates {
@@ -13,12 +13,6 @@ export enum ChemStates {
 
 export interface NamedQuantity extends Quantity {
   name: ChemPropKey;
-}
-
-export interface NumberQuantity {
-  unit: string;
-  value: number;
-  uncertainty: null;
 }
 
 export interface ChemicalConfig {

@@ -2,7 +2,10 @@ import BaseUnit from "./BaseUnit";
 import Unit from "./Unit";
 
 export function mapBases(baseUnitArr: BaseUnit[]) {
-  if (!baseUnitArr.length) return false;
+  if (!baseUnitArr.length) {
+    return false;
+  }
+
   return baseUnitArr.reduce((acc, curr) => {
     if (!acc[curr.base]) {
       acc[curr.base] = curr.exponent;
@@ -43,22 +46,36 @@ export function diffUnits(unit1: Unit, unit2: Unit) {
   return false;
 }
 
-export function compareDiffUnits(unitMap: Record<string, Unit[]>, keyArr: string[]) {
+export function compareDiffUnits(
+  unitMap: Record<string, Unit[]>,
+  keyArr: string[]
+) {
   let stdUnit = unitMap[keyArr[0]][0];
   let otherKeys = keyArr.slice(1);
   while (otherKeys.length) {
     let currKey = otherKeys.shift();
-    if(!currKey) break
+
+    if (!currKey) {
+      break;
+    }
     let nextUnit = unitMap[currKey][0];
     let isCompatible = diffUnits(stdUnit, nextUnit);
-    if (!isCompatible) return false;
+
+    if (!isCompatible) {
+      return false;
+    }
   }
   return true;
 }
 
 export function isCompatible(unitArray: Unit[]) {
-  if (!unitArray.length) return true;
-  if (unitArray.length === 1) return true;
+  if (!unitArray.length) {
+    return true;
+  }
+
+  if (unitArray.length === 1) {
+    return true;
+  }
 
   let unitMap = unitArray.reduce((acc, curr) => {
     if (!acc.hasOwnProperty(curr.unit)) {

@@ -15,7 +15,6 @@ export class PolymerContainer {
   }
 
   buildTree(treeConfig: CMDLPolymerTree, record: ModelActivationRecord) {
-    cmdlLogger.debug(`tree config:`, { meta: treeConfig });
     this.tree.initialize(treeConfig, record);
     this.tree.root?.setName();
     this.tree.root?.setPath();

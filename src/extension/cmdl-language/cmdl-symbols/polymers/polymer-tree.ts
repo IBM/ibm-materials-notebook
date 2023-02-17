@@ -4,12 +4,12 @@ import { PolymerEdge } from "./polymer-edge";
 import { Container } from "./polymer-tree-container";
 import { PolymerNode } from "./polymer-node";
 import { PolymerTreeVisitor } from "./polymer-weights";
+import { CMDLRef } from "../symbol-types";
 import {
   CMDLPolymerTree,
   CMDLPolymerContainer,
   CMDLPolymerConnection,
   PolymerComponent,
-  CMDLRef,
 } from "./polymer-types";
 
 /**

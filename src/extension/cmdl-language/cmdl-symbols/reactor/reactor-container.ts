@@ -1,11 +1,50 @@
 import { Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
 import { ReactorComponent } from "./reactor-component";
+import { cmdlLogger } from "../../logger";
 import Big from "big.js";
+import { CMDLRef, CMDLUnit } from "../symbol-types";
 
 export interface ReactorEdge {
   id: string;
   target: string | null;
+}
+
+interface CMDLReactorNode {
+  name: string;
+  type: string;
+  description?: string;
+  inner_diameter?: CMDLUnit;
+  outer_diameter?: CMDLUnit;
+  volume?: CMDLUnit;
+  length?: CMDLUnit;
+  target: CMDLRef;
+}
+
+interface SerializedReactorComponent extends Omit<CMDLReactorNode, "target"> {
+  sources: string[];
+  next: string | null;
+  parent: string | null;
+}
+
+interface SerializedReactorGroup {
+  name: string;
+  type: string;
+  parent: string | null;
+  children: string[];
+}
+
+interface CMDLReactor {
+  name: string;
+  type: string;
+  nodes: CMDLReactorNode[];
+}
+
+export interface SerializedReactor {
+  nodes: SerializedReactorComponent[];
+  edges: ReactorEdge[];
+  outputNode: string | null;
+  reactors: SerializedReactorGroup[];
 }
 
 export class ReactorContainer {
@@ -15,7 +54,8 @@ export class ReactorContainer {
   edgeMap = new Map<string, ReactorEdge>();
   reactorLinks = new Map<string, string>();
 
-  public addReactor(component: any) {
+  public addReactor(component: CMDLReactor) {
+    cmdlLogger.debug(`reactor:`, { meta: component });
     const reactor = new Reactor(component.name);
     reactor.parent = null;
 
@@ -31,7 +71,7 @@ export class ReactorContainer {
     this.reactorMap.set(component.name, reactor);
   }
 
-  public addNode(component: any) {
+  public addNode(component: CMDLReactorNode) {
     const node = new ReactorComponent(component.name);
     let target = component?.target;
     let volume = component?.volume;
@@ -141,7 +181,7 @@ export class ReactorContainer {
     this.outputNode.getInputs();
   }
 
-  public serialize() {
+  public serialize(): SerializedReactor {
     const edges = [...this.edgeMap.values()];
     const nodes = [...this.nodeMap.values()].map((el) => el.serialize());
     const outputNode = this.outputNode ? this.outputNode.name : null;
@@ -155,9 +195,8 @@ export class ReactorContainer {
     };
   }
 
-  //TODO: add typing for deserialization
-  public deserialize(arg: any) {
-    arg.edges.forEach((el: any) => {
+  public deserialize(arg: SerializedReactor) {
+    arg.edges.forEach((el: ReactorEdge) => {
       this.edgeMap.set(el.id, el);
     });
 
@@ -171,7 +210,7 @@ export class ReactorContainer {
       let newNode = new ReactorComponent(node.name);
 
       if (node.volume) {
-        newNode.setVolume({ ...node.volume, value: Big(node.volume.value) });
+        newNode.setVolume(node.volume);
       }
 
       if (node.parent) {

@@ -2,7 +2,7 @@ import { typeManager } from "../../cmdl-types";
 import { BaseChemical, ChemPropKey } from "./base-chemical";
 import { ChemicalConfig, ChemStates, NamedQuantity } from "./chemical-factory";
 import Big from "big.js";
-import { QtyUnit } from "../units";
+import { Quantity } from "../symbol-types";
 
 export default class Liquid extends BaseChemical {
   constructor(
@@ -105,7 +105,7 @@ export default class Liquid extends BaseChemical {
     this.computeValues({ name: ChemPropKey.MOLES, ...newMoles });
   }
 
-  getMolesByVolume(volume: QtyUnit): ChemicalConfig {
+  getMolesByVolume(volume: Quantity): ChemicalConfig {
     if (!this.mw) {
       throw new Error(`\n-Mw is invalid for ${this.name}`);
     }

@@ -1,21 +1,5 @@
 import { PolymerTreeVisitor } from "./polymer-weights";
-
-interface CMDLUnit {
-  value: string;
-  unit: string | null;
-  uncertainty: string | null;
-}
-
-interface CMDLPolymerFragment {
-  name: string;
-  molecular_weight: CMDLUnit;
-  smiles: string;
-}
-
-export interface CMDLRef {
-  ref: string;
-  path: string[];
-}
+import { CMDLRef } from "../symbol-types";
 
 export interface CMDLPolymerConnection {
   sources: CMDLRef[];

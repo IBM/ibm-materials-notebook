@@ -1,4 +1,5 @@
-import { Unit, QtyUnit } from "../units";
+import { Unit } from "../units";
+import { CMDLUnit, Quantity } from "../symbol-types";
 import Big from "big.js";
 import { ReactorNode, Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
@@ -7,10 +8,10 @@ export class ReactorComponent implements ReactorNode {
   input: ReactorChemicals | null = null;
   sources: ReactorComponent[] = [];
   next: ReactorComponent | null = null;
-  volume: QtyUnit | null = null;
-  length?: any;
-  inner_diameter?: any;
-  outer_diameter?: any;
+  volume: Quantity | null = null;
+  length?: CMDLUnit;
+  inner_diameter?: CMDLUnit;
+  outer_diameter?: CMDLUnit;
   description?: string;
   parent: ReactorNode | null = null;
 
@@ -24,7 +25,7 @@ export class ReactorComponent implements ReactorNode {
     this.input = arg;
   }
 
-  setVolume(volume: QtyUnit) {
+  setVolume(volume: CMDLUnit) {
     this.volume = this.normalizeVolume(volume);
   }
 
@@ -71,9 +72,17 @@ export class ReactorComponent implements ReactorNode {
     }
   }
 
-  private normalizeVolume(vol: QtyUnit): QtyUnit {
+  private normalizeVolume(vol: CMDLUnit): Quantity {
+    if (!vol.unit) {
+      throw new Error(`Missing unit for volume in reactor component!`);
+    }
+
     if (vol.unit !== "ml") {
-      let normalVol = new Unit(vol);
+      let normalVol = new Unit({
+        unit: vol.unit,
+        value: Big(vol.value),
+        uncertainty: vol.uncertainty ? Big(vol.uncertainty) : null,
+      });
       normalVol.convertTo("ml");
       return { ...normalVol.output(), uncertainty: null };
     } else {
@@ -85,11 +94,15 @@ export class ReactorComponent implements ReactorNode {
     }
   }
 
-  private exportQty(qty: QtyUnit | undefined | null) {
+  private exportQty(qty: Quantity | undefined | null): CMDLUnit | undefined {
     if (!qty) {
-      return qty;
+      return undefined;
     }
-    return { ...qty, value: qty.value.toNumber() };
+    return {
+      ...qty,
+      value: String(qty.value.toNumber()),
+      uncertainty: qty.uncertainty ? String(qty.value.toNumber()) : null,
+    };
   }
 
   serialize() {

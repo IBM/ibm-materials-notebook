@@ -1,17 +1,17 @@
-import { QtyUnit } from "../units";
+import { Quantity } from "../symbol-types";
 import { ChemicalSet } from "../chemicals";
 import { ChemicalConfig } from "../chemicals/chemical-factory";
 
 export class ReactorChemicals {
   private solution = new ChemicalSet();
 
-  constructor(public flowRate: QtyUnit) {}
+  constructor(public flowRate: Quantity) {}
 
   setChemicals(chemicals: ChemicalConfig[]) {
     this.solution.insertMany(chemicals);
   }
 
-  getByVolume(totalFlowRate: QtyUnit, totalVolume: QtyUnit) {
+  getByVolume(totalFlowRate: Quantity, totalVolume: Quantity) {
     const volumeFraction = this.flowRate.value
       .div(totalFlowRate.value)
       .times(totalVolume.value)
