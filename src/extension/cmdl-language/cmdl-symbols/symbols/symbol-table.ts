@@ -9,9 +9,11 @@ import {
   ReferenceSymbol,
   SymbolType,
 } from "./cmdl-symbol-base";
+import { CMDLNodeTree } from "../symbol-types";
+import { RecordNode } from "../../cmdl-tree/components";
 
 export interface AstVisitor {
-  visit(arg: any): void;
+  visit(arg: RecordNode): void;
 }
 
 /**
@@ -72,6 +74,11 @@ export class SymbolTable {
     return symbol;
   }
 
+  /**
+   * Helper method to recursively access a global scope symbole
+   * @param id string
+   * @returns SymbolTable | undefined
+   */
   getGlobalScopeSym(id: string): SymbolTable | undefined {
     if (this.enclosingScope) {
       return this.enclosingScope.getGlobalScopeSym(id);
@@ -82,7 +89,12 @@ export class SymbolTable {
     }
   }
 
-  copySymbolTree(record: Record<string, any>, base?: string) {
+  /**
+   * Copies symbol tree for assiting in building nodes for graph objects (polymers, reactor graphs)
+   * @param record CMDLNodeTree
+   * @param base string
+   */
+  copySymbolTree(record: CMDLNodeTree, base?: string) {
     if (!this.enclosingScope && base) {
       record[base] = {};
       const nestedScope = this.nestedScopes.find((el) => el.scope === base);
@@ -154,6 +166,10 @@ export class SymbolTable {
     }
   }
 
+  /**
+   * Retrieves all DeclarationSymbols or VariableDeclaration from current symbol table
+   * @returns BaseSymbol[]
+   */
   getBaseSymbols() {
     return [...this._symbols.values()].filter(
       (el) =>
@@ -162,6 +178,12 @@ export class SymbolTable {
     );
   }
 
+  /**
+   * Retrieves array of symbol members of nested symbol table
+   * @todo - improve description
+   * @param path string[]
+   * @returns BaseSymbol[]
+   */
   getSymbolMembers(path: string[]): BaseSymbol[] | undefined {
     const currentScope = path[0];
     const newPath = path.slice(1);
@@ -217,6 +239,12 @@ export class SymbolTable {
     return scopeKeys;
   }
 
+  /**
+   * Retrieves all variable symbols
+   * @todo - improve method description
+   * @param value string
+   * @returns PropertySymbol<any>
+   */
   findVarSymbol(value: string) {
     let queue: SymbolTable[] = [this];
     let curr: SymbolTable | undefined;

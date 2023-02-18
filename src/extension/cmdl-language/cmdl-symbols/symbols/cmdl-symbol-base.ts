@@ -1,6 +1,9 @@
 import { ModelType } from "../../cmdl-types/groups/group-types";
 import { CmdlToken } from "../../composite-tree-visitor";
 
+/**
+ * Interface for CMDL symbol configuraton
+ */
 export interface SymbolConfig {
   name: string;
   type: SymbolType;
@@ -8,6 +11,9 @@ export interface SymbolConfig {
   def: string;
 }
 
+/**
+ * Enum specfiying the different symbol types within CMDL
+ */
 export enum SymbolType {
   VARIABLE_DEC = "variable_declaration",
   DECLARATION = "declaration",
@@ -23,7 +29,7 @@ export enum SymbolType {
 }
 
 /**
- * Class for symbols within the experiment
+ * Base class for symbols within the experiment
  */
 export abstract class BaseSymbol {
   name: string;
@@ -38,11 +44,19 @@ export abstract class BaseSymbol {
     this.def = config.def;
   }
 
+  /**
+   * Method for printing symbol to console
+   */
   abstract print(): string;
 }
 
+/**
+ * Declaration symbols are assigned to declarations of new entities
+ * Entities include chemicals, reactors, reactions, solutions, etc.
+ */
 export class DeclarationSymbol extends BaseSymbol {
   aliasedName: string | null = null;
+
   constructor(
     config: SymbolConfig,
     public modelType: ModelType,
@@ -59,6 +73,10 @@ export class DeclarationSymbol extends BaseSymbol {
   }
 }
 
+/**
+ * Reference symbols are assigned to references to a declaration symbol within CMDL
+ * References are prefixed with an "@"
+ */
 export class ReferenceSymbol extends BaseSymbol {
   path: string[];
   base: string;
@@ -73,12 +91,20 @@ export class ReferenceSymbol extends BaseSymbol {
   }
 }
 
+/**
+ * Angle symbols are for defining an edge or edges within polymer graph representations
+ * Angle symbols may define one or more edges within a reactor graph
+ */
 export class AngleSymbol extends BaseSymbol {
   connections: ConnectionSymbol[] = [];
   constructor(config: SymbolConfig) {
     super(config);
   }
 
+  /**
+   * Adds a connection symbol to the connections property
+   * @param arg ConnectionSymbol
+   */
   addConnection(arg: ConnectionSymbol) {
     this.connections.push(arg);
   }
@@ -87,6 +113,9 @@ export class AngleSymbol extends BaseSymbol {
   }
 }
 
+/**
+ * Connection symbols define a single edge connection within a polymer graph representation
+ */
 export class ConnectionSymbol extends BaseSymbol {
   sources: ReferenceSymbol[];
   targets: ReferenceSymbol[];
@@ -108,6 +137,9 @@ export class ConnectionSymbol extends BaseSymbol {
   }
 }
 
+/**
+ * Symbol for group that is not a declaration, e.g. no variable name
+ */
 export class GroupSymbol extends BaseSymbol {
   constructor(config: SymbolConfig) {
     super(config);
@@ -117,6 +149,9 @@ export class GroupSymbol extends BaseSymbol {
   }
 }
 
+/**
+ * Symbol for property items within a group
+ */
 export class PropertySymbol<T> extends BaseSymbol {
   value: T;
   constructor(config: SymbolConfig, value: T) {
