@@ -1,9 +1,12 @@
 import { Unit } from "../units";
-import { CMDLUnit, Quantity } from "../symbol-types";
+import { CMDLUnit, Quantity, convertQty } from "../symbol-types";
 import Big from "big.js";
 import { ReactorNode, Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
 
+/**
+ * Class representing an individual component in a continuous-flow reactor
+ */
 export class ReactorComponent implements ReactorNode {
   input: ReactorChemicals | null = null;
   sources: ReactorComponent[] = [];
@@ -17,26 +20,51 @@ export class ReactorComponent implements ReactorNode {
 
   constructor(public name: string) {}
 
+  /**
+   * Sets the parent reactor group of the reactor component
+   * @param arg ReactorNode
+   */
   setParent(arg: ReactorNode): void {
     this.parent = arg;
   }
 
+  /**
+   * Sets reactor chemicals as an input to the reactor component
+   * @param arg ReactorChemcials
+   */
   setInput(arg: ReactorChemicals) {
     this.input = arg;
   }
 
+  /**
+   * Sets the volume of the reactor component
+   * @param volume CMDLUnit
+   */
   setVolume(volume: CMDLUnit) {
     this.volume = this.normalizeVolume(volume);
   }
 
+  /**
+   * Adds a input source to this reactor component. May have more than one.
+   * @param source ReactorComponent
+   */
   addSource(source: ReactorComponent) {
     this.sources.push(source);
   }
 
+  /**
+   * Sets the reactor component which is next in the overall reactor.
+   * A reactor component may have one or no targets
+   * @param target ReactorComponent
+   */
   setNext(target: ReactorComponent) {
     this.next = target;
   }
 
+  /**
+   * Recursively gathers inputs to current node from parent nodes
+   * @returns ReactorChemicals[]
+   */
   getInputs(): ReactorChemicals[] {
     if (!this.sources.length && !this.input) {
       throw new Error(
@@ -72,6 +100,11 @@ export class ReactorComponent implements ReactorNode {
     }
   }
 
+  /**
+   * Normalizes component volume to ml for calculation purposes
+   * @param vol CMDLUnit
+   * @returns Quantity
+   */
   private normalizeVolume(vol: CMDLUnit): Quantity {
     if (!vol.unit) {
       throw new Error(`Missing unit for volume in reactor component!`);
@@ -94,17 +127,10 @@ export class ReactorComponent implements ReactorNode {
     }
   }
 
-  private exportQty(qty: Quantity | undefined | null): CMDLUnit | undefined {
-    if (!qty) {
-      return undefined;
-    }
-    return {
-      ...qty,
-      value: String(qty.value.toNumber()),
-      uncertainty: qty.uncertainty ? String(qty.value.toNumber()) : null,
-    };
-  }
-
+  /**
+   * Serializes reactor componet to object.
+   * @returns SerializedReactorComponent
+   */
   serialize() {
     return {
       name: this.name,
@@ -115,7 +141,7 @@ export class ReactorComponent implements ReactorNode {
       outer_diameter: this.outer_diameter,
       description: this.description,
       length: this.length,
-      volume: this.exportQty(this.volume),
+      volume: this.volume ? convertQty(this.volume) : undefined,
       parent: this.parent ? this.parent.name : null,
     };
   }

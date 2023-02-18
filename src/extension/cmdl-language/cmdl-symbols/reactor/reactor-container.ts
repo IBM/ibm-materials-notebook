@@ -2,8 +2,8 @@ import { Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
 import { ReactorComponent } from "./reactor-component";
 import { cmdlLogger } from "../../logger";
-import Big from "big.js";
-import { CMDLRef, CMDLUnit } from "../symbol-types";
+import { CMDLRef, CMDLUnit, CMDLNodeTree } from "../symbol-types";
+import { ChemicalOutput } from "../chemicals/chemical-factory";
 
 export interface ReactorEdge {
   id: string;
@@ -47,6 +47,17 @@ export interface SerializedReactor {
   reactors: SerializedReactorGroup[];
 }
 
+export interface ReactorGroupOutput {
+  name: string;
+  flowRate: CMDLUnit;
+  residenceTime: CMDLUnit;
+  volume: CMDLUnit;
+  reactants: ChemicalOutput[];
+}
+
+/**
+ * Top-level class for representing a continuous-flow reactor graph
+ */
 export class ReactorContainer {
   outputNode: ReactorComponent | null = null;
   reactorMap = new Map<string, Reactor>();
@@ -54,6 +65,10 @@ export class ReactorContainer {
   edgeMap = new Map<string, ReactorEdge>();
   reactorLinks = new Map<string, string>();
 
+  /**
+   * Parses and creates a new reactor from a CMDL representation
+   * @param component CMDLReactor
+   */
   public addReactor(component: CMDLReactor) {
     cmdlLogger.debug(`reactor:`, { meta: component });
     const reactor = new Reactor(component.name);
@@ -71,6 +86,11 @@ export class ReactorContainer {
     this.reactorMap.set(component.name, reactor);
   }
 
+  /**
+   * Creates a new ReactorComponent as a node in the reactor graph
+   * @param component CMDLReactorNode
+   * @returns ReactorComponent
+   */
   public addNode(component: CMDLReactorNode) {
     const node = new ReactorComponent(component.name);
     let target = component?.target;
@@ -99,6 +119,9 @@ export class ReactorContainer {
     return node;
   }
 
+  /**
+   * Creates connections between nodes in the reactor graph
+   */
   public linkNodeGraph() {
     for (const edge of this.edgeMap.values()) {
       let sourceNode = this.nodeMap.get(edge.id);
@@ -129,6 +152,11 @@ export class ReactorContainer {
     }
   }
 
+  /**
+   * Sets chemicals from a stock-solution as an input to a reactor component
+   * @param nodeId string
+   * @param input ReactorChemicals
+   */
   public setNodeInput(nodeId: string, input: ReactorChemicals) {
     const node = this.nodeMap.get(nodeId);
 
@@ -139,8 +167,12 @@ export class ReactorContainer {
     node.setInput(input);
   }
 
-  public getOutputs() {
-    const outputs: any[] = [];
+  /**
+   * Compiles output of each reactor group within a reactor graph
+   * @returns
+   */
+  public getOutputs(): ReactorGroupOutput[] {
+    const outputs: ReactorGroupOutput[] = [];
 
     for (const reactor of this.reactorMap.values()) {
       let reactorOutput = reactor.getOutput();
@@ -149,8 +181,12 @@ export class ReactorContainer {
     return outputs;
   }
 
-  public getReactorNodeTree() {
-    const nodeTree: Record<string, any> = {};
+  /**
+   * Method to traverse reactor graph and create an outline of the node tree
+   * @returns CMDLNodeTree
+   */
+  public getReactorNodeTree(): CMDLNodeTree {
+    const nodeTree: CMDLNodeTree = {};
 
     for (const node of this.nodeMap.values()) {
       if (!node.parent) {
@@ -168,6 +204,9 @@ export class ReactorContainer {
     return nodeTree;
   }
 
+  /**
+   * Processes all reactor groups and computes stoichiometry for reactions
+   */
   public processReactor() {
     if (!this.outputNode) {
       throw new Error(`Output node is not set for reactor container`);
@@ -181,6 +220,10 @@ export class ReactorContainer {
     this.outputNode.getInputs();
   }
 
+  /**
+   * Serializes reactor to object
+   * @returns SerializedReactor
+   */
   public serialize(): SerializedReactor {
     const edges = [...this.edgeMap.values()];
     const nodes = [...this.nodeMap.values()].map((el) => el.serialize());
@@ -195,6 +238,10 @@ export class ReactorContainer {
     };
   }
 
+  /**
+   * De-serializes reactor into correct continuous-flow reactor graph
+   * @param arg SerializedReactor
+   */
   public deserialize(arg: SerializedReactor) {
     arg.edges.forEach((el: ReactorEdge) => {
       this.edgeMap.set(el.id, el);
