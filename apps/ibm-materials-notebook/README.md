@@ -4,7 +4,7 @@ Custom notebook extension that utilizes a new domain specific language, Chemical
 
 Documentation and features for the extension and CMDL can be found here: https://ibm.github.io/ibm-materials-notebook/
 
-![Notebook Screenshot](/docs/.vuepress/public/images/notebook_screenshot.png)
+![Notebook Screenshot](apps/docs/docs/.vuepress/public/images/notebook_screenshot.png)
 
 The extension can be found on the VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=IBMMaterials.ibm-materials-notebook
 
