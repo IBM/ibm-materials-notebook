@@ -31,6 +31,7 @@ import { PolymerContainer } from "../polymers";
 import { CmdlToken } from "../../composite-tree-visitor";
 import { ModelType } from "../../cmdl-types/groups/group-types";
 import { ReactorContainer } from "../reactor";
+import { CMDLNodeTree } from "../symbol-types";
 
 /**
  * Visits record tree and constructs symbol table for entire document
@@ -291,6 +292,11 @@ export class SymbolTableBuilder implements AstVisitor {
     }
   }
 
+  /**
+   * Method for handling importing a reactor graph to a CMDL notebook
+   * @param node ImportOp
+   * @param model ModelType
+   */
   importReactorGraphSymbol(node: ImportOp, model: ModelType) {
     const importData = node.export();
     const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
@@ -329,6 +335,11 @@ export class SymbolTableBuilder implements AstVisitor {
     this.exitCurrentScope();
   }
 
+  /**
+   * Method for handeling importing a polymer graph representation into a CMDL notebook
+   * @param node ImportOp
+   * @param model ModelType
+   */
   importPolymerGraphSymbol(node: ImportOp, model: ModelType) {
     const importData = node.export();
     const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
@@ -363,6 +374,11 @@ export class SymbolTableBuilder implements AstVisitor {
     this.exitCurrentScope();
   }
 
+  /**
+   * Method for handling general imports to a CMDL notebook
+   * @param node ImportOp
+   * @param model ModelType
+   */
   importGeneralSymbol(node: ImportOp, model: ModelType) {
     const importData = node.export();
     const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
@@ -398,7 +414,12 @@ export class SymbolTableBuilder implements AstVisitor {
     this.exitCurrentScope();
   }
 
-  createGraphSymbols(keyObj: any, nameToken: CmdlToken) {
+  /**
+   * Helper method to create symbols for individual nodes within a reactor or polymer graph
+   * @param keyObj CMDLNodeTree
+   * @param nameToken CMDLToken
+   */
+  createGraphSymbols(keyObj: CMDLNodeTree, nameToken: CmdlToken) {
     for (const key of Object.keys(keyObj)) {
       const propSymbol = new ReferenceSymbol(
         {
@@ -462,7 +483,7 @@ export class SymbolTableBuilder implements AstVisitor {
       const parentTable = this.tableStack.peek();
       const refSymName = refSymbol.name.slice(1);
       const ref = parentTable.getGlobalScopeSym(refSymName);
-      const keyObj: Record<string, any> = {};
+      const keyObj: CMDLNodeTree = {};
 
       ref?.copySymbolTree(keyObj, refSymName);
       this.createGraphSymbols(keyObj[refSymName], refProp.nameToken);
@@ -487,7 +508,6 @@ export class SymbolTableBuilder implements AstVisitor {
       valueSymbolList
     );
     this.addSymbol(propSymbol);
-    //add proxy symbols
   }
 
   /**

@@ -1,21 +1,28 @@
 import Big from "big.js";
-import { QtyUnit } from "../units";
+import { Quantity, convertQty } from "../symbol-types";
 import { ReactorComponent } from "./reactor-component";
 import { ChemicalConfig, ChemicalOutput } from "../chemicals/chemical-factory";
 import { ReactorChemicals } from "./reactor-chemicals";
+import { ReactorGroupOutput } from "./reactor-container";
 
+/**
+ * Interface for node in a reactor graph
+ */
 export interface ReactorNode {
   name: string;
   parent: ReactorNode | null;
-  volume: QtyUnit | null;
+  volume: Quantity | null;
   setParent(arg: ReactorNode): void;
   getInputs(): any;
 }
 
+/**
+ * Class representing a reactor group within a CMDL continuous-flow reactor representation
+ */
 export class Reactor implements ReactorNode {
-  volume: QtyUnit | null = null;
-  flowRate: QtyUnit | null = null;
-  residenceTime: QtyUnit | null = null;
+  volume: Quantity | null = null;
+  flowRate: Quantity | null = null;
+  residenceTime: Quantity | null = null;
   reactorOutput: ChemicalOutput[] = [];
   outputNode: ReactorComponent | null = null;
   parent: ReactorNode | null = null;
@@ -23,6 +30,10 @@ export class Reactor implements ReactorNode {
 
   constructor(public name: string) {}
 
+  /**
+   * Sets output node of the reactor group.
+   * A reactor group should have only one output node
+   */
   setOutputNode() {
     for (const child of this.children) {
       if (
@@ -34,15 +45,27 @@ export class Reactor implements ReactorNode {
     }
   }
 
+  /**
+   * Adds a child component to the reactor group
+   * @param child ReactorNode
+   */
   add(child: ReactorNode) {
     child.setParent(this);
     this.children.push(child);
   }
 
+  /**
+   * Sets the parent of the reactor group
+   * @param arg ReactorNode
+   */
   setParent(arg: ReactorNode): void {
     this.parent = arg;
   }
 
+  /**
+   * Computes the total volume of the reactor group
+   * @returns undefined
+   */
   computeVolume() {
     let volume = Big(0);
 
@@ -63,6 +86,12 @@ export class Reactor implements ReactorNode {
     };
   }
 
+  /**
+   * Retrieves all chemical inputs to reactor group and computes new stochiometry
+   * based on total flow rate and total reactor volume. Chemicals are merged into new
+   * ReactorChemicals instance and passed to next reactor component
+   * @returns ReactorChemicals
+   */
   getInputs(): ReactorChemicals {
     if (!this.outputNode) {
       throw new Error(`reactor ${this.name} is has no output node`);
@@ -95,6 +124,10 @@ export class Reactor implements ReactorNode {
     return output;
   }
 
+  /**
+   * Helper method for computing total flow rate for reactor group from inputs
+   * @param arr ReactorChemicals[]
+   */
   private computeTotalFlowRate(arr: ReactorChemicals[]) {
     if (!arr.length) {
       throw new Error(
@@ -113,6 +146,9 @@ export class Reactor implements ReactorNode {
     };
   }
 
+  /**
+   * Helper method to estimate residence time for the reactor group
+   */
   private computeResidenceTime() {
     if (!this.volume || !this.flowRate) {
       throw new Error(
@@ -133,7 +169,12 @@ export class Reactor implements ReactorNode {
     this.residenceTime = { unit: "s", value: resTime, uncertainty: null };
   }
 
-  getOutput() {
+  /**
+   * Retrieves summary of reactor group parameters and reaction stochiometry
+   * for addition to the ModelAR
+   * @returns
+   */
+  getOutput(): ReactorGroupOutput {
     if (
       !this.volume ||
       !this.flowRate ||
@@ -145,16 +186,17 @@ export class Reactor implements ReactorNode {
 
     return {
       name: this.name,
-      flowRate: { ...this.flowRate, value: this.flowRate.value.toNumber() },
-      residenceTime: {
-        ...this.residenceTime,
-        value: this.residenceTime.value.round(4).toNumber(),
-      },
-      volume: { ...this.volume, value: this.volume.value.toNumber() },
+      flowRate: convertQty(this.flowRate),
+      residenceTime: convertQty(this.residenceTime),
+      volume: convertQty(this.volume),
       reactants: [...this.reactorOutput],
     };
   }
 
+  /**
+   * Serializes reactor into an object
+   * @returns SerializedReactorGroup
+   */
   serialize() {
     return {
       name: this.name,

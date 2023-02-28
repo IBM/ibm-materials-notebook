@@ -1,7 +1,7 @@
 import { PolymerTree } from "./polymer-tree";
 import { PolymerEdge } from "./polymer-edge";
 import { PolymerNode } from "./polymer-node";
-import { PolymerComponent } from "./polymer-tree";
+import { PolymerComponent } from "./polymer-types";
 import { PolymerGraph } from "./polymer-graph";
 import { Container } from "./polymer-tree-container";
 import { cmdlLogger as logger } from "../../logger";

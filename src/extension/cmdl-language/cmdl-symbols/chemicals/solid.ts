@@ -1,6 +1,6 @@
 import Big from "big.js";
 import { typeManager } from "../../cmdl-types";
-import { QtyUnit } from "../units";
+import { Quantity } from "../symbol-types";
 import { BaseChemical, ChemPropKey } from "./base-chemical";
 import { ChemicalConfig, ChemStates, NamedQuantity } from "./chemical-factory";
 
@@ -64,7 +64,7 @@ export default class Solid extends BaseChemical {
     this.computeValues({ name: ChemPropKey.MOLES, ...newMoles });
   }
 
-  getMolesByVolume(volume: QtyUnit): ChemicalConfig {
+  getMolesByVolume(volume: Quantity): ChemicalConfig {
     if (!this.mw) {
       throw new Error(`\n-Mw is invalid for ${this.name}`);
     }

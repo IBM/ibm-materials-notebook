@@ -4,7 +4,7 @@ import { LEVELS } from "../../logger";
 const CMDL_LOGGER = "CMDL";
 
 loggers.add(CMDL_LOGGER, {
-  level: "silly",
+  level: "warn",
   defaultMeta: {
     service: CMDL_LOGGER,
   },

@@ -1,8 +1,7 @@
 import { BaseChemical, ChemPropKey } from "./base-chemical";
-import { UnitOperator, Unit, QtyUnit } from "../units";
+import { UnitOperator, Unit } from "../units";
 import ChemicalFactory, { ChemicalConfig } from "./chemical-factory";
-import { Quantity } from "../units/unit-types";
-import { cmdlLogger } from "../../logger";
+import { Quantity } from "../symbol-types";
 import Big from "big.js";
 
 export default class ChemicalSet {
@@ -10,9 +9,9 @@ export default class ChemicalSet {
   private chemicalMap = new Map<string, BaseChemical>();
   private limiting: BaseChemical | null = null;
   private hasSolvent: boolean = false;
-  private totalSolventVolume: QtyUnit | null = null;
-  private totalSolventMass: QtyUnit | null = null;
-  private totalReactionVolume: QtyUnit | null = null;
+  private totalSolventVolume: Quantity | null = null;
+  private totalSolventMass: Quantity | null = null;
+  private totalReactionVolume: Quantity | null = null;
 
   get chemicals() {
     return [...this.chemicalMap.values()];

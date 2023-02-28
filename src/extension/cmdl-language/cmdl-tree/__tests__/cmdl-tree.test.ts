@@ -7,12 +7,12 @@ import {
   ParserError,
   RefError,
 } from "../../errors";
-import { Library } from "../../../library";
+// import { Library } from "../../../library";
 import { CmdlCompiler } from "../../cmdl-compiler";
 import { CmdlTree } from "../cmdl-tree";
 
 const compiler = new CmdlCompiler();
-const library = new Library();
+// const library = new Library();
 
 describe("Tests for tree construction and compiler parser errors", () => {
   it("creates parser errors on invalid text", () => {
@@ -63,7 +63,7 @@ describe("Tests for compiler validation errors", () => {
       }`;
 
     let { parserErrors, recordTree } = compiler.parse(validText);
-    const errors = await recordTree.validate(library);
+    const errors = await recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(0);
@@ -88,7 +88,7 @@ describe("Tests for compiler validation errors", () => {
       }`;
 
     const { recordTree, parserErrors } = compiler.parse(text);
-    const errors = await recordTree.validate(library);
+    const errors = await recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);
@@ -111,7 +111,7 @@ describe("Tests for compiler validation errors", () => {
     }`;
 
     const { recordTree, parserErrors } = compiler.parse(duplicatePropText);
-    const errors = await recordTree.validate(library);
+    const errors = await recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);
@@ -131,7 +131,7 @@ describe("Tests for compiler validation errors", () => {
       }`;
 
     let { parserErrors, recordTree } = compiler.parse(fileErrorTxt);
-    const errors = await recordTree.validate(library);
+    const errors = await recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);
@@ -152,10 +152,10 @@ describe("Tests for compiler validation errors", () => {
       }`;
 
     let { parserErrors, recordTree } = compiler.parse(invalidNestingText);
-    const errors = await recordTree.validate(library);
+    const errors = await recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
-    expect(errors.length).toBe(1);
+    expect(errors.length).toBe(3);
     expect(errors[0]).toBeInstanceOf(InvalidGroupError);
     expect(errors[0].code).toBe(ErrorCode.InvalidGroup);
   });
@@ -176,7 +176,7 @@ describe("Tests for compiler validation errors", () => {
       }
     `;
     let { parserErrors, recordTree } = compiler.parse(badListProp);
-    const errors = await recordTree.validate(library);
+    const errors = await recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);
@@ -194,7 +194,7 @@ describe("Tests for compiler validation errors", () => {
     `;
 
     let { parserErrors, recordTree } = compiler.parse(missingNameRef);
-    const errors = await recordTree.validate(library);
+    const errors = await recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);
@@ -214,7 +214,7 @@ describe("Tests for compiler validation errors", () => {
     }`;
 
     let { parserErrors, recordTree } = compiler.parse(refErrorTxt);
-    const errors = await recordTree.validate(library);
+    const errors = await recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);

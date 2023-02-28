@@ -34,7 +34,6 @@ describe("Tests for cmdl-ast for completion providers", () => {
     const { ast, parserErrors } = compiler.parseAST(text);
     const node = ast.findNearestGroup();
 
-    console.log(node?.print());
     expect(parserErrors.length).toBeGreaterThan(0);
     expect(node).toBeTruthy();
     expect(node?.parent?.image).toBe("test1");
@@ -72,7 +71,6 @@ describe("Tests for cmdl-ast for completion providers", () => {
     const { ast, parserErrors } = compiler.parseAST(text);
     const node = ast.findNearestGroup();
 
-    console.log(JSON.stringify(ast.print(), null, 2));
     expect(parserErrors.length).toBeGreaterThan(0);
     expect(node).toBeTruthy();
     expect(node?.parent?.image).toBe("reaction");

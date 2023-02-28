@@ -16,12 +16,7 @@
     "Notebooks"
   ],
   "activationEvents": [
-    "onNotebook:ibm-materials-notebook",
-    "onCommand:ibm-materials-notebook.new",
-    "onCommand:ibm-materials-notebook.exportWorkspace",
-    "onCommand:ibm-materials-notebook.parseGeneratedPolymers",
-    "onCommand:ibm-materials-notebook.toCSV",
-    "onCommand:ibm-materials-notebook.loadCSV"
+    "onNotebook:ibm-materials-notebook"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -114,6 +109,7 @@
     "package": "webpack --mode production --devtool hidden-source-map",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
+    "precommit": "npm run lint",
     "test": "jest",
     "lint": "eslint src --ext ts",
     "generate-types": "npx ts-node ./src/extension/cmdl-language/language-type-generator.ts",

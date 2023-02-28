@@ -2,7 +2,7 @@ import Gas from "./gas";
 import Solid from "./solid";
 import Liquid from "./liquid";
 import { ChemPropKey } from "./base-chemical";
-import { Quantity } from "../units/unit-types";
+import { NumberQuantity, Quantity } from "../symbol-types";
 import Big from "big.js";
 
 export enum ChemStates {
@@ -13,12 +13,6 @@ export enum ChemStates {
 
 export interface NamedQuantity extends Quantity {
   name: ChemPropKey;
-}
-
-export interface NumberQuantity {
-  unit: string;
-  value: number;
-  uncertainty: null;
 }
 
 export interface ChemicalConfig {
@@ -51,6 +45,9 @@ export interface ChemicalOutput {
   limiting: boolean;
 }
 
+/**
+ * Class for creating and initializing chemical instances from ChemicalConfigs
+ */
 export default class ChemicalFactory {
   public create(chemConfig: ChemicalConfig) {
     if (chemConfig.state === ChemStates.SOLID) {
@@ -64,6 +61,11 @@ export default class ChemicalFactory {
     }
   }
 
+  /**
+   * Creates a new Solid chemical
+   * @param config ChemicalConfig
+   * @returns Solid
+   */
   private buildSolid(config: ChemicalConfig) {
     const solid = new Solid(
       config.name,
@@ -76,6 +78,11 @@ export default class ChemicalFactory {
     return solid;
   }
 
+  /**
+   * Creates a new Gas chemical
+   * @param config ChemicalConfig
+   * @returns Gas
+   */
   private buildGas(config: ChemicalConfig) {
     if (!config.volume || !config.temperature) {
       throw new Error(
@@ -95,6 +102,11 @@ export default class ChemicalFactory {
     return gas;
   }
 
+  /**
+   * Creates a new liquid chemical
+   * @param config ChemicalConfig
+   * @returns Liquid
+   */
   private buildLiquid(config: ChemicalConfig) {
     if (!config.density) {
       throw new Error(`${config.name} does not have a valid density`);

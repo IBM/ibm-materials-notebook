@@ -355,12 +355,15 @@ describe("Test computations for chemicals", () => {
       volume: null,
       moles: { value: 0.8186, unit: "mmol", uncertainty: null },
       pressure: null,
+      smiles: null,
       ratio: 0.1,
       roles: ["initiator"],
+      mw: Big(122.16),
+      density: null,
       molarity: { unit: "mol/l", value: 0.091, uncertainty: null },
       molality: { unit: "mol/kg", value: 0.1023, uncertainty: null },
       moles_vol: { unit: "mol/l", value: 0.091, uncertainty: null },
-      is_limiting: false,
+      limiting: true,
     });
   });
 });

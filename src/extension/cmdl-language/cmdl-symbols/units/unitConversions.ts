@@ -12,9 +12,9 @@ const prefixes = {
   p: 1e-12,
 };
 
-type UnitPrefixes = keyof typeof prefixes | "base"
+type UnitPrefixes = keyof typeof prefixes | "base";
 
-const units = {
+const units: Record<string, [number, string, string]> = {
   g: [1.0, "mass", "g"],
   l: [1.0, "volume", "l"],
   m: [1.0, "length", "m"],
@@ -31,6 +31,6 @@ const units = {
   torr: [133.322, "pressure", "Pa"],
 };
 
-type UnitBases = keyof typeof units
+type UnitBases = keyof typeof units;
 
 export { prefixes, units, UnitBases, UnitPrefixes };

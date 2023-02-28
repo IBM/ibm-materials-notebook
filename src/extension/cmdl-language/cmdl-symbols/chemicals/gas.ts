@@ -1,7 +1,7 @@
 import { Unit } from "../units";
 import Big from "big.js";
 import { BaseChemical, ChemPropKey } from "./base-chemical";
-import { Quantity } from "../units/unit-types";
+import { Quantity } from "../symbol-types";
 import { UNITS } from "../../cmdl-types/units";
 import { ChemicalConfig, ChemStates } from "./chemical-factory";
 

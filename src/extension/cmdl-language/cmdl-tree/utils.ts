@@ -1,7 +1,6 @@
 import Big from "big.js";
-import { NumberQuantity } from "../cmdl-symbols/chemicals/chemical-factory";
+import { NumberQuantity, Quantity } from "../cmdl-symbols/symbol-types";
 import { Unit } from "../cmdl-symbols/units";
-import { Quantity } from "../cmdl-symbols/units/unit-types";
 
 const MIN_EXP_PLACES = -3;
 

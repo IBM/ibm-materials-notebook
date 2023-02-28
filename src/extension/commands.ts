@@ -5,7 +5,6 @@ import * as rl from "readline";
 import * as fs from "fs";
 import * as path from "path";
 import { CMDLSerializer } from "./cmdl-language/cmdl-serializer";
-import { Experiment } from "./experiment";
 
 export interface VariableDict {
   [key: string]: {

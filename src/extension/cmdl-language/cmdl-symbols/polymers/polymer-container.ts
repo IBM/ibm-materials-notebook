@@ -1,8 +1,8 @@
-import { cmdlLogger } from "../../logger";
 import { ModelActivationRecord } from "../models";
 import { PolymerGraph } from "./polymer-graph";
 import { PolymerTree } from "./polymer-tree";
 import { PolymerWeight } from "./polymer-weights";
+import { CMDLPolymerTree } from "./polymer-types";
 
 export class PolymerContainer {
   name: string;
@@ -13,7 +13,7 @@ export class PolymerContainer {
     this.name = name;
   }
 
-  buildTree(treeConfig: any, record: ModelActivationRecord) {
+  buildTree(treeConfig: CMDLPolymerTree, record: ModelActivationRecord) {
     this.tree.initialize(treeConfig, record);
     this.tree.root?.setName();
     this.tree.root?.setPath();
@@ -47,6 +47,10 @@ export class PolymerContainer {
     return { graph };
   }
 
+  /**
+   * @deprecated
+   * @param graphStr string
+   */
   deserialize(graphStr: string) {
     try {
       const graphArray = graphStr.split(";").filter((el) => el.length);

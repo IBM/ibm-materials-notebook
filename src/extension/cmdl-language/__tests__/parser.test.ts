@@ -11,7 +11,6 @@ describe("Test parser on simple fragment", () => {
     const lexingResult = lexerInstance.tokenize(importStatement);
     parserInstance.input = lexingResult.tokens;
     const cst = parserInstance.parseRecord();
-    console.log(JSON.stringify(cst, null, 2));
     expect(parserInstance.errors.length).toBe(0);
   });
 

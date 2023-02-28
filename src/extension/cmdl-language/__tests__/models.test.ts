@@ -116,8 +116,6 @@ describe("Test model evaluation with compiler", () => {
     const testAR = evaluateModel(recordTree);
     const testRxn = testAR.getOptionalValue("TestReaction");
 
-    console.log(testAR.print());
-
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
     expect(symbolErrors.length).toBe(0);
@@ -173,8 +171,6 @@ describe("Test model evaluation with compiler", () => {
     } = await evalutateText(solution);
     const testAR = evaluateModel(recordTree);
     const testRxn = testAR.getOptionalValue("TestSolution");
-
-    // console.log(testAR.print());
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -333,15 +329,14 @@ describe("Test model evaluation with compiler", () => {
             input: @FlowTest.CatalystTank;
             flow_rate: 10 ml/min;
         };
+
+        @lLactide {
+            roles: ["product"];
+        };
       }`;
 
-    const {
-      parserErrors,
-      symbolErrors,
-      recordTree,
-      semanticErrors,
-      globalTable,
-    } = await evalutateText(flowReaction);
+    const { parserErrors, symbolErrors, recordTree, semanticErrors } =
+      await evalutateText(flowReaction);
 
     const testAR = evaluateModel(recordTree);
     const testRxn = testAR.getOptionalValue("RunA");
@@ -368,13 +363,8 @@ describe("Test model evaluation with compiler", () => {
         };
     }`;
 
-    const {
-      parserErrors,
-      symbolErrors,
-      recordTree,
-      semanticErrors,
-      globalTable,
-    } = await evalutateText(result);
+    const { parserErrors, symbolErrors, recordTree, semanticErrors } =
+      await evalutateText(result);
 
     const testAR = evaluateModel(recordTree);
     const testSample = testAR.getOptionalValue("NHP-I-123");
@@ -495,13 +485,13 @@ it("evaluates a result model with a material reference", async () => {
 
 
     polymer polyL-Lactide {
-          graph: @pLactideGraph;
+          tree: @pLactideGraph;
           state: "solid";
     }
 
     sample NHP-I-123 {
         nmr A {
-            @polyL-Lactide.pLactideGraph.LactideBlock {
+            @polyL-Lactide.LactideBlock.pL-Lac {
               degree_poly: 86;
             };
         };
@@ -514,20 +504,11 @@ it("evaluates a result model with a material reference", async () => {
         };
     }`;
 
-  const {
-    parserErrors,
-    symbolErrors,
-    recordTree,
-    semanticErrors,
-    globalTable,
-  } = await evalutateText(result);
+  const { parserErrors, symbolErrors, recordTree, semanticErrors } =
+    await evalutateText(result);
 
   const testAR = evaluateModel(recordTree);
   const testSample = testAR.getOptionalValue("NHP-I-123");
-
-  console.log(testAR.print());
-  console.log(globalTable.print());
-
   expect(parserErrors.length).toBe(0);
   expect(semanticErrors.length).toBe(0);
   expect(symbolErrors.length).toBe(0);
@@ -616,13 +597,8 @@ it("evaluates a nested polymer graph model", async () => {
         };
       }`;
 
-  const {
-    parserErrors,
-    symbolErrors,
-    recordTree,
-    semanticErrors,
-    globalTable,
-  } = await evalutateText(polymerGraphGrafted);
+  const { parserErrors, symbolErrors, recordTree, semanticErrors } =
+    await evalutateText(polymerGraphGrafted);
 
   const testAR = evaluateModel(recordTree);
   const testSample = testAR.getOptionalValue("BASE");

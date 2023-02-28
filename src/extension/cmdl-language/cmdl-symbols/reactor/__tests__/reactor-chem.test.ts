@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { Quantity } from "../../units/unit-types";
+import { Quantity } from "../../symbol-types";
 import { ReactorChemicals } from "../reactor-chemicals";
 import { ChemPropKey } from "../../chemicals/base-chemical";
 import { ChemStates } from "../../chemicals/chemical-factory";
@@ -98,7 +98,6 @@ describe("Tests for reactor chemicals", () => {
     flowChem.computeInitialValues();
     const volumeOutput = flowChem.getByVolume(totalFlowRate, reactorVolume);
 
-    console.log(JSON.stringify(volumeOutput, null, 2));
     expect(volumeOutput.length).toBe(3);
     expect(volumeOutput[0].quantity.value.toNumber()).toBeCloseTo(0.1884);
     expect(volumeOutput[0].quantity.unit).toBe("mmol");

@@ -45,5 +45,5 @@ export const logger = createLogger({
     service: "EXTENSION",
   },
   levels: LEVELS,
-  level: "silly",
+  level: "warn",
 });

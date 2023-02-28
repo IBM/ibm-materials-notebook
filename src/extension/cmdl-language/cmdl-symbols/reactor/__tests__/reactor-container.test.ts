@@ -2,16 +2,15 @@ import { ReactorContainer } from "../reactor-container";
 import { ReactorChemicals } from "../reactor-chemicals";
 import { flowRate, monomerSolution } from "./reactor-group.test";
 import { testChemicals } from "./reactor-chem.test";
+import { SerializedReactor } from "../reactor-container";
 
-const serializedReactor = {
-  name: "FlowTest",
+const serializedReactor: SerializedReactor = {
   nodes: [
     {
       name: "MonomerTank",
       type: "component",
       sources: [],
       next: "Mixer",
-      volume: null,
       parent: null,
     },
     {
@@ -19,7 +18,6 @@ const serializedReactor = {
       type: "component",
       sources: [],
       next: "Mixer",
-      volume: null,
       parent: null,
     },
     {
@@ -27,7 +25,6 @@ const serializedReactor = {
       type: "component",
       sources: ["MonomerTank", "CatalystTank"],
       next: "ReactorTube",
-      volume: null,
       parent: "PolyReactor",
     },
     {
@@ -37,7 +34,7 @@ const serializedReactor = {
       next: "Collection",
       volume: {
         unit: "ml",
-        value: 2,
+        value: "2",
         uncertainty: null,
       },
       parent: "PolyReactor",
@@ -47,7 +44,6 @@ const serializedReactor = {
       type: "component",
       sources: ["ReactorTube"],
       next: null,
-      volume: null,
       parent: null,
     },
   ],
