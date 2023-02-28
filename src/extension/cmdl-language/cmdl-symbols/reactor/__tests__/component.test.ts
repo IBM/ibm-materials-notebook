@@ -1,4 +1,3 @@
-import Big from "big.js";
 import { CMDLUnit } from "../../symbol-types";
 import { ReactorChemicals } from "../reactor-chemicals";
 import { ReactorComponent } from "../reactor-component";

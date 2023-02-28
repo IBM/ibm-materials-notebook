@@ -153,7 +153,6 @@ describe("Tests for cst visitor", () => {
 
     const astBase = new CmdlAst();
     const ast = visitor.visit(cst, astBase);
-    console.log(JSON.stringify(ast.print(), null, 2));
     expect(ast).toBeTruthy();
     expect(ast).toBeInstanceOf(CmdlAst);
     expect((ast as CmdlAst).root?.children.length).toBe(1);

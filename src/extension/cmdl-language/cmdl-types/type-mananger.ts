@@ -77,6 +77,11 @@ export class TypeManager {
     arr.forEach((prop) => this.TEMPLATES.set(prop.name, prop));
   }
 
+  /**
+   * constructs a regular expression for all units
+   * @deprecated
+   * @returns RegExp
+   */
   public generateUnitRegex() {
     let unitKeys = [...this.UNITS.keys()];
     let regexString = unitKeys

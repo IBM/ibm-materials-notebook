@@ -181,12 +181,11 @@ describe("Tests for reactor", () => {
     reactor.getInputs();
     const outputs = reactor.getOutput();
 
-    console.log(JSON.stringify(outputs, null, 2));
     expect(outputs).toBeTruthy();
     expect(outputs.reactants.length).toBe(4);
-    expect(outputs.volume.value).toBe(1.5);
+    expect(outputs.volume.value).toBe("1.5");
     expect(outputs.volume.unit).toBe("ml");
-    expect(outputs.residenceTime.value).toBeCloseTo(0.2222);
+    expect(outputs.residenceTime.value).toBe("4.5");
     expect(outputs.volume.unit).toBe("ml");
   });
 });

@@ -14,7 +14,7 @@ const prefixes = {
 
 type UnitPrefixes = keyof typeof prefixes | "base";
 
-const units = {
+const units: Record<string, [number, string, string]> = {
   g: [1.0, "mass", "g"],
   l: [1.0, "volume", "l"],
   m: [1.0, "length", "m"],

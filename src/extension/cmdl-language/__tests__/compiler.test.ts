@@ -318,15 +318,8 @@ describe("Tests for compiling text with template variables", () => {
         density: $solventDensity;
         state: "liquid";
       }`;
-    const {
-      parserErrors,
-      symbolErrors,
-      semanticErrors,
-      globalTable,
-      recordTree,
-    } = await evalutateText(refGroup);
-    console.log(JSON.stringify(recordTree.print(), null, 2));
-    console.log(globalTable.print());
+    const { parserErrors, symbolErrors, semanticErrors, globalTable } =
+      await evalutateText(refGroup);
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);

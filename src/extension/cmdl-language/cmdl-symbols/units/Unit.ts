@@ -3,6 +3,9 @@ import Big from "big.js";
 import { UnitPrefixes } from "./unitConversions";
 import { Quantity } from "../symbol-types";
 
+/**
+ * Top-level class for managing and converting units
+ */
 export default class Unit {
   unit: string;
   _value: Big;

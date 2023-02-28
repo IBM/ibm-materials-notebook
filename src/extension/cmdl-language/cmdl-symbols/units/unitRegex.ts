@@ -23,21 +23,25 @@ interface ParsedUnit {
   prefix: UnitPrefixes;
   base: UnitBases;
   exponent: number;
-  type: any[];
+  type: [number, string, string];
 }
 
-function parseUnit(unit: string) : ParsedUnit {
+function parseUnit(unit: string): ParsedUnit {
   let matches = unit.match(unitMatchRegex);
 
-  if(!matches || !matches?.groups?.base) {
-    throw new Error(`Invalid unit string: ${unit}`)
+  if (!matches || !matches?.groups?.base) {
+    throw new Error(`Invalid unit string: ${unit}`);
   }
 
-  let fixedPrefix = matches?.groups?.prefix === undefined ? "base" : matches.groups.prefix;
-  let fixedExponent = matches?.groups?.exponent !== undefined ? parseInt(matches.groups.exponent, 10) : 1;
+  let fixedPrefix =
+    matches?.groups?.prefix === undefined ? "base" : matches.groups.prefix;
+  let fixedExponent =
+    matches?.groups?.exponent !== undefined
+      ? parseInt(matches.groups.exponent, 10)
+      : 1;
 
-  if(!(matches.groups.base in units)) {
-    throw new Error(`Invalid unit base: ${matches.groups.base}`)
+  if (!(matches.groups.base in units)) {
+    throw new Error(`Invalid unit base: ${matches.groups.base}`);
   }
 
   let type = units[matches.groups.base as UnitBases];

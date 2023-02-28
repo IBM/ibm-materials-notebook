@@ -2,7 +2,6 @@ import { BaseChemical, ChemPropKey } from "./base-chemical";
 import { UnitOperator, Unit } from "../units";
 import ChemicalFactory, { ChemicalConfig } from "./chemical-factory";
 import { Quantity } from "../symbol-types";
-import { cmdlLogger } from "../../logger";
 import Big from "big.js";
 
 export default class ChemicalSet {

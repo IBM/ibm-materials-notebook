@@ -1,4 +1,3 @@
-import { cmdlLogger } from "../../logger";
 import { ModelActivationRecord } from "../models";
 import { PolymerGraph } from "./polymer-graph";
 import { PolymerTree } from "./polymer-tree";

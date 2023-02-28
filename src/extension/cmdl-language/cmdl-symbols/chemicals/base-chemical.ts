@@ -4,7 +4,7 @@ import Big from "big.js";
 import { handleRounding } from "../../cmdl-tree/utils";
 import { UNITS } from "../../cmdl-types/units";
 import { ChemicalConfig, ChemicalOutput } from "./chemical-factory";
-import { cmdlLogger } from "../../logger";
+import { NamedQuantity } from "./chemical-factory";
 
 export enum ChemPropKey {
   MASS = "mass",
@@ -16,6 +16,10 @@ export enum ChemPropKey {
   MOLS_VOL = "moles_vol",
   SOLID_VOL = "solidVol",
 }
+
+/**
+ * Base class for chemicals within CMDL
+ */
 export abstract class BaseChemical {
   name: string;
   mw: Big | null = null;
@@ -45,7 +49,7 @@ export abstract class BaseChemical {
     this.smiles = smiles;
   }
 
-  abstract computeValues(qty: any): void;
+  abstract computeValues(qty: NamedQuantity): void;
   abstract merge(chemical: BaseChemical): void;
   abstract getMolesByVolume(volume: Quantity): ChemicalConfig;
   abstract export(): ChemicalConfig;

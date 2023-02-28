@@ -45,6 +45,9 @@ export interface ChemicalOutput {
   limiting: boolean;
 }
 
+/**
+ * Class for creating and initializing chemical instances from ChemicalConfigs
+ */
 export default class ChemicalFactory {
   public create(chemConfig: ChemicalConfig) {
     if (chemConfig.state === ChemStates.SOLID) {
@@ -58,6 +61,11 @@ export default class ChemicalFactory {
     }
   }
 
+  /**
+   * Creates a new Solid chemical
+   * @param config ChemicalConfig
+   * @returns Solid
+   */
   private buildSolid(config: ChemicalConfig) {
     const solid = new Solid(
       config.name,
@@ -70,6 +78,11 @@ export default class ChemicalFactory {
     return solid;
   }
 
+  /**
+   * Creates a new Gas chemical
+   * @param config ChemicalConfig
+   * @returns Gas
+   */
   private buildGas(config: ChemicalConfig) {
     if (!config.volume || !config.temperature) {
       throw new Error(
@@ -89,6 +102,11 @@ export default class ChemicalFactory {
     return gas;
   }
 
+  /**
+   * Creates a new liquid chemical
+   * @param config ChemicalConfig
+   * @returns Liquid
+   */
   private buildLiquid(config: ChemicalConfig) {
     if (!config.density) {
       throw new Error(`${config.name} does not have a valid density`);
