@@ -1,0 +1,63 @@
+[
+  {
+    "name": "THF",
+    "type": "chemical",
+    "smiles": "C1COCC1",
+    "molecular_weight": {
+      "value": "123.12",
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "density": {
+      "value": "0.718",
+      "unit": "g/ml",
+      "uncertainty": null
+    },
+    "state": "liquid"
+  },
+  {
+    "name": "bis-3-5-bistrifluoromethylphenylurea",
+    "type": "chemical",
+    "molecular_weight": {
+      "value": 484.04,
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "smiles": "O=C(NC1=CC(C(F)(F)F)=CC(C(F)(F)F)=C1)NC2=CC(C(F)(F)F)=CC(C(F)(F)F)=C2",
+    "state": "solid"
+  },
+  {
+    "name": "potassium_methoxide",
+    "type": "chemical",
+    "molecular_weight": {
+      "value": 69.98,
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "smiles": "C[O-].[K+]",
+    "state": "solid"
+  },
+  {
+    "name": "benzyl_5-methyl-2-oxo-1_3-dioxane-5-carboxylate",
+    "type": "chemical",
+    "molecular_weight": {
+      "value": 250.08,
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "smiles": "O=C(C1(C)COC(OC1)=O)OCC2=CC=CC=C2",
+    "state": "solid"
+  },
+  {
+    "name": "benzoic_acid",
+    "type": "chemical",
+    "inchi_key": "WPYMKLBDIGXBTP-UHFFFAOYSA-N",
+    "smiles": "O=C(O)C1=CC=CC=C1",
+    "molecular_weight": {
+      "value": 122.12,
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "state": "solid"
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "name": "egMeO-p_PEO-p_LLac",
+    "type": "polymer_graph",
+    "tree": {
+      "name": "PEG_PLLA_Base",
+      "connections": [
+        {
+          "source": "PEG_PLLA_Base.eg_MeO.R",
+          "target": "PEG_PLLA_Base.PEG_Block.p_PEO.R",
+          "weight": 1,
+          "quantity": "1"
+        },
+        {
+          "source": "PEG_PLLA_Base.PEG_Block.p_PEO.Q",
+          "target": "PEG_PLLA_Base.Lactide_Block.p_Llac.R",
+          "weight": 1,
+          "quantity": "1"
+        }
+      ],
+      "parent": null,
+      "children": [
+        {
+          "name": "PEG_PLLA_Base.eg_MeO",
+          "mw": 31.02,
+          "smiles": "CO[R]",
+          "parent": "PEG_PLLA_Base"
+        },
+        {
+          "name": "Lactide_Block",
+          "connections": [
+            {
+              "source": "PEG_PLLA_Base.Lactide_Block.p_Llac.Q",
+              "target": "PEG_PLLA_Base.Lactide_Block.p_Llac.R",
+              "weight": 1,
+              "quantity": "1"
+            }
+          ],
+          "parent": "PEG_PLLA_Base",
+          "children": [
+            {
+              "name": "PEG_PLLA_Base.Lactide_Block.p_Llac",
+              "mw": 144.04,
+              "smiles": "O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C",
+              "parent": "Lactide_Block"
+            }
+          ]
+        },
+        {
+          "name": "PEG_Block",
+          "connections": [
+            {
+              "source": "PEG_PLLA_Base.PEG_Block.p_PEO.Q",
+              "target": "PEG_PLLA_Base.PEG_Block.p_PEO.R",
+              "weight": 1,
+              "quantity": "1"
+            }
+          ],
+          "parent": "PEG_PLLA_Base",
+          "children": [
+            {
+              "name": "PEG_PLLA_Base.PEG_Block.p_PEO",
+              "mw": 44.05,
+              "smiles": "[Q]OCC[R]",
+              "parent": "PEG_Block"
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

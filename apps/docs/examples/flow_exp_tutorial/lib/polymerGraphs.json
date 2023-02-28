@@ -1,0 +1,46 @@
+[
+  {
+    "name": "egMeO-pTMC-Bn",
+    "type": "polymer_graph",
+    "tree": {
+      "name": "BASE",
+      "connections": [
+        {
+          "source": "BASE.eg_MeO.R",
+          "target": "BASE.Carbonate_Block.p_TMCBn.R",
+          "weight": 0.5,
+          "quantity": "1"
+        }
+      ],
+      "parent": null,
+      "children": [
+        {
+          "name": "BASE.eg_MeO",
+          "mw": 31.02,
+          "smiles": "CO[R:1]",
+          "parent": "BASE"
+        },
+        {
+          "name": "Carbonate_Block",
+          "connections": [
+            {
+              "source": "BASE.Carbonate_Block.p_TMCBn.Q",
+              "target": "BASE.Carbonate_Block.p_TMCBn.R",
+              "weight": 0,
+              "quantity": "1"
+            }
+          ],
+          "parent": "BASE",
+          "children": [
+            {
+              "name": "BASE.Carbonate_Block.p_TMCBn",
+              "mw": 250.08,
+              "smiles": "CC(CO[Q:2])(C(OCC1=CC=CC=C1)=O)COC([R:1])=O",
+              "parent": "Carbonate_Block"
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

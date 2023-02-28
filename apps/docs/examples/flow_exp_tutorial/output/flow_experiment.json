@@ -1,0 +1,474 @@
+{
+  "title": "test flow reaction",
+  "date": "10/9/2022",
+  "metadata": {
+    "notebookId": "f60759ad-3278-4177-aac1-cb9aec4e9ebe",
+    "dateCreated": "2022-12-20T21:36:39.159Z",
+    "template": "flow_experiment"
+  },
+  "solutions": [
+    {
+      "name": "MonomerSolution",
+      "components": [
+        {
+          "name": "lactide",
+          "mw": "144.12",
+          "density": null,
+          "smiles": "C[C@H]1C(=O)O[C@H](C(=O)O1)C",
+          "mass": {
+            "unit": "g",
+            "value": 1.4412,
+            "uncertainty": null
+          },
+          "volume": null,
+          "moles": {
+            "value": 10,
+            "unit": "mmol",
+            "uncertainty": null
+          },
+          "pressure": null,
+          "ratio": 1,
+          "roles": [
+            "monomer"
+          ],
+          "molarity": {
+            "unit": "mol/l",
+            "value": 0.874,
+            "uncertainty": null
+          },
+          "molality": {
+            "unit": "mol/kg",
+            "value": 1.3928,
+            "uncertainty": null
+          },
+          "moles_vol": {
+            "unit": "mol/l",
+            "value": 1,
+            "uncertainty": null
+          },
+          "limiting": false
+        },
+        {
+          "name": "THF",
+          "mw": "123.12",
+          "density": "0.718",
+          "smiles": "C1COCC1",
+          "mass": {
+            "value": 7.18,
+            "unit": "g",
+            "uncertainty": null
+          },
+          "volume": {
+            "value": 10,
+            "unit": "ml",
+            "uncertainty": null
+          },
+          "moles": {
+            "value": 0.0583,
+            "unit": "mol",
+            "uncertainty": null
+          },
+          "pressure": null,
+          "ratio": 5.83,
+          "roles": [
+            "solvent"
+          ],
+          "molarity": {
+            "unit": "mol/l",
+            "value": 5.0971,
+            "uncertainty": null
+          },
+          "molality": {
+            "unit": "mol/kg",
+            "value": 8.1222,
+            "uncertainty": null
+          },
+          "moles_vol": {
+            "unit": "mol/l",
+            "value": 5.8317,
+            "uncertainty": null
+          },
+          "limiting": false
+        }
+      ]
+    },
+    {
+      "name": "CatalystSolution",
+      "components": [
+        {
+          "name": "pMeBnOH",
+          "mw": "122.16",
+          "density": null,
+          "smiles": "Cc1ccc(CO)cc1",
+          "mass": {
+            "value": 49.8,
+            "unit": "mg",
+            "uncertainty": null
+          },
+          "volume": null,
+          "moles": {
+            "value": 0.4077,
+            "unit": "mmol",
+            "uncertainty": null
+          },
+          "pressure": null,
+          "ratio": 4.08,
+          "roles": [
+            "initiator"
+          ],
+          "molarity": {
+            "unit": "mol/l",
+            "value": 0.0405,
+            "uncertainty": null
+          },
+          "molality": {
+            "unit": "mol/kg",
+            "value": 0.0568,
+            "uncertainty": null
+          },
+          "moles_vol": {
+            "unit": "mol/l",
+            "value": 0.0408,
+            "uncertainty": null
+          },
+          "limiting": false
+        },
+        {
+          "name": "kOtBu",
+          "mw": "112.212",
+          "density": null,
+          "smiles": "[K+].[O-]C(C)(C)C",
+          "mass": {
+            "value": 11.2,
+            "unit": "mg",
+            "uncertainty": null
+          },
+          "volume": null,
+          "moles": {
+            "value": 0.0998,
+            "unit": "mmol",
+            "uncertainty": null
+          },
+          "pressure": null,
+          "ratio": 1,
+          "roles": [
+            "catalyst"
+          ],
+          "molarity": {
+            "unit": "mol/l",
+            "value": 0.009921,
+            "uncertainty": null
+          },
+          "molality": {
+            "unit": "mol/kg",
+            "value": 0.0139,
+            "uncertainty": null
+          },
+          "moles_vol": {
+            "unit": "mol/l",
+            "value": 0.009981,
+            "uncertainty": null
+          },
+          "limiting": false
+        },
+        {
+          "name": "THF",
+          "mw": "123.12",
+          "density": "0.718",
+          "smiles": "C1COCC1",
+          "mass": {
+            "value": 7.18,
+            "unit": "g",
+            "uncertainty": null
+          },
+          "volume": {
+            "value": 10,
+            "unit": "ml",
+            "uncertainty": null
+          },
+          "moles": {
+            "value": 0.0583,
+            "unit": "mol",
+            "uncertainty": null
+          },
+          "pressure": null,
+          "ratio": 584.27,
+          "roles": [
+            "solvent"
+          ],
+          "molarity": {
+            "unit": "mol/l",
+            "value": 5.7964,
+            "uncertainty": null
+          },
+          "molality": {
+            "unit": "mol/kg",
+            "value": 8.1222,
+            "uncertainty": null
+          },
+          "moles_vol": {
+            "unit": "mol/l",
+            "value": 5.8317,
+            "uncertainty": null
+          },
+          "limiting": false
+        }
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "name": "RunA",
+      "type": "flow_reaction",
+      "reactions": [
+        {
+          "name": "PolyReactor",
+          "flowRate": {
+            "value": 20,
+            "unit": "ml/min",
+            "uncertainty": null
+          },
+          "residenceTime": {
+            "unit": "s",
+            "value": 6,
+            "uncertainty": null
+          },
+          "volume": {
+            "uncertainty": null,
+            "value": 2,
+            "unit": "ml"
+          },
+          "reactants": [
+            {
+              "name": "lactide",
+              "mw": "144.12",
+              "density": null,
+              "smiles": "C[C@H]1C(=O)O[C@H](C(=O)O1)C",
+              "mass": {
+                "value": 125.9658,
+                "unit": "mg",
+                "uncertainty": null
+              },
+              "volume": null,
+              "moles": {
+                "value": 0.874,
+                "unit": "mmol",
+                "uncertainty": null
+              },
+              "pressure": null,
+              "ratio": 88.1,
+              "roles": [
+                "monomer"
+              ],
+              "molarity": {
+                "unit": "mol/l",
+                "value": 0.437,
+                "uncertainty": null
+              },
+              "molality": {
+                "unit": "mol/kg",
+                "value": 0.6517,
+                "uncertainty": null
+              },
+              "moles_vol": {
+                "unit": "mol/l",
+                "value": 0.4679,
+                "uncertainty": null
+              },
+              "limiting": false
+            },
+            {
+              "name": "THF",
+              "mw": "123.12",
+              "density": "0.718",
+              "smiles": "C1COCC1",
+              "mass": {
+                "unit": "g",
+                "value": 1.3412,
+                "uncertainty": null
+              },
+              "volume": {
+                "unit": "ml",
+                "value": 1.868,
+                "uncertainty": null
+              },
+              "moles": {
+                "value": 10.8935,
+                "unit": "mmol",
+                "uncertainty": null
+              },
+              "pressure": null,
+              "ratio": 1098.07,
+              "roles": [
+                "solvent"
+              ],
+              "molarity": {
+                "unit": "mol/l",
+                "value": 5.4467,
+                "uncertainty": null
+              },
+              "molality": {
+                "unit": "mol/kg",
+                "value": 8.1222,
+                "uncertainty": null
+              },
+              "moles_vol": {
+                "unit": "mol/l",
+                "value": 5.8317,
+                "uncertainty": null
+              },
+              "limiting": false
+            },
+            {
+              "name": "pMeBnOH",
+              "mw": "122.16",
+              "density": null,
+              "smiles": "Cc1ccc(CO)cc1",
+              "mass": {
+                "value": 4.9498,
+                "unit": "mg",
+                "uncertainty": null
+              },
+              "volume": null,
+              "moles": {
+                "value": 0.0405,
+                "unit": "mmol",
+                "uncertainty": null
+              },
+              "pressure": null,
+              "ratio": 4.08,
+              "roles": [
+                "initiator"
+              ],
+              "molarity": {
+                "unit": "mol/l",
+                "value": 0.0203,
+                "uncertainty": null
+              },
+              "molality": {
+                "unit": "mol/kg",
+                "value": 0.0302,
+                "uncertainty": null
+              },
+              "moles_vol": {
+                "unit": "mol/l",
+                "value": 0.0217,
+                "uncertainty": null
+              },
+              "limiting": false
+            },
+            {
+              "name": "kOtBu",
+              "mw": "112.212",
+              "density": null,
+              "smiles": "[K+].[O-]C(C)(C)C",
+              "mass": {
+                "value": 1.1132,
+                "unit": "mg",
+                "uncertainty": null
+              },
+              "volume": null,
+              "moles": {
+                "unit": "mcmol",
+                "value": 9.9206,
+                "uncertainty": null
+              },
+              "pressure": null,
+              "ratio": 1,
+              "roles": [
+                "catalyst"
+              ],
+              "molarity": {
+                "unit": "mol/l",
+                "value": 0.00496,
+                "uncertainty": null
+              },
+              "molality": {
+                "unit": "mol/kg",
+                "value": 0.007397,
+                "uncertainty": null
+              },
+              "moles_vol": {
+                "unit": "mol/l",
+                "value": 0.005311,
+                "uncertainty": null
+              },
+              "limiting": false
+            }
+          ]
+        }
+      ],
+      "products": [
+        {
+          "name": "pMeBnO-pL-lac",
+          "path": [],
+          "roles": [
+            "product"
+          ],
+          "smiles": "CC1=CC=C(CO[R])C=C1.O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C"
+        }
+      ]
+    }
+  ],
+  "results": {
+    "inputs": [],
+    "outputs": []
+  },
+  "references": [
+    {
+      "name": "THF",
+      "type": "chemical",
+      "alias": null,
+      "aliases": [
+        "tetrahydrofuran"
+      ],
+      "smiles": "C1COCC1",
+      "molecular_weight": {
+        "value": "123.12",
+        "unit": "g/mol",
+        "uncertainty": null
+      },
+      "density": {
+        "value": "0.718",
+        "unit": "g/ml",
+        "uncertainty": null
+      },
+      "state": "liquid"
+    },
+    {
+      "name": "pMeBnOH",
+      "type": "chemical",
+      "molecular_weight": {
+        "value": "122.16",
+        "unit": "g/mol",
+        "uncertainty": null
+      },
+      "state": "solid",
+      "smiles": "Cc1ccc(CO)cc1"
+    },
+    {
+      "name": "kOtBu",
+      "type": "chemical",
+      "molecular_weight": {
+        "value": "112.212",
+        "unit": "g/mol",
+        "uncertainty": null
+      },
+      "state": "solid",
+      "smiles": "[K+].[O-]C(C)(C)C"
+    },
+    {
+      "name": "lactide",
+      "type": "chemical",
+      "molecular_weight": {
+        "value": "144.12",
+        "unit": "g/mol",
+        "uncertainty": null
+      },
+      "state": "solid",
+      "smiles": "C[C@H]1C(=O)O[C@H](C(=O)O1)C"
+    }
+  ],
+  "samples": [],
+  "charData": []
+}

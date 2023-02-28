@@ -1,0 +1,40 @@
+[
+  {
+    "name": "tetrahydrofuran",
+    "type": "chemical",
+    "smiles": "C1COCC1",
+    "molecular_weight": {
+      "value": 72.11,
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "density": {
+      "value": 0.8876,
+      "unit": "g/ml",
+      "uncertainty": null
+    },
+    "state": "liquid"
+  },
+  {
+    "name": "potassium_tert-butoxide",
+    "type": "chemical",
+    "molecular_weight": {
+      "value": "112.212",
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "state": "solid",
+    "smiles": "[K+].CC(C)(C)[O-]"
+  },
+  {
+    "name": "dimethyl-1-4-dioxane-2-5-dione",
+    "type": "chemical",
+    "molecular_weight": {
+      "value": "144.12",
+      "unit": "g/mol",
+      "uncertainty": null
+    },
+    "state": "solid",
+    "smiles": "C[C@H]1C(=O)O[C@H](C(=O)O1)C"
+  }
+]
