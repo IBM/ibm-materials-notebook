@@ -1,0 +1,111 @@
+{
+  "scopeName": "source.cmdl",
+  "patterns": [
+    {
+      "include": "#importStatement"
+    },
+    {
+      "include": "#groupDeclaration"
+    }
+  ],
+  "repository": {
+    "keyword": {
+      "match": "import|from|as",
+      "name": "keyword.other"
+    },
+    "identifier": {
+      "match": "([_a-zA-Z0-9-]+):",
+      "captures": {
+        "0": { "name": "entity.name.function" },
+        "1": { "name": "punctuation.colon" }
+      }
+    },
+    "variable": {
+      "match": "([_a-zA-Z0-9-]+)",
+      "name": "variable.other"
+    },
+    "link": {
+      "match": "(@[_a-zA-Z0-9-]+)",
+      "captures": {
+        "0": { "name": "keyword.operator" },
+        "1": { "name": "punctuation.bracket.open" }
+      }
+    },
+    "numberLiteral": {
+      "match": "-?(0|[1-9]\\d*)(\\.\\d+)?([eE][+-]?\\d+)?",
+      "name": "constant.numeric"
+    },
+    "stringLiteral": {
+      "match": "\\\".*\\\"",
+      "name": "string.quoted"
+    },
+    "importStatement": {
+      "patterns": [
+        {
+          "include": "#keyword"
+        },
+        {
+          "include": "#variable"
+        },
+        {
+          "include": "#keyword"
+        },
+        {
+          "include": "#stringLiteral"
+        }
+      ]
+    },
+    "groupDeclaration": {
+      "patterns": [
+        {
+          "include": "#link"
+        },
+        {
+          "include": "#groupDeclarationContent"
+        }
+      ]
+    },
+    "groupDeclarationContent": {
+      "begin": "{",
+      "end": "}",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.bracket.open"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.bracket.close"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#propertyExpression"
+        },
+        {
+          "include": "#groupDeclaration"
+        }
+      ]
+    },
+    "propertyExpression": {
+      "patterns": [
+        {
+          "include": "#identifier"
+        },
+        {
+          "include": "#valueExpression"
+        }
+      ]
+    },
+    "valueExpression": {
+      "patterns": [
+        {
+          "include": "#numberLiteral"
+        },
+        {
+          "include": "#variable"
+        }
+      ]
+    }
+  }
+}

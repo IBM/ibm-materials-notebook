@@ -1,0 +1,12 @@
+{
+  "name": "eslint-config-custom",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "files": [
+    "base.json"
+  ],
+  "dependencies": {
+    "eslint": "8.35.0"
+  }
+}
