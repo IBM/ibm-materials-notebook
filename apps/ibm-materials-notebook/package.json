@@ -145,6 +145,7 @@
     "webpack-dev-server": "^4.10.0"
   },
   "dependencies": {
+    "bigsmiles": "*",
     "big.js": "^6.2.1",
     "chevrotain": "^10.3.0",
     "winston": "^3.8.2"
