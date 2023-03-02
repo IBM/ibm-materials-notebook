@@ -1,5 +1,5 @@
-import { BigSMILES } from "./bigsmiles";
-import {
+export { BigSMILES } from "./bigsmiles";
+export {
   Atom,
   Bond,
   BondDescriptorAtom,
@@ -7,13 +7,3 @@ import {
   StochasticObject,
   Branch,
 } from "./components";
-
-export {
-  BigSMILES,
-  Atom,
-  Bond,
-  BondDescriptorAtom,
-  StochasticFragment,
-  StochasticObject,
-  Branch,
-};
