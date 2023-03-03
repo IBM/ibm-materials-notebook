@@ -319,6 +319,14 @@ export class PolymerTree {
     return this.root.toJSON();
   }
 
+  toBigSMILES() {
+    if (!this.root) {
+      throw new Error(`polymer tree is not initialized!`);
+    }
+
+    return this.root.exportToBigSMILES();
+  }
+
   /**
    * Converts tree to string for logging purposes
    * @returns string

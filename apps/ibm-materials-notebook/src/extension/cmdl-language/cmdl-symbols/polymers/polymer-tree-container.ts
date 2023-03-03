@@ -126,6 +126,20 @@ export class Container implements PolymerComponent {
     }
   }
 
+  exportToBigSMILES(): string {
+    const childBS = [];
+    for (const child of this.children) {
+      const childString = child.exportToBigSMILES();
+      childBS.push(childString);
+    }
+
+    if (!this.parent) {
+      return `{[]${childBS.join(", ")}[]}`;
+    } else {
+      return `{${childBS.join(", ")}}`;
+    }
+  }
+
   /**
    * Converts to string for logging
    * @returns string

@@ -178,4 +178,12 @@ export class PolymerContainer {
   treeToJSON() {
     return this.tree.toJSON();
   }
+
+  /**
+   * Method to convert polymer graph into BigSmiles
+   * @returns string
+   */
+  treeToBigSmiles() {
+    return this.tree.toBigSMILES();
+  }
 }

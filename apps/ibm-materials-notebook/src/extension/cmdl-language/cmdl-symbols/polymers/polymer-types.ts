@@ -76,4 +76,9 @@ export interface PolymerComponent extends Serializable {
    * @param visitor TreeVisitor
    */
   accept(visitor: PolymerTreeVisitor): void;
+
+  /**
+   * Method to serialize the polymer tree into a BigSMILES line notation
+   */
+  exportToBigSMILES(): string;
 }
