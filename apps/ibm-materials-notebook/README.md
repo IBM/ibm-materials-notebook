@@ -23,5 +23,6 @@ Chemical structures are rendered in the notebook extension using a small TypeScr
 ## Known Issues
 
 - Member completion suggestion for non-imported polymer graphs requires fixing to provide correct suggestions
+- No ability to adjust chemical structure color themes in settings
 
 ## Release Notes
