@@ -18,7 +18,6 @@ export class PolymerContainer {
     this.tree.root?.setName();
     this.tree.root?.setPath();
     this.tree.root?.updateConnectionPaths();
-    // this.computePolymerWeights();
   }
 
   initializeTreeFromJSON(tree: any) {

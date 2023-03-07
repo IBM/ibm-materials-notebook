@@ -1,6 +1,8 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { PolymerContainer } from "../polymers";
+import { BigSMILES } from "bigsmiles";
+import { cmdlLogger } from "../../logger";
 
 export class Polymer extends BaseModel {
   private polymerContainer: PolymerContainer;
@@ -12,6 +14,23 @@ export class Polymer extends BaseModel {
   execute(globalAR: ModelActivationRecord): void {
     const treeRef = this.modelAR.getOptionalValue("tree");
     const treeValues = this.modelAR.getOptionalValue("treeValues");
+    const bigSmilesStr = this.modelAR.getOptionalValue("big_smiles");
+
+    let validatedStr: string | undefined;
+    if (bigSmilesStr) {
+      try {
+        const bigSmilesParser = new BigSMILES(bigSmilesStr);
+        validatedStr = bigSmilesParser.toString();
+        cmdlLogger.silly(`validated bigSMILES ${validatedStr}`);
+      } catch (error) {
+        cmdlLogger.warn(`Invalid bigSmiles string ${bigSmilesStr}!`);
+        throw new Error(
+          `Error during validating BigSMLIES ${bigSmilesStr}: ${
+            error as string
+          }`
+        );
+      }
+    }
 
     if (treeRef?.ref) {
       const polymerGraph = globalAR.getOptionalValue(treeRef.ref);
@@ -34,10 +53,12 @@ export class Polymer extends BaseModel {
     };
 
     for (const [name, value] of this.modelAR.all()) {
-      properties[name] = value;
-
       if (name === "tree") {
         properties[name] = this.polymerContainer.treeToJSON();
+      } else if (name === "big_smiles" && validatedStr) {
+        properties[name] = validatedStr;
+      } else {
+        properties[name] = value;
       }
     }
 
