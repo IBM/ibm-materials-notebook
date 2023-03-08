@@ -27,8 +27,7 @@ export async function activate(context: vscode.ExtensionContext) {
     .get("output") as string;
 
   const library = new Library(context);
-  await library.initLibrary(libPath, "lib");
-  await library.initLibrary(expPath, "exp");
+  await library.initialize();
 
   const repository = new Repository(outputPath, library);
   logger.info("IBM Materials notebook extension is activated");

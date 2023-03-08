@@ -286,6 +286,8 @@ export class Experiment {
 
   /**
    * Serializes notebook to an object for writing to file
+   * @TODO improve output types
+   * @TODO ensure new entities are saved to workspace storage
    * @returns Record<string, any>
    */
   toJSON() {

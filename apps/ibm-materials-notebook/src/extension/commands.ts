@@ -14,6 +14,8 @@ export interface VariableDict {
   };
 }
 
+//TODO: create command to automatically generate setup workspace
+
 /**
  * Sleep function to delay process
  * @param delay number ms to sleep process by
