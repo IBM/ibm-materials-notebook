@@ -14,7 +14,7 @@ export type REACTION = {
   [PROPERTIES.REACTION_TIME]: CMDLUnit;
 };
 
-interface ReactionOutput {
+export interface CMDLReaction {
   name: string;
   type: string;
   temperature?: CMDLUnit | null;
@@ -88,7 +88,7 @@ export class ReactionModel extends BaseModel {
 
       const output = this.reaction.computeChemicalValues();
 
-      const reactionOutput: ReactionOutput = {
+      const reactionOutput: CMDLReaction = {
         name: this.name,
         type: this.type,
         volume: volume || null,

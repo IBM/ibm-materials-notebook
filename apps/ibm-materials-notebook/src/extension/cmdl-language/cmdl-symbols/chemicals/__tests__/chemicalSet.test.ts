@@ -1,9 +1,9 @@
 import ChemicalSet from "../chemical-set";
-import { ChemPropKey } from "../base-chemical";
 import { ChemicalConfig, ChemStates } from "../chemical-factory";
 import Big from "big.js";
 import { solidChemicalMass } from "./chemical.test";
 import Solid from "../solid";
+import { PROPERTIES, TAGS } from "../../../cmdl-types";
 
 const catalyst: ChemicalConfig = {
   name: "KOME",
@@ -11,12 +11,12 @@ const catalyst: ChemicalConfig = {
   density: null,
   state: ChemStates.SOLID,
   quantity: {
-    name: ChemPropKey.MASS,
+    name: PROPERTIES.MASS,
     value: Big("1"),
     unit: "mg",
     uncertainty: null,
   },
-  roles: ["catalyst", "initiator"],
+  roles: [TAGS.CATALYST, TAGS.INITIATOR],
   limiting: true,
 };
 
@@ -26,12 +26,12 @@ const solvent: ChemicalConfig = {
   density: Big(0.8876),
   state: ChemStates.LIQUID,
   quantity: {
-    name: ChemPropKey.VOLUME,
+    name: PROPERTIES.VOLUME,
     value: Big("1"),
     unit: "ml",
     uncertainty: null,
   },
-  roles: ["solvent"],
+  roles: [TAGS.SOLVENT],
   limiting: false,
 };
 

@@ -7,6 +7,7 @@ import {
   ModelVisitor,
   SymbolTableBuilder,
 } from "../../cmdl-symbols";
+import { TAGS } from "../../cmdl-types";
 
 /**
  * Handles list properties in CMDL record trees
@@ -56,7 +57,7 @@ export class ListProperty extends Property {
 
     let counter = 0;
     for (const item of this.value) {
-      if (!this.propertyType.categorical_values.includes(item)) {
+      if (!this.propertyType.categorical_values.includes(item as TAGS)) {
         msg = `${item} is not an acceptable value for ${this.name}`;
         err = new InvalidPropertyError(msg, this.valueToken[counter]);
         this.errors.push(err);

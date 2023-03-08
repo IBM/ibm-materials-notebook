@@ -5,13 +5,13 @@ import { handleRounding } from "../../cmdl-tree/utils";
 import { UNITS } from "../../cmdl-types/units";
 import { ChemicalConfig, ChemicalOutput } from "./chemical-factory";
 import { NamedQuantity } from "./chemical-factory";
-import { PROPERTIES, ReactionRoles } from "../../cmdl-types";
+import { ReactionRoles } from "../../cmdl-types";
 
-enum ChemPropKey {
-  MASS = PROPERTIES.MASS,
-  VOLUME = PROPERTIES.VOLUME,
-  MOLES = PROPERTIES.MOLES,
-  PRESSURE = PROPERTIES.PRESSURE,
+export enum ChemPropKey {
+  MASS = "mass",
+  VOLUME = "volume",
+  MOLES = "moles",
+  PRESSURE = "pressure",
   MOLARITY = "molarity",
   MOLALITY = "molality",
   MOLS_VOL = "moles_vol",

@@ -3,10 +3,10 @@ import { CMDLUnit, Quantity } from "../../symbol-types";
 import { Reactor } from "../reactor-group";
 import { ReactorComponent } from "../reactor-component";
 import { testChemicals } from "./reactor-chem.test";
-import { ChemPropKey } from "../../chemicals/base-chemical";
 import { ChemStates } from "../../chemicals/chemical-factory";
 import { ChemicalConfig } from "../../chemicals/chemical-factory";
 import { ReactorChemicals } from "../reactor-chemicals";
+import { PROPERTIES, TAGS } from "../../../cmdl-types";
 
 const kOtbu: ChemicalConfig = {
   name: "l-lactide",
@@ -14,12 +14,12 @@ const kOtbu: ChemicalConfig = {
   density: null,
   state: ChemStates.SOLID,
   quantity: {
-    name: ChemPropKey.MASS,
+    name: PROPERTIES.MASS,
     value: Big("1441.2"),
     unit: "mg",
     uncertainty: null,
   },
-  roles: ["catalyst"],
+  roles: [TAGS.CATALYST],
   limiting: true,
 };
 
@@ -29,12 +29,12 @@ const monomerSolvent: ChemicalConfig = {
   density: Big(0.8876),
   state: ChemStates.LIQUID,
   quantity: {
-    name: ChemPropKey.VOLUME,
+    name: PROPERTIES.VOLUME,
     value: Big("10"),
     unit: "ml",
     uncertainty: null,
   },
-  roles: ["solvent"],
+  roles: [TAGS.SOLVENT],
   limiting: false,
 };
 

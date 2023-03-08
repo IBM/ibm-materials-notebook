@@ -3,6 +3,7 @@ import { UnitOperator, Unit } from "../units";
 import ChemicalFactory, { ChemicalConfig } from "./chemical-factory";
 import { Quantity } from "../symbol-types";
 import Big from "big.js";
+import { TAGS } from "../../cmdl-types";
 
 export default class ChemicalSet {
   private chemicalFactory = new ChemicalFactory();
@@ -38,7 +39,7 @@ export default class ChemicalSet {
       this.limiting = chemical;
     }
 
-    if (chemical.roles.includes("solvent")) {
+    if (chemical.roles.includes(TAGS.SOLVENT)) {
       this.hasSolvent = true;
     }
 
@@ -118,7 +119,7 @@ export default class ChemicalSet {
   private computeTotalSolventVolume() {
     try {
       const solventUnitArray = this.chemicals
-        .filter((item) => item.roles.includes("solvent"))
+        .filter((item) => item.roles.includes(TAGS.SOLVENT))
         .map((el) => {
           let volUnit: Unit;
           if (el.volume) {
@@ -137,7 +138,7 @@ export default class ChemicalSet {
   private computeTotalSolventMass() {
     try {
       const solventUnitArray = this.chemicals
-        .filter((item) => item.roles.includes("solvent"))
+        .filter((item) => item.roles.includes(TAGS.SOLVENT))
         .map((el) => {
           let unit = new Unit(el.getProperty(ChemPropKey.MASS));
           return unit;

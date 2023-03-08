@@ -26,7 +26,7 @@ export async function activate(context: vscode.ExtensionContext) {
     .getConfiguration("ibm-materials-notebook")
     .get("output") as string;
 
-  const library = new Library();
+  const library = new Library(context);
   await library.initLibrary(libPath, "lib");
   await library.initLibrary(expPath, "exp");
 
