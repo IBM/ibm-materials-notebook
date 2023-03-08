@@ -1,5 +1,5 @@
-import { typeManager } from "../../cmdl-types";
-import { BaseChemical, ChemPropKey } from "./base-chemical";
+import { PROPERTIES, ReactionRoles, typeManager } from "../../cmdl-types";
+import { BaseChemical } from "./base-chemical";
 import { ChemicalConfig, ChemStates, NamedQuantity } from "./chemical-factory";
 import Big from "big.js";
 import { Quantity } from "../symbol-types";
@@ -7,7 +7,7 @@ import { Quantity } from "../symbol-types";
 export default class Liquid extends BaseChemical {
   constructor(
     name: string,
-    roles: string[],
+    roles: ReactionRoles[],
     mw: Big,
     density: Big,
     limiting: boolean,
@@ -34,7 +34,7 @@ export default class Liquid extends BaseChemical {
 
     let volumeUnit: string, moleUnit: string, massUnit: string;
     switch (qty.name) {
-      case ChemPropKey.MASS:
+      case PROPERTIES.MASS:
         volumeUnit = typeManager.getVolToMass(qty.unit);
         moleUnit = typeManager.getMolToMass(qty.unit);
         this.mass = {
@@ -53,7 +53,7 @@ export default class Liquid extends BaseChemical {
           uncertainty: null,
         };
         break;
-      case ChemPropKey.VOLUME:
+      case PROPERTIES.VOLUME:
         massUnit = typeManager.getVolToMass(qty.unit);
         moleUnit = typeManager.getMolToMass(massUnit);
 
@@ -73,7 +73,7 @@ export default class Liquid extends BaseChemical {
           uncertainty: null,
         };
         break;
-      case ChemPropKey.MOLES:
+      case PROPERTIES.MOLES:
         massUnit = typeManager.getMolToMass(qty.unit);
         volumeUnit = typeManager.getVolToMass(massUnit);
 
@@ -102,7 +102,7 @@ export default class Liquid extends BaseChemical {
 
   merge(chemical: BaseChemical): void {
     const newMoles = this.combineMoles(chemical);
-    this.computeValues({ name: ChemPropKey.MOLES, ...newMoles });
+    this.computeValues({ name: PROPERTIES.MOLES, ...newMoles });
   }
 
   getMolesByVolume(volume: Quantity): ChemicalConfig {
@@ -122,7 +122,7 @@ export default class Liquid extends BaseChemical {
       name: this.name,
       smiles: this.smiles,
       quantity: {
-        name: ChemPropKey.MOLES,
+        name: PROPERTIES.MOLES,
         unit: newMoles.unit,
         value: newMoles.value,
         uncertainty: null,
@@ -144,7 +144,7 @@ export default class Liquid extends BaseChemical {
       name: this.name,
       smiles: this.smiles,
       quantity: {
-        name: ChemPropKey.MOLES,
+        name: PROPERTIES.MOLES,
         unit: this.moles.unit,
         value: this.moles.value,
         uncertainty: null,

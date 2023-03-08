@@ -8,7 +8,6 @@ import { thermalProperties } from "./thermal-properties";
 import { categoricalProperties } from "./categorical-properties";
 import { textProperties } from "./text-properties";
 import { referenceProperties } from "./reference-properties";
-import { IProperty, PROPERTIES, PropertyTypes } from "./property-types";
 
 const allProperties = [
   ...biologicalProperties,
@@ -23,4 +22,6 @@ const allProperties = [
   ...referenceProperties,
 ];
 
-export { IProperty, PROPERTIES, allProperties, PropertyTypes };
+export { ReactionRoles } from "./categorical-properties";
+export { IProperty, PROPERTIES, PropertyTypes } from "./property-types";
+export { allProperties };

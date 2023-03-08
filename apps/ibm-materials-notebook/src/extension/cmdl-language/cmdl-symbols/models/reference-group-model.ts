@@ -11,7 +11,7 @@ export class ReferenceGroupModel extends BaseModel {
   constructor(
     name: string,
     modelAR: ModelActivationRecord,
-    type: string,
+    type: ModelType.REFERENCE_GROUP,
     path: string[] = []
   ) {
     super(name, modelAR, type);

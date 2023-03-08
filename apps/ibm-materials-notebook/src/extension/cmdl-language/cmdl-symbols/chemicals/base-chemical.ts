@@ -5,12 +5,13 @@ import { handleRounding } from "../../cmdl-tree/utils";
 import { UNITS } from "../../cmdl-types/units";
 import { ChemicalConfig, ChemicalOutput } from "./chemical-factory";
 import { NamedQuantity } from "./chemical-factory";
+import { PROPERTIES, ReactionRoles } from "../../cmdl-types";
 
-export enum ChemPropKey {
-  MASS = "mass",
-  VOLUME = "volume",
-  MOLES = "moles",
-  PRESSURE = "pressure",
+enum ChemPropKey {
+  MASS = PROPERTIES.MASS,
+  VOLUME = PROPERTIES.VOLUME,
+  MOLES = PROPERTIES.MOLES,
+  PRESSURE = PROPERTIES.PRESSURE,
   MOLARITY = "molarity",
   MOLALITY = "molality",
   MOLS_VOL = "moles_vol",
@@ -25,7 +26,7 @@ export abstract class BaseChemical {
   mw: Big | null = null;
   density: Big | null = null;
   smiles?: string;
-  roles: string[];
+  roles: ReactionRoles[];
   ratio: Big | null = null;
   mass: Quantity | null = null;
   volume: Quantity | null = null;
@@ -39,7 +40,7 @@ export abstract class BaseChemical {
 
   constructor(
     name: string,
-    roles: string[],
+    roles: ReactionRoles[],
     limiting: boolean,
     smiles?: string
   ) {

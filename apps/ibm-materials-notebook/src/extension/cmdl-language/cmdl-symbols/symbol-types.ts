@@ -5,10 +5,18 @@ export interface CMDLRef {
   path: string[];
 }
 
-export interface CMDLUnit {
+interface BaseUnit {
   value: string;
   unit: string | null;
   uncertainty: string | null;
+}
+
+export interface CMDLUnit extends BaseUnit {
+  unit: string;
+}
+
+export interface CMDLUnitless extends BaseUnit {
+  unit: null;
 }
 
 export interface NumberQuantity {

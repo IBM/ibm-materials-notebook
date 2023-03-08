@@ -1,18 +1,21 @@
-import { cmdlLogger as logger } from "../../logger";
 import { ReactorContainer } from "../reactor";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
+import { ModelType } from "../../cmdl-types/groups/group-types";
+import { CMDLReactor, CMDLReactorNode } from "../reactor/reactor-container";
 
 export class Reactor extends BaseModel {
   private container = new ReactorContainer();
 
-  constructor(name: string, modelAR: ModelActivationRecord, type: string) {
+  constructor(
+    name: string,
+    modelAR: ModelActivationRecord,
+    type: ModelType.REACTOR_GRAPH
+  ) {
     super(name, modelAR, type);
   }
 
   public execute(globalAR: ModelActivationRecord): void {
-    logger.debug(`Executing reactor ${this.name}:\n${this.modelAR.print()}`);
-
     const outputNode = this.modelAR.getOptionalValue("outputNode");
 
     if (outputNode) {
@@ -27,13 +30,14 @@ export class Reactor extends BaseModel {
 
       globalAR.setValue(this.name, properties);
     } else {
-      const nodes = this.modelAR.getValue("nodes");
+      const nodes =
+        this.modelAR.getValue<(CMDLReactorNode | CMDLReactor)[]>("nodes");
 
       for (const node of nodes) {
-        if (node.type === "component") {
-          this.container.addNode(node);
-        } else if (node.type === "reactor") {
+        if (node.type === "reactor" && "nodes" in node) {
           this.container.addReactor(node);
+        } else if (node.type === "component" && "target" in node) {
+          this.container.addNode(node);
         } else {
           throw new Error(
             `Unrecognized node type for reactor graph: ${node.name} ${node.type}`

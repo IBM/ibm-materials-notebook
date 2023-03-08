@@ -7,7 +7,11 @@ import { BaseModel } from "./base-model";
  * Model for reference groups. Tablulates child properties and merges into parent AR.
  */
 export class GroupModel extends BaseModel {
-  constructor(name: string, modelAR: ModelActivationRecord, type: string) {
+  constructor(
+    name: string,
+    modelAR: ModelActivationRecord,
+    type: ModelType.GROUP
+  ) {
     super(name, modelAR, type);
   }
 

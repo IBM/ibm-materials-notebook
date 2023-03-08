@@ -7,7 +7,7 @@ export class ModelActivationRecord {
   name: string;
   type: string;
   uri: string;
-  private properties = new Map<string, any>();
+  private properties = new Map<string, unknown>();
 
   constructor(type: string, name: string, uri: string) {
     this.type = type;
@@ -20,10 +20,10 @@ export class ModelActivationRecord {
    * @param key string
    * @param value any - item to be merged into an array
    */
-  public mergeArrayValue(key: string, value: any) {
+  public mergeArrayValue<T>(key: string, value: T) {
     let arrayValues = this.properties.get(key);
 
-    if (arrayValues) {
+    if (Array.isArray(arrayValues)) {
       arrayValues.push(value);
     } else {
       this.properties.set(key, [value]);
@@ -44,7 +44,7 @@ export class ModelActivationRecord {
    * @param key string
    * @returns any
    */
-  public getValue(key: string) {
+  public getValue<T>(key: string) {
     const property = this.properties.get(key);
 
     if (!property) {
@@ -53,16 +53,22 @@ export class ModelActivationRecord {
       );
     }
 
-    return property;
+    return property as T;
   }
 
   /**
    * Attempts to retrieve a property on the AR. Returns undefined if not found.
    * @param key string
-   * @returns any
+   * @returns unknown
    */
-  public getOptionalValue(key: string) {
-    return this.properties.get(key);
+  public getOptionalValue<T>(key: string) {
+    const property = this.properties.get(key);
+
+    if (!property) {
+      return undefined;
+    }
+
+    return property as T;
   }
 
   /**
@@ -117,12 +123,12 @@ class GlobalActivationRecord extends ModelActivationRecord {
     this.manager.mergeArrayValue(this.uri, key, value);
   }
 
-  public getValue(key: string) {
-    return this.manager.getValue(key);
+  public getValue<T>(key: string) {
+    return this.manager.getValue<T>(key);
   }
 
-  public getOptionalValue(key: string) {
-    return this.manager.getOptionalValue(key);
+  public getOptionalValue<T>(key: string) {
+    return this.manager.getOptionalValue<T>(key);
   }
 
   public setValue(key: string, value: any): void {
@@ -225,14 +231,14 @@ export class ModelARManager {
    * @param key string
    * @returns any
    */
-  public getValue(key: string) {
+  public getValue<T>(key: string) {
     const value = this.searchRecords(key);
 
     if (!value) {
       throw new Error(`Unable to locate ${key}`);
     }
 
-    return value;
+    return value as T;
   }
 
   /**
@@ -240,8 +246,14 @@ export class ModelARManager {
    * @param key string
    * @returns any
    */
-  public getOptionalValue(key: string) {
-    return this.searchRecords(key);
+  public getOptionalValue<T>(key: string) {
+    const value = this.searchRecords(key);
+
+    if (!value) {
+      return undefined;
+    }
+
+    return value as T;
   }
 
   /**

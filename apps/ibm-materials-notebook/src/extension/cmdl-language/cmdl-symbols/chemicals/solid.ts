@@ -1,13 +1,13 @@
 import Big from "big.js";
-import { typeManager } from "../../cmdl-types";
+import { ReactionRoles, PROPERTIES, typeManager } from "../../cmdl-types";
 import { Quantity } from "../symbol-types";
-import { BaseChemical, ChemPropKey } from "./base-chemical";
+import { BaseChemical } from "./base-chemical";
 import { ChemicalConfig, ChemStates, NamedQuantity } from "./chemical-factory";
 
 export default class Solid extends BaseChemical {
   constructor(
     name: string,
-    roles: string[],
+    roles: ReactionRoles[],
     mw: Big,
     limiting: boolean,
     smiles?: string
@@ -23,7 +23,7 @@ export default class Solid extends BaseChemical {
 
     let moleUnit: string, massUnit: string, volUnit: string;
     switch (qty.name) {
-      case ChemPropKey.MASS:
+      case PROPERTIES.MASS:
         moleUnit = typeManager.getMolToMass(qty.unit);
         volUnit = typeManager.getVolToMass(qty.unit);
         this.moles = {
@@ -38,7 +38,7 @@ export default class Solid extends BaseChemical {
         };
         this.solidVol = { unit: volUnit, value: qty.value, uncertainty: null };
         break;
-      case ChemPropKey.MOLES:
+      case PROPERTIES.MOLES:
         massUnit = typeManager.getMolToMass(qty.unit);
         volUnit = typeManager.getVolToMass(massUnit);
         let massValue = qty.value.times(this.mw);
@@ -61,7 +61,7 @@ export default class Solid extends BaseChemical {
 
   merge(chemical: BaseChemical): void {
     const newMoles = this.combineMoles(chemical);
-    this.computeValues({ name: ChemPropKey.MOLES, ...newMoles });
+    this.computeValues({ name: PROPERTIES.MOLES, ...newMoles });
   }
 
   getMolesByVolume(volume: Quantity): ChemicalConfig {
@@ -81,7 +81,7 @@ export default class Solid extends BaseChemical {
       name: this.name,
       smiles: this.smiles,
       quantity: {
-        name: ChemPropKey.MOLES,
+        name: PROPERTIES.MOLES,
         unit: newMoles.unit,
         value: newMoles.value,
         uncertainty: null,
@@ -103,7 +103,7 @@ export default class Solid extends BaseChemical {
       name: this.name,
       smiles: this.smiles,
       quantity: {
-        name: ChemPropKey.MOLES,
+        name: PROPERTIES.MOLES,
         unit: this.moles.unit,
         value: this.moles.value,
         uncertainty: null,

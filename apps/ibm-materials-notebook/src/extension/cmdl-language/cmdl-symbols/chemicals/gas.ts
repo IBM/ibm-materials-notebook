@@ -1,14 +1,15 @@
 import { Unit } from "../units";
 import Big from "big.js";
-import { BaseChemical, ChemPropKey } from "./base-chemical";
+import { BaseChemical } from "./base-chemical";
 import { Quantity } from "../symbol-types";
 import { UNITS } from "../../cmdl-types/units";
 import { ChemicalConfig, ChemStates } from "./chemical-factory";
+import { PROPERTIES, ReactionRoles } from "../../cmdl-types";
 
 export default class Gas extends BaseChemical {
   constructor(
     name: string,
-    roles: string[],
+    roles: ReactionRoles[],
     mw: Big,
     limiting: boolean,
     smiles?: string
@@ -72,7 +73,7 @@ export default class Gas extends BaseChemical {
       name: this.name,
       smiles: this.smiles,
       quantity: {
-        name: ChemPropKey.PRESSURE,
+        name: PROPERTIES.PRESSURE,
         unit: this.pressure.unit,
         value: this.pressure.value,
         uncertainty: null,

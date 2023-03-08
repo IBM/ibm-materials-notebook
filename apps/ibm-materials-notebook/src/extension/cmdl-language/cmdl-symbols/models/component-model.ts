@@ -7,7 +7,7 @@ import { BaseModel } from "./base-model";
  * Model for various named sub-groups. Tablulates child data and writes to current AR.
  */
 export class ComponentModel extends BaseModel {
-  constructor(name: string, modelAR: ModelActivationRecord, type: string) {
+  constructor(name: string, modelAR: ModelActivationRecord, type: ModelType) {
     super(name, modelAR, type);
   }
 
@@ -33,7 +33,6 @@ export class ComponentModel extends BaseModel {
       globalAR.type === ModelType.REACTOR_GRAPH ||
       globalAR.type === ModelType.REACTOR
     ) {
-      logger.silly(this.type);
       globalAR.mergeArrayValue("nodes", properties);
     } else if (
       globalAR.type === ModelType.POLYMER_GRAPH ||

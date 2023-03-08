@@ -4,40 +4,42 @@ import { ReactorComponent } from "./reactor-component";
 import { cmdlLogger } from "../../logger";
 import { CMDLRef, CMDLUnit, CMDLNodeTree } from "../symbol-types";
 import { ChemicalOutput } from "../chemicals/chemical-factory";
+import { PROPERTIES } from "../../cmdl-types";
 
 export interface ReactorEdge {
   id: string;
   target: string | null;
 }
 
-interface CMDLReactorNode {
+export interface CMDLReactorNode {
   name: string;
   type: string;
-  description?: string;
-  inner_diameter?: CMDLUnit;
-  outer_diameter?: CMDLUnit;
-  volume?: CMDLUnit;
-  length?: CMDLUnit;
-  target: CMDLRef;
+  [PROPERTIES.DESCRIPTION]?: string;
+  [PROPERTIES.INNER_DIAMETER]?: CMDLUnit;
+  [PROPERTIES.OUTER_DIAMETER]?: CMDLUnit;
+  [PROPERTIES.VOLUME]?: CMDLUnit;
+  [PROPERTIES.LENGTH]?: CMDLUnit;
+  [PROPERTIES.TARGET]: CMDLRef;
 }
 
-interface SerializedReactorComponent extends Omit<CMDLReactorNode, "target"> {
+export interface SerializedReactorComponent
+  extends Omit<CMDLReactorNode, "target"> {
   sources: string[];
   next: string | null;
   parent: string | null;
 }
 
-interface SerializedReactorGroup {
+export interface SerializedReactorGroup {
   name: string;
   type: string;
   parent: string | null;
   children: string[];
 }
 
-interface CMDLReactor {
+export interface CMDLReactor {
   name: string;
   type: string;
-  nodes: CMDLReactorNode[];
+  [PROPERTIES.NODES]: CMDLReactorNode[];
 }
 
 export interface SerializedReactor {

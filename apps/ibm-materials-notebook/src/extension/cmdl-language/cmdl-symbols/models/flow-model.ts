@@ -1,33 +1,46 @@
 import { ReactorChemicals, ReactorContainer } from "../reactor";
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel } from "./base-model";
+import { BaseModel, CMDLChemical, CMDLPolymer } from "./base-model";
+import { ModelType } from "../../cmdl-types/groups/group-types";
+import {
+  CMDLChemicalReference,
+  CMDLSolution,
+  CMDLSolutionReference,
+} from "./solution-model";
+import { CMDLRef } from "../symbol-types";
+import { SerializedReactor } from "../reactor/reactor-container";
 
 export class FlowReaction extends BaseModel {
   private reactorContainer = new ReactorContainer();
 
-  constructor(name: string, modelAR: ModelActivationRecord, type: string) {
+  constructor(
+    name: string,
+    modelAR: ModelActivationRecord,
+    type: ModelType.FLOW_REACTION
+  ) {
     super(name, modelAR, type);
   }
 
   execute(globalAR: ModelActivationRecord): void {
-    const reactorRef = this.modelAR.getValue("reactor");
-    const solutions = this.modelAR.getValue("solutions");
-    const products = this.modelAR.getOptionalValue("products");
+    const reactorRef = this.modelAR.getValue<CMDLRef>("reactor");
+    const solutions =
+      this.modelAR.getValue<CMDLSolutionReference[]>("solutions");
+    const products = this.modelAR.getValue<CMDLChemicalReference[]>("products");
 
-    const finalProducts = products.map((el: any) => {
-      const product = globalAR.getValue(el.name);
+    const finalProducts = products.map((el: CMDLChemicalReference) => {
+      const product = globalAR.getValue<CMDLChemical | CMDLPolymer>(el.name);
       return {
         ...el,
         smiles: product?.smiles ? product.smiles : null,
       };
     });
 
-    const reactorConfig = globalAR.getValue(reactorRef.ref);
+    const reactorConfig = globalAR.getValue<SerializedReactor>(reactorRef.ref);
 
     this.reactorContainer.deserialize(reactorConfig);
 
     for (const solution of solutions) {
-      let solutionOutput = globalAR.getValue(solution.name);
+      let solutionOutput = globalAR.getValue<CMDLSolution>(solution.name);
 
       const solutionChemicals = new ReactorChemicals(solution.flow_rate);
       solutionChemicals.setChemicals(solutionOutput.componentConfigs);

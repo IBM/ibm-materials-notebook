@@ -11,6 +11,7 @@ import {
   CMDLPolymerConnection,
   PolymerComponent,
 } from "./polymer-types";
+import { CMDLFragment } from "../models/base-model";
 
 /**
  * Tree representation of polymer structure. The tree representation enables facile conversion to a graph representation.
@@ -46,7 +47,7 @@ export class PolymerTree {
       const container = new Container(curr.name);
 
       for (const node of curr.nodes) {
-        let fragment = record.getValue(node.ref.slice(1));
+        let fragment = record.getValue<CMDLFragment>(node.ref.slice(1));
 
         const entity = new PolymerNode({
           fragment: node.ref.slice(1),
@@ -106,7 +107,7 @@ export class PolymerTree {
    * @returns string[][]
    */
   private parseConnectionPaths(arr: CMDLRef[]) {
-    return arr.map((el: CMDLRef) => {
+    return arr.map((el) => {
       return [el.ref.slice(1), ...el.path];
     });
   }
@@ -117,7 +118,7 @@ export class PolymerTree {
    * @param parent string | undefined
    * @returns void
    */
-  insert(arg: Container, parent?: string) {
+  public insert(arg: Container, parent?: string): void {
     if (!this.root) {
       this.root = arg;
       return;

@@ -1,7 +1,11 @@
 import { ModelActivationRecord } from "./model-AR";
 import { cmdlLogger as logger } from "../../logger";
-import { BaseModel } from "./base-model";
+import { BaseModel, CMDLChemical, CMDLPolymer } from "./base-model";
 import { PolymerContainer } from "../polymers";
+import { ModelType } from "../../cmdl-types/groups/group-types";
+import { PROPERTIES } from "../../cmdl-types";
+import { CMDLComplex } from "./complex-model";
+import { CMDLUnit } from "../symbol-types";
 
 type CharData = {
   name: string;
@@ -30,20 +34,28 @@ type CharOutput = {
  * Creates result items for chemicals and products of the experiment
  */
 export class SampleOutput extends BaseModel {
-  constructor(name: string, modelAR: ModelActivationRecord, type: string) {
+  constructor(
+    name: string,
+    modelAR: ModelActivationRecord,
+    type: ModelType.SAMPLE
+  ) {
     super(name, modelAR, type);
   }
 
   public execute(globalAR: ModelActivationRecord): void {
     try {
-      let charData = this.modelAR.getOptionalValue("charData");
+      let charData = this.modelAR.getOptionalValue<CharData[]>("charData");
+
+      if (!charData) {
+        return;
+      }
 
       const results = this.createResults(charData, globalAR);
       const formattedCharData = this.formatCharacterizationData(charData);
 
       const sampleOutput = {
         name: this.name,
-        type: "sample",
+        type: ModelType.SAMPLE,
         results: results,
         charData: formattedCharData,
       };
@@ -89,18 +101,22 @@ export class SampleOutput extends BaseModel {
 
   /**
    * Groups results by reference and then creates a result new result object from them with updated properties
-   * @param charData any[]
+   * @param charData CharData[]
    * @param globalAR ModelActivationRecord
    * @returns any[]
    */
   private createResults(charData: CharData[], globalAR: ModelActivationRecord) {
     const resultRecord = this.extractReferences(charData);
-    let timePoint = this.modelAR.getOptionalValue("time_point");
+    let timePoint = this.modelAR.getOptionalValue<CMDLUnit>(
+      PROPERTIES.TIME_POINT
+    );
 
     const finalResults = [];
 
     for (const [key, value] of Object.entries(resultRecord)) {
-      let globalRef = globalAR.getValue(key);
+      let globalRef = globalAR.getValue<
+        CMDLChemical | CMDLComplex | CMDLPolymer
+      >(key);
 
       const finalResult = {
         name: key,
@@ -109,12 +125,11 @@ export class SampleOutput extends BaseModel {
         sampleId: this.name,
       };
 
-      if (globalRef.type === "chemical") {
+      if (globalRef.type === ModelType.CHEMICAL) {
         this.createSmallMolecule(finalResult, globalRef, value);
-      } else if (globalRef.type === "polymer") {
+      } else if (globalRef.type === ModelType.POLYMER) {
         this.createPolymer(finalResult, globalRef, value);
-      } else if (globalRef.type === "complex") {
-        logger.debug(`global complex ref:`, { meta: globalRef });
+      } else if (globalRef.type === ModelType.COMPLEX) {
         this.createComplex(finalResult, globalRef, value);
       }
 
