@@ -28,6 +28,9 @@ export class CmdlCompletions {
 
   provideSemanticTokens(document: vscode.TextDocument) {
     const { ast } = this.compiler.parseAST(document.getText());
+    if (!ast) {
+      return;
+    }
     const builder = new vscode.SemanticTokensBuilder();
 
     let queue = [ast.root];
@@ -103,6 +106,9 @@ export class CmdlCompletions {
 
   provideHover(position: vscode.Position, document: vscode.TextDocument) {
     const { ast } = this.compiler.parseAST(document.getText());
+    if (!ast) {
+      return;
+    }
     const offset = document.offsetAt(position);
 
     const node = ast.getByOffset(offset);
@@ -146,10 +152,16 @@ export class CmdlCompletions {
    * @returns vscode.CompletiionItem[]
    */
   getCompletions(position: vscode.Position, document: vscode.TextDocument) {
-    const { ast } = this.compiler.parseAST(document.getText());
+    logger.info(`getting general completions...`);
+    const { ast, parserErrors } = this.compiler.parseAST(document.getText());
+    logger.debug(`current ast parser errors: ${parserErrors.length}`);
     const range = document.getWordRangeAtPosition(position);
     const word = document.getText(range);
+    logger.debug(`Found word for general completions: ${word}`);
 
+    if (!ast) {
+      return;
+    }
     const node = ast.findNearestGroup();
 
     if (!node?.parent || !node?.parent?.image) {
@@ -157,6 +169,7 @@ export class CmdlCompletions {
     }
 
     let parentName: string = node.parent.image;
+    logger.info(`idenftifed parent node: ${parentName}`);
 
     if (parentName === word) {
       const groups = typeManager.searchGroups(parentName);

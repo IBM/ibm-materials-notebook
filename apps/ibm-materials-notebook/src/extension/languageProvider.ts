@@ -21,12 +21,19 @@ class CompletionItemProvider implements vscode.CompletionItemProvider {
   ): vscode.ProviderResult<
     vscode.CompletionItem[] | vscode.CompletionList<vscode.CompletionItem>
   > {
-    logger.debug(`getting completion items...`);
+    //Supress completions if line starts with keyword import
+    const lineStart = new vscode.Position(position.line, 0);
+    const importRange = document.getWordRangeAtPosition(lineStart, /import/);
+    const importWord = document.getText(importRange);
+
+    if (importWord) {
+      return;
+    }
+
     const competionItems = this._completionProvider.getCompletions(
       position,
       document
     );
-    logger.debug(`returned completion items: ${competionItems.length}`);
     return competionItems;
   }
 }
@@ -59,7 +66,7 @@ class ImportProvder implements vscode.CompletionItemProvider {
       return;
     }
 
-    const matchingItems = this.library.search(word[1]);
+    const matchingItems = this.library.search(wordArr[1].trim());
 
     const completionItems: vscode.CompletionItem[] = matchingItems.map(
       (item) => {
@@ -75,6 +82,7 @@ class ImportProvder implements vscode.CompletionItemProvider {
         };
       }
     );
+
     return completionItems;
   }
 }
@@ -220,6 +228,9 @@ class SemanticTokenProvider implements vscode.DocumentSemanticTokensProvider {
     token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.SemanticTokens> {
     const builder = this._completionProvider.provideSemanticTokens(document);
+    if (!builder) {
+      return;
+    }
     return builder.build();
   }
 }

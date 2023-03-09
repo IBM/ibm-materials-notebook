@@ -187,29 +187,31 @@ export class Repository {
    * @param contents Contents to write to a JSON output
    * @param fileName string[] Array containing parts of a filename
    * @param rootUri vscode.WorkspaceFolder
+   * @TODO persist entities to workspace level storage
+   * @TODO persist formatted exp to workspace level storage?
    */
   private persistResults(
     contents: any,
     fileName: string[],
     rootUri: vscode.WorkspaceFolder
   ): void {
-    fs.writeFile(
-      path.join(
-        rootUri.uri.fsPath,
-        `${this.library.expPath}/${fileName[0] || test}.json`
-      ),
-      JSON.stringify(contents, null, 2),
-      (err) => {
-        if (err) {
-          logger.error(`Error during writing to file: ${err?.message}`);
-        } else {
-          vscode.window.showInformationMessage(
-            `Successfully exported experiment to JSON`
-          );
-          logger.info(`Successfully exported experiment to JSON`);
-        }
-      }
-    );
+    // fs.writeFile(
+    //   path.join(
+    //     rootUri.uri.fsPath,
+    //     `${this.library.expPath}/${fileName[0] || test}.json`
+    //   ),
+    //   JSON.stringify(contents, null, 2),
+    //   (err) => {
+    //     if (err) {
+    //       logger.error(`Error during writing to file: ${err?.message}`);
+    //     } else {
+    //       vscode.window.showInformationMessage(
+    //         `Successfully exported experiment to JSON`
+    //       );
+    //       logger.info(`Successfully exported experiment to JSON`);
+    //     }
+    //   }
+    // );
   }
 
   /**

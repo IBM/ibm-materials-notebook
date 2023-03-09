@@ -52,7 +52,12 @@ export class CmdlCompiler {
     const lexingResult = lexerInstance.tokenize(text);
     parserInstance.input = lexingResult.tokens;
     const cst = parserInstance.parseRecord();
-    const ast: CmdlAst = this.astVisitor.visit(cst, new CmdlAst());
+    let ast: CmdlAst | undefined;
+    try {
+      ast = this.astVisitor.visit(cst, new CmdlAst());
+    } catch (error) {
+      logger.error(`error creating CMDLAst: ${error}`);
+    }
     return {
       ast,
       parserErrors: parserInstance.errors,

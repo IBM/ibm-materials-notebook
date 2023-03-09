@@ -7,7 +7,7 @@ describe("Tests for cmdl-ast for completion providers", () => {
     const text = `reaction`;
     const { ast } = compiler.parseAST(text);
 
-    const node = ast.findNearestGroup();
+    const node = ast?.findNearestGroup();
 
     expect(node).not.toBeTruthy();
   });
@@ -18,7 +18,7 @@ describe("Tests for cmdl-ast for completion providers", () => {
     }`;
     const { ast, parserErrors } = compiler.parseAST(text);
 
-    const node = ast.findNearestGroup();
+    const node = ast?.findNearestGroup();
 
     expect(parserErrors.length).toBeGreaterThan(0);
     expect(node).toBeTruthy();
@@ -32,7 +32,7 @@ describe("Tests for cmdl-ast for completion providers", () => {
         };
     }`;
     const { ast, parserErrors } = compiler.parseAST(text);
-    const node = ast.findNearestGroup();
+    const node = ast?.findNearestGroup();
 
     expect(parserErrors.length).toBeGreaterThan(0);
     expect(node).toBeTruthy();
@@ -48,7 +48,7 @@ describe("Tests for cmdl-ast for completion providers", () => {
         te
     }`;
     const { ast, parserErrors } = compiler.parseAST(text);
-    const node = ast.findNearestGroup();
+    const node = ast?.findNearestGroup();
 
     expect(parserErrors.length).toBeGreaterThan(0);
     expect(node).toBeTruthy();
@@ -69,7 +69,7 @@ describe("Tests for cmdl-ast for completion providers", () => {
         };
     }`;
     const { ast, parserErrors } = compiler.parseAST(text);
-    const node = ast.findNearestGroup();
+    const node = ast?.findNearestGroup();
 
     expect(parserErrors.length).toBeGreaterThan(0);
     expect(node).toBeTruthy();

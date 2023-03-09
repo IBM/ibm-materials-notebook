@@ -22,6 +22,7 @@ import {
   VariableGroupCstChildren,
   AliasClauseCstChildren,
 } from "./cmdl_parser";
+import { cmdlLogger } from "./logger";
 
 export enum AstNodes {
   RECORD = "RECORD",
@@ -103,27 +104,27 @@ export class CstVisitor extends BaseVisitor {
   }
 
   importStatement(ctx: ImportStatementCstChildren, parent: CmdlNode) {
-    if (ctx.Import.length) {
+    if (ctx?.Import && ctx.Import.length) {
       const importToken = this.extractToken(ctx.Import[0]);
       this.createAstNode(AstNodes.IMPORT, parent, importToken);
     }
 
-    if (ctx.Identifier.length) {
+    if (ctx?.Identifier && ctx.Identifier.length) {
       const idToken = this.extractToken(ctx.Identifier[0]);
       this.createAstNode(AstNodes.IMPORT_ID, parent, idToken);
     }
 
     if (ctx.alias && ctx.alias.length) {
       const aliasNode = this.createAstNode(AstNodes.ALIAS, parent);
-      this.visit(ctx.alias);
+      this.visit(ctx.alias, aliasNode);
     }
 
-    if (ctx.From.length) {
+    if (ctx?.From && ctx.From.length) {
       const fromToken = this.extractToken(ctx.From[0]);
       this.createAstNode(AstNodes.FROM, parent, fromToken);
     }
 
-    if (ctx.StringLiteral.length) {
+    if (ctx?.StringLiteral && ctx.StringLiteral.length) {
       const locationToken = this.extractToken(ctx.StringLiteral[0]);
       this.createAstNode(AstNodes.LOCATION_ID, parent, locationToken);
     }
@@ -317,14 +318,14 @@ export class CstVisitor extends BaseVisitor {
       this.createAstNode(AstNodes.STRING_VALUE, parent, token);
     }
 
-    if (ctx.RSquare && ctx.RSquare.length) {
+    if (ctx?.RSquare && ctx.RSquare.length) {
       let lCurl = this.extractToken(ctx.RSquare[0]);
       this.createAstNode(AstNodes.PROP_RSQUARE, parent, lCurl);
     }
   }
 
   refList(ctx: RefListCstChildren, parent: CmdlNode) {
-    if (ctx.LSquare && ctx.LSquare.length) {
+    if (ctx?.LSquare && ctx.LSquare.length) {
       let lCurl = this.extractToken(ctx.LSquare[0]);
       this.createAstNode(AstNodes.PROP_LSQUARE, parent, lCurl);
     }
@@ -375,7 +376,7 @@ export class CstVisitor extends BaseVisitor {
   }
 
   referencePipe(ctx: ReferencePipeCstChildren, parent: CmdlNode) {
-    if (ctx.referenceDeclaration && ctx.referenceDeclaration.length) {
+    if (ctx?.referenceDeclaration && ctx.referenceDeclaration.length) {
       for (const ref of ctx.referenceDeclaration) {
         let refValue = this.createAstNode(AstNodes.REF, parent);
         this.visit(ref, refValue);

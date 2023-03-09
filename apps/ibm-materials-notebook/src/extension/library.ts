@@ -2,17 +2,11 @@ import * as fs from "fs";
 import * as path from "path";
 import * as vscode from "vscode";
 import { logger } from "../logger";
+import { ModelType } from "./cmdl-language/cmdl-types/groups/group-types";
 
 interface BaseReference {
   name: string;
-  type:
-    | "chemical"
-    | "polymer"
-    | "fragment"
-    | "complex"
-    | "polymer_graph"
-    | "reactor_graph";
-  state: "solid" | "liquid" | "gas";
+  type: ModelType;
 }
 
 /**
@@ -103,28 +97,40 @@ export class Library {
    * @TODO ensure clearing of stale values
    */
   public async initialize() {
+    const cmdlLibPath = "/Users/npark/cmdl_test/cmdl_lib";
     const basePath = vscode.workspace.workspaceFolders
       ? vscode.workspace.workspaceFolders[0].uri.path
       : __dirname;
     const resolvedPath = path.join(basePath, "lib");
 
-    fs.readdir(resolvedPath, async (err, files) => {
+    await this.readLibDir(resolvedPath, "workspace");
+    await this.readLibDir(cmdlLibPath, "extension");
+  }
+
+  /**
+   * Reads file directory and parses all files into storage for importing items
+   * @param path string
+   */
+  private async readLibDir(path: string, level: "workspace" | "extension") {
+    logger.info(`Initializing library on path ${path}`);
+    fs.readdir(path, async (err, files) => {
       if (err) {
         logger.error(
-          `Encountered an error during library initialization: ${err.message}`
+          `Encountered an error during library initialization for path ${path}: ${err.message}`
         );
       } else {
         for (const file of files) {
           try {
-            const readfile = await fs.promises.readFile(
-              `${resolvedPath}/${file}`,
-              {
-                encoding: "utf8",
-              }
-            );
+            const readfile = await fs.promises.readFile(`${path}/${file}`, {
+              encoding: "utf8",
+            });
             const contents = JSON.parse(readfile);
             for (const item of contents) {
-              this.workspaceStorage.setValue(item.name, item);
+              if (level === "extension") {
+                this.globalStorage.setValue(item.name, item);
+              } else {
+                this.workspaceStorage.setValue(item.name, item);
+              }
             }
           } catch (error) {
             logger.warn(`Unable to initialize library contents from ${file}`);
@@ -140,7 +146,19 @@ export class Library {
    * @returns BaseReference | undefined
    */
   public getItem(key: string): BaseReference | undefined {
-    return this.workspaceStorage.getValue<BaseReference>(key);
+    if (
+      this.workspaceStorage.hasValue(key) &&
+      this.globalStorage.hasValue(key)
+    ) {
+      logger.warn(
+        `Both global and workspace storage has entry for ${key}, returning workspace value...`
+      );
+      return this.workspaceStorage.getValue<BaseReference>(key);
+    } else if (this.workspaceStorage.hasValue(key)) {
+      return this.workspaceStorage.getValue<BaseReference>(key);
+    } else {
+      return this.globalStorage.getValue<BaseReference>(key);
+    }
   }
 
   /**
@@ -162,7 +180,8 @@ export class Library {
    * @returns BaseReference[]
    */
   public search(query: string): BaseReference[] {
-    const regex = new RegExp(query, "ig");
+    logger.silly(`searching storage for ${query}`);
+    const regex = new RegExp(query, "i");
     let results = [];
 
     for (const key of this.workspaceStorage.getKeys()) {
@@ -172,6 +191,18 @@ export class Library {
         results.push(item);
       }
     }
+
+    for (const key of this.globalStorage.getKeys()) {
+      let containsQuery = regex.test(key);
+      let item = this.globalStorage.getValue<BaseReference>(key);
+      if (containsQuery && item) {
+        results.push(item);
+      }
+    }
+
+    logger.debug(
+      `search results: \n${results.map((el) => el.name).join("\n- ")}`
+    );
 
     return results;
   }
