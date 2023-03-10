@@ -1,5 +1,6 @@
 import { h, FunctionComponent } from "preact";
 import { ChemicalStructure } from "./chemicals";
+import { StructureTheme } from ".";
 
 function formatName(name: string) {
   return name.split(".").slice(1).join(".");
@@ -59,35 +60,42 @@ const PolymerTreeNode: FunctionComponent<{
 }> = ({ node, conn, sampleId, index }) => {
   const name = formatName(node.name);
   return (
-    <div className="polymer-tree-node">
-      <div className="polymer-node-header">
-        <h5>{name}</h5>
-        <small>
-          DP<sub>n</sub>: {node?.degree_poly ? node.degree_poly.value : 1}
-        </small>
-      </div>
-      <ChemicalStructure
-        smiles={node.smiles}
-        svgId={`tree-node-${index}-${node.name}-${sampleId}`}
-      />
-      {conn.length
-        ? conn.map((el) => {
-            const targetName = formatName(el.target);
-            const sourcePoint = el.source.slice(-1);
-            return (
-              <div className="connection">
-                <h6>Connection</h6>
-                <small>
-                  source point: <strong>{sourcePoint}</strong>
-                </small>
-                <small>target: {targetName}</small>
-                <small>weight: {el.weight}</small>
-                <small>qty: {el.quantity}</small>
-              </div>
-            );
-          })
-        : null}
-    </div>
+    <StructureTheme.Consumer>
+      {(theme) => {
+        return (
+          <div className="polymer-tree-node">
+            <div className="polymer-node-header">
+              <h5>{name}</h5>
+              <small>
+                DP<sub>n</sub>: {node?.degree_poly ? node.degree_poly.value : 1}
+              </small>
+            </div>
+            <ChemicalStructure
+              smiles={node.smiles}
+              svgId={`tree-node-${index}-${node.name}-${sampleId}`}
+              theme={theme}
+            />
+            {conn.length
+              ? conn.map((el) => {
+                  const targetName = formatName(el.target);
+                  const sourcePoint = el.source.slice(-1);
+                  return (
+                    <div className="connection">
+                      <h6>Connection</h6>
+                      <small>
+                        source point: <strong>{sourcePoint}</strong>
+                      </small>
+                      <small>target: {targetName}</small>
+                      <small>weight: {el.weight}</small>
+                      <small>qty: {el.quantity}</small>
+                    </div>
+                  );
+                })
+              : null}
+          </div>
+        );
+      }}
+    </StructureTheme.Consumer>
   );
 };
 
@@ -137,37 +145,44 @@ const PolymerResult: FunctionComponent<{ result: any }> = ({ result }) => {
 
 const ChemicalResult: FunctionComponent<{ result: any }> = ({ result }) => {
   return (
-    <li>
-      <h3>{result.name}</h3>
-      <ChemicalStructure
-        smiles={result.smiles}
-        svgId={`result-${result.name}-${result.sampleId}`}
-      />
-      <ul>
-        {result?.conversion
-          ? result.conversion.map((el: any, index: number) => {
-              return (
-                <Property
-                  name="conversion"
-                  values={el}
-                  key={`${el.name}-prop-${index}`}
-                />
-              );
-            })
-          : null}
-        {result?.yield
-          ? result.yield.map((el: any, index: number) => {
-              return (
-                <Property
-                  name="yield"
-                  values={el}
-                  key={`${el.name}-prop-${index}`}
-                />
-              );
-            })
-          : null}
-      </ul>
-    </li>
+    <StructureTheme.Consumer>
+      {(theme) => {
+        return (
+          <li>
+            <h3>{result.name}</h3>
+            <ChemicalStructure
+              smiles={result.smiles}
+              svgId={`result-${result.name}-${result.sampleId}`}
+              theme={theme}
+            />
+            <ul>
+              {result?.conversion
+                ? result.conversion.map((el: any, index: number) => {
+                    return (
+                      <Property
+                        name="conversion"
+                        values={el}
+                        key={`${el.name}-prop-${index}`}
+                      />
+                    );
+                  })
+                : null}
+              {result?.yield
+                ? result.yield.map((el: any, index: number) => {
+                    return (
+                      <Property
+                        name="yield"
+                        values={el}
+                        key={`${el.name}-prop-${index}`}
+                      />
+                    );
+                  })
+                : null}
+            </ul>
+          </li>
+        );
+      }}
+    </StructureTheme.Consumer>
   );
 };
 

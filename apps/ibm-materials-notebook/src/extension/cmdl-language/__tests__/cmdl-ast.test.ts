@@ -6,6 +6,7 @@ describe("Tests for cmdl-ast for completion providers", () => {
   it("returns a null value when no nearby groups", () => {
     const text = `reaction`;
     const { ast } = compiler.parseAST(text);
+    expect(ast).toBeDefined();
 
     const node = ast?.findNearestGroup();
 
@@ -32,6 +33,8 @@ describe("Tests for cmdl-ast for completion providers", () => {
         };
     }`;
     const { ast, parserErrors } = compiler.parseAST(text);
+    expect(ast).toBeDefined();
+
     const node = ast?.findNearestGroup();
 
     expect(parserErrors.length).toBeGreaterThan(0);
@@ -48,6 +51,8 @@ describe("Tests for cmdl-ast for completion providers", () => {
         te
     }`;
     const { ast, parserErrors } = compiler.parseAST(text);
+    expect(ast).toBeDefined();
+
     const node = ast?.findNearestGroup();
 
     expect(parserErrors.length).toBeGreaterThan(0);
@@ -69,6 +74,8 @@ describe("Tests for cmdl-ast for completion providers", () => {
         };
     }`;
     const { ast, parserErrors } = compiler.parseAST(text);
+    expect(ast).toBeDefined();
+
     const node = ast?.findNearestGroup();
 
     expect(parserErrors.length).toBeGreaterThan(0);

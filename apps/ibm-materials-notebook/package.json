@@ -43,12 +43,13 @@
       }
     ],
     "configuration": {
-      "title": "Materials Notebook",
+      "title": "IBM Materials Notebook",
       "properties": {
         "ibm-materials-notebook.library": {
           "title": "Library Path",
           "type": "string",
-          "default": "./lib"
+          "default": "./lib",
+          "markdownDescription": "Specifies path for entities for experiments in current workspace."
         },
         "ibm-materials-notebook.exp": {
           "title": "Experiment Path",
@@ -59,6 +60,16 @@
           "title": "Output Path",
           "type": "string",
           "default": "./output"
+        },
+        "ibm-materials-notebook.structure-theme": {
+          "title": "Chemical Structure Theme",
+          "default": "dark",
+          "type": "string",
+          "enum": [
+            "dark",
+            "light"
+          ],
+          "markdownDescription": "Set theme for chemical structures drawn by the extension."
         }
       }
     },
