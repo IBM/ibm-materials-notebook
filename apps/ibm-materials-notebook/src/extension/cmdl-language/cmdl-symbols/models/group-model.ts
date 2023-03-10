@@ -16,12 +16,6 @@ export class GroupModel extends BaseModel {
   }
 
   execute(globalAR: ModelActivationRecord): void {
-    logger.verbose(
-      `evaluating group ${this.name}: 
-      -global AR: ${globalAR.type}
-      -model AR: ${this.modelAR.type}`
-    );
-
     const properties: Record<string, any> = {
       name: this.name,
       type: this.type,

@@ -12,12 +12,6 @@ export class ComponentModel extends BaseModel {
   }
 
   execute(globalAR: ModelActivationRecord): void {
-    logger.verbose(
-      `evaluating component group: 
-      -global AR: ${globalAR.type}
-      -model AR: ${this.modelAR.type}`
-    );
-
     const type =
       this.type === ModelType.CHAR_DATA ? this.modelAR.name : this.type;
     const properties: Record<string, any> = {

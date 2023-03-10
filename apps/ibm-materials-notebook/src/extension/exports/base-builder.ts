@@ -1,6 +1,13 @@
+import {
+  CMDLMetaData,
+  CMDLRecordRefs,
+  CMDLRecordTypes,
+} from "../cmdl-language/cmdl-symbols/symbol-types";
+import { TAGS } from "../cmdl-language/cmdl-types";
+
 export interface RecordBuilder {
   record: BaseRecord;
-  setMetadata(arg: any): void;
+  setMetadata(arg: CMDLMetaData): void;
   setReferences(ref: any): void;
   getResult(): any;
   reset(): void;
@@ -8,13 +15,13 @@ export interface RecordBuilder {
 
 interface RecordMetadata {
   dateCreated: string;
-  notebookId: string;
+  notebookId?: string;
   template: string;
-  record_id: string;
+  record_id?: string;
 }
 
 export interface ExperimentMetadata extends RecordMetadata {
-  exp_id: string;
+  exp_id?: string;
 }
 
 /**
@@ -23,19 +30,19 @@ export interface ExperimentMetadata extends RecordMetadata {
 export abstract class BaseRecord {
   title?: string;
   metadata?: RecordMetadata;
-  tags: string[] = [];
-  references: Record<string, any> = {};
+  tags?: TAGS[] = [];
+  references: Record<string, CMDLRecordRefs> = {};
 
   /**
    * Creates metadata for the record
    * @param arg any
    */
-  abstract setMetadata(arg: any): void;
+  abstract setMetadata(arg: CMDLMetaData): void;
   /**
    * Creates Refrences for the record
    * @param arg any
    */
-  abstract setReference(arg: any): void;
+  abstract setReference(arg: CMDLRecordTypes): void;
   /**
    * Basic validation of record export
    */

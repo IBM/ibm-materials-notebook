@@ -7,6 +7,10 @@ import { ExperimentBuilder } from "./exp-builder";
 import { FlowExperimentBuilder } from "./flow-exp-builder";
 import { PolymerGraphBuilder } from "./polymer-graph-builder";
 import { ReactorBuilder } from "./reactor-builder";
+import {
+  CMDLMetaData,
+  CMDLRecordTypes,
+} from "../cmdl-language/cmdl-symbols/symbol-types";
 
 /**
  * Manages building of record objects to write to JSON
@@ -17,11 +21,11 @@ export class RecordDirector {
 
   /**
    * Builds a record output to be written to a JSON file
-   * @param metadata any defined metadata from a notebook document
-   * @param values any
+   * @param metadata CMDLMetaData defined metadata from a notebook document
+   * @param values CMDLRecordTypes[]
    * @returns any
    */
-  build(metadata: any, values: any) {
+  build(metadata: CMDLMetaData, values: CMDLRecordTypes[]) {
     try {
       const template = typeManager.getTempate(metadata.template);
 

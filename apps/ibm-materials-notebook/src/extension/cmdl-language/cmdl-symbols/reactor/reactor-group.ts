@@ -1,5 +1,6 @@
 import Big from "big.js";
-import { Quantity, convertQty } from "../symbol-types";
+import { Quantity } from "../symbol-types";
+import { convertQty } from "../utils";
 import { ReactorComponent } from "./reactor-component";
 import { ChemicalConfig, ChemicalOutput } from "../chemicals/chemical-factory";
 import { ReactorChemicals } from "./reactor-chemicals";

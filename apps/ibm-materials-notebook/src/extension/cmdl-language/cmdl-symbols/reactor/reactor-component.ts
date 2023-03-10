@@ -1,5 +1,6 @@
 import { Unit } from "../units";
-import { CMDLUnit, Quantity, convertQty } from "../symbol-types";
+import { CMDLUnit, Quantity } from "../symbol-types";
+import { convertQty } from "../utils";
 import Big from "big.js";
 import { ReactorNode, Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";

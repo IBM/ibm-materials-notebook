@@ -33,10 +33,12 @@ export type CMDLSolutionReference = {
  */
 export type CMDLSolution = {
   name: string;
-  type: ModelType;
+  type: ModelType.SOLUTION;
   components: ChemicalOutput[];
   componentConfigs: ChemicalConfig[];
 };
+
+export type CMDLSolutionExport = Omit<CMDLSolution, "componentConfigs">;
 
 export class Solution extends BaseModel {
   private solution = new ChemicalSet();
@@ -63,7 +65,7 @@ export class Solution extends BaseModel {
 
       const solutionOutput: CMDLSolution = {
         name: this.name,
-        type: this.type,
+        type: ModelType.SOLUTION,
         components: output,
         componentConfigs: configs,
       };

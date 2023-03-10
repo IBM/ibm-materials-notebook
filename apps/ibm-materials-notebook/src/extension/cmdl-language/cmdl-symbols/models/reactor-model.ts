@@ -2,7 +2,16 @@ import { ReactorContainer } from "../reactor";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { ModelType } from "../../cmdl-types/groups/group-types";
-import { CMDLReactor, CMDLReactorNode } from "../reactor/reactor-container";
+import {
+  CMDLReactor,
+  CMDLReactorNode,
+  SerializedReactor,
+} from "../reactor/reactor-container";
+
+export type CMDLFlowReactor = SerializedReactor & {
+  name: string;
+  type: ModelType.REACTOR_GRAPH;
+};
 
 export class Reactor extends BaseModel {
   private container = new ReactorContainer();

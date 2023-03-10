@@ -7,6 +7,7 @@ import { CMDLUnit } from "../symbol-types";
 import { ModelType } from "../../cmdl-types/groups/group-types";
 import { CMDLChemicalReference } from "./solution-model";
 import { CMDLComplex, ComplexChemical, ComplexPolymer } from "./complex-model";
+import { CMDLRxnProduct } from "./flow-model";
 
 export type REACTION = {
   [PROPERTIES.TEMPERATURE]: CMDLUnit;
@@ -16,11 +17,11 @@ export type REACTION = {
 
 export interface CMDLReaction {
   name: string;
-  type: string;
+  type: ModelType.REACTION;
   temperature?: CMDLUnit | null;
   volume?: CMDLUnit | null;
   reactants: ChemicalOutput[];
-  products: any[];
+  products: CMDLRxnProduct[];
 }
 
 /**
@@ -41,7 +42,7 @@ export class ReactionModel extends BaseModel {
     try {
       const chemicals =
         this.modelAR.getValue<CMDLChemicalReference[]>("chemicals");
-      const products = chemicals
+      const products: CMDLRxnProduct[] = chemicals
         .filter(
           (el: CMDLChemicalReference) =>
             el?.roles && el.roles.includes(TAGS.PRODUCT)
@@ -53,7 +54,8 @@ export class ReactionModel extends BaseModel {
 
           if (product.type === ModelType.COMPLEX) {
             return {
-              ...el,
+              name: el.name,
+              roles: el.roles,
               components: [
                 ...product.components.map(
                   (comp: ComplexPolymer | ComplexChemical) => {
@@ -64,7 +66,8 @@ export class ReactionModel extends BaseModel {
             };
           } else {
             return {
-              ...el,
+              name: el.name,
+              roles: el.roles,
               smiles: product?.smiles ? product.smiles : null,
             };
           }
@@ -90,7 +93,7 @@ export class ReactionModel extends BaseModel {
 
       const reactionOutput: CMDLReaction = {
         name: this.name,
-        type: this.type,
+        type: ModelType.REACTION,
         volume: volume || null,
         temperature: temperature || null,
         products: products || [],

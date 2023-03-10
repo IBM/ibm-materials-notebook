@@ -1,8 +1,37 @@
+import { CMDLRxnProduct } from "../cmdl-language/cmdl-symbols/models/flow-model";
+import { CMDLReaction } from "../cmdl-language/cmdl-symbols/models/reaction-model";
+import {
+  CMDLCharOutput,
+  CMDLSampleResult,
+} from "../cmdl-language/cmdl-symbols/models/sample-model";
+import {
+  CMDLMetaData,
+  CMDLRecordRefs,
+  CMDLRecordSource,
+} from "../cmdl-language/cmdl-symbols/symbol-types";
+import { TAGS } from "../cmdl-language/cmdl-types";
+import { ModelType } from "../cmdl-language/cmdl-types/groups/group-types";
 import { BaseRecord, RecordBuilder, ExperimentMetadata } from "./base-builder";
 
 export interface Results {
-  inputs: any[];
-  outputs: any[];
+  inputs: CMDLSampleResult[];
+  outputs: CMDLSampleResult[];
+}
+
+export interface RecordBase {
+  title?: string;
+  date?: string;
+  tags?: TAGS[];
+  metadata?: ExperimentMetadata;
+  samples: CMDLSampleResult[];
+  charData: CMDLCharOutput[];
+  sources: CMDLRecordSource[];
+  results: Results;
+  references: CMDLRecordRefs[];
+}
+
+export interface ExpRecord extends RecordBase {
+  reactions: CMDLReaction[];
 }
 
 /**
@@ -11,10 +40,10 @@ export interface Results {
 class ExperimentRecord extends BaseRecord {
   date?: string;
   metadata?: ExperimentMetadata;
-  reactions: any[] = [];
-  samples: any[] = [];
-  charData: any[] = [];
-  sources: any[] = [];
+  reactions: CMDLReaction[] = [];
+  samples: CMDLSampleResult[] = [];
+  charData: CMDLCharOutput[] = [];
+  sources: CMDLRecordSource[] = [];
 
   setReference(arg: any): void {
     if (this.references[arg.name]) {
@@ -24,11 +53,15 @@ class ExperimentRecord extends BaseRecord {
     }
   }
 
-  setMetadata(arg: any): void {
+  setMetadata(arg: CMDLMetaData): void {
     this.title = arg.title;
     this.date = arg.date;
     this.tags = arg.tags;
-    this.sources.push(arg.source);
+
+    if (arg.source) {
+      this.sources.push(arg.source);
+    }
+
     this.metadata = {
       notebookId: arg.notebookId,
       dateCreated: new Date(Date.now()).toISOString(),
@@ -46,9 +79,9 @@ class ExperimentRecord extends BaseRecord {
     }
   }
 
-  export(): any {
+  export(): ExpRecord {
     //extract products from reactions
-    let products: any[] = [];
+    let products: CMDLRxnProduct[] = [];
     for (const reaction of this.reactions) {
       products = products.concat(reaction.products);
     }
@@ -61,42 +94,20 @@ class ExperimentRecord extends BaseRecord {
       let product = products.find((el) => el.name === result.name);
 
       if (product) {
-        let newResult: Record<string, any> = {};
-        for (const [key, value] of Object.entries(result)) {
-          if (key !== "properties") {
-            newResult[key] = value;
-          }
-        }
-        outputs.push(newResult);
+        outputs.push(result);
       } else {
         inputs.push(result);
       }
     }
-
-    let newSamples = this.samples.map((el) => {
-      return {
-        name: el.name,
-        sampleId: el.sampleId,
-        timePoint: el.timePoint,
-        properties: el.properties,
-      };
-    });
-
-    const newReactions = this.reactions.map((el) => {
-      return {
-        ...el,
-        type: undefined,
-      };
-    });
 
     return {
       title: this.title,
       tags: this.tags,
       date: this.date,
       metadata: this.metadata,
-      reactions: newReactions,
+      reactions: this.reactions,
       references: Object.values(this.references),
-      samples: newSamples,
+      samples: this.samples,
       results: {
         inputs: inputs,
         outputs: outputs,
@@ -121,17 +132,21 @@ export class ExperimentBuilder implements RecordBuilder {
     this.record.setMetadata(arg);
   }
 
-  setReferences(ref: any): void {
-    if (ref.type === "reaction") {
+  setReferences(ref: CMDLRecordRefs): void {
+    if (ref.type === ModelType.REACTION) {
       this.record.reactions.push(ref);
     }
 
-    if (ref.type === "sample") {
+    if (ref.type === ModelType.SAMPLE) {
       this.record.samples = this.record.samples.concat(ref.results);
       this.record.charData = this.record.charData.concat(ref.charData);
     }
 
-    if (ref.type === "chemical" || ref.type === "polymer") {
+    if (
+      ref.type === ModelType.CHEMICAL ||
+      ref.type === ModelType.POLYMER ||
+      ref.type === ModelType.COMPLEX
+    ) {
       this.record.setReference(ref);
     }
   }

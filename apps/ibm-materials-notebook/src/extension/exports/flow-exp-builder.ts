@@ -1,4 +1,30 @@
+import {
+  CMDLFlowRxn,
+  CMDLRxnProduct,
+} from "../cmdl-language/cmdl-symbols/models/flow-model";
+import { CMDLFlowReactor } from "../cmdl-language/cmdl-symbols/models/reactor-model";
+import {
+  CMDLCharOutput,
+  CMDLSampleResult,
+} from "../cmdl-language/cmdl-symbols/models/sample-model";
+import {
+  CMDLSolution,
+  CMDLSolutionExport,
+} from "../cmdl-language/cmdl-symbols/models/solution-model";
+import {
+  CMDLMetaData,
+  CMDLRecordRefs,
+  CMDLRecordSource,
+} from "../cmdl-language/cmdl-symbols/symbol-types";
+import { ModelType } from "../cmdl-language/cmdl-types/groups/group-types";
 import { BaseRecord, ExperimentMetadata, RecordBuilder } from "./base-builder";
+import { RecordBase } from "./exp-builder";
+
+interface FlowRecord extends RecordBase {
+  solutions: CMDLSolutionExport[];
+  reactor?: CMDLFlowReactor;
+  runs: CMDLFlowRxn[];
+}
 
 /**
  * Builds a record for a notebook document defining a continuous-flow experiment
@@ -6,11 +32,12 @@ import { BaseRecord, ExperimentMetadata, RecordBuilder } from "./base-builder";
 class FlowExperimentRecord extends BaseRecord {
   date?: string;
   metadata?: ExperimentMetadata;
-  solutions: any[] = [];
-  reactor?: any;
-  runs: any[] = [];
-  samples: any[] = [];
-  charData: any[] = [];
+  solutions: CMDLSolution[] = [];
+  reactor?: CMDLFlowReactor;
+  runs: CMDLFlowRxn[] = [];
+  samples: CMDLSampleResult[] = [];
+  charData: CMDLCharOutput[] = [];
+  sources: CMDLRecordSource[] = [];
 
   setReference(arg: any): void {
     if (this.references[arg.name]) {
@@ -20,10 +47,15 @@ class FlowExperimentRecord extends BaseRecord {
     }
   }
 
-  setMetadata(arg: any): void {
+  setMetadata(arg: CMDLMetaData): void {
     this.title = arg.title;
     this.date = arg.date;
     this.tags = arg.tags;
+
+    if (arg.source) {
+      this.sources.push(arg.source);
+    }
+
     this.metadata = {
       notebookId: arg.notebookId,
       dateCreated: new Date(Date.now()).toISOString(),
@@ -41,16 +73,17 @@ class FlowExperimentRecord extends BaseRecord {
     }
   }
 
-  export(): any {
-    const solutions = this.solutions.map((el) => {
+  export(): FlowRecord {
+    const solutions: CMDLSolutionExport[] = this.solutions.map((el) => {
       return {
         name: el.name,
+        type: el.type,
         components: el.components,
       };
     });
 
     //extract products from reactions
-    let products: any[] = [];
+    let products: CMDLRxnProduct[] = [];
     for (const run of this.runs) {
       products = products.concat(run.products);
     }
@@ -63,26 +96,11 @@ class FlowExperimentRecord extends BaseRecord {
       let product = products.find((el) => el.name === result.name);
 
       if (product) {
-        let newResult: Record<string, any> = {};
-        for (const [key, value] of Object.entries(result)) {
-          if (key !== "properties") {
-            newResult[key] = value;
-          }
-        }
-        outputs.push(newResult);
+        outputs.push(result);
       } else {
         inputs.push(result);
       }
     }
-
-    let newSamples = this.samples.map((el) => {
-      return {
-        name: el.name,
-        sampleId: el.sampleId,
-        timePoint: el.timePoint,
-        properties: el.properties,
-      };
-    });
 
     return {
       title: this.title,
@@ -96,8 +114,9 @@ class FlowExperimentRecord extends BaseRecord {
         outputs: outputs,
       },
       references: Object.values(this.references),
-      samples: newSamples,
+      samples: this.samples,
       charData: this.charData,
+      sources: this.sources,
     };
   }
 }
@@ -112,29 +131,29 @@ export class FlowExperimentBuilder implements RecordBuilder {
     this.record = new FlowExperimentRecord();
   }
 
-  setMetadata(arg: any): void {
+  setMetadata(arg: CMDLMetaData): void {
     this.record.setMetadata(arg);
   }
 
-  setReferences(ref: any): void {
-    if (ref.type === "flow_reaction") {
+  setReferences(ref: CMDLRecordRefs): void {
+    if (ref.type === ModelType.FLOW_REACTION) {
       this.record.runs.push(ref);
     }
 
-    if (ref.type === "reactor_graph") {
+    if (ref.type === ModelType.REACTOR_GRAPH) {
       this.record.reactor = ref;
     }
 
-    if (ref.type === "solution") {
+    if (ref.type === ModelType.SOLUTION) {
       this.record.solutions.push(ref);
     }
 
-    if (ref.type === "sample") {
+    if (ref.type === ModelType.SAMPLE) {
       this.record.samples = this.record.samples.concat(ref.results);
       this.record.charData = this.record.charData.concat(ref.charData);
     }
 
-    if (ref.type === "chemical") {
+    if (ref.type === ModelType.CHEMICAL) {
       this.record.setReference(ref);
     }
   }

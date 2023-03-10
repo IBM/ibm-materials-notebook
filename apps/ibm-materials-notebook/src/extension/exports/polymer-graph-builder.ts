@@ -2,6 +2,7 @@ import { BaseRecord, RecordBuilder } from "./base-builder";
 
 /**
  * Builds a record for a notebook document defining a polymer graph
+ * @deprecated
  */
 export class PolymerGraphRecord extends BaseRecord {
   name?: string;

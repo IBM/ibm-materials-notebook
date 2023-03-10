@@ -8,7 +8,30 @@ import {
   CMDLSolutionReference,
 } from "./solution-model";
 import { CMDLRef } from "../symbol-types";
-import { SerializedReactor } from "../reactor/reactor-container";
+import {
+  ReactorGroupOutput,
+  SerializedReactor,
+} from "../reactor/reactor-container";
+import { PROPERTIES, ReactionRoles } from "../../cmdl-types";
+
+type ComplexComponents = {
+  name: string;
+  [PROPERTIES.SMILES]: string;
+};
+
+export type CMDLRxnProduct = {
+  name: string;
+  [PROPERTIES.SMILES]?: string | null;
+  [PROPERTIES.ROLES]: ReactionRoles[];
+  components?: ComplexComponents[];
+};
+
+export type CMDLFlowRxn = {
+  name: string;
+  type: ModelType.FLOW_REACTION;
+  reactions: ReactorGroupOutput[];
+  products: CMDLRxnProduct[];
+};
 
 export class FlowReaction extends BaseModel {
   private reactorContainer = new ReactorContainer();
@@ -27,13 +50,16 @@ export class FlowReaction extends BaseModel {
       this.modelAR.getValue<CMDLSolutionReference[]>("solutions");
     const products = this.modelAR.getValue<CMDLChemicalReference[]>("products");
 
-    const finalProducts = products.map((el: CMDLChemicalReference) => {
-      const product = globalAR.getValue<CMDLChemical | CMDLPolymer>(el.name);
-      return {
-        ...el,
-        smiles: product?.smiles ? product.smiles : null,
-      };
-    });
+    const finalProducts: CMDLRxnProduct[] = products.map(
+      (el: CMDLChemicalReference) => {
+        const product = globalAR.getValue<CMDLChemical | CMDLPolymer>(el.name);
+        return {
+          name: el.name,
+          smiles: product?.smiles ? product.smiles : null,
+          roles: el.roles,
+        };
+      }
+    );
 
     const reactorConfig = globalAR.getValue<SerializedReactor>(reactorRef.ref);
 

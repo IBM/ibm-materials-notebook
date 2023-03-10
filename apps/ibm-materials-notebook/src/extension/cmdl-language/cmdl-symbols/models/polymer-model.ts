@@ -25,10 +25,12 @@ export class Polymer extends BaseModel {
   }
 
   execute(globalAR: ModelActivationRecord): void {
-    const treeRef = this.modelAR.getOptionalValue<CMDLRef>("tree");
+    const treeRef = this.modelAR.getOptionalValue<CMDLRef>(PROPERTIES.TREE);
     const treeValues =
       this.modelAR.getOptionalValue<CMDLPolymerTreeValue[]>("treeValues");
-    const bigSmilesStr = this.modelAR.getOptionalValue<string>("big_smiles");
+    const bigSmilesStr = this.modelAR.getOptionalValue<string>(
+      PROPERTIES.BIG_SMILES
+    );
 
     let validatedStr: string | undefined;
     if (bigSmilesStr) {
@@ -72,9 +74,9 @@ export class Polymer extends BaseModel {
     };
 
     for (const [name, value] of this.modelAR.all()) {
-      if (name === "tree") {
+      if (name === PROPERTIES.TREE) {
         properties[name] = this.polymerContainer.treeToJSON();
-      } else if (name === "big_smiles" && validatedStr) {
+      } else if (name === PROPERTIES.BIG_SMILES && validatedStr) {
         properties[name] = validatedStr;
       } else {
         properties[name] = value;

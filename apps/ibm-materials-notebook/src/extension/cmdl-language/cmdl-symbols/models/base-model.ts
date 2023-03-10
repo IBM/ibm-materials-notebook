@@ -4,7 +4,7 @@ import {
   ChemStates,
   NamedQuantity,
 } from "../chemicals/chemical-factory";
-import { ModelType } from "../../cmdl-types/groups/group-types";
+import { GROUPS, ModelType } from "../../cmdl-types/groups/group-types";
 import { PROPERTIES } from "../../cmdl-types";
 import { CMDLUnit, CMDLUnitless } from "../symbol-types";
 import Big from "big.js";
@@ -68,7 +68,7 @@ export abstract class BaseModel {
   protected createChemicalConfigs(
     chemicals: CMDLChemicalReference[],
     globalAR: ModelActivationRecord,
-    params?: { volume?: any; temperature?: any }
+    params?: { volume?: CMDLUnit; temperature?: CMDLUnit }
   ): ChemicalConfig[] {
     let configs: ChemicalConfig[] = [];
 
@@ -89,8 +89,24 @@ export abstract class BaseModel {
             : null,
         state: parentValues.state,
         roles: chemical.roles,
-        temperature: params?.temperature ? params.temperature : undefined,
-        volume: params?.volume ? params.volume : undefined,
+        temperature: params?.temperature
+          ? {
+              value: Big(params.temperature.value),
+              unit: params.temperature.unit,
+              uncertainty: params.temperature?.uncertainty
+                ? Big(params.temperature.uncertainty)
+                : null,
+            }
+          : undefined,
+        volume: params?.volume
+          ? {
+              value: Big(params.volume.value),
+              unit: params.volume.unit,
+              uncertainty: params.volume?.uncertainty
+                ? Big(params.volume.uncertainty)
+                : null,
+            }
+          : undefined,
         limiting: chemical?.limiting ? true : false,
         quantity,
       };
@@ -131,10 +147,10 @@ export abstract class BaseModel {
           return chemical.mn_avg[0].value;
         } else {
           let nmrMn = chemical.mn_avg.filter(
-            (el: any) => el.technique === "nmr"
+            (el: any) => el.technique === GROUPS.NMR
           );
           let gpcMn = chemical.mn_avg.filter(
-            (el: any) => el.technique === "gpc"
+            (el: any) => el.technique === GROUPS.GPC
           );
 
           if (nmrMn.length) {

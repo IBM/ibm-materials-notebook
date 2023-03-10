@@ -2,6 +2,7 @@ import { BaseRecord, RecordBuilder } from "./base-builder";
 
 /**
  * Builds a record for a notebook document defining a material
+ * @deprecated
  */
 export class MaterialRecord extends BaseRecord {
   structure?: Record<string, any>;

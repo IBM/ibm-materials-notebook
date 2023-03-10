@@ -13,6 +13,20 @@ type CharData = {
   references?: any[];
 };
 
+export type CMDLSampleResult = {
+  name: string;
+  type: ModelType;
+  [PROPERTIES.TIME_POINT]: CMDLUnit | null;
+  sampleId: string;
+};
+
+export type CMDLSampleOutput = {
+  name: string;
+  type: ModelType.SAMPLE;
+  results: CMDLSampleResult[];
+  charData: CMDLCharOutput[];
+};
+
 type RefResult = {
   technique: string;
   source: string;
@@ -22,11 +36,12 @@ type RefResult = {
   path: string[];
 };
 
-type CharOutput = {
+export type CMDLCharOutput = {
   name: string;
   technique: string;
   sampleId: string;
   references: string[];
+  [key: string]: string | string[];
 };
 
 /**
@@ -53,7 +68,7 @@ export class SampleOutput extends BaseModel {
       const results = this.createResults(charData, globalAR);
       const formattedCharData = this.formatCharacterizationData(charData);
 
-      const sampleOutput = {
+      const sampleOutput: CMDLSampleOutput = {
         name: this.name,
         type: ModelType.SAMPLE,
         results: results,
@@ -75,9 +90,9 @@ export class SampleOutput extends BaseModel {
    * @param charData CharData[]
    * @returns any[]
    */
-  private formatCharacterizationData(charData: CharData[]) {
+  private formatCharacterizationData(charData: CharData[]): CMDLCharOutput[] {
     return charData.map((char) => {
-      const charRecord: Record<string, any> = {
+      const charRecord: CMDLCharOutput = {
         technique: char.type,
         name: char.name,
         sampleId: this.name,
@@ -118,7 +133,7 @@ export class SampleOutput extends BaseModel {
         CMDLChemical | CMDLComplex | CMDLPolymer
       >(key);
 
-      const finalResult = {
+      const finalResult: CMDLSampleResult = {
         name: key,
         type: globalRef.type,
         time_point: timePoint || null,
@@ -154,7 +169,7 @@ export class SampleOutput extends BaseModel {
 
           for (const [key, value] of Object.entries(ref)) {
             if (key !== "name" && key !== "path") {
-              let refResult = {
+              let refResult: RefResult = {
                 technique: charExp.type,
                 source: charExp.name,
                 property: key,

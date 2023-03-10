@@ -1,4 +1,5 @@
 import { cmdlLogger as logger } from "../../logger";
+import { CMDLRecordTypes } from "../symbol-types";
 
 /**
  * Activation record for managing computed model values and properties for each scope
@@ -282,12 +283,12 @@ export class ModelARManager {
    * Creates an array of cell AR values.
    * @returns any[]
    */
-  public all() {
-    let allValues: any[] = [];
+  public all<T>() {
+    let allValues: T[] = [];
 
     for (const record of this.records.values()) {
       for (const [key, value] of record.all()) {
-        allValues.push(value);
+        allValues.push(value as T);
       }
     }
 

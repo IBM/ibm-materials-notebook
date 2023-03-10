@@ -13,18 +13,11 @@ import { RecordDirector } from "./exports/record-director";
 import { VariableDict } from "./commands";
 import { Library } from "./library";
 import { CmdlCompletions } from "./cmdl-language/cmdl-completions";
-import { PROPERTIES } from "./cmdl-language/cmdl-types";
-
-type CMDLMetaData = {
-  [PROPERTIES.TITLE]?: string;
-  [PROPERTIES.NAME]?: string;
-  [PROPERTIES.DATE]?: string;
-  [PROPERTIES.OWNER]?: string;
-  [PROPERTIES.TEMPLATE]?: string;
-  [PROPERTIES.TAGS]?: string;
-  [PROPERTIES.RECORD_ID]?: string;
-  [PROPERTIES.EXP_ID]?: string;
-};
+import {
+  CMDLMetaData,
+  CMDLRecordTypes,
+} from "./cmdl-language/cmdl-symbols/symbol-types";
+import { TAGS } from "./cmdl-language/cmdl-types";
 
 /**
  * Manages values for individual notebook in workspace
@@ -320,10 +313,10 @@ export class Experiment {
       return;
     }
 
-    const finalMetadata: Record<string, string> = { ...metadata };
-    finalMetadata.notebookId = this.id;
+    //TODO: force notebookId to be readonly after merge with metadata
+    metadata.notebookId = this.id;
     const recordManager = new RecordDirector();
-    const values = this._globalAR.all();
+    const values = this._globalAR.all<CMDLRecordTypes>();
 
     const record = recordManager.build(metadata, values);
     return record;

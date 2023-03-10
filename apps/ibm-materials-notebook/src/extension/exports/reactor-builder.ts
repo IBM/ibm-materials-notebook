@@ -2,6 +2,7 @@ import { BaseRecord, RecordBuilder } from "./base-builder";
 
 /**
  * Builds a record for a notebook document defining a reactor graph
+ * @deprecated
  */
 export class ReactorRecord extends BaseRecord {
   name?: string;
