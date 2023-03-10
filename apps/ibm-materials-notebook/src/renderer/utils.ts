@@ -1,4 +1,4 @@
-import { SvgDrawer, parse } from "./smiles-drawer";
+import { SvgDrawer, parse } from "ts-smiles-drawer";
 
 /**
  * Function to render SMILES in canvas elements

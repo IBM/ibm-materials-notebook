@@ -1,7 +1,7 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { PolymerContainer } from "../polymers";
-import { BigSMILES } from "bigsmiles";
+import { BigSMILES } from "ts-bigsmiles";
 import { ModelType } from "../../cmdl-types/groups/group-types";
 import { CMDLRef, CMDLUnitless } from "../symbol-types";
 import { CMDLPolymerGraph } from "./polymer-graph-model";
