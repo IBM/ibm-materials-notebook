@@ -74,7 +74,8 @@ export class ReactionModel extends BaseModel {
         });
 
       const reactants = chemicals.filter(
-        (el: any) => el?.roles && !el.roles.includes("product")
+        (el: CMDLChemicalReference) =>
+          el?.roles && !el.roles.includes(TAGS.PRODUCT)
       );
 
       const volume = this.modelAR.getOptionalValue<CMDLUnit>(PROPERTIES.VOLUME);

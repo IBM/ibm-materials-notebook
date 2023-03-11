@@ -24,7 +24,7 @@ export class ImportOp implements RecordNode {
   errors: BaseError[] = [];
   protected source: string;
   protected sourceToken: CmdlToken;
-  protected sourceData?: any;
+  protected sourceData?: Record<string, any>;
 
   constructor(token: CmdlToken, sourceToken: CmdlToken, alias?: CmdlToken) {
     this.name = token.image;
@@ -115,7 +115,7 @@ export class ImportOp implements RecordNode {
     return this.type;
   }
 
-  public export() {
+  public export(): Record<string, any> {
     if (!this.sourceData || !this.type) {
       throw new Error(
         `Import ${this.name} does not have source data available`

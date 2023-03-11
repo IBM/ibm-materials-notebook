@@ -17,7 +17,6 @@ import {
   CMDLMetaData,
   CMDLRecordTypes,
 } from "./cmdl-language/cmdl-symbols/symbol-types";
-import { TAGS } from "./cmdl-language/cmdl-types";
 
 /**
  * Manages values for individual notebook in workspace
@@ -145,9 +144,9 @@ export class Experiment {
   /**
    * Method to retrieve cell output from output table
    * @param uri uri string from vscode text document
-   * @returns any
+   * @returns unknown[]
    */
-  getCellOutput(uri: string) {
+  getCellOutput(uri: string): unknown[] {
     const outputRecord = this._globalAR.getRecord(uri);
     // logger.debug(outputRecord.print());
     return [...outputRecord.values()];
@@ -281,7 +280,7 @@ export class Experiment {
    * Serializes notebook to an object for writing to file
    * @TODO improve output types
    * @TODO ensure new entities are saved to workspace storage
-   * @returns Record<string, any>
+   * @returns FlowExp | ExpRecord | undefined
    */
   toJSON() {
     const hasVariables = this._symbolTable.hasVariables();

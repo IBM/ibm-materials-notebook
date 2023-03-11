@@ -32,6 +32,7 @@ import { CmdlToken } from "../../composite-tree-visitor";
 import { ModelType } from "../../cmdl-types/groups/group-types";
 import { ReactorContainer } from "../reactor";
 import { CMDLNodeTree } from "../symbol-types";
+import { SerializedReactor } from "../reactor/reactor-container";
 
 /**
  * Visits record tree and constructs symbol table for entire document
@@ -313,7 +314,7 @@ export class SymbolTableBuilder implements AstVisitor {
     }
 
     const reactor = new ReactorContainer();
-    reactor.deserialize(importData);
+    reactor.deserialize(importData as SerializedReactor);
     const keyObj = reactor.getReactorNodeTree();
 
     const declSymbol = new DeclarationSymbol(

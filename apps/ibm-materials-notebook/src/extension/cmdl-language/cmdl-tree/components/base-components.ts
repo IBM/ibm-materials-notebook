@@ -22,7 +22,7 @@ export interface RecordNode {
   doValidation(library?: Library): Promise<BaseError[]>;
   setParent(arg: RecordNode | CmdlTree): void;
   accept(visitor: AstVisitor): void;
-  print(): any;
+  print(): Record<string, any>;
 }
 
 export abstract class Group implements RecordNode {
@@ -85,7 +85,7 @@ export abstract class Group implements RecordNode {
     return this.errors;
   }
 
-  public print() {
+  public print(): Record<string, any> {
     let parentName = null;
 
     if (this.parent && this.parent instanceof Group) {
@@ -153,7 +153,10 @@ export abstract class Property implements RecordNode {
     return this.errors;
   }
 
-  public print(): any {
+  public print(): Record<
+    string,
+    string[] | string | boolean | ReferenceValue[] | null
+  > {
     let parentName = null;
 
     if (this.parent && this.parent instanceof Group) {

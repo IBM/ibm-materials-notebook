@@ -4,7 +4,7 @@ import { logger } from "../logger";
 import { randomUUID } from "crypto";
 
 interface RawNotebookData {
-  metadata: Record<string, any>;
+  metadata: Record<string, string>;
   cells: RawNotebookCell[];
 }
 

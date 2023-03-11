@@ -14,7 +14,7 @@ export interface ReactorNode {
   parent: ReactorNode | null;
   volume: Quantity | null;
   setParent(arg: ReactorNode): void;
-  getInputs(): any;
+  getInputs(): ReactorChemicals | ReactorChemicals[];
 }
 
 /**

@@ -19,7 +19,7 @@ export class ModelActivationRecord {
   /**
    * Method to compile values into an array on the AR. Creates an array if does not exist.
    * @param key string
-   * @param value any - item to be merged into an array
+   * @param value T - item to be merged into an array
    */
   public mergeArrayValue<T>(key: string, value: T) {
     let arrayValues = this.properties.get(key);
@@ -43,7 +43,7 @@ export class ModelActivationRecord {
   /**
    * Attempts to retrieve a property on the AR. Throws an error if undefined.
    * @param key string
-   * @returns any
+   * @returns T
    */
   public getValue<T>(key: string) {
     const property = this.properties.get(key);
@@ -214,11 +214,11 @@ export class ModelARManager {
   /**
    * Helper method to search all AR for a value
    * @param key string
-   * @returns any
+   * @returns T
    */
-  private searchRecords(key: string) {
+  private searchRecords<T>(key: string) {
     for (const record of this.records.values()) {
-      let value = record.getOptionalValue(key);
+      let value = record.getOptionalValue<T>(key);
 
       if (value) {
         return value;
@@ -233,28 +233,28 @@ export class ModelARManager {
    * @returns any
    */
   public getValue<T>(key: string) {
-    const value = this.searchRecords(key);
+    const value = this.searchRecords<T>(key);
 
     if (!value) {
       throw new Error(`Unable to locate ${key}`);
     }
 
-    return value as T;
+    return value;
   }
 
   /**
    * Searches all cell AR's for value, returns undefined if not found.
    * @param key string
-   * @returns any
+   * @returns T
    */
   public getOptionalValue<T>(key: string) {
-    const value = this.searchRecords(key);
+    const value = this.searchRecords<T>(key);
 
     if (!value) {
       return undefined;
     }
 
-    return value as T;
+    return value;
   }
 
   /**
@@ -281,9 +281,9 @@ export class ModelARManager {
 
   /**
    * Creates an array of cell AR values.
-   * @returns any[]
+   * @returns T[]
    */
-  public all<T>() {
+  public all<T>(): T[] {
     let allValues: T[] = [];
 
     for (const record of this.records.values()) {

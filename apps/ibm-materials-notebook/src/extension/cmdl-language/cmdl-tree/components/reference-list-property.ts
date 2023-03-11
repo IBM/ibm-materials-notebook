@@ -75,7 +75,7 @@ export class RefListProperty extends Property {
     return this.value.map((el) => el.export());
   }
 
-  public print() {
+  public print(): Record<string, any> {
     return {
       name: this.name,
       value: this.value.map((el) => el.print()),

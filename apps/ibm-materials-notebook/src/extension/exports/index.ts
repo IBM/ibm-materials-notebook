@@ -1,2 +1,1 @@
-import { RecordDirector } from "./record-director";
-export { RecordDirector };
+export { RecordDirector } from "./record-director";

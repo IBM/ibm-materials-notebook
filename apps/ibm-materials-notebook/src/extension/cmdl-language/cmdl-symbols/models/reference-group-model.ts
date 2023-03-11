@@ -1,5 +1,4 @@
 import { ModelActivationRecord } from "./model-AR";
-import { cmdlLogger as logger } from "../../logger";
 import { ModelType } from "../../cmdl-types/groups/group-types";
 import { BaseModel } from "./base-model";
 
@@ -20,14 +19,6 @@ export class ReferenceGroupModel extends BaseModel {
 
   //TODO: enable specific formating for result ouptuts
   execute(globalAR: ModelActivationRecord): void {
-    logger.verbose(
-      `evaluating reference group: 
-      -global AR: ${globalAR.type}
-      -model AR: ${this.modelAR.type}
-      -base: ${this.name}
-      -path: ${this.path.join(".")}`
-    );
-
     const properties: Record<string, any> = {
       name: this.name.slice(1),
       path: this.path,

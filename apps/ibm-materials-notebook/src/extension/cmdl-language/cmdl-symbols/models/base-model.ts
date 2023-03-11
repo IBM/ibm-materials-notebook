@@ -136,6 +136,13 @@ export abstract class BaseModel {
     return configs;
   }
 
+  /**
+   * Method for selecting an molecular weight value for polymers for
+   * stoichiometry calculations
+   * @TODO Fix typing and data formatting issues
+   * @param chemical CMDLChemical | CMDLPolymer
+   * @returns any
+   */
   private getMw(chemical: CMDLChemical | CMDLPolymer) {
     if (chemical.type === ModelType.CHEMICAL) {
       return chemical.molecular_weight.value;
@@ -165,6 +172,12 @@ export abstract class BaseModel {
     }
   }
 
+  /**
+   * Method for examining the CMDLChemicalReference and determining the quantity type
+   * for a chemical. Returns the quantity reformatted for stoichiometry calculations.
+   * @param ref CMDLChemicalRefrerence
+   * @returns NamedQuantity
+   */
   private extractQuantity(ref: CMDLChemicalReference): NamedQuantity {
     let name: QuantityNames;
     if (ref?.mass) {

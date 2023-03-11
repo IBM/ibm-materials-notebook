@@ -59,10 +59,10 @@ export class ErrorTable {
 
   /**
    * Serializes error table to an object for logging.
-   * @returns any
+   * @returns Record<string, BaseError[]>
    */
   print() {
-    let output: Record<string, any> = {};
+    let output: Record<string, BaseError[]> = {};
 
     for (const [key, value] of this._expErrors.entries()) {
       output[key] = value;

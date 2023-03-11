@@ -4,6 +4,7 @@ import { Property, Group } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../../cmdl-symbols";
 import { SymbolReference } from "./reference-group";
 import { ModelVisitor } from "../../cmdl-symbols";
+import { BaseError } from "../../errors";
 
 /**
  * Handles reference properties within CMDL record trees
@@ -17,16 +18,16 @@ export class RefProperty extends Property implements SymbolReference {
     super(token);
   }
 
-  setValue(token: CmdlToken) {
+  setValue(token: CmdlToken): void {
     this.value = token.image;
     this.valueToken = token;
   }
 
-  setPath(tokens: CmdlToken[]) {
+  setPath(tokens: CmdlToken[]): void {
     this.path = tokens;
   }
 
-  public async doValidation() {
+  public async doValidation(): Promise<BaseError[]> {
     this.getPropertyType();
     this.validateProperty();
     this.validateRef();
@@ -34,7 +35,7 @@ export class RefProperty extends Property implements SymbolReference {
     return this.errors;
   }
 
-  private validateRef() {
+  private validateRef(): void {
     if (!this.value || !this.valueToken) {
       let msg = `${this.name} is missing a value!`;
       let err = new InvalidPropertyError(msg, this.nameToken);
@@ -42,15 +43,15 @@ export class RefProperty extends Property implements SymbolReference {
     }
   }
 
-  public getPath() {
+  public getPath(): string[] {
     return this.path.map((el) => el.image);
   }
 
-  public getValues() {
+  public getValues(): string {
     return this.value;
   }
 
-  public print(): any {
+  public print(): Record<string, any> {
     let parentName = null;
 
     if (this.parent && this.parent instanceof Group) {

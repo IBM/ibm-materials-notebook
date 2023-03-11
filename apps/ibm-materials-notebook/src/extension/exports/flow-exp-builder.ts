@@ -20,7 +20,7 @@ import { ModelType } from "../cmdl-language/cmdl-types/groups/group-types";
 import { BaseRecord, ExperimentMetadata, RecordBuilder } from "./base-builder";
 import { RecordBase } from "./exp-builder";
 
-interface FlowRecord extends RecordBase {
+export interface FlowRecord extends RecordBase {
   solutions: CMDLSolutionExport[];
   reactor?: CMDLFlowReactor;
   runs: CMDLFlowRxn[];
@@ -158,7 +158,7 @@ export class FlowExperimentBuilder implements RecordBuilder {
     }
   }
 
-  getResult() {
+  getResult(): FlowRecord {
     const isValid = this.record.validate();
 
     if (isValid) {

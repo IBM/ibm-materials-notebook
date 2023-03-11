@@ -4,6 +4,8 @@ import {
   CMDLRecordTypes,
 } from "../cmdl-language/cmdl-symbols/symbol-types";
 import { TAGS } from "../cmdl-language/cmdl-types";
+import { ExpRecord } from "./exp-builder";
+import { FlowRecord } from "./flow-exp-builder";
 
 export interface RecordBuilder {
   record: BaseRecord;
@@ -50,5 +52,5 @@ export abstract class BaseRecord {
   /**
    * Returns the compilied record values
    */
-  abstract export(): any;
+  abstract export(): ExpRecord | FlowRecord;
 }

@@ -151,7 +151,7 @@ export class ExperimentBuilder implements RecordBuilder {
     }
   }
 
-  getResult() {
+  getResult(): ExpRecord {
     const isValid = this.record.validate();
 
     if (isValid) {

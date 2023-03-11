@@ -54,7 +54,7 @@ export class AngleProperty extends Property {
     return this.errors;
   }
 
-  print() {
+  print(): Record<string, any> {
     return {
       name: this.name,
       value: this.value,

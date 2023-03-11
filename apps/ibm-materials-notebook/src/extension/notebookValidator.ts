@@ -30,7 +30,7 @@ export class Validation {
    * @param repository Repository instance of the repository for the workspace
    */
   constructor(readonly repository: Repository) {
-    let handle: any;
+    let handle: NodeJS.Timeout;
 
     this._disposables.push(
       vscode.workspace.onDidChangeTextDocument((doc) => {

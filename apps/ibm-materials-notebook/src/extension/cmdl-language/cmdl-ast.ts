@@ -2,6 +2,13 @@ import { parseStringImage } from "./cmdl-tree/utils";
 import { CmdlToken } from "./composite-tree-visitor";
 import { AstNodes } from "./cst-visitor";
 
+type PrintNode = {
+  name: string;
+  parent: string | null;
+  token: Record<string, string | number | undefined> | null;
+  children: PrintNode[] | null;
+};
+
 /**
  * Node in CMDLAst Tree
  */
@@ -38,9 +45,9 @@ export class CmdlNode {
 
   public findNearestWord() {}
 
-  public print(): any {
-    let children: any[] | null = null;
-    let token: Record<string, any> | null = null;
+  public print(): PrintNode {
+    let children: PrintNode[] | null = null;
+    let token: Record<string, string | number | undefined> | null = null;
 
     if (this.children.length) {
       children = this.children.map((child: CmdlNode) => child.print());

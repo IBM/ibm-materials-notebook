@@ -114,6 +114,11 @@ export class Repository {
         //TODO: determine whether to export to JSON or CSV
         const output = experiment.toJSON();
 
+        if (!output) {
+          logger.error(`Encountered error during extracting record output!`);
+          return;
+        }
+
         const rootUri = vscode.workspace.getWorkspaceFolder(event.uri);
 
         if (!rootUri) {
