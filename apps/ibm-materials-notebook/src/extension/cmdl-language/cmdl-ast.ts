@@ -24,7 +24,11 @@ export class CmdlNode {
 
   constructor(public name: string) {}
 
-  public addTokenValues(arg: CmdlToken) {
+  /**
+   * Copies token values to CmdlNode
+   * @param arg CmdlToken
+   */
+  public addTokenValues(arg: CmdlToken): void {
     this.image = arg.image;
     this.startLine = arg.startLine;
     this.endLine = arg.endLine;
@@ -38,13 +42,19 @@ export class CmdlNode {
     }
   }
 
-  public add(node: CmdlNode) {
+  /**
+   * Adds a child node to current CmdlNode
+   * @param node CmdlNode
+   */
+  public add(node: CmdlNode): void {
     node.parent = this;
     this.children.push(node);
   }
 
-  public findNearestWord() {}
-
+  /**
+   * Converts CmdlNode to value printable to console
+   * @returns PrintNode
+   */
   public print(): PrintNode {
     let children: PrintNode[] | null = null;
     let token: Record<string, string | number | undefined> | null = null;
@@ -90,9 +100,9 @@ export class CmdlAst {
   /**
    * Retrieves and returns CMDLNode in CmdlAst by text offset. Returns undefined if not found
    * @param offset number
-   * @returns CMDLNode | undefined
+   * @returns CmdlNode | undefined
    */
-  public getByOffset(offset: number) {
+  public getByOffset(offset: number): CmdlNode | undefined {
     let queue = [this.root];
     let curr: CmdlNode | null | undefined;
     while (queue.length) {
@@ -121,9 +131,9 @@ export class CmdlAst {
   /**
    * Finds a CMDLNode in the CmdlAst by token image
    * @param image string
-   * @returns CMDLNode | undefined
+   * @returns CmdlNode | undefined
    */
-  public findNodeByImage(image: string) {
+  public findNodeByImage(image: string): CmdlNode | undefined {
     let queue = [this.root];
     let curr: CmdlNode | null | undefined;
     while (queue.length) {
@@ -147,9 +157,9 @@ export class CmdlAst {
 
   /**
    * Finds nearest group in CMDL text for completion items
-   * @returns CMDLNode
+   * @returns CmdlNode | undefined
    */
-  public findNearestGroup() {
+  public findNearestGroup(): CmdlNode | undefined {
     let stack: CmdlNode[] = [];
     let queue: CmdlNode[] = [];
     let node: CmdlNode | undefined;

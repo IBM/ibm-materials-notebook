@@ -18,12 +18,20 @@ export class RefProperty extends Property implements SymbolReference {
     super(token);
   }
 
-  setValue(token: CmdlToken): void {
+  /**
+   * Sets value and token for reference property
+   * @param token CmdlToken
+   */
+  public setValue(token: CmdlToken): void {
     this.value = token.image;
     this.valueToken = token;
   }
 
-  setPath(tokens: CmdlToken[]): void {
+  /**
+   * Sets path for reference property
+   * @param tokens CmdlToken[]
+   */
+  public setPath(tokens: CmdlToken[]): void {
     this.path = tokens;
   }
 
@@ -35,6 +43,9 @@ export class RefProperty extends Property implements SymbolReference {
     return this.errors;
   }
 
+  /**
+   * Validates reference property
+   */
   private validateRef(): void {
     if (!this.value || !this.valueToken) {
       let msg = `${this.name} is missing a value!`;
@@ -43,10 +54,18 @@ export class RefProperty extends Property implements SymbolReference {
     }
   }
 
+  /**
+   * Gets the path of the reference property
+   * @returns string[]
+   */
   public getPath(): string[] {
     return this.path.map((el) => el.image);
   }
 
+  /**
+   * Gets the value of the reference property
+   * @returns string
+   */
   public getValues(): string {
     return this.value;
   }
@@ -65,7 +84,7 @@ export class RefProperty extends Property implements SymbolReference {
     };
   }
 
-  accept(visitor: AstVisitor): void {
+  public accept(visitor: AstVisitor): void {
     if (visitor instanceof SymbolTableBuilder) {
       visitor.visitRefProp(this);
     } else if (visitor instanceof ModelVisitor) {

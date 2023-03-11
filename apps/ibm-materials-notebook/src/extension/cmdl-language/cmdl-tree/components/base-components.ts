@@ -14,14 +14,33 @@ import { AstVisitor } from "../../cmdl-symbols";
 import { ReferenceValue } from "./reference-list-property";
 import { Library } from "../../../library";
 
+/**
+ * Interface for a record node in the CMDL component AST
+ */
 export interface RecordNode {
   name: string;
   nameToken: CmdlToken;
   parent: RecordNode | CmdlTree | null;
   errors: BaseError[];
+
+  /**
+   * Perform validation logic on record node
+   * @param library Library
+   */
   doValidation(library?: Library): Promise<BaseError[]>;
+  /**
+   * Set parent node of current node
+   * @param arg RecordNode | CMDLTree
+   */
   setParent(arg: RecordNode | CmdlTree): void;
+  /**
+   * Accept a visitor to current record node in AST
+   * @param visitor AstVisitor
+   */
   accept(visitor: AstVisitor): void;
+  /**
+   * Convert node to object for printing to console
+   */
   print(): Record<string, any>;
 }
 
@@ -39,6 +58,10 @@ export abstract class Group implements RecordNode {
     this.nameToken = token;
   }
 
+  /**
+   * Addes a node to a Group component
+   * @param component RecordNode
+   */
   public add(component: RecordNode): void {
     this.children.push(component);
     component.setParent(this);
@@ -48,7 +71,10 @@ export abstract class Group implements RecordNode {
     this.parent = arg;
   }
 
-  protected setGroupProps() {
+  /**
+   * Sets the allowed property types on the group for validation purposes
+   */
+  protected setGroupProps(): void {
     const groupProps = this.typeManager.getGroup(this.name);
 
     if (!groupProps) {
@@ -60,6 +86,10 @@ export abstract class Group implements RecordNode {
     }
   }
 
+  /**
+   * Validates all current children of current node. Allows injection of custom validation logic.
+   * @param injectValidation (child: RecordNode, props: Set<string>) => void
+   */
   protected async validateChildren(
     injectValidation?: (child: RecordNode, props: Set<string>) => void
   ): Promise<void> {
@@ -75,7 +105,12 @@ export abstract class Group implements RecordNode {
     }
   }
 
-  protected createDuplicationErr(child: RecordNode, id?: string) {
+  /**
+   * Creates a DuplicationError if child node already exists on the group
+   * @param child RecordNode
+   * @param id string
+   */
+  protected createDuplicationErr(child: RecordNode, id?: string): void {
     let msg = `${child.name} ${id ? id : ""} already exists on ${this.name}`;
     let err = new DuplicationError(msg, child.nameToken);
     this.errors.push(err);
@@ -125,7 +160,11 @@ export abstract class Property implements RecordNode {
     this.parent = arg;
   }
 
-  protected getPropertyType() {
+  /**
+   * Retrieves property type information for the current node
+   * @returns void
+   */
+  protected getPropertyType(): void {
     const propertyType = this.typeManager.getProperty(this.name);
 
     if (!propertyType) {
@@ -138,7 +177,11 @@ export abstract class Property implements RecordNode {
     this.propertyType = propertyType;
   }
 
-  protected validateProperty() {
+  /**
+   * Validates current property value
+   * @returns void
+   */
+  protected validateProperty(): void {
     if (!this.value) {
       let msg = `missing value for ${this.name}`;
       let err = new MissingValueError(msg, this.nameToken);
@@ -170,6 +213,10 @@ export abstract class Property implements RecordNode {
     };
   }
 
-  abstract getValues(): any;
+  /**
+   * Retrieves values for the current property
+   * @returns unknown
+   */
+  abstract getValues(): unknown;
   abstract accept(visitor: AstVisitor): void;
 }

@@ -20,12 +20,17 @@ export class ListProperty extends Property {
     super(token);
   }
 
-  setValue(val: string[], token: CmdlToken[]) {
+  /**
+   * Sets value and token for the list property
+   * @param val string[]
+   * @param token CmdlToken[]
+   */
+  public setValue(val: string[], token: CmdlToken[]): void {
     this.value = val.map(parseStringImage);
     this.valueToken = token;
   }
 
-  public async doValidation() {
+  public async doValidation(): Promise<BaseError[]> {
     this.getPropertyType();
     this.validateProperty();
     this.validateList();
@@ -33,7 +38,11 @@ export class ListProperty extends Property {
     return this.errors;
   }
 
-  private validateList() {
+  /**
+   * Performs validation logic on list property
+   * @returns void
+   */
+  private validateList(): void {
     let msg: string;
     let err: BaseError;
 
@@ -66,11 +75,11 @@ export class ListProperty extends Property {
     }
   }
 
-  getValues() {
+  public getValues(): string[] {
     return this.value;
   }
 
-  accept(visitor: AstVisitor): void {
+  public accept(visitor: AstVisitor): void {
     if (visitor instanceof SymbolTableBuilder) {
       visitor.visitProperty(this);
     } else if (visitor instanceof ModelVisitor) {

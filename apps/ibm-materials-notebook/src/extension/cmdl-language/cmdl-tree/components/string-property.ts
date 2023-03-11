@@ -4,7 +4,7 @@ import { Property } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../../cmdl-symbols";
 import { ModelVisitor } from "../../cmdl-symbols";
 import { PropertyTypes } from "../../cmdl-types";
-import { InvalidPropertyError } from "../../errors";
+import { BaseError, InvalidPropertyError } from "../../errors";
 
 /**
  * Handles and string and text properties within CMDL record trees
@@ -17,12 +17,17 @@ export class StringProperty extends Property {
     super(token);
   }
 
-  setValue(val: string, token: CmdlToken) {
+  /**
+   * Sets value and token of string property.
+   * @param val string
+   * @param token CmdlToken
+   */
+  public setValue(val: string, token: CmdlToken) {
     this.value = parseStringImage(val);
     this.valueToken = token;
   }
 
-  public async doValidation() {
+  public async doValidation(): Promise<BaseError[]> {
     this.getPropertyType();
     this.validateProperty();
 
@@ -38,11 +43,11 @@ export class StringProperty extends Property {
     return this.errors;
   }
 
-  getValues() {
+  public getValues(): string {
     return this.value;
   }
 
-  accept(visitor: AstVisitor): void {
+  public accept(visitor: AstVisitor): void {
     if (visitor instanceof SymbolTableBuilder) {
       visitor.visitProperty(this);
     } else if (visitor instanceof ModelVisitor) {

@@ -25,22 +25,37 @@ export class NumericalProperty extends Property {
     super(token);
   }
 
-  setValue(val: string, token: CmdlToken) {
+  /**
+   * Sets token and value for the numerical property
+   * @param val string
+   * @param token CmdlToken
+   */
+  public setValue(val: string, token: CmdlToken): void {
     this.value = val;
     this.valueToken = token;
   }
 
-  setUnit(unit: string, unitToken: CmdlToken) {
+  /**
+   * Sets unit token and unit value for the numerical property
+   * @param unit string
+   * @param unitToken CmdlToken
+   */
+  public setUnit(unit: string, unitToken: CmdlToken): void {
     this.unit = unit;
     this.unitToken = unitToken;
   }
 
-  setUncertainty(value: string, token: CmdlToken) {
+  /**
+   * Sets uncertainty token and value for the numerical property
+   * @param value string
+   * @param token CmdlToken
+   */
+  public setUncertainty(value: string, token: CmdlToken): void {
     this.uncertainty = value;
     this.uncertaintyToken = token;
   }
 
-  public async doValidation() {
+  public async doValidation(): Promise<BaseError[]> {
     this.getPropertyType();
     this.validateProperty();
     this.validateUnit();
@@ -49,7 +64,11 @@ export class NumericalProperty extends Property {
     return this.errors;
   }
 
-  private validateValue() {
+  /**
+   * Validates the value of the numerical property
+   * @returns void
+   */
+  private validateValue(): void {
     let msg: string;
     let err: BaseError;
     if (!this.propertyType) {
@@ -76,7 +95,11 @@ export class NumericalProperty extends Property {
     }
   }
 
-  private validateUnit() {
+  /**
+   * Validates unit of numerical property
+   * @returns void
+   */
+  private validateUnit(): void {
     let msg: string;
     let err: BaseError;
     if (!this.propertyType) {
@@ -128,7 +151,7 @@ export class NumericalProperty extends Property {
     }
   }
 
-  accept(visitor: AstVisitor): void {
+  public accept(visitor: AstVisitor): void {
     if (visitor instanceof SymbolTableBuilder) {
       visitor.visitProperty(this);
     } else if (visitor instanceof ModelVisitor) {
@@ -136,7 +159,7 @@ export class NumericalProperty extends Property {
     }
   }
 
-  public print() {
+  public print(): Record<string, any> {
     let parentName = null;
 
     if (this.parent && this.parent instanceof Group) {
@@ -152,7 +175,11 @@ export class NumericalProperty extends Property {
     };
   }
 
-  getValues() {
+  public getValues(): {
+    value: Big;
+    unit: string | null;
+    uncertainty: Big | null;
+  } {
     if (!this.value) {
       throw new Error(`${this.name} has no value!`);
     }

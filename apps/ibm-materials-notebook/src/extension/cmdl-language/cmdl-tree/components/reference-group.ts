@@ -32,7 +32,7 @@ export class ReferenceGroup extends Group implements SymbolReference {
    * Creates an error if the reference group is improperly placed in record or parent group types does not exist.
    * @returns
    */
-  private setParentGroupProps() {
+  private setParentGroupProps(): void {
     if (!this.parent || this.parent instanceof CmdlTree) {
       const msg = `Reference groups must have an enclosing group: ${this.name}`;
       const err = new InvalidGroupError(msg, this.nameToken);
@@ -56,7 +56,7 @@ export class ReferenceGroup extends Group implements SymbolReference {
    * @param child RecordNode
    * @param props Set<string>
    */
-  private checkNesting(child: RecordNode, props: Set<string>) {
+  private checkNesting(child: RecordNode, props: Set<string>): void {
     let msg: string;
     let err: BaseError;
 
@@ -95,7 +95,7 @@ export class ReferenceGroup extends Group implements SymbolReference {
    * Gets reference path for reference group
    * @returns string[]
    */
-  getPath() {
+  public getPath(): string[] {
     return this.path.map((el) => el.image);
   }
 
@@ -103,7 +103,7 @@ export class ReferenceGroup extends Group implements SymbolReference {
    * Calls relevant visitor methods for building symbol table
    * @param visitor AstVisitor
    */
-  accept(visitor: AstVisitor): void {
+  public accept(visitor: AstVisitor): void {
     if (visitor instanceof SymbolTableBuilder) {
       visitor.visitReference(this);
     } else if (visitor instanceof ModelVisitor) {
@@ -115,7 +115,7 @@ export class ReferenceGroup extends Group implements SymbolReference {
    * Calls validation procedure for reference group
    * @returns BaseError[]
    */
-  public async doValidation() {
+  public async doValidation(): Promise<BaseError[]> {
     this.setParentGroupProps();
     await this.validateChildren(this.checkNesting);
     return this.errors;
