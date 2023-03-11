@@ -1,4 +1,5 @@
 import { cmdlLogger as logger } from "../../logger";
+import { JSONPolymerConnection } from "./polymer-container";
 import {
   PolymerTreeVisitor,
   EdgeWeightor,
@@ -48,7 +49,7 @@ export class PolymerEdge {
    * @param arr string[]
    * @returns string
    */
-  private createName(arr: string[]) {
+  private createName(arr: string[]): string {
     return arr.slice(0, -1).join(".");
   }
 
@@ -57,14 +58,18 @@ export class PolymerEdge {
    * @param path string[]
    * @returns string
    */
-  private getPoint(path: string[]) {
+  private getPoint(path: string[]): string {
     if (!path || !path.length) {
       throw new Error(`unable to get point from empty path`);
     }
     return path[path.length - 1];
   }
 
-  public getTargetGroup() {
+  /**
+   * Retrieves the edge target's group
+   * @returns string
+   */
+  public getTargetGroup(): string {
     if (this.targetPath.length >= 3) {
       return this.targetPath[this.targetPath.length - 3];
     } else {
@@ -73,7 +78,11 @@ export class PolymerEdge {
     }
   }
 
-  public getSourceGroup() {
+  /**
+   * Retrieves the edge source's group
+   * @returns string
+   */
+  public getSourceGroup(): string {
     if (this.sourcePath.length >= 3) {
       return this.sourcePath[this.sourcePath.length - 3];
     } else {
@@ -86,7 +95,7 @@ export class PolymerEdge {
    * Converts parsed node paths to absolute paths within the polymer tree
    * @param path string[]
    */
-  public mergeBasePath(path: string[]) {
+  public mergeBasePath(path: string[]): void {
     this.sourcePath = [...path, ...this.sourcePath];
     this.targetPath = [...path, ...this.targetPath];
     this.sourceName = this.createName(this.sourcePath);
@@ -95,10 +104,11 @@ export class PolymerEdge {
 
   /**
    * Serializes to more concise representation with masked paths
+   * @TODO remove pipe separator
    * @param maskMap Map<string, string>
    * @returns string
    */
-  public toMaskedString(maskMap: Map<string, string>) {
+  public toMaskedString(maskMap: Map<string, string>): string {
     let target = maskMap.get(this.targetName);
 
     if (!target) {
@@ -117,7 +127,7 @@ export class PolymerEdge {
    * @param maskMap Map<string, string>
    * @returns string
    */
-  public toCompressedString(maskMap: Map<string, string>) {
+  public toCompressedString(maskMap: Map<string, string>): string {
     let target = maskMap.get(this.targetName);
     let source = maskMap.get(this.sourceName);
 
@@ -134,33 +144,45 @@ export class PolymerEdge {
 
   /**
    * Serializes to a string for exporting
+   * @TODO remove pipe separator
    * @returns string
    */
-  public toString() {
+  public toString(): string {
     return `<edge>${this.sourcePoint} -> ${this.targetName}.${this.targetPoint}|${this.weight}|${this.quantity}`;
   }
 
   /**
    * Converts to Object for export
+   * @TODO fix unnecessary type conversion
    * @returns Object
    */
-  public toJSON() {
+  public toJSON(): JSONPolymerConnection {
     return {
       source: this.sourcePath.join("."),
       target: this.targetPath.join("."),
       weight: this.weight,
-      quantity: this.quantity,
+      quantity: String(this.quantity),
     };
   }
 
-  public print() {
+  /**
+   * Serializes polymer graph edge to a string for
+   * printing to the console
+   * @returns string
+   */
+  public print(): string {
     let source = this.sourcePath.join(".");
     let target = this.targetPath.join(".");
 
     return `<${source} => ${target}>: ${this.quantity};\n`;
   }
 
-  accept(visitor: PolymerTreeVisitor) {
+  /**
+   * Accepts a polymer tree visitor for computing
+   * weights on the polymer nodes
+   * @param visitor PolymerTreeVisitor
+   */
+  public accept(visitor: PolymerTreeVisitor): void {
     if (visitor instanceof EdgeWeightor) {
       visitor.visitEdge(this);
     } else if (visitor instanceof EdgeMultiplier) {

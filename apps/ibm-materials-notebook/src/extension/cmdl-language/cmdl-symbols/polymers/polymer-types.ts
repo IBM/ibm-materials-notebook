@@ -42,6 +42,7 @@ export interface Serializable {
 export interface PolymerComponent extends Serializable {
   /**
    * Properties of the particular tree node eg. DP, mol fraction, etc.
+   * @TODO improve typing for properties
    */
   properties: Map<string, any>;
 

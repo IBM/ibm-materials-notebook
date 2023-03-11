@@ -1,7 +1,6 @@
 import { CmdlToken } from "../../composite-tree-visitor";
 import { BaseError, FileError, RefError } from "../../errors";
 import { RecordNode } from "./base-components";
-import { importManager } from "../file-system";
 import { parseStringImage } from "../utils";
 import {
   AstVisitor,
@@ -9,7 +8,6 @@ import {
   SymbolTableBuilder,
 } from "../../cmdl-symbols";
 import { Library } from "../../../library";
-import { cmdlLogger as logger } from "../../logger";
 
 /**
  * Component AST node for handling import operations
@@ -59,27 +57,7 @@ export class ImportOp implements RecordNode {
       this.sourceData = ref;
       this.type = ref?.type ? ref.type : null;
     } else {
-      //check file path
-      const isValidFile = await importManager.fileExists(this.source);
-
-      if (!isValidFile) {
-        msg = `Unable to locate ${this.source}`;
-        err = new FileError(msg, this.sourceToken);
-        this.errors.push(err);
-        return this.errors;
-      }
-
-      const sourceData = await this.importSymbolData(this.source);
-
-      if (!sourceData[this.name]) {
-        msg = `${this.source} does not contain ${this.name}`;
-        err = new RefError(msg, this.sourceToken);
-        this.errors.push(err);
-        return this.errors;
-      }
-
-      this.sourceData = sourceData[this.name];
-      this.type = this.sourceData?.type ? this.sourceData.type : null;
+      throw new Error(`Invalid import source: ${this.source}!`);
     }
 
     if (!this.sourceData || !this.type) {
@@ -90,12 +68,6 @@ export class ImportOp implements RecordNode {
     }
 
     return this.errors;
-  }
-
-  private async importSymbolData(source: string) {
-    const file = await importManager.readFile(source);
-    const contents = JSON.parse(file);
-    return contents;
   }
 
   public print() {

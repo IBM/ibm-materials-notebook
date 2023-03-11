@@ -7,7 +7,7 @@ import {
   StrategyVisitor,
   EdgeMultiplier,
 } from "./polymer-weights";
-import { cmdlLogger as logger } from "../../logger";
+import { JSONPolymerContainer } from "./polymer-container";
 
 /**
  * Class for managing groups of nodes, other containers, and connections between them.
@@ -21,7 +21,7 @@ export class Container implements PolymerComponent {
 
   constructor(public name: string) {}
 
-  isContainer(): boolean {
+  public isContainer(): boolean {
     return true;
   }
 
@@ -29,7 +29,7 @@ export class Container implements PolymerComponent {
    * Adds child entity or container and sets this container as parent
    * @param child PolymerComponent
    */
-  add(child: PolymerComponent) {
+  public add(child: PolymerComponent): void {
     child.setParent(this);
     this.children.push(child);
   }
@@ -38,7 +38,7 @@ export class Container implements PolymerComponent {
    * Sets the parent of current container
    * @param arg Container
    */
-  setParent(arg: Container): void {
+  public setParent(arg: Container): void {
     this.parent = arg;
   }
 
@@ -47,7 +47,7 @@ export class Container implements PolymerComponent {
    * @param path string[]
    * @returns string[]
    */
-  getPath(path: string[]): string[] {
+  public getPath(path: string[]): string[] {
     path = [this.name, ...path];
     if (this.parent) {
       return this.parent.getPath(path);
@@ -59,7 +59,7 @@ export class Container implements PolymerComponent {
   /**
    * Sets the path for the current container
    */
-  setPath() {
+  public setPath(): void {
     this.path = this.getPath([]);
 
     for (const child of this.children) {
@@ -72,7 +72,7 @@ export class Container implements PolymerComponent {
   /**
    * Converts paths in connection objects to absolute paths
    */
-  updateConnectionPaths() {
+  public updateConnectionPaths(): void {
     if (!this.path) {
       throw new Error(`path on ${this.name} is not set!`);
     }
@@ -91,7 +91,7 @@ export class Container implements PolymerComponent {
   /**
    * Sets the name for entity children
    */
-  setName() {
+  public setName(): void {
     this.children.map((el) => el.setName());
   }
 
@@ -99,22 +99,22 @@ export class Container implements PolymerComponent {
    * Serializes container to object for exporting.
    * @returns Object
    */
-  toJSON() {
-    const containerRecord: Record<string, any> = {
+  public toJSON(): JSONPolymerContainer {
+    const containerRecord = {
       name: this.name,
       connections: this.connections.map((el) => el.toJSON()),
       parent: this.parent ? this.parent.name : null,
       children: this.children.map((el) => el.toJSON()),
     };
 
-    for (const [key, value] of this.properties.entries()) {
-      containerRecord[key] = value;
-    }
-
     return containerRecord;
   }
 
-  accept(visitor: PolymerTreeVisitor): void {
+  /**
+   * Accepts a polymer tree visitor for polymer weights computations
+   * @param visitor PolymerTreeVisitor
+   */
+  public accept(visitor: PolymerTreeVisitor): void {
     if (visitor instanceof EdgeWeightor) {
       visitor.visitContainer(this);
     } else if (visitor instanceof EdgeMultiplier) {
@@ -126,7 +126,11 @@ export class Container implements PolymerComponent {
     }
   }
 
-  exportToBigSMILES(): string {
+  /**
+   * Exports polymer container to BigSMILES format
+   * @returns string
+   */
+  public exportToBigSMILES(): string {
     const childBS = [];
     for (const child of this.children) {
       const childString = child.exportToBigSMILES();
@@ -144,7 +148,7 @@ export class Container implements PolymerComponent {
    * Converts to string for logging
    * @returns string
    */
-  print() {
+  public print(): string {
     return `container ${this.name}:\n-----\nconnections:\n${this.connections
       .map((el) => el.print())
       .join("\n")}\nchildren:\n${this.children

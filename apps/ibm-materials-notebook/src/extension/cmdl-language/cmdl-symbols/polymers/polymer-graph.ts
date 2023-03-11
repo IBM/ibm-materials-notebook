@@ -5,6 +5,7 @@ import { Container } from "./polymer-tree-container";
 import { PolymerNode } from "./polymer-node";
 import { PolymerEdge } from "./polymer-edge";
 import Big from "big.js";
+import { JSONPolymerGraph } from "./polymer-container";
 
 /**
  * Class for handling polymer graph representation
@@ -19,7 +20,7 @@ export class PolymerGraph {
    * @param tree PolymerTree
    * @returns void
    */
-  public initialize(tree: PolymerTree) {
+  public initialize(tree: PolymerTree): void {
     if (!tree || !tree.root) {
       logger.warn(`cannot initialize polymer graph from empty tree`);
       return;
@@ -138,7 +139,7 @@ export class PolymerGraph {
    * Serializes graph to Object
    * @returns Object
    */
-  toJSON() {
+  toJSON(): JSONPolymerGraph {
     const nodes = [...this.nodes.values()].map((el) => el.toJSON());
     const edges = this.edges.map((el) => el.toJSON());
     return { nodes, edges };
@@ -148,7 +149,7 @@ export class PolymerGraph {
    * Serializes graph to string representation
    * @returns string
    */
-  toString() {
+  toString(): string {
     let output = "";
     let queue = [...this.adjacencyList.keys()];
     let key: string | undefined;
@@ -179,9 +180,10 @@ export class PolymerGraph {
 
   /**
    * Serializes graph to string but, masks absolute paths for conciseness
+   * @TODO remove SMILES conflicting characters
    * @returns string
    */
-  toMaskedString() {
+  toMaskedString(): string {
     let output = "";
     let queue = [...this.adjacencyList.keys()];
     let key: string | undefined;
@@ -224,6 +226,7 @@ export class PolymerGraph {
 
   /**
    * Serializes graph to string but, masks absolute paths for conciseness
+   * @TODO remove SMILES conflicting characters
    * @returns string
    */
   toCompressedString() {

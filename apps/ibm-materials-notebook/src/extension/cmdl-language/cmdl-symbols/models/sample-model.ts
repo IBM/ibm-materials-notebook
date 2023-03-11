@@ -36,7 +36,7 @@ export type CMDLSampleOutput = {
   charData: CMDLCharOutput[];
 };
 
-type RefResult = {
+export type RefResult = {
   technique: string;
   source: string;
   property: string;

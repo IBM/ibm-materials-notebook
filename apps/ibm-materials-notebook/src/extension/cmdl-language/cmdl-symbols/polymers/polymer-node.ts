@@ -3,6 +3,7 @@ import { PolymerComponent } from "./polymer-types";
 import { Container } from "./polymer-tree-container";
 import { PolymerTreeVisitor } from "./polymer-weights";
 import { cmdlLogger } from "../../logger";
+import { JSONPolymerNode } from "./polymer-container";
 
 export interface EntityConfig {
   fragment: string;
@@ -29,16 +30,16 @@ export class PolymerNode implements PolymerComponent {
     this.smiles = smiles || "-";
   }
 
-  isContainer(): boolean {
+  public isContainer(): boolean {
     return false;
   }
 
-  setParent(arg: Container): void {
+  public setParent(arg: Container): void {
     this.parent = arg;
   }
 
-  toJSON() {
-    const entityRecord: Record<string, any> = {
+  public toJSON(): JSONPolymerNode {
+    const entityRecord: JSONPolymerNode = {
       name: this.name,
       mw: this.mw.toNumber(),
       smiles: this.smiles,
@@ -46,13 +47,18 @@ export class PolymerNode implements PolymerComponent {
     };
 
     for (const [key, value] of this.properties.entries()) {
-      entityRecord[key] = value;
+      if (key === "degree_poly") {
+        entityRecord[key] = value;
+      }
     }
 
     return entityRecord;
   }
 
-  public setName() {
+  /**
+   * Sets full name for the polymer node
+   */
+  public setName(): void {
     if (!this.parent) {
       throw new Error(`detached node ${this.fragment}`);
     }
@@ -62,7 +68,11 @@ export class PolymerNode implements PolymerComponent {
     this.name = `${path.join(".")}.${this.fragment}`;
   }
 
-  public getDegreePoly() {
+  /**
+   * Retrieves the degree of polymerization for the node
+   * @returns number
+   */
+  public getDegreePoly(): number {
     let nodeDP = this.properties.get("degree_poly");
     if (!nodeDP) {
       return 1;
@@ -75,7 +85,7 @@ export class PolymerNode implements PolymerComponent {
    * Serializes to string format for export
    * @returns string
    */
-  public toString() {
+  public toString(): string {
     const smiles = this.sanitizeSmiles();
     let base = `<name>${this.name}<mw>${this.mw.toNumber()}<smiles>${smiles}`;
 
@@ -91,7 +101,7 @@ export class PolymerNode implements PolymerComponent {
    * @param mask string
    * @returns string
    */
-  public toMaskedString(mask: string) {
+  public toMaskedString(mask: string): string {
     const smiles = this.sanitizeSmiles();
     return `<name>${mask}<mw>${this.mw.toNumber()}<smiles>${smiles}`;
   }
@@ -101,11 +111,15 @@ export class PolymerNode implements PolymerComponent {
    * @param mask string
    * @returns string
    */
-  public toCompressedString(mask: string) {
+  public toCompressedString(mask: string): string {
     const smiles = this.sanitizeSmiles();
     return `${mask}|${smiles}`;
   }
 
+  /**
+   * Retrieves sanitized SMILES string
+   * @returns string
+   */
   public getSmiles() {
     return this.sanitizeSmiles();
   }
@@ -122,6 +136,11 @@ export class PolymerNode implements PolymerComponent {
     return this.smiles.replace(removeRegex, "");
   }
 
+  /**
+   * Exports node smiles string to BigSMILES format
+   * @TODO update method as per edge cases
+   * @returns string
+   */
   exportToBigSMILES(): string {
     if (!this.smiles.length) {
       return "";
@@ -155,11 +174,19 @@ export class PolymerNode implements PolymerComponent {
     }
   }
 
-  print() {
+  /**
+   * Serialized the polymer node to a string for printing to the console
+   * @returns string
+   */
+  print(): string {
     return `entity: ${this.name}, mw: ${this.mw.toNumber()}, smiles: ${
       this.smiles
     };\n`;
   }
 
+  /**
+   * Accepts a polymer tree visitor for polymer weight computations
+   * @param visitor PolymerTreeVisitor
+   */
   accept(visitor: PolymerTreeVisitor): void {}
 }

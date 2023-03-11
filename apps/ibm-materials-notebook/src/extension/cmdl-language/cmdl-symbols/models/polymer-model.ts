@@ -6,6 +6,7 @@ import { ModelType } from "../../cmdl-types/groups/group-types";
 import { CMDLRef, CMDLUnitless } from "../symbol-types";
 import { CMDLPolymerGraph } from "./polymer-graph-model";
 import { PROPERTIES } from "../../cmdl-types";
+import { JSONPolymerTree } from "../polymers/polymer-container";
 
 export type CMDLPolymerTreeValue = {
   name: string;
@@ -25,7 +26,9 @@ export class Polymer extends BaseModel {
   }
 
   execute(globalAR: ModelActivationRecord): void {
-    const treeRef = this.modelAR.getOptionalValue<CMDLRef>(PROPERTIES.TREE);
+    const treeRef = this.modelAR.getValue<CMDLRef | JSONPolymerTree<null>>(
+      PROPERTIES.TREE
+    );
     const treeValues =
       this.modelAR.getOptionalValue<CMDLPolymerTreeValue[]>("treeValues");
     const bigSmilesStr = this.modelAR.getOptionalValue<string>(
@@ -46,7 +49,7 @@ export class Polymer extends BaseModel {
       }
     }
 
-    if (treeRef?.ref) {
+    if ("ref" in treeRef) {
       const polymerGraph = globalAR.getOptionalValue<CMDLPolymerGraph>(
         treeRef.ref
       );

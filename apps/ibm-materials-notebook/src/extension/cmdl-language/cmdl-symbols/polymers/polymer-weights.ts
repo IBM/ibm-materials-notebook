@@ -7,6 +7,9 @@ import { Container } from "./polymer-tree-container";
 import { cmdlLogger as logger } from "../../logger";
 import Big from "big.js";
 
+/**
+ * Class for managing computation of polymer weights
+ */
 export class PolymerWeight {
   totalScore: number = 0;
   nodeMap: Map<string, PolymerNode>;
