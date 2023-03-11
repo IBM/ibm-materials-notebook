@@ -14,7 +14,7 @@ export class ChemicalModel extends BaseModel {
     super(name, modelAR, type);
   }
 
-  execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ModelActivationRecord): void {
     const properties: Record<string, any> = {
       name: this.name,
       type: this.type,

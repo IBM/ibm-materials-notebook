@@ -12,17 +12,26 @@ import { Reactor } from "./reactor-model";
 import { SampleOutput } from "./sample-model";
 import { ModelType } from "../../cmdl-types/groups/group-types";
 import { GroupModel } from "./group-model";
+import { BaseModel } from "./base-model";
 
 /**
  * Factory class to create models based on record tree node type
  */
 export class ModelFactory {
+  /**
+   * Creates a model for handling properties and values of different CMDL groups
+   * @param name string
+   * @param type string
+   * @param modelAR ModelActivationRecord
+   * @param path string[] | undefined
+   * @returns BaseModel
+   */
   static createModel(
     name: string,
     type: string,
     modelAR: ModelActivationRecord,
     path?: string[]
-  ) {
+  ): BaseModel {
     switch (type) {
       case ModelType.REFERENCE_GROUP:
         return new ReferenceGroupModel(name, modelAR, type, path);

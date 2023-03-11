@@ -54,7 +54,7 @@ export interface ChemicalOutput {
  * Class for creating and initializing chemical instances from ChemicalConfigs
  */
 export default class ChemicalFactory {
-  public create(chemConfig: ChemicalConfig) {
+  public create(chemConfig: ChemicalConfig): Solid | Liquid | Gas {
     if (chemConfig.state === ChemStates.SOLID) {
       return this.buildSolid(chemConfig);
     } else if (chemConfig.state === ChemStates.GAS) {
@@ -71,7 +71,7 @@ export default class ChemicalFactory {
    * @param config ChemicalConfig
    * @returns Solid
    */
-  private buildSolid(config: ChemicalConfig) {
+  private buildSolid(config: ChemicalConfig): Solid {
     const solid = new Solid(
       config.name,
       config.roles,
@@ -88,7 +88,7 @@ export default class ChemicalFactory {
    * @param config ChemicalConfig
    * @returns Gas
    */
-  private buildGas(config: ChemicalConfig) {
+  private buildGas(config: ChemicalConfig): Gas {
     if (!config.volume || !config.temperature) {
       throw new Error(
         `Inadequate information to compute gas quantities: volume ${config.volume}, temperature: ${config.temperature}`
@@ -112,7 +112,7 @@ export default class ChemicalFactory {
    * @param config ChemicalConfig
    * @returns Liquid
    */
-  private buildLiquid(config: ChemicalConfig) {
+  private buildLiquid(config: ChemicalConfig): Liquid {
     if (!config.density) {
       throw new Error(`${config.name} does not have a valid density`);
     }

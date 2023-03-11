@@ -52,6 +52,10 @@ export class PolymerGraph {
     this.linkGraph();
   }
 
+  /**
+   * @deprecated
+   * @param nodeArray any[]
+   */
   public initializeFromStr(nodeArray: any[]) {
     for (const node of nodeArray) {
       const namePath = node.name.split(".");
@@ -96,11 +100,21 @@ export class PolymerGraph {
     return arg.isContainer();
   }
 
-  getNodeKeys() {
+  /**
+   * Gets all names of nodes in the polymer graph
+   * @returns string[]
+   */
+  getNodeKeys(): string[] {
     return [...this.nodes.keys()];
   }
 
-  setNodeProperty(nodePath: string, property: any) {
+  /**
+   * Sets a property such as degree of polymerization to a particular
+   * node in the polymer graph
+   * @param nodePath string
+   * @param property any
+   */
+  setNodeProperty(nodePath: string, property: any): void {
     let node = this.nodes.get(nodePath);
 
     if (!node) {
@@ -113,7 +127,7 @@ export class PolymerGraph {
   /**
    * Populates the adjacency list once the insertion of all edges and nodes is complete
    */
-  private linkGraph() {
+  private linkGraph(): void {
     for (const edge of this.edges) {
       let list = this.adjacencyList.get(edge.sourceName);
 
@@ -129,7 +143,7 @@ export class PolymerGraph {
    * Expands the compressed graph version to full version taking into account
    * the quantity of edges
    */
-  expand() {
+  expand(): void {
     //create a new graph
     //add additional nodes/edges for quantities > 1
     throw new Error(`Expand method is not implemented`);

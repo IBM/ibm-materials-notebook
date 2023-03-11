@@ -71,7 +71,7 @@ export class ReactorContainer {
    * Parses and creates a new reactor from a CMDL representation
    * @param component CMDLReactor
    */
-  public addReactor(component: CMDLReactor) {
+  public addReactor(component: CMDLReactor): void {
     cmdlLogger.debug(`reactor:`, { meta: component });
     const reactor = new Reactor(component.name);
     reactor.parent = null;
@@ -93,7 +93,7 @@ export class ReactorContainer {
    * @param component CMDLReactorNode
    * @returns ReactorComponent
    */
-  public addNode(component: CMDLReactorNode) {
+  public addNode(component: CMDLReactorNode): ReactorComponent {
     const node = new ReactorComponent(component.name);
     let target = component?.target;
     let volume = component?.volume;
@@ -124,7 +124,7 @@ export class ReactorContainer {
   /**
    * Creates connections between nodes in the reactor graph
    */
-  public linkNodeGraph() {
+  public linkNodeGraph(): void {
     for (const edge of this.edgeMap.values()) {
       let sourceNode = this.nodeMap.get(edge.id);
 
@@ -159,7 +159,7 @@ export class ReactorContainer {
    * @param nodeId string
    * @param input ReactorChemicals
    */
-  public setNodeInput(nodeId: string, input: ReactorChemicals) {
+  public setNodeInput(nodeId: string, input: ReactorChemicals): void {
     const node = this.nodeMap.get(nodeId);
 
     if (!node) {
@@ -209,7 +209,7 @@ export class ReactorContainer {
   /**
    * Processes all reactor groups and computes stoichiometry for reactions
    */
-  public processReactor() {
+  public processReactor(): void {
     if (!this.outputNode) {
       throw new Error(`Output node is not set for reactor container`);
     }
@@ -244,7 +244,7 @@ export class ReactorContainer {
    * De-serializes reactor into correct continuous-flow reactor graph
    * @param arg SerializedReactor
    */
-  public deserialize(arg: SerializedReactor) {
+  public deserialize(arg: SerializedReactor): void {
     arg.edges.forEach((el: ReactorEdge) => {
       this.edgeMap.set(el.id, el);
     });

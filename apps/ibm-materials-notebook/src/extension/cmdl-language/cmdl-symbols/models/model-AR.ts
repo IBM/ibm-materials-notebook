@@ -161,7 +161,7 @@ export class ModelARManager {
    * @param cellUri string
    * @returns GlobalActivationRecord
    */
-  public createGlobalAR(cellUri: string) {
+  public createGlobalAR(cellUri: string): GlobalActivationRecord {
     const cellAR = new ModelActivationRecord("cellAR", "cellAR", cellUri);
     this.records.set(cellUri, cellAR);
 
@@ -180,7 +180,7 @@ export class ModelARManager {
    * @param uri string
    * @returns ModelActivationRecord
    */
-  public getRecord(uri: string) {
+  public getRecord(uri: string): ModelActivationRecord {
     const record = this.records.get(uri);
 
     if (!record) {
@@ -194,7 +194,7 @@ export class ModelARManager {
    * Deletes an AR based off of a cells URI string.
    * @param uri string
    */
-  public deleteRecord(uri: string) {
+  public deleteRecord(uri: string): void {
     this.records.delete(uri);
   }
 
@@ -216,7 +216,7 @@ export class ModelARManager {
    * @param key string
    * @returns T
    */
-  private searchRecords<T>(key: string) {
+  private searchRecords<T>(key: string): NonNullable<T> | undefined {
     for (const record of this.records.values()) {
       let value = record.getOptionalValue<T>(key);
 
@@ -230,9 +230,9 @@ export class ModelARManager {
   /**
    * Searches all cell AR's for value, throws an error if undefined.
    * @param key string
-   * @returns any
+   * @returns T
    */
-  public getValue<T>(key: string) {
+  public getValue<T>(key: string): T {
     const value = this.searchRecords<T>(key);
 
     if (!value) {
@@ -245,9 +245,9 @@ export class ModelARManager {
   /**
    * Searches all cell AR's for value, returns undefined if not found.
    * @param key string
-   * @returns T
+   * @returns T | undefined
    */
-  public getOptionalValue<T>(key: string) {
+  public getOptionalValue<T>(key: string): T | undefined {
     const value = this.searchRecords<T>(key);
 
     if (!value) {
@@ -263,7 +263,7 @@ export class ModelARManager {
    * @param key string
    * @param values any
    */
-  public setValue(uri: string, key: string, values: any) {
+  public setValue(uri: string, key: string, values: any): void {
     const record = this.getRecord(uri);
     record.setValue(key, values);
   }
@@ -274,7 +274,7 @@ export class ModelARManager {
    * @param key string
    * @param values any
    */
-  public mergeArrayValue(uri: string, key: string, values: any) {
+  public mergeArrayValue(uri: string, key: string, values: any): void {
     const record = this.getRecord(uri);
     record.mergeArrayValue(key, values);
   }

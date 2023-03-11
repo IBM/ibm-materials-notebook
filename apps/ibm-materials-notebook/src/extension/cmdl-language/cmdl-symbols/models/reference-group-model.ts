@@ -18,7 +18,7 @@ export class ReferenceGroupModel extends BaseModel {
   }
 
   //TODO: enable specific formating for result ouptuts
-  execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ModelActivationRecord): void {
     const properties: Record<string, any> = {
       name: this.name.slice(1),
       path: this.path,

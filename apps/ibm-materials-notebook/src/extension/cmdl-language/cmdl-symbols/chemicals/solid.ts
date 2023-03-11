@@ -4,6 +4,9 @@ import { Quantity } from "../symbol-types";
 import { BaseChemical } from "./base-chemical";
 import { ChemicalConfig, ChemStates, NamedQuantity } from "./chemical-factory";
 
+/**
+ * Class representing solids in a chemical set
+ */
 export default class Solid extends BaseChemical {
   constructor(
     name: string,
@@ -59,12 +62,12 @@ export default class Solid extends BaseChemical {
     }
   }
 
-  merge(chemical: BaseChemical): void {
+  public merge(chemical: BaseChemical): void {
     const newMoles = this.combineMoles(chemical);
     this.computeValues({ name: PROPERTIES.MOLES, ...newMoles });
   }
 
-  getMolesByVolume(volume: Quantity): ChemicalConfig {
+  public getMolesByVolume(volume: Quantity): ChemicalConfig {
     if (!this.mw) {
       throw new Error(`\n-Mw is invalid for ${this.name}`);
     }
@@ -92,7 +95,7 @@ export default class Solid extends BaseChemical {
     };
   }
 
-  export(): ChemicalConfig {
+  public export(): ChemicalConfig {
     if (!this.mw || !this.moles) {
       throw new Error(`Cannot export incomplete solid chemical ${this.name}`);
     }

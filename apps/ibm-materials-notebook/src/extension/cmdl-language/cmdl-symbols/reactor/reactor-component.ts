@@ -4,6 +4,7 @@ import { convertQty } from "../utils";
 import Big from "big.js";
 import { ReactorNode, Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
+import { SerializedReactorComponent } from "./reactor-container";
 
 /**
  * Class representing an individual component in a continuous-flow reactor
@@ -25,7 +26,7 @@ export class ReactorComponent implements ReactorNode {
    * Sets the parent reactor group of the reactor component
    * @param arg ReactorNode
    */
-  setParent(arg: ReactorNode): void {
+  public setParent(arg: ReactorNode): void {
     this.parent = arg;
   }
 
@@ -33,7 +34,7 @@ export class ReactorComponent implements ReactorNode {
    * Sets reactor chemicals as an input to the reactor component
    * @param arg ReactorChemcials
    */
-  setInput(arg: ReactorChemicals) {
+  public setInput(arg: ReactorChemicals): void {
     this.input = arg;
   }
 
@@ -41,7 +42,7 @@ export class ReactorComponent implements ReactorNode {
    * Sets the volume of the reactor component
    * @param volume CMDLUnit
    */
-  setVolume(volume: CMDLUnit) {
+  public setVolume(volume: CMDLUnit): void {
     this.volume = this.normalizeVolume(volume);
   }
 
@@ -49,7 +50,7 @@ export class ReactorComponent implements ReactorNode {
    * Adds a input source to this reactor component. May have more than one.
    * @param source ReactorComponent
    */
-  addSource(source: ReactorComponent) {
+  public addSource(source: ReactorComponent): void {
     this.sources.push(source);
   }
 
@@ -58,7 +59,7 @@ export class ReactorComponent implements ReactorNode {
    * A reactor component may have one or no targets
    * @param target ReactorComponent
    */
-  setNext(target: ReactorComponent) {
+  public setNext(target: ReactorComponent): void {
     this.next = target;
   }
 
@@ -66,7 +67,7 @@ export class ReactorComponent implements ReactorNode {
    * Recursively gathers inputs to current node from parent nodes
    * @returns ReactorChemicals[]
    */
-  getInputs(): ReactorChemicals[] {
+  public getInputs(): ReactorChemicals[] {
     if (!this.sources.length && !this.input) {
       throw new Error(
         `No inputs to retrieve for reactor component ${this.name}`
@@ -132,7 +133,7 @@ export class ReactorComponent implements ReactorNode {
    * Serializes reactor componet to object.
    * @returns SerializedReactorComponent
    */
-  serialize() {
+  public serialize(): SerializedReactorComponent {
     return {
       name: this.name,
       type: "component",

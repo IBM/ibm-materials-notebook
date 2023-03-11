@@ -143,7 +143,7 @@ export abstract class BaseModel {
    * @param chemical CMDLChemical | CMDLPolymer
    * @returns any
    */
-  private getMw(chemical: CMDLChemical | CMDLPolymer) {
+  private getMw(chemical: CMDLChemical | CMDLPolymer): any {
     if (chemical.type === ModelType.CHEMICAL) {
       return chemical.molecular_weight.value;
     } else {

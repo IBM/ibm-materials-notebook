@@ -1,6 +1,6 @@
-import { units, prefixes, UnitBases, UnitPrefixes } from './unitConversions';
-import { parseUnit } from './unitRegex';
-import Big from 'big.js';
+import { units, prefixes, UnitBases, UnitPrefixes } from "./unitConversions";
+import { parseUnit } from "./unitRegex";
+import Big from "big.js";
 
 //TODO: switch to geting unit conversion info from typemanger
 /**
@@ -29,26 +29,40 @@ export default class BaseUnit {
     );
   }
 
-  get prefix_factor() {
+  /**
+   * Retrieves current prefix factor
+   */
+  get prefix_factor(): number {
     return this._prefix_factor.toNumber();
   }
 
+  /**
+   * Sets prefix factor
+   */
   set prefix_factor(number) {
     this._prefix_factor = new Big(number);
   }
 
-  get conversion_factor() {
+  /**
+   * Retrieves conversion factor
+   */
+  get conversion_factor(): Big {
     return this._conversion_factor;
   }
 
+  /**
+   * Sets conversion factor
+   */
   set conversion_factor(number: Big) {
     this._conversion_factor = number;
   }
 
   /**
-   * Scales base unit to new prefix
+   * Scales base unit to new prefix. Returns scaling or conversion factor factor.
+   * @param newPrefix UnitPrefixes
+   * @returns number
    */
-  scaleTo(newPrefix: UnitPrefixes) {
+  public scaleTo(newPrefix: UnitPrefixes): number {
     if (newPrefix === this.prefix) {
       return 1;
     }
@@ -65,31 +79,38 @@ export default class BaseUnit {
     return conversionFactor.toNumber();
   }
 
+  /**
+   * Computes ratio of prefix factors
+   * @param newGroups Object<{prefix: UnitPrefixes; base: UnitBases }>
+   * @returns Big
+   */
   private computeFactorRatio(newGroups: {
     prefix: UnitPrefixes;
     base: UnitBases;
-  }) {
+  }): Big {
     if (this.base !== newGroups.base) {
-      throw new Error('Cannot change unit base!');
+      throw new Error("Cannot change unit base!");
     }
 
     return this._prefix_factor.div(prefixes[newGroups.prefix]);
   }
 
   /**
-   * scales unit to next exponent value
+   * Scales unit to next exponent value
+   * @param direction number
+   * @returns number | false
    */
-  scaleToNext(direction: number) {
+  public scaleToNext(direction: number): number | false {
     let prefixArr = Object.keys(prefixes);
     let currIndex = prefixArr.indexOf(this.prefix);
 
     if (
-      (this.prefix === 'k' && direction < 0) ||
-      (this.prefix === 'm' && direction > 0)
+      (this.prefix === "k" && direction < 0) ||
+      (this.prefix === "m" && direction > 0)
     ) {
-      return this.scaleTo('base');
-    } else if (this.prefix === 'base') {
-      let newPrefix = direction > 0 ? 'k' : 'm';
+      return this.scaleTo("base");
+    } else if (this.prefix === "base") {
+      let newPrefix = direction > 0 ? "k" : "m";
       return this.scaleTo(newPrefix as UnitPrefixes);
     } else {
       if (
@@ -107,19 +128,21 @@ export default class BaseUnit {
 
   /**
    * Function to convert between bases of the same unit type (e.g min to s, MPa to atm, etc.)
+   * @param newUnit string
+   * @returns number
    */
-  convertToNewBase(newUnit: string) {
+  public convertToNewBase(newUnit: string): number {
     const newUnitGroups = parseUnit(newUnit);
 
     if (newUnitGroups.exponent !== this.exponent) {
-      const errMsg = 'Exponents should be the same when changing base!';
+      const errMsg = "Exponents should be the same when changing base!";
       throw new Error(errMsg);
     }
 
     const newBaseFactor = units[newUnitGroups.base];
 
     if (newBaseFactor[1] === this.type[1]) {
-      const currentPrefixFactor = new Big(this.scaleTo('base'));
+      const currentPrefixFactor = new Big(this.scaleTo("base"));
       const currentBaseFactor = new Big(this.type[0]);
 
       const newPrefixFactor = prefixes[newUnitGroups.prefix];
@@ -151,22 +174,26 @@ export default class BaseUnit {
   }
 
   /**
-   * logic for handling unit strings based on exponent value
+   * Logic for handling unit strings based on exponent value
+   * @param prefix UnitPrefixes
+   * @param base UnitBases
+   * @param exponent number
+   * @returns string
    */
   private buildUnitString(
     prefix: UnitPrefixes,
     base: UnitBases,
     exponent: number
-  ) {
-    let prefixString = prefix === 'base' ? '' : prefix;
+  ): string {
+    let prefixString = prefix === "base" ? "" : prefix;
     switch (true) {
-      case (exponent > 1 || exponent < 0) && prefix === 'base':
+      case (exponent > 1 || exponent < 0) && prefix === "base":
         return `${base}^${exponent}`;
-      case (exponent > 1 || exponent < 0) && prefix !== 'base':
+      case (exponent > 1 || exponent < 0) && prefix !== "base":
         return `${prefixString}${base}^${exponent}`;
-      case exponent === 1 && prefix === 'base':
+      case exponent === 1 && prefix === "base":
         return `${base}`;
-      case exponent === 1 && prefix !== 'base':
+      case exponent === 1 && prefix !== "base":
         return `${prefixString}${base}`;
       default:
         throw new Error(
@@ -178,7 +205,7 @@ export default class BaseUnit {
   /**
    * Inverts value of exponent and adjusts unit string
    */
-  invertBaseUnit() {
+  public invertBaseUnit(): void {
     let { prefix, base } = this;
     let newExponent = -this.exponent;
     let newUnit = this.buildUnitString(prefix, base, newExponent);
@@ -190,20 +217,25 @@ export default class BaseUnit {
   /**
    * converts unit to its base type (g, mol, l, etc.)
    */
-  convertToBaseType() {
-    if (this.base === this.type[2] && this.prefix === 'base') {
+  public convertToBaseType(): number {
+    if (this.base === this.type[2] && this.prefix === "base") {
       return this.prefix_factor;
     } else if (this.base === this.type[2]) {
-      return this.scaleTo('base');
+      return this.scaleTo("base");
     } else {
       return this.convertToNewBase(this.type[2] as UnitBases);
     }
   }
 
   /**
-   * retries all information for the base unit
+   * Retrieves all information for the base unit
    */
-  output() {
+  public output(): {
+    prefix: UnitPrefixes;
+    base: string;
+    exponent: number;
+    type: (string | number)[];
+  } {
     let { prefix, base, exponent, type } = this;
     return { prefix, base, exponent, type };
   }

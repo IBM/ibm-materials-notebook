@@ -11,7 +11,7 @@ export class ComponentModel extends BaseModel {
     super(name, modelAR, type);
   }
 
-  execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ModelActivationRecord): void {
     const type =
       this.type === ModelType.CHAR_DATA ? this.modelAR.name : this.type;
     const properties: Record<string, any> = {

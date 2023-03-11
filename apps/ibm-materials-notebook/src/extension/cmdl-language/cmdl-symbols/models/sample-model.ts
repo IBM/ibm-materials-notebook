@@ -7,6 +7,7 @@ import { PROPERTIES } from "../../cmdl-types";
 import { CMDLComplex } from "./complex-model";
 import { CMDLUnit } from "../symbol-types";
 import { CMDLChemicalReference } from "./solution-model";
+import { JSONPolymerContainer } from "../polymers/polymer-container";
 
 type CMDLCharData = {
   name: string;
@@ -180,7 +181,9 @@ export class SampleOutput extends BaseModel {
    * @param charData CharData[]
    * @returns Record<string, RefResult[]>
    */
-  private extractReferences(charData: CMDLCharData[]) {
+  private extractReferences(
+    charData: CMDLCharData[]
+  ): Record<string, RefResult[]> {
     const resultRecord: Record<string, RefResult[]> = {};
     charData.forEach((charExp: CMDLCharData) => {
       if (charExp?.references) {
@@ -223,7 +226,7 @@ export class SampleOutput extends BaseModel {
     result: CMDLSampleResult,
     ref: CMDLComplex,
     value: RefResult[]
-  ) {
+  ): void {
     result.components = ref.components;
 
     for (const prop of value) {
@@ -241,7 +244,7 @@ export class SampleOutput extends BaseModel {
     result: CMDLSampleResult,
     ref: CMDLChemical,
     value: RefResult[]
-  ) {
+  ): void {
     result.molecular_weight = ref.molecular_weight;
     result.smiles = ref.smiles;
     result.state = ref.state;
@@ -265,7 +268,7 @@ export class SampleOutput extends BaseModel {
     result: CMDLSampleResult,
     ref: CMDLPolymer,
     value: RefResult[]
-  ) {
+  ): void {
     result.state = ref.state;
 
     let polymerWeights = [];
@@ -302,7 +305,10 @@ export class SampleOutput extends BaseModel {
    * @param ref CMDLPolymer
    * @param polymerWeights RefResult[]
    */
-  private computePolymerWeights(ref: CMDLPolymer, polymerWeights: RefResult[]) {
+  private computePolymerWeights(
+    ref: CMDLPolymer,
+    polymerWeights: RefResult[]
+  ): { tree: JSONPolymerContainer } {
     const polymer = new PolymerContainer(ref.name);
     polymer.initializeTreeFromJSON(ref.tree);
     polymer.addGraphValues(polymerWeights);

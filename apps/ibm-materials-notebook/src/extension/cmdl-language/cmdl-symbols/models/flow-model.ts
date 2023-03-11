@@ -44,7 +44,7 @@ export class FlowReaction extends BaseModel {
     super(name, modelAR, type);
   }
 
-  execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ModelActivationRecord): void {
     const reactorRef = this.modelAR.getValue<CMDLRef>("reactor");
     const solutions =
       this.modelAR.getValue<CMDLSolutionReference[]>("solutions");

@@ -51,7 +51,7 @@ export class Solution extends BaseModel {
     super(name, modelAR, type);
   }
 
-  execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ModelActivationRecord): void {
     try {
       const chemicals =
         this.modelAR.getValue<CMDLChemicalReference[]>("chemicals");

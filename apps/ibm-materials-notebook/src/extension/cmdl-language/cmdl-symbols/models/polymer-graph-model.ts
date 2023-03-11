@@ -33,7 +33,7 @@ export class PolymerGraphModel extends BaseModel {
     this.polymerContainer = new PolymerContainer(name);
   }
 
-  execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ModelActivationRecord): void {
     const importedTree = this.modelAR.getOptionalValue("tree");
 
     if (importedTree) {

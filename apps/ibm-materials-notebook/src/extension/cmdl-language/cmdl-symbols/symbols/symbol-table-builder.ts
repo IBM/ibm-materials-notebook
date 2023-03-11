@@ -54,7 +54,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Merges connection symbols into a single connection property
    * @param symbol BaseSymbol
    */
-  private addSymbol(symbol: BaseSymbol) {
+  private addSymbol(symbol: BaseSymbol): void {
     const table = this.tableStack.peek();
 
     if (table.has(symbol.name)) {
@@ -93,7 +93,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * @param symbol BaseSymbol
    * @param table SymbolTable
    */
-  checkRefSymbolPaths(symbol: BaseSymbol, table: SymbolTable) {
+  public checkRefSymbolPaths(symbol: BaseSymbol, table: SymbolTable): void {
     if (symbol instanceof ReferenceSymbol) {
       const other = table.get(symbol.name);
       const newPath = symbol.path.join(".");
@@ -122,7 +122,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Creates a new scope, attaches to current scope, and pushes to table stack
    * @param name string
    */
-  private enterNewScope(name: string) {
+  private enterNewScope(name: string): void {
     const currentScope = this.tableStack.peek();
     const nestedScope = new SymbolTable(name, currentScope);
     this.tableStack.push(nestedScope);
@@ -131,7 +131,7 @@ export class SymbolTableBuilder implements AstVisitor {
   /**
    * Pops current scope off of the stack unless it is the global scope
    */
-  private exitCurrentScope() {
+  private exitCurrentScope(): void {
     if (this.tableStack.size > 1) {
       this.tableStack.pop();
     } else {
@@ -143,7 +143,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Gets any generated errors during symbol table construction
    * @returns BaseError[]
    */
-  getErrors() {
+  public getErrors(): BaseError[] {
     return this.errors.get(this.uri);
   }
 
@@ -151,7 +151,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Top level function to visit a node in the record tree
    * @param node RecordNode
    */
-  visit(node: RecordNode): void {
+  public visit(node: RecordNode): void {
     try {
       node.accept(this);
     } catch (error) {
@@ -166,7 +166,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Creates a declaration symbol and scope for visiting a named group
    * @param group Named Group
    */
-  visitNamedGroup(group: NamedGroup) {
+  public visitNamedGroup(group: NamedGroup): void {
     const declSymbol = new DeclarationSymbol(
       {
         name: group.identifier,
@@ -193,7 +193,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Creates a declaration symbol and scope for visiting a named group
    * @param group Named Group
    */
-  visitVariableGroup(group: VariableGroup) {
+  public visitVariableGroup(group: VariableGroup): void {
     const variableName = group.identifier.slice(1);
     const declSymbol = new DeclarationSymbol(
       {
@@ -205,7 +205,6 @@ export class SymbolTableBuilder implements AstVisitor {
       typeManager.getModel(group.name)
     );
 
-    logger.debug(`variable group symbol: ${declSymbol.print()}`);
     this.addSymbol(declSymbol);
     this.enterNewScope(variableName);
 
@@ -222,7 +221,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Creates a group symbol and scope for visiting a general group
    * @param group Group
    */
-  visitGroup(group: Group) {
+  public visitGroup(group: Group): void {
     const groupSym = new GroupSymbol({
       name: group.name,
       token: group.nameToken,
@@ -246,7 +245,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Creates a property symbol and adds to current scope
    * @param property Property
    */
-  visitProperty(property: Property) {
+  public visitProperty(property: Property): void {
     const propSymbol = new PropertySymbol(
       {
         name: property.name,
@@ -263,7 +262,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Creates a property symbol and adds to current scope
    * @param property Property
    */
-  visitVariableProperty(property: Property) {
+  public visitVariableProperty(property: Property): void {
     const propSymbol = new PropertySymbol(
       {
         name: property.name,
@@ -280,7 +279,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Creates a declaration symbol and adds to current scope
    * @param node ImportOp
    */
-  visitImportOp(node: ImportOp) {
+  public visitImportOp(node: ImportOp): void {
     const symbolType = node.getImportType();
     const model = typeManager.getModel(symbolType);
 
@@ -298,7 +297,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * @param node ImportOp
    * @param model ModelType
    */
-  importReactorGraphSymbol(node: ImportOp, model: ModelType) {
+  public importReactorGraphSymbol(node: ImportOp, model: ModelType): void {
     const importData = node.export();
     const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
     const nodeName = importData.alias ? importData.alias : node.name;
@@ -341,7 +340,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * @param node ImportOp
    * @param model ModelType
    */
-  importPolymerGraphSymbol(node: ImportOp, model: ModelType) {
+  public importPolymerGraphSymbol(node: ImportOp, model: ModelType): void {
     const importData = node.export();
     const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
     const nodeName = importData.alias ? importData.alias : node.name;
@@ -380,7 +379,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * @param node ImportOp
    * @param model ModelType
    */
-  importGeneralSymbol(node: ImportOp, model: ModelType) {
+  public importGeneralSymbol(node: ImportOp, model: ModelType): void {
     const importData = node.export();
     const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
     const nodeName = importData.alias ? importData.alias : node.name;
@@ -420,7 +419,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * @param keyObj CMDLNodeTree
    * @param nameToken CMDLToken
    */
-  createGraphSymbols(keyObj: CMDLNodeTree, nameToken: CmdlToken) {
+  public createGraphSymbols(keyObj: CMDLNodeTree, nameToken: CmdlToken): void {
     for (const key of Object.keys(keyObj)) {
       const propSymbol = new ReferenceSymbol(
         {
@@ -446,7 +445,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Creates a reference symbol and enters a new scope
    * @param refGroup ReferenceGroup
    */
-  visitReference(refGroup: ReferenceGroup) {
+  public visitReference(refGroup: ReferenceGroup): void {
     const refSymbol = this.createReference(refGroup);
 
     this.addSymbol(refSymbol);
@@ -465,7 +464,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Creates a property symbol and adds to current scope
    * @param refProp RefProperty
    */
-  visitRefProp(refProp: RefProperty) {
+  public visitRefProp(refProp: RefProperty): void {
     const refSymbol = this.createReference(refProp);
 
     const propSymbol = new PropertySymbol(
@@ -495,7 +494,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Creates a property symbol and adds to current scope
    * @param refList RefListProperty
    */
-  visitRefListProp(refList: RefListProperty) {
+  public visitRefListProp(refList: RefListProperty): void {
     let valueList = refList.getValues();
     let valueSymbolList = this.createRefArray(valueList);
 
@@ -515,7 +514,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Creates a connection symbol and adds to an existing angle symbol ("connections" property) on current scope.
    * @param angleProp AngleProperty
    */
-  visitAngleProp(angleProp: AngleProperty) {
+  public visitAngleProp(angleProp: AngleProperty): void {
     let sourceList = angleProp.getSources();
     let targetList = angleProp.getTargets();
 
@@ -542,7 +541,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * @param refValueArr ReferenceValue[]
    * @returns ReferenceSymbol[]
    */
-  private createRefArray(refValueArr: ReferenceValue[]) {
+  private createRefArray(refValueArr: ReferenceValue[]): ReferenceSymbol[] {
     let valueSymbolList = [];
 
     for (const value of refValueArr) {
@@ -557,7 +556,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * @param refComponent SymbolReference
    * @returns ReferenceSymbol
    */
-  private createReference(refComponent: SymbolReference) {
+  private createReference(refComponent: SymbolReference): ReferenceSymbol {
     let symbolName: string;
     let path = refComponent.getPath();
 

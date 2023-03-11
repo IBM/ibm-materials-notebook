@@ -1,6 +1,6 @@
 import { CMDLUnit, Quantity } from "../symbol-types";
 import { ChemicalSet } from "../chemicals";
-import { ChemicalConfig } from "../chemicals/chemical-factory";
+import { ChemicalConfig, ChemicalOutput } from "../chemicals/chemical-factory";
 import Big from "big.js";
 
 /**
@@ -22,6 +22,11 @@ export class ReactorChemicals {
     }
   }
 
+  /**
+   * Type predicate for determining unit type
+   * @param item Quantity | CMDLUnit
+   * @returns boolean
+   */
   private isCMDLUnit(item: Quantity | CMDLUnit): item is CMDLUnit {
     return typeof item.value === "string";
   }
@@ -30,17 +35,20 @@ export class ReactorChemicals {
    * Adds chemicals to the solution property
    * @param chemicals ChemicalConfig[]
    */
-  setChemicals(chemicals: ChemicalConfig[]) {
+  public setChemicals(chemicals: ChemicalConfig[]): void {
     this.solution.insertMany(chemicals);
   }
 
   /**
-   * Returns chemicals configs based on fraction of volume within a flow reactor
+   * Returns chemical configs based on fraction of volume within a flow reactor
    * @param totalFlowRate Quantity - total flow rate within a reactor segment
    * @param totalVolume Quantity - total volume within a reactor segment
-   * @returns ChemicalConfig
+   * @returns ChemicalConfig[]
    */
-  getByVolume(totalFlowRate: Quantity, totalVolume: Quantity) {
+  public getByVolume(
+    totalFlowRate: Quantity,
+    totalVolume: Quantity
+  ): ChemicalConfig[] {
     const volumeFraction = this.flowRate.value
       .div(totalFlowRate.value)
       .times(totalVolume.value)
@@ -56,7 +64,7 @@ export class ReactorChemicals {
   /**
    * Computes initial stochiometry for the chemicals
    */
-  computeInitialValues() {
+  public computeInitialValues(): void {
     this.solution.computeChemicalValues();
   }
 
@@ -64,7 +72,7 @@ export class ReactorChemicals {
    * Computes stoichiometry for output the chemicals
    * @returns ChemicalOutput[]
    */
-  computeValues() {
+  public computeValues(): ChemicalOutput[] {
     return this.solution.computeChemicalValues();
   }
 }

@@ -4,6 +4,9 @@ import { ChemicalConfig, ChemStates, NamedQuantity } from "./chemical-factory";
 import Big from "big.js";
 import { Quantity } from "../symbol-types";
 
+/**
+ * Class representing a liquid chemical within a reaction or solution
+ */
 export default class Liquid extends BaseChemical {
   constructor(
     name: string,
@@ -19,7 +22,7 @@ export default class Liquid extends BaseChemical {
   }
 
   //TODO: Implement more rigorous operations with units
-  computeValues(qty: NamedQuantity) {
+  public computeValues(qty: NamedQuantity): void {
     if (!this.mw) {
       throw new Error(
         `Missing or invalid mw value for ${this.name}: ${this.mw}`
@@ -100,12 +103,12 @@ export default class Liquid extends BaseChemical {
     }
   }
 
-  merge(chemical: BaseChemical): void {
+  public merge(chemical: BaseChemical): void {
     const newMoles = this.combineMoles(chemical);
     this.computeValues({ name: PROPERTIES.MOLES, ...newMoles });
   }
 
-  getMolesByVolume(volume: Quantity): ChemicalConfig {
+  public getMolesByVolume(volume: Quantity): ChemicalConfig {
     if (!this.mw) {
       throw new Error(`\n-Mw is invalid for ${this.name}`);
     }
@@ -133,7 +136,7 @@ export default class Liquid extends BaseChemical {
     };
   }
 
-  export(): ChemicalConfig {
+  public export(): ChemicalConfig {
     if (!this.mw || !this.density || !this.moles) {
       throw new Error(`Cannot export incomplete liquid chemical ${this.name}`);
     }

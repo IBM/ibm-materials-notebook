@@ -33,7 +33,7 @@ export class ModelVisitor implements AstVisitor {
    * Top level function to initiate the traversal process
    * @param arg RecordNode
    */
-  visit(arg: RecordNode): void {
+  public visit(arg: RecordNode): void {
     arg.accept(this);
   }
 
@@ -42,7 +42,7 @@ export class ModelVisitor implements AstVisitor {
    * The model is then executed following traversal of the node's children. Results are written to parent AR.
    * @param node NamedGroup
    */
-  visitModelNode(node: NamedGroup) {
+  public visitModelNode(node: NamedGroup): void {
     const modelType = typeManager.getModel(node.name);
     const modelAR = new ModelActivationRecord(modelType, node.name, this.uri);
 
@@ -62,7 +62,7 @@ export class ModelVisitor implements AstVisitor {
    * Writes property values to the current AR.
    * @param node Property
    */
-  visitProperty(node: Property) {
+  public visitProperty(node: Property): void {
     const values = node.getValues();
     const currentAR = this.modelStack.peek();
     currentAR.setValue(node.name, values);
@@ -73,7 +73,7 @@ export class ModelVisitor implements AstVisitor {
    * Results are written to parent AR.
    * @param node ReferenceGroup
    */
-  visitReferenceGroup(node: ReferenceGroup) {
+  public visitReferenceGroup(node: ReferenceGroup): void {
     logger.verbose(`Starting model execution for reference ${node.name}`);
 
     const path = node.getPath();
@@ -106,7 +106,7 @@ export class ModelVisitor implements AstVisitor {
    * Writes reference property values to current AR.
    * @param node RefProperty
    */
-  visitReferenceProperty(node: RefProperty) {
+  public visitReferenceProperty(node: RefProperty): void {
     const ref = node.getValues().slice(1);
     const path = node.getPath();
     const currentAR = this.modelStack.peek();
@@ -117,7 +117,7 @@ export class ModelVisitor implements AstVisitor {
    * Writes reference list property values to current AR.
    * @param node RefListProperty
    */
-  visitReferenceListProperty(node: RefListProperty) {
+  public visitReferenceListProperty(node: RefListProperty): void {
     const currentAR = this.modelStack.peek();
     currentAR.setValue(node.name, node.export());
   }
@@ -126,7 +126,7 @@ export class ModelVisitor implements AstVisitor {
    * Writes current angle property values to current AR.
    * @param node AngleProperty
    */
-  visitAngleProperty(node: AngleProperty) {
+  public visitAngleProperty(node: AngleProperty): void {
     const currentAR = this.modelStack.peek();
     currentAR.mergeArrayValue("connections", node.export());
   }
@@ -135,7 +135,7 @@ export class ModelVisitor implements AstVisitor {
    * Creates a group model, visits children, and tablulates values on current AR.
    * @param node GeneralGroup
    */
-  visitGeneralGroup(node: GeneralGroup) {
+  public visitGeneralGroup(node: GeneralGroup): void {
     logger.verbose(`Starting model execution for group ${node.name}`);
 
     const modelAR = new ModelActivationRecord(
@@ -157,7 +157,12 @@ export class ModelVisitor implements AstVisitor {
     logger.verbose(`...finished group model execution for ${node.name}`);
   }
 
-  visitImportOp(node: ImportOp) {
+  /**
+   * Visits a import operation node in the AST. Imports values for the given
+   * entitiy in to the current AR
+   * @param node ImportOp
+   */
+  public visitImportOp(node: ImportOp): void {
     logger.verbose(`Starting model execution for import ${node.name}`);
     const nodeName = node.aliasToken ? node.aliasToken.image : node.name;
 

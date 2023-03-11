@@ -6,6 +6,9 @@ import { UNITS } from "../../cmdl-types/units";
 import { ChemicalConfig, ChemStates } from "./chemical-factory";
 import { PROPERTIES, ReactionRoles } from "../../cmdl-types";
 
+/**
+ * Class representing gaseous chemicals in a reaction
+ */
 export default class Gas extends BaseChemical {
   constructor(
     name: string,
@@ -18,6 +21,11 @@ export default class Gas extends BaseChemical {
     this.mw = mw;
   }
 
+  /**
+   * Initializes gas values based on pressure and reactor volume
+   * @param volume Quantity
+   * @param pressure Quantity
+   */
   public initializeValues(volume: Quantity, pressure: Quantity) {
     if (pressure && pressure.unit !== "atm") {
       const pressureUnit = new Unit(pressure);
@@ -54,15 +62,15 @@ export default class Gas extends BaseChemical {
     this.mass = { unit: "g", value: mass, uncertainty: null };
   }
 
-  merge(chemical: BaseChemical): void {
+  public merge(chemical: BaseChemical): void {
     throw new Error(`Cannot merge for gaseous reagents`);
   }
 
-  getMolesByVolume(volume: Quantity): ChemicalConfig {
+  public getMolesByVolume(volume: Quantity): ChemicalConfig {
     throw new Error(`Not implmented for gaseous reagents`);
   }
 
-  export(): ChemicalConfig {
+  public export(): ChemicalConfig {
     if (!this.mw || !this.pressure || !this.volume) {
       throw new Error(`Cannot export incomplete gas chemical ${this.name}`);
     }

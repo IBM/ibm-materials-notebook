@@ -48,6 +48,9 @@ export interface JSONPolymerGraphStructure {
   tree: JSONPolymerTree<null>;
 }
 
+/**
+ * Top level class for managing polymer tree and graph representations
+ */
 export class PolymerContainer {
   name: string;
   tree = new PolymerTree();
@@ -57,6 +60,11 @@ export class PolymerContainer {
     this.name = name;
   }
 
+  /**
+   * Constructs a polymer composite tree data structure
+   * @param treeConfig CMDLPolymerTree
+   * @param record ModelActivationRecord
+   */
   buildTree(treeConfig: CMDLPolymerTree, record: ModelActivationRecord) {
     this.tree.initialize(treeConfig, record);
     this.tree.root?.setName();

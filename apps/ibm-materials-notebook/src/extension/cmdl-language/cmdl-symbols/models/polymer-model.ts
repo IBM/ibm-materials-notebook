@@ -25,7 +25,7 @@ export class Polymer extends BaseModel {
     this.polymerContainer = new PolymerContainer(name);
   }
 
-  execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ModelActivationRecord): void {
     const treeRef = this.modelAR.getValue<CMDLRef | JSONPolymerTree<null>>(
       PROPERTIES.TREE
     );
