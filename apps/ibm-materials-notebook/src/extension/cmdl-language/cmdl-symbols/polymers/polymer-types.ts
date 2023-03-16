@@ -1,4 +1,4 @@
-import { PolymerTreeVisitor } from "./polymer-weights";
+import { PolymerTreeVisitor } from "./polymer-visitors";
 import { CMDLRef } from "../symbol-types";
 
 export interface CMDLPolymerConnection {

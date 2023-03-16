@@ -70,6 +70,7 @@ export class CmdlCompiler {
       parserErrors: parserInstance.errors,
       lexErrors: lexingResult.errors,
     };
+  }
 
   /**
    * Converts errors from parser to Cmdl ParserError class
