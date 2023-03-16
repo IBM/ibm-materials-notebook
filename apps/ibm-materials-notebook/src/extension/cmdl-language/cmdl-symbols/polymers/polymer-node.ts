@@ -1,7 +1,7 @@
 import Big from "big.js";
 import { PolymerComponent } from "./polymer-types";
 import { Container } from "./polymer-tree-container";
-import { PolymerTreeVisitor } from "./polymer-weights";
+import { PolymerTreeVisitor } from "./polymer-visitors";
 import { cmdlLogger } from "../../logger";
 import { JSONPolymerNode } from "./polymer-container";
 

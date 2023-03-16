@@ -4,15 +4,24 @@ import { PolymerComponent } from "./polymer-types";
 import { Container } from "./polymer-tree-container";
 import { PolymerNode } from "./polymer-node";
 import { PolymerEdge } from "./polymer-edge";
-import Big from "big.js";
 import { JSONPolymerGraph } from "./polymer-container";
 
 /**
  * Class for handling polymer graph representation
  */
 export class PolymerGraph {
-  adjacencyList = new Map<string, PolymerEdge[]>(); //node path is key
-  nodes = new Map<string, PolymerNode>(); //node path is key
+  /**
+   * Map of node id (node path) and polymer edges originating from the node
+   */
+  adjacencyList = new Map<string, PolymerEdge[]>();
+  /**
+   * Map of node id (node path) and polymer nodes in the graph
+   */
+  nodes = new Map<string, PolymerNode>();
+  /**
+   * Array of polymer edges, used temporarily for building adjacencyList
+   * @todo remove need for this property in function
+   */
   edges: PolymerEdge[] = [];
 
   /**
@@ -53,45 +62,6 @@ export class PolymerGraph {
   }
 
   /**
-   * @deprecated
-   * @param nodeArray any[]
-   */
-  public initializeFromStr(nodeArray: any[]) {
-    for (const node of nodeArray) {
-      const namePath = node.name.split(".");
-
-      const newNode = new PolymerNode({
-        fragment: namePath[namePath.length - 1],
-        mw: Big(node.mw),
-        smiles: node.smiles,
-      });
-      newNode.name = node.name;
-
-      this.nodes.set(node.name, newNode);
-
-      for (const [key, value] of Object.entries(node)) {
-        if (key !== "name" && key !== "mw" && key !== "smiles") {
-          newNode.properties.set(key, value);
-        }
-      }
-
-      let nodeEdges = [];
-      if (node?.edges?.length) {
-        for (const edge of node.edges) {
-          let newEdge = new PolymerEdge({
-            targetPath: edge.target.split("."),
-            sourcePath: [...namePath, edge.sourcePoint],
-            weight: Number(edge.weight),
-            quantity: Number(edge.quantity),
-          });
-          nodeEdges.push(newEdge);
-        }
-      }
-      this.adjacencyList.set(node.name, nodeEdges);
-    }
-  }
-
-  /**
    * Type predicate to determine whether or not a component is a container
    * @param arg PolymerComponent
    * @returns boolean
@@ -104,7 +74,7 @@ export class PolymerGraph {
    * Gets all names of nodes in the polymer graph
    * @returns string[]
    */
-  getNodeKeys(): string[] {
+  public getNodeKeys(): string[] {
     return [...this.nodes.keys()];
   }
 
@@ -114,7 +84,7 @@ export class PolymerGraph {
    * @param nodePath string
    * @param property any
    */
-  setNodeProperty(nodePath: string, property: any): void {
+  public setNodeProperty(nodePath: string, property: any): void {
     let node = this.nodes.get(nodePath);
 
     if (!node) {
@@ -143,7 +113,7 @@ export class PolymerGraph {
    * Expands the compressed graph version to full version taking into account
    * the quantity of edges
    */
-  expand(): void {
+  public expand(): void {
     //create a new graph
     //add additional nodes/edges for quantities > 1
     throw new Error(`Expand method is not implemented`);
@@ -153,7 +123,7 @@ export class PolymerGraph {
    * Serializes graph to Object
    * @returns Object
    */
-  toJSON(): JSONPolymerGraph {
+  public toJSON(): JSONPolymerGraph {
     const nodes = [...this.nodes.values()].map((el) => el.toJSON());
     const edges = this.edges.map((el) => el.toJSON());
     return { nodes, edges };
@@ -163,7 +133,7 @@ export class PolymerGraph {
    * Serializes graph to string representation
    * @returns string
    */
-  toString(): string {
+  public toString(): string {
     let output = "";
     let queue = [...this.adjacencyList.keys()];
     let key: string | undefined;
@@ -197,7 +167,7 @@ export class PolymerGraph {
    * @TODO remove SMILES conflicting characters
    * @returns string
    */
-  toMaskedString(): string {
+  public toMaskedString(): string {
     let output = "";
     let queue = [...this.adjacencyList.keys()];
     let key: string | undefined;
@@ -243,7 +213,7 @@ export class PolymerGraph {
    * @TODO remove SMILES conflicting characters
    * @returns string
    */
-  toCompressedString() {
+  public toCompressedString() {
     let output = "";
     let queue = [...this.adjacencyList.keys()];
     let key: string | undefined;

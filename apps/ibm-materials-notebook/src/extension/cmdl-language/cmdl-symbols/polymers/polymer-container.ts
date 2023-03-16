@@ -85,7 +85,10 @@ export class PolymerContainer {
 
   /**
    * Computes weights for each edge within the polymer graph depending
-   * on the degree polymerization for connected nodes
+   * on the degree polymerization for connected nodes.
+   * 1. Determines whether polymer is cyclic or linear
+   * 2. Scores polymer
+   * 3. Finalizes polymer edge weights
    */
   public computePolymerWeights(): void {
     const weightor = new PolymerWeight(this.graph);

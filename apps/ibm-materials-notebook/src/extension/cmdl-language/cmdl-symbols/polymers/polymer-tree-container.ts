@@ -6,7 +6,7 @@ import {
   SideChainVisitor,
   StrategyVisitor,
   EdgeMultiplier,
-} from "./polymer-weights";
+} from "./polymer-visitors";
 import { JSONPolymerContainer } from "./polymer-container";
 
 /**

@@ -6,7 +6,7 @@ import {
   StrategyVisitor,
   SideChainVisitor,
   EdgeMultiplier,
-} from "./polymer-weights";
+} from "./polymer-visitors";
 
 /**
  * Class for edges within a polymer graph.

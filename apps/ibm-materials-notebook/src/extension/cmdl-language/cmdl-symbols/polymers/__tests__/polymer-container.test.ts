@@ -2,7 +2,6 @@ import { ModelType } from "../../../cmdl-types/groups/group-types";
 import { RefResult } from "../../models/sample-model";
 import {
   JSONPolymerGraphStructure,
-  JSONPolymerTree,
   PolymerContainer,
 } from "../polymer-container";
 
