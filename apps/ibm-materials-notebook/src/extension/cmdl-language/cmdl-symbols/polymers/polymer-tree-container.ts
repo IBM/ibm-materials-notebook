@@ -8,6 +8,7 @@ import {
   EdgeMultiplier,
 } from "./polymer-visitors";
 import { JSONPolymerContainer } from "./polymer-container";
+import { PolymerNode } from "./polymer-node";
 
 /**
  * Class for managing groups of nodes, other containers, and connections between them.
@@ -127,21 +128,72 @@ export class Container implements PolymerComponent {
   }
 
   /**
-   * Exports polymer container to BigSMILES format
+   * Exports polymer container to BigSMILES format.
+   * This method not viable for all polymer types
    * @returns string
    */
   public exportToBigSMILES(): string {
-    const childBS = [];
+    const childBigSmiles = [];
+    let leftEndgroup: PolymerNode | undefined,
+      rightEndGroup: PolymerNode | undefined;
     for (const child of this.children) {
-      const childString = child.exportToBigSMILES();
-      childBS.push(childString);
+      if (child instanceof PolymerNode) {
+        if (this.isRepeatUnit(child.name)) {
+          let repeatUnitSmiles = child.exportToBigSMILES();
+          childBigSmiles.push(repeatUnitSmiles);
+        } else {
+          if (this.isLeftEndGroup(child.name)) {
+            leftEndgroup = child;
+          } else {
+            rightEndGroup = child;
+          }
+        }
+      } else {
+        let containerSmiles = child.exportToBigSMILES();
+        childBigSmiles.push(containerSmiles);
+      }
     }
 
-    if (!this.parent) {
-      return `{[]${childBS.join(", ")}[]}`;
-    } else {
-      return `{${childBS.join(", ")}}`;
+    if (!leftEndgroup && !rightEndGroup && !this.parent) {
+      return `{[]${childBigSmiles.join(", ")}[]}`;
     }
+    if (leftEndgroup && rightEndGroup) {
+      const left = leftEndgroup.exportToBigSMILES();
+      const right = rightEndGroup.exportToBigSMILES();
+      return `${left}{[>]${childBigSmiles.join(", ")}[<]}${right}`;
+    } else {
+      return `{${childBigSmiles.join(", ")}}`;
+    }
+  }
+
+  /**
+   * Determines if node is a repeat unit
+   * @param nodeId string name of the node
+   * @returns boolean
+   */
+  private isRepeatUnit(nodeId: string): boolean {
+    for (const edge of this.connections) {
+      if (edge.sourceName === edge.targetName && edge.sourceName === nodeId) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Determines the type of end group
+   * @param nodeId string name of the polymer node
+   * @returns boolean
+   */
+  private isLeftEndGroup(nodeId: string): boolean {
+    for (const edge of this.connections) {
+      if (edge.sourceName === nodeId) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**

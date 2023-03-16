@@ -3,8 +3,9 @@ import { parseStringImage } from "../utils";
 import { Property } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../../cmdl-symbols";
 import { ModelVisitor } from "../../cmdl-symbols";
-import { PropertyTypes } from "../../cmdl-types";
+import { PROPERTIES, PropertyTypes } from "../../cmdl-types";
 import { BaseError, InvalidPropertyError } from "../../errors";
+import { BigSMILES } from "ts-bigsmiles";
 
 /**
  * Handles and string and text properties within CMDL record trees
@@ -38,6 +39,17 @@ export class StringProperty extends Property {
       let msg = `Invalid property type for ${this.name}`;
       let err = new InvalidPropertyError(msg, this.nameToken);
       this.errors.push(err);
+    }
+
+    if (this.name === PROPERTIES.BIG_SMILES) {
+      try {
+        const bigSmilesParser = new BigSMILES(this.value);
+        const validatedStr = bigSmilesParser.toString();
+      } catch (error) {
+        let msg = (error as Error).message;
+        let err = new InvalidPropertyError(msg, this.nameToken);
+        this.errors.push(err);
+      }
     }
 
     return this.errors;

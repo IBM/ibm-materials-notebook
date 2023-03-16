@@ -31,23 +31,6 @@ export class Polymer extends BaseModel {
     );
     const treeValues =
       this.modelAR.getOptionalValue<CMDLPolymerTreeValue[]>("treeValues");
-    const bigSmilesStr = this.modelAR.getOptionalValue<string>(
-      PROPERTIES.BIG_SMILES
-    );
-
-    let validatedStr: string | undefined;
-    if (bigSmilesStr) {
-      try {
-        const bigSmilesParser = new BigSMILES(bigSmilesStr);
-        validatedStr = bigSmilesParser.toString();
-      } catch (error) {
-        throw new Error(
-          `Error during validating BigSMLIES ${bigSmilesStr}: ${
-            error as string
-          }`
-        );
-      }
-    }
 
     if ("ref" in treeRef) {
       const polymerGraph = globalAR.getOptionalValue<CMDLPolymerGraph>(
@@ -79,8 +62,6 @@ export class Polymer extends BaseModel {
     for (const [name, value] of this.modelAR.all()) {
       if (name === PROPERTIES.TREE) {
         properties[name] = this.polymerContainer.treeToJSON();
-      } else if (name === PROPERTIES.BIG_SMILES && validatedStr) {
-        properties[name] = validatedStr;
       } else {
         properties[name] = value;
       }
