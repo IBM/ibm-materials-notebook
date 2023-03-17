@@ -46,20 +46,9 @@
       "title": "IBM Materials Notebook",
       "properties": {
         "ibm-materials-notebook.library": {
-          "title": "Library Path",
+          "title": "Output path for workspace",
           "type": "string",
-          "default": "./lib",
-          "markdownDescription": "Specifies path for entities for experiments in current workspace."
-        },
-        "ibm-materials-notebook.exp": {
-          "title": "Experiment Path",
-          "type": "string",
-          "default": "./exp"
-        },
-        "ibm-materials-notebook.output": {
-          "title": "Output Path",
-          "type": "string",
-          "default": "./output"
+          "default": "./lib"
         },
         "ibm-materials-notebook.structure-theme": {
           "title": "Chemical Structure Theme",

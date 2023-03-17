@@ -13,16 +13,14 @@ import { registerCommands } from "./commands";
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-  //TODO: Better handling of path item types
-
-  const outputPath = vscode.workspace
+  const wsLibPath = vscode.workspace
     .getConfiguration("ibm-materials-notebook")
-    .get("output") as string;
+    .get("library") as string;
 
-  const library = new Library(context);
+  const library = new Library(context, wsLibPath);
   await library.initialize();
 
-  const repository = new Repository(outputPath, library);
+  const repository = new Repository(wsLibPath, library);
   logger.info("IBM Materials notebook extension is activated");
 
   // Use the console to output diagnostic information (console.log) and errors (console.error)

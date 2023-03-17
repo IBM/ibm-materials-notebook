@@ -37,7 +37,7 @@ export class MaterialsKernel {
   /**
    * Disposes of vscode disposables
    */
-  dispose(): void {
+  public dispose(): void {
     this._controller.dispose();
   }
 

@@ -83,8 +83,10 @@ class LocalStorageService {
 export class Library {
   private workspaceStorage: LocalStorageService;
   private globalStorage: LocalStorageService;
+  private libPath: string;
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(context: vscode.ExtensionContext, wsLibPath: string) {
+    this.libPath = wsLibPath;
     this.workspaceStorage = new LocalStorageService(context.workspaceState);
     this.globalStorage = new LocalStorageService(context.globalState);
 
@@ -96,22 +98,23 @@ export class Library {
    * workspace storage.
    * @TODO ensure clearing of stale values
    */
-  public async initialize() {
-    const cmdlLibPath = "/Users/npark/cmdl_test/cmdl_lib";
+  public async initialize(): Promise<void> {
     const basePath = vscode.workspace.workspaceFolders
       ? vscode.workspace.workspaceFolders[0].uri.path
       : __dirname;
     const resolvedPath = path.join(basePath, "lib");
 
     await this.readLibDir(resolvedPath, "workspace");
-    await this.readLibDir(cmdlLibPath, "extension");
   }
 
   /**
    * Reads file directory and parses all files into storage for importing items
    * @param path string
    */
-  private async readLibDir(path: string, level: "workspace" | "extension") {
+  private async readLibDir(
+    path: string,
+    level: "workspace" | "extension"
+  ): Promise<void> {
     logger.info(`Initializing library on path ${path}`);
     fs.readdir(path, async (err, files) => {
       if (err) {
@@ -166,7 +169,7 @@ export class Library {
    * @param item EntityReference
    * @TODO ensure clearing of stale values
    */
-  public addItem(item: any) {
+  public addItem(item: any): void {
     if (this.workspaceStorage.hasValue(item.name)) {
       logger.warn(`Overwriting value for ${item.name} in repo library...`);
     }
