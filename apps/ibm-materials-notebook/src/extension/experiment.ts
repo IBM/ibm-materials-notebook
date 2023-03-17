@@ -17,6 +17,16 @@ import {
   CMDLMetaData,
   CMDLRecordTypes,
 } from "./cmdl-language/cmdl-symbols/symbol-types";
+import { BaseError } from "./cmdl-language/errors";
+import { BaseSymbol } from "./cmdl-language/cmdl-symbols/symbols/cmdl-symbol-base";
+import { ExpRecord } from "./exports/exp-builder";
+import { FlowRecord } from "./exports/flow-exp-builder";
+
+interface CmdlCell {
+  versionParsed: number;
+  doc: vscode.TextDocument;
+  recordTree: CmdlTree;
+}
 
 /**
  * Manages values for individual notebook in workspace
@@ -26,14 +36,7 @@ export class Experiment {
   readonly uri: string;
   readonly fileName: string;
   private readonly library: Library;
-  private readonly _cells = new Map<
-    string,
-    {
-      versionParsed: number;
-      doc: vscode.TextDocument;
-      recordTree: CmdlTree;
-    }
-  >();
+  private readonly _cells = new Map<string, CmdlCell>();
   private readonly _errorTable = new ErrorTable();
   private readonly _compiler = new CmdlCompiler();
   private readonly _symbolTable = new SymbolTable("GLOBAL");
@@ -106,14 +109,12 @@ export class Experiment {
 
       this._cells.set(uri, compiledValues);
     }
-    // logger.debug(`current symbol table:\n${this._symbolTable.print()}`);
   }
 
   /**
    * Validates symbol table and pushes errors to error table
    */
-  validateSymbols() {
-    // logger.debug(`current symbol table: ${this._symbolTable.print()}`);
+  public validateSymbols(): void {
     this._symbolTable.validate(this._errorTable);
   }
 
@@ -122,23 +123,22 @@ export class Experiment {
    * @param doc vscode text document for cell
    * @returns boolean
    */
-  hasCell(doc: vscode.TextDocument) {
+  public hasCell(doc: vscode.TextDocument): boolean {
     return this._cells.has(doc.uri.toString());
   }
 
   /**
    * Method to remove cell from experiment notebook
    * clears all outputs symbols and errors from tables
-   * @param doc vscod text document
+   * @todo clear entities from workspace storage?
+   * @param doc vscode text document
    */
-  delete(doc: vscode.TextDocument) {
+  public delete(doc: vscode.TextDocument): void {
     const uri = doc.uri.toString();
-    logger.verbose(`deleting cell: \n${uri}`);
     this._symbolTable.remove(uri);
     this._cells.delete(uri);
     this._globalAR.deleteRecord(uri);
     this._errorTable.delete(uri);
-    logger.verbose(`...finished deletion of cell ${uri}`);
   }
 
   /**
@@ -146,9 +146,8 @@ export class Experiment {
    * @param uri uri string from vscode text document
    * @returns unknown[]
    */
-  getCellOutput(uri: string): unknown[] {
+  public getCellOutput(uri: string): unknown[] {
     const outputRecord = this._globalAR.getRecord(uri);
-    // logger.debug(outputRecord.print());
     return [...outputRecord.values()];
   }
 
@@ -157,7 +156,7 @@ export class Experiment {
    * @param uri uri string from vscode text document
    * @returns BaseError[]
    */
-  getCellErrors(uri: string) {
+  public getCellErrors(uri: string): BaseError[] {
     return this._errorTable.get(uri);
   }
 
@@ -165,7 +164,7 @@ export class Experiment {
    * Retrieves all cell recordTrees
    * @returns IterableIterator
    */
-  all() {
+  public all(): IterableIterator<CmdlCell> {
     return this._cells.values();
   }
 
@@ -175,7 +174,7 @@ export class Experiment {
    * @TODO Optimize to avoid unecessary recomputation if nothing has changed
    * @param uri uri for cell being executed
    */
-  async executeCell(uri: string) {
+  public async executeCell(uri: string): Promise<void> {
     const cell = this._cells.get(uri);
 
     if (!cell) {
@@ -193,11 +192,11 @@ export class Experiment {
    * @param query text string from completion provider
    * @returns string[]
    */
-  getSymbols() {
+  public getSymbols(): BaseSymbol[] {
     return this._symbolTable.getBaseSymbols();
   }
 
-  getSymbolMembers(word: string) {
+  public getSymbolMembers(word: string): BaseSymbol[] | undefined {
     const path = word.split(".");
     return this._symbolTable.getSymbolMembers(path);
   }
@@ -205,7 +204,7 @@ export class Experiment {
   /**
    * Method to extract template variables from experiment and format for writing to CSV file
    */
-  toCSV() {
+  public toCSV(): string {
     const templateVariableSymbols = this._symbolTable.exportVariables();
     const templateVariables = templateVariableSymbols
       .map((el) => {
@@ -223,7 +222,7 @@ export class Experiment {
   /**
    * Method to parse read variable definitions into each cells record tree.
    */
-  cloneTemplate(templateVar: VariableDict) {
+  public cloneTemplate(templateVar: VariableDict) {
     logger.debug(`template variables`, { meta: templateVar });
     const newCells = [];
 
@@ -282,7 +281,7 @@ export class Experiment {
    * @TODO ensure new entities are saved to workspace storage
    * @returns FlowExp | ExpRecord | undefined
    */
-  toJSON() {
+  public toJSON(): FlowRecord | ExpRecord | undefined {
     const hasVariables = this._symbolTable.hasVariables();
 
     if (hasVariables) {

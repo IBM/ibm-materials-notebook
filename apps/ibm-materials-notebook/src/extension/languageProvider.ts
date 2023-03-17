@@ -13,7 +13,7 @@ const selector = { language: LANGUAGE };
 class CompletionItemProvider implements vscode.CompletionItemProvider {
   private readonly _completionProvider = new CmdlCompletions();
 
-  provideCompletionItems(
+  public provideCompletionItems(
     document: vscode.TextDocument,
     position: vscode.Position,
     token: vscode.CancellationToken,
@@ -42,7 +42,7 @@ class ImportProvder implements vscode.CompletionItemProvider {
   readonly completionProvider = new CmdlCompletions();
   constructor(readonly library: Library) {}
 
-  provideCompletionItems(
+  public provideCompletionItems(
     document: vscode.TextDocument,
     position: vscode.Position,
     token: vscode.CancellationToken,
@@ -91,7 +91,7 @@ class SymbolProvider implements vscode.CompletionItemProvider {
   static readonly triggerCharacters = ["@"];
   constructor(readonly repository: Repository) {}
 
-  provideCompletionItems(
+  public provideCompletionItems(
     document: vscode.TextDocument,
     position: vscode.Position,
     token: vscode.CancellationToken,
@@ -129,7 +129,7 @@ class SymbolMemberProvider implements vscode.CompletionItemProvider {
   private readonly _completionProvider = new CmdlCompletions();
   constructor(readonly repository: Repository) {}
 
-  provideCompletionItems(
+  public provideCompletionItems(
     document: vscode.TextDocument,
     position: vscode.Position,
     token: vscode.CancellationToken,
@@ -173,28 +173,11 @@ class SymbolMemberProvider implements vscode.CompletionItemProvider {
   }
 }
 
-class DefinitionProvider implements vscode.DefinitionProvider {
-  constructor(readonly repository: Repository) {}
-
-  provideDefinition(
-    document: vscode.TextDocument,
-    position: vscode.Position,
-    token: vscode.CancellationToken
-  ): vscode.ProviderResult<vscode.Definition | vscode.LocationLink[]> {
-    //lookup exp
-    //getCell
-    //get word
-    //lookup defined symbols
-    //provide matches
-    return [] as vscode.LocationLink[];
-  }
-}
-
 class HoverProvider implements vscode.HoverProvider {
   private readonly _completionProvider = new CmdlCompletions();
   constructor(readonly repository: Repository) {}
 
-  provideHover(
+  public provideHover(
     document: vscode.TextDocument,
     position: vscode.Position,
     token: vscode.CancellationToken
@@ -223,7 +206,7 @@ class SemanticTokenProvider implements vscode.DocumentSemanticTokensProvider {
   ]);
   private readonly _completionProvider = new CmdlCompletions();
 
-  provideDocumentSemanticTokens(
+  public provideDocumentSemanticTokens(
     document: vscode.TextDocument,
     token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.SemanticTokens> {

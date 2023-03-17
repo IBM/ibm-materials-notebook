@@ -14,13 +14,6 @@ import { registerCommands } from "./commands";
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
   //TODO: Better handling of path item types
-  const libPath = vscode.workspace
-    .getConfiguration("ibm-materials-notebook")
-    .get("library") as string;
-
-  const expPath = vscode.workspace
-    .getConfiguration("ibm-materials-notebook")
-    .get("exp") as string;
 
   const outputPath = vscode.workspace
     .getConfiguration("ibm-materials-notebook")

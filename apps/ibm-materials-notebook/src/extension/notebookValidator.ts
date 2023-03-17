@@ -67,7 +67,7 @@ export class Validation {
    * Validates the CMDL text for a cell after a change event has been fired
    * @param document vscode.TextDocument
    */
-  async validateCellChange(document: vscode.TextDocument) {
+  async validateCellChange(document: vscode.TextDocument): Promise<void> {
     logger.info(`validating cell:\n -> ${document.fileName}`);
 
     const exp = this.repository.findExperiment(document.uri);
@@ -100,7 +100,7 @@ export class Validation {
   /**
    * Disposes of vscode disposables
    */
-  dispose() {
+  public dispose(): void {
     this._disposables.forEach((el) => el.dispose());
   }
 
@@ -131,7 +131,7 @@ export class Validation {
    * Removes experiment from diagnostics collection
    * @param exp Expriment Experiment to be removed from diagnostics collection
    */
-  private clearExperiment(exp: Experiment) {
+  private clearExperiment(exp: Experiment): void {
     logger.verbose(`clearing diagnostics for: \n-> ${exp.uri}`);
     let experiment = this._collections.get(exp);
     if (experiment) {
