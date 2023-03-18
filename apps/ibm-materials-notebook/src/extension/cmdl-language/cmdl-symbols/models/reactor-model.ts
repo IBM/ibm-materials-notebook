@@ -43,14 +43,12 @@ export class Reactor extends BaseModel {
         this.modelAR.getValue<(CMDLReactorNode | CMDLReactor)[]>("nodes");
 
       for (const node of nodes) {
-        if (node.type === "reactor" && "nodes" in node) {
+        if (node.type === "reactor") {
           this.container.addReactor(node);
-        } else if (node.type === "component" && "target" in node) {
+        } else if (node.type === "component") {
           this.container.addNode(node);
         } else {
-          throw new Error(
-            `Unrecognized node type for reactor graph: ${node.name} ${node.type}`
-          );
+          throw new Error(`Unrecognized node type for reactor graph`);
         }
       }
 
