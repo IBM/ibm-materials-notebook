@@ -22,3 +22,9 @@ Preprint publication for concepts implemented within this extension can be found
 - No ability to adjust chemical structure color themes in settings.
 
 ## Release Notes
+
+### v0.1.3
+
+    - Enabled workspace storage for persisting experiment outputs
+    - Enabled adjustment of chemical structure theme
+    - Added support for adding and validating BigSMILES strings to polymer definitions
