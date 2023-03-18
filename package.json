@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "watch:ext": "npm run watch -workspace=ibm-materials-notebook",
+    "build": "lerna run build",
     "test": "npm run test -workspace=ibm-materials-notebook",
     "deploy": "npm run deploy -workspace=ibm-materials-notebook",
     "docs:build": "npm run docs:build -workspace=docs"
@@ -20,6 +21,7 @@
   ],
   "devDependencies": {
     "eslint": "^8.34.0",
-    "eslint-config-custom": "*"
+    "eslint-config-custom": "*",
+    "lerna": "^6.5.1"
   }
 }

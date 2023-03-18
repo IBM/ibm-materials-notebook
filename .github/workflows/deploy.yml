@@ -8,9 +8,6 @@ on:
 
 jobs:
   build:
-    # strategy:
-    #   matrix:
-    #     os: [macos-latest, ubuntu-latest, windows-latest]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,6 +17,7 @@ jobs:
         with:
           node-version: 16.x
       - run: npm install
+      - run: npm run build # build dependencies
       - run: xvfb-run -a npm test
         if: runner.os == 'Linux'
       - run: npm test
