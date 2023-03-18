@@ -1,9 +1,5 @@
-# BigSMILES
+# ts-smiles-drawer
 
-Enables support for parsing and validation of [BigSMILES polymer line notations](https://pubs.acs.org/doi/10.1021/acscentsci.9b00476). This package is a TypeScript port of a [BigSMILES parser written in python](https://github.com/dylanwal/BigSMILES).
-
-## Known Issues
-
-Currently handles only limited set of features in BigSMILES syntax.
+Typescript port of adaptation of [SmilesDrawer](https://github.com/reymond-group/smilesDrawer) library for rendering chemical structures. The published manuscript of SmilesDrawer can be found [here](https://pubs.acs.org/doi/10.1021/acs.jcim.7b00425).
 
 ## Release Notes
