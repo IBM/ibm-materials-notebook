@@ -1,4 +1,4 @@
-import { PolymerTreeVisitor } from "./polymer-weights";
+import { PolymerTreeVisitor } from "./polymer-visitors";
 import { CMDLRef } from "../symbol-types";
 
 export interface CMDLPolymerConnection {
@@ -42,6 +42,7 @@ export interface Serializable {
 export interface PolymerComponent extends Serializable {
   /**
    * Properties of the particular tree node eg. DP, mol fraction, etc.
+   * @TODO improve typing for properties
    */
   properties: Map<string, any>;
 
@@ -76,4 +77,9 @@ export interface PolymerComponent extends Serializable {
    * @param visitor TreeVisitor
    */
   accept(visitor: PolymerTreeVisitor): void;
+
+  /**
+   * Method to serialize the polymer tree into a BigSMILES line notation
+   */
+  exportToBigSMILES(): string;
 }

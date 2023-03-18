@@ -2,11 +2,15 @@ import { logger } from "../../logger";
 import { typeManager } from "../cmdl-language";
 import { ITemplates, TEMPLATES } from "../cmdl-language/cmdl-types/templates";
 import { RecordBuilder } from "./base-builder";
-import { MaterialBuilder } from "./material-builder";
-import { ExperimentBuilder } from "./exp-builder";
-import { FlowExperimentBuilder } from "./flow-exp-builder";
-import { PolymerGraphBuilder } from "./polymer-graph-builder";
-import { ReactorBuilder } from "./reactor-builder";
+// import { MaterialBuilder } from "./material-builder";
+import { ExpRecord, ExperimentBuilder } from "./exp-builder";
+import { FlowExperimentBuilder, FlowRecord } from "./flow-exp-builder";
+// import { PolymerGraphBuilder } from "./polymer-graph-builder";
+// import { ReactorBuilder } from "./reactor-builder";
+import {
+  CMDLMetaData,
+  CMDLRecordTypes,
+} from "../cmdl-language/cmdl-symbols/symbol-types";
 
 /**
  * Manages building of record objects to write to JSON
@@ -17,11 +21,14 @@ export class RecordDirector {
 
   /**
    * Builds a record output to be written to a JSON file
-   * @param metadata any defined metadata from a notebook document
-   * @param values any
+   * @param metadata CMDLMetaData defined metadata from a notebook document
+   * @param values CMDLRecordTypes[]
    * @returns any
    */
-  build(metadata: any, values: any) {
+  build(
+    metadata: CMDLMetaData,
+    values: CMDLRecordTypes[]
+  ): FlowRecord | ExpRecord | undefined {
     try {
       const template = typeManager.getTempate(metadata.template);
 
@@ -35,15 +42,19 @@ export class RecordDirector {
         this.template.name === TEMPLATES.SMALL_MOLECULE ||
         this.template.name === TEMPLATES.MATERIAL
       ) {
-        this.recordBuilder = new MaterialBuilder();
+        throw new Error(
+          `Export templates for fragment, small-molecule, materials are now deprecated!`
+        );
       } else if (this.template.name === TEMPLATES.BATCH_EXPERIMENT) {
         this.recordBuilder = new ExperimentBuilder();
       } else if (this.template.name === TEMPLATES.FLOW_EXPERIMENT) {
         this.recordBuilder = new FlowExperimentBuilder();
       } else if (this.template.name === TEMPLATES.POLYMER_GRAPH) {
-        this.recordBuilder = new PolymerGraphBuilder();
+        // this.recordBuilder = new PolymerGraphBuilder();
+        throw new Error(`Export template for polymer graph is now deprecated!`);
       } else if (this.template.name === TEMPLATES.REACTOR) {
-        this.recordBuilder = new ReactorBuilder();
+        // this.recordBuilder = new ReactorBuilder();
+        throw new Error(`Export template for reactor is now deprecated!`);
       } else {
         throw new Error(
           `template ${this.template.name} has no record handler!`

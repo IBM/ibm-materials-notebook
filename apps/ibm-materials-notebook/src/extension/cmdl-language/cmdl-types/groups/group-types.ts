@@ -73,11 +73,9 @@ export enum GROUPS {
   COMPONENT = "component", //named
 
   //named groups
-  // MIXTURE = "mixture",
   SOLUTION = "solution",
   REACTION = "reaction",
   FLOW_REACTION = "flow_reaction",
-  // FORMULATION = "formulation",
   ASSAY = "assay",
   SAMPLE = "sample",
   CHEMICAL = "chemical",

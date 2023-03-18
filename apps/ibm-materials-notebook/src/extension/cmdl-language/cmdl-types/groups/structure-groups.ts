@@ -1,23 +1,6 @@
 import { IGroup, GROUPS, GroupTypes, ModelType } from "./group-types";
 import { PROPERTIES } from "../properties";
 
-// const structure: IGroup = {
-//   name: GROUPS.STRUCTURE,
-//   type: GroupTypes.UNAMED,
-//   description: "Structure properties of polymer or small molecule",
-//   detail: "Structure",
-//   aliases: [],
-//   referenceProps: [],
-//   subGroups: [],
-//   properties: [
-//     PROPERTIES.SMILES,
-//     PROPERTIES.BIG_SMILES,
-//     PROPERTIES.INCHI,
-//     PROPERTIES.INCHI_KEY,
-//     PROPERTIES.TREE,
-//   ],
-// };
-
 const polymerFragment: IGroup = {
   name: GROUPS.FRAGMENT,
   type: GroupTypes.NAMED,
@@ -27,11 +10,7 @@ const polymerFragment: IGroup = {
   aliases: [],
   referenceProps: [],
   subGroups: [GROUPS.POINT],
-  properties: [
-    PROPERTIES.SMILES,
-    PROPERTIES.MOL_WEIGHT,
-    // PROPERTIES.DEGREE_POLY,
-  ],
+  properties: [PROPERTIES.SMILES, PROPERTIES.MOL_WEIGHT],
 };
 
 const polymerContainer: IGroup = {
@@ -96,7 +75,6 @@ const reactorGraphNode: IGroup = {
 };
 
 export const structureGroups = [
-  // structure,
   reactorGraph,
   reactorGraphNode,
   polymerContainer,

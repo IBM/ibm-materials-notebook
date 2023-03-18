@@ -9,7 +9,13 @@ import BaseUnit from "./BaseUnit";
  *Performs basic unit operations
  */
 export default class UnitOperator {
-  static sum(unitList: Unit[], scale: UnitPrefixes = "base") {
+  /**
+   * Sums all Units in an array
+   * @param unitList Unit[]
+   * @param scale UnitPrefixes
+   * @returns Quantity | null
+   */
+  static sum(unitList: Unit[], scale: UnitPrefixes = "base"): Quantity | null {
     if (!unitList.length) {
       return null;
     }
@@ -38,7 +44,13 @@ export default class UnitOperator {
     return sumObject;
   }
 
-  static multiply(unitA: Unit, unitB: Unit) {
+  /**
+   * Multiplies two Units
+   * @param unitA Unit
+   * @param unitB Unit
+   * @returns Unit | Big
+   */
+  static multiply(unitA: Unit, unitB: Unit): Unit | Big {
     unitA.convertToBaseType();
     unitB.convertToBaseType();
 
@@ -56,12 +68,23 @@ export default class UnitOperator {
     }
   }
 
-  static divide(unitA: Unit, unitB: Unit) {
+  /**
+   * Divides UnitA by UnitB
+   * @param unitA Unit
+   * @param unitB Unit
+   * @returns
+   */
+  static divide(unitA: Unit, unitB: Unit): Unit | Big {
     unitB.invert();
     return UnitOperator.multiply(unitA, unitB);
   }
 
-  static multiplyUnits(subUnitArr: BaseUnit[]) {
+  /**
+   * Multiplies all units in sub-unit array
+   * @param subUnitArr BaseUnit[]
+   * @returns string
+   */
+  static multiplyUnits(subUnitArr: BaseUnit[]): string {
     let unitMap = subUnitArr.reduce((acc, item) => {
       if (!acc[item.base]) {
         acc[item.base] = item.exponent;

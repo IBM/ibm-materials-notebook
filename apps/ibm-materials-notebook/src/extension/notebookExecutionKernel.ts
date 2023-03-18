@@ -11,6 +11,9 @@ export class MaterialsKernel {
   readonly notebookType = NOTEBOOK;
   readonly label = "CMDL";
   readonly supportedLanguages = [LANGUAGE];
+  readonly theme = vscode.workspace
+    .getConfiguration("ibm-materials-notebook")
+    .get("structure-theme");
 
   private readonly _controller: vscode.NotebookController;
   private _executionOrder = 0;
@@ -34,7 +37,7 @@ export class MaterialsKernel {
   /**
    * Disposes of vscode disposables
    */
-  dispose(): void {
+  public dispose(): void {
     this._controller.dispose();
   }
 
@@ -61,7 +64,6 @@ export class MaterialsKernel {
    */
   private async _doExecution(cell: vscode.NotebookCell): Promise<void> {
     logger.info("executing single cell");
-    logger.verbose(`executing cell ${cell.document.fileName}...`);
 
     const doc = await vscode.workspace.openTextDocument(cell.document.uri);
     const experiment = this.repository.findExperiment(doc.uri);
@@ -97,11 +99,16 @@ export class MaterialsKernel {
 
       const output = experiment.getCellOutput(cellUri);
 
+      const fullOutput = {
+        structureTheme: this.theme,
+        output,
+      };
+
       execution.replaceOutput([
         new vscode.NotebookCellOutput([
           vscode.NotebookCellOutputItem.json(output),
           vscode.NotebookCellOutputItem.json(
-            output,
+            fullOutput,
             "x-application/ibm-materials-notebook"
           ),
         ]),

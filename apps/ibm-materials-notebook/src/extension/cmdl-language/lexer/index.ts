@@ -1,5 +1,5 @@
-import { Lexer } from "chevrotain";
-import {
+export {
+  lexerInstance,
   allTokens,
   tokenVocabulary,
   WhiteSpace,
@@ -27,35 +27,3 @@ import {
   LAngle,
   As,
 } from "./tokens";
-
-const lexerInstance = new Lexer(allTokens);
-
-export {
-  lexerInstance,
-  allTokens,
-  tokenVocabulary,
-  WhiteSpace,
-  NumberLiteral,
-  Identifier,
-  StringLiteral,
-  UncertaintyOperator,
-  RCurly,
-  LCurly,
-  Variable,
-  LSquare,
-  RSquare,
-  Colon,
-  SemiColon,
-  Comma,
-  True,
-  False,
-  Link,
-  Dot,
-  Import,
-  From,
-  Arrow,
-  Pipe,
-  RAngle,
-  LAngle,
-  As,
-};

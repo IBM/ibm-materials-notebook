@@ -27,7 +27,13 @@ export class NamedGroup extends Group {
     this.validateGroupChild = this.validateGroupChild.bind(this);
   }
 
-  protected validateGroupChild(child: RecordNode, props: Set<string>) {
+  /**
+   * Performs validation logic on all child nodes to current named group
+   * @param child RecordNode
+   * @param props Set<string>
+   * @returns void
+   */
+  protected validateGroupChild(child: RecordNode, props: Set<string>): void {
     if (!this.groupProps) {
       return;
     }
@@ -81,7 +87,7 @@ export class NamedGroup extends Group {
     return this.errors;
   }
 
-  accept(visitor: AstVisitor): void {
+  public accept(visitor: AstVisitor): void {
     if (visitor instanceof SymbolTableBuilder) {
       visitor.visitNamedGroup(this);
     } else if (visitor instanceof ModelVisitor) {

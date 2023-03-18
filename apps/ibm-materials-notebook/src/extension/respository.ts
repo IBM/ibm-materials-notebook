@@ -5,6 +5,20 @@ import { NOTEBOOK } from "./languageProvider";
 import { logger } from "../logger";
 import { Experiment } from "./experiment";
 import { Library } from "./library";
+import { CMDLSampleResult } from "./cmdl-language/cmdl-symbols/models/sample-model";
+
+interface CmdlEntitySource {
+  title: string | undefined;
+  record_id: string | null;
+  notebook_id: string;
+  lastUpdated: string;
+}
+
+interface CmdlEntity extends CMDLSampleResult {
+  name: string;
+  base_name: string;
+  source: CmdlEntitySource;
+}
 
 /**
  * Manages all materials notebooks (.cmdnb) in workspace
@@ -102,7 +116,6 @@ export class Repository {
         logger.notice(
           ">>vscode notebook saved event recieved, exporting contents to JSON lib"
         );
-        logger.verbose("event metadata", { meta: event });
 
         let experiment = this.findExperiment(event.uri);
 
@@ -111,8 +124,12 @@ export class Repository {
           return;
         }
 
-        //TODO: determine whether to export to JSON or CSV
         const output = experiment.toJSON();
+
+        if (!output) {
+          logger.error(`Encountered error during extracting record output!`);
+          return;
+        }
 
         const rootUri = vscode.workspace.getWorkspaceFolder(event.uri);
 
@@ -127,9 +144,9 @@ export class Repository {
         const fileName = filepath[filepath.length - 1].split(".");
 
         if (output?.results && output.results?.outputs) {
-          let resultOutputs: any[] = [];
+          let resultOutputs: CmdlEntity[] = [];
           for (const result of output.results.outputs) {
-            let newResult = {
+            let newResult: CmdlEntity = {
               ...result,
               name: `${result.sampleId}-${result.name}`,
               base_name: result.name,
@@ -141,10 +158,9 @@ export class Repository {
               },
             };
 
+            this.library.addItem(newResult);
             resultOutputs.push(newResult);
           }
-
-          this.persistResults(resultOutputs, fileName, rootUri);
         }
 
         this.writeToOutput(output, fileName, rootUri);
@@ -167,36 +183,6 @@ export class Repository {
       path.join(
         rootUri.uri.fsPath,
         `${this.outputPath}/${fileName[0] || test}.json`
-      ),
-      JSON.stringify(contents, null, 2),
-      (err) => {
-        if (err) {
-          logger.error(`Error during writing to file: ${err?.message}`);
-        } else {
-          vscode.window.showInformationMessage(
-            `Successfully exported experiment to JSON`
-          );
-          logger.info(`Successfully exported experiment to JSON`);
-        }
-      }
-    );
-  }
-
-  /**
-   * Presists result objects to exp folder as a JSON file
-   * @param contents Contents to write to a JSON output
-   * @param fileName string[] Array containing parts of a filename
-   * @param rootUri vscode.WorkspaceFolder
-   */
-  private persistResults(
-    contents: any,
-    fileName: string[],
-    rootUri: vscode.WorkspaceFolder
-  ): void {
-    fs.writeFile(
-      path.join(
-        rootUri.uri.fsPath,
-        `${this.library.expPath}/${fileName[0] || test}.json`
       ),
       JSON.stringify(contents, null, 2),
       (err) => {

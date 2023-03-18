@@ -1,20 +1,46 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { PolymerContainer } from "../polymers";
+import { BigSMILES } from "ts-bigsmiles";
+import { ModelType } from "../../cmdl-types/groups/group-types";
+import { CMDLRef, CMDLUnitless } from "../symbol-types";
+import { CMDLPolymerGraph } from "./polymer-graph-model";
+import { PROPERTIES } from "../../cmdl-types";
+import { JSONPolymerTree } from "../polymers/polymer-container";
+
+export type CMDLPolymerTreeValue = {
+  name: string;
+  path: string[];
+  [PROPERTIES.DEGREE_POLY]: CMDLUnitless;
+};
 
 export class Polymer extends BaseModel {
   private polymerContainer: PolymerContainer;
-  constructor(name: string, modelAR: ModelActivationRecord, type: string) {
+  constructor(
+    name: string,
+    modelAR: ModelActivationRecord,
+    type: ModelType.POLYMER
+  ) {
     super(name, modelAR, type);
     this.polymerContainer = new PolymerContainer(name);
   }
 
-  execute(globalAR: ModelActivationRecord): void {
-    const treeRef = this.modelAR.getOptionalValue("tree");
-    const treeValues = this.modelAR.getOptionalValue("treeValues");
+  public execute(globalAR: ModelActivationRecord): void {
+    const treeRef = this.modelAR.getValue<CMDLRef | JSONPolymerTree<null>>(
+      PROPERTIES.TREE
+    );
+    const treeValues =
+      this.modelAR.getOptionalValue<CMDLPolymerTreeValue[]>("treeValues");
 
-    if (treeRef?.ref) {
-      const polymerGraph = globalAR.getOptionalValue(treeRef.ref);
+    if ("ref" in treeRef) {
+      const polymerGraph = globalAR.getOptionalValue<CMDLPolymerGraph>(
+        treeRef.ref
+      );
+
+      if (!polymerGraph) {
+        throw new Error(`Polymer graph for ${treeRef.ref} is undefined!`);
+      }
+
       this.polymerContainer.initializeTreeFromJSON(polymerGraph.tree);
     } else {
       this.polymerContainer.initializeTreeFromJSON(treeRef);
@@ -34,10 +60,10 @@ export class Polymer extends BaseModel {
     };
 
     for (const [name, value] of this.modelAR.all()) {
-      properties[name] = value;
-
-      if (name === "tree") {
+      if (name === PROPERTIES.TREE) {
         properties[name] = this.polymerContainer.treeToJSON();
+      } else {
+        properties[name] = value;
       }
     }
 

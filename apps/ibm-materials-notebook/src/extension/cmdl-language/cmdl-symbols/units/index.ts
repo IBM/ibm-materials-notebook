@@ -1,5 +1,3 @@
-import Unit from "./Unit";
-import BaseUnit from "./BaseUnit";
-import UnitOperator from "./UnitOperator";
-
-export { BaseUnit, Unit, UnitOperator };
+export { default as Unit } from "./Unit";
+export { default as BaseUnit } from "./BaseUnit";
+export { default as UnitOperator } from "./UnitOperator";

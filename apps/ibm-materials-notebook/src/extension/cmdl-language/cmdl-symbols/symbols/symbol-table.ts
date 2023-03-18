@@ -12,6 +12,9 @@ import {
 import { CMDLNodeTree } from "../symbol-types";
 import { RecordNode } from "../../cmdl-tree/components";
 
+/**
+ * Interface for defining an AST visitor
+ */
 export interface AstVisitor {
   visit(arg: RecordNode): void;
 }
@@ -36,7 +39,7 @@ export class SymbolTable {
    * for new nested table
    * @param table SymbolTable
    */
-  addNestedScope(table: SymbolTable) {
+  public addNestedScope(table: SymbolTable): void {
     table.enclosingScope = this;
     this.nestedScopes.push(table);
   }
@@ -46,7 +49,7 @@ export class SymbolTable {
    * @param id string
    * @param symbol BaseSymbol
    */
-  add(id: string, symbol: BaseSymbol) {
+  public add(id: string, symbol: BaseSymbol): void {
     this._symbols.set(id, symbol);
   }
 
@@ -55,7 +58,7 @@ export class SymbolTable {
    * @param id key
    * @returns boolean
    */
-  has(id: string) {
+  public has(id: string): boolean {
     return this._symbols.has(id);
   }
 
@@ -64,7 +67,7 @@ export class SymbolTable {
    * @param id string
    * @returns BaseSymbol
    */
-  get(id: string) {
+  public get(id: string): BaseSymbol {
     const symbol = this._symbols.get(id);
 
     if (!symbol) {
@@ -79,7 +82,7 @@ export class SymbolTable {
    * @param id string
    * @returns SymbolTable | undefined
    */
-  getGlobalScopeSym(id: string): SymbolTable | undefined {
+  public getGlobalScopeSym(id: string): SymbolTable | undefined {
     if (this.enclosingScope) {
       return this.enclosingScope.getGlobalScopeSym(id);
     } else if (!this.enclosingScope && this.has(id)) {
@@ -94,7 +97,7 @@ export class SymbolTable {
    * @param record CMDLNodeTree
    * @param base string
    */
-  copySymbolTree(record: CMDLNodeTree, base?: string) {
+  public copySymbolTree(record: CMDLNodeTree, base?: string): void {
     if (!this.enclosingScope && base) {
       record[base] = {};
       const nestedScope = this.nestedScopes.find((el) => el.scope === base);
@@ -123,7 +126,7 @@ export class SymbolTable {
    * @param scope string
    * @returns SymbolTable
    */
-  getNestedScope(scope: string) {
+  public getNestedScope(scope: string): SymbolTable {
     const nestedScope = this.nestedScopes.find((el) => el.scope === scope);
 
     if (!nestedScope) {
@@ -138,7 +141,7 @@ export class SymbolTable {
    * @param uri string - Cell uri
    * @returns BaseSymbol[]
    */
-  getByUri(uri: string) {
+  public getByUri(uri: string): BaseSymbol[] {
     const cellSymbols: BaseSymbol[] = [];
 
     for (const symbol of this._symbols.values()) {
@@ -154,7 +157,7 @@ export class SymbolTable {
    * Deletes all symbols and nested scopes from a given cell
    * @param uri string - Cell uri
    */
-  remove(uri: string) {
+  public remove(uri: string): void {
     for (const symbol of this._symbols.values()) {
       if (symbol.def === uri) {
         this.nestedScopes = this.nestedScopes.filter(
@@ -170,7 +173,7 @@ export class SymbolTable {
    * Retrieves all DeclarationSymbols or VariableDeclaration from current symbol table
    * @returns BaseSymbol[]
    */
-  getBaseSymbols() {
+  public getBaseSymbols(): BaseSymbol[] {
     return [...this._symbols.values()].filter(
       (el) =>
         el.type === SymbolType.DECLARATION ||
@@ -184,7 +187,7 @@ export class SymbolTable {
    * @param path string[]
    * @returns BaseSymbol[]
    */
-  getSymbolMembers(path: string[]): BaseSymbol[] | undefined {
+  public getSymbolMembers(path: string[]): BaseSymbol[] | undefined {
     const currentScope = path[0];
     const newPath = path.slice(1);
 
@@ -202,10 +205,6 @@ export class SymbolTable {
       return scope.getSymbolMembers(newPath);
     }
 
-    logger.silly(`scope name: ${currentScope}`);
-    logger.silly(`path: ${newPath.join(" -> ")}`);
-    logger.debug(`scope table:\n${scope.print()}`);
-
     return [...scope._symbols.values()].filter(
       (el) => el.type === SymbolType.REF_PROXY
     );
@@ -213,11 +212,11 @@ export class SymbolTable {
 
   /**
    * Returns a list of symbol names based on a query. Used for completion providers.
-   * TODO: Update method to examine nested scopes for symbols and properties
+   * @TODO Update method to examine nested scopes for symbols and properties
    * @param query string
    * @returns string[]
    */
-  find(query: string) {
+  public find(query: string): string[] {
     if (!query.length) {
       return [...this._symbols.keys()];
     }
@@ -245,7 +244,7 @@ export class SymbolTable {
    * @param value string
    * @returns PropertySymbol<any>
    */
-  findVarSymbol(value: string) {
+  public findVarSymbol(value: string): PropertySymbol<any> | undefined {
     let queue: SymbolTable[] = [this];
     let curr: SymbolTable | undefined;
 
@@ -273,9 +272,9 @@ export class SymbolTable {
   /**
    * Returns all symbols in current table
    * @deprecated
-   * @returns [IterableIterator]
+   * @returns IterableIterator<BaseSymbol>
    */
-  all() {
+  public all(): IterableIterator<BaseSymbol> {
     return this._symbols.values();
   }
 
@@ -283,7 +282,7 @@ export class SymbolTable {
    * Clears current symbol table of symbols and nested scopes
    * @Deprecated
    */
-  clear() {
+  public clear(): void {
     this._symbols.clear();
     this.nestedScopes = [];
   }
@@ -292,7 +291,7 @@ export class SymbolTable {
    * Helper method to identify if a notebook has template variables
    * @returns boolean
    */
-  hasVariables() {
+  public hasVariables(): boolean {
     let queue: SymbolTable[] = [this];
     let variableSymbols: BaseSymbol[] = [];
 
@@ -327,7 +326,7 @@ export class SymbolTable {
    * Exports array of variables and their type to be written to a CSV template
    * @returns BaseSymbol[]
    */
-  exportVariables() {
+  public exportVariables(): BaseSymbol[] {
     let queue: SymbolTable[] = [this];
     let variableSymbols: BaseSymbol[] = [];
 
@@ -364,7 +363,7 @@ export class SymbolTable {
    * @param errTable ErrorTable
    * @param globalTable SymbolTable
    */
-  validate(errTable: ErrorTable, globalTable: SymbolTable = this) {
+  public validate(errTable: ErrorTable, globalTable: SymbolTable = this): void {
     for (const symbol of this._symbols.values()) {
       if (symbol instanceof ReferenceSymbol) {
         const referenceError = this.lookup(symbol, globalTable);
@@ -406,7 +405,10 @@ export class SymbolTable {
    * @param globalTable SymbolTable
    * @returns RefError[]
    */
-  private validateRefArr(refArr: ReferenceSymbol[], globalTable: SymbolTable) {
+  private validateRefArr(
+    refArr: ReferenceSymbol[],
+    globalTable: SymbolTable
+  ): RefError[] {
     const refErrors = [];
     for (const refListItem of refArr) {
       const refListErr = this.lookup(refListItem, globalTable);
@@ -428,7 +430,7 @@ export class SymbolTable {
     symbol: AngleSymbol,
     errTable: ErrorTable,
     globalTable: SymbolTable
-  ) {
+  ): void {
     for (const conn of symbol.connections) {
       const sourcErrs = this.validateRefArr(conn.sources, globalTable);
       const targetErr = this.validateRefArr(conn.targets, globalTable);

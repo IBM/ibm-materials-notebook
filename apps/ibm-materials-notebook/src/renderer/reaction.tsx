@@ -1,5 +1,6 @@
 import { h, FunctionComponent } from "preact";
 import { ChemicalStructure } from "./chemicals";
+import { StructureTheme } from ".";
 
 export function formatTemp(unit: string) {
   if (unit === "degC") {
@@ -75,6 +76,31 @@ export const ReactionTable: FunctionComponent<{
   );
 };
 
+const ReactionStructureItem: FunctionComponent<{
+  rxnName: string;
+  name: string;
+  index: number;
+  smiles: string;
+  type: "reactant" | "product";
+}> = ({ rxnName, name, index, smiles, type }) => {
+  return (
+    <StructureTheme.Consumer>
+      {(theme) => {
+        return (
+          <div className="reaction-item">
+            <ChemicalStructure
+              svgId={`${type}-structure-${rxnName}-${name}-${index}`}
+              smiles={smiles}
+              theme={theme}
+            />
+            <small>{name}</small>
+          </div>
+        );
+      }}
+    </StructureTheme.Consumer>
+  );
+};
+
 export const ReactionChemicals: FunctionComponent<{
   reaction: any;
   rxnName: any;
@@ -85,14 +111,14 @@ export const ReactionChemicals: FunctionComponent<{
         ? reaction.reactants.map((el: any, index: number) => {
             if (el?.smiles) {
               return (
-                <div className="reaction-item">
-                  <ChemicalStructure
-                    key={`reactant-${rxnName}-${el.name}-${index}`}
-                    svgId={`reactant-structure-${rxnName}-${el.name}-${index}`}
-                    smiles={el.smiles}
-                  />
-                  <small>{el.name}</small>
-                </div>
+                <ReactionStructureItem
+                  key={`reactant-${rxnName}-${el.name}-${index}`}
+                  smiles={el.smiles}
+                  name={el.name}
+                  rxnName={rxnName}
+                  index={index}
+                  type="reactant"
+                />
               );
             } else {
               return null;
@@ -102,14 +128,14 @@ export const ReactionChemicals: FunctionComponent<{
         ? reaction.components.map((el: any, index: number) => {
             if (el?.smiles) {
               return (
-                <div className="reaction-item">
-                  <ChemicalStructure
-                    key={`reactant-${rxnName}-${el.name}-${index}`}
-                    svgId={`reactant-structure-${rxnName}-${el.name}-${index}`}
-                    smiles={el.smiles}
-                  />
-                  <small>{el.name}</small>
-                </div>
+                <ReactionStructureItem
+                  key={`reactant-${rxnName}-${el.name}-${index}`}
+                  smiles={el.smiles}
+                  name={el.name}
+                  rxnName={rxnName}
+                  index={index}
+                  type="reactant"
+                />
               );
             } else {
               return null;
@@ -120,14 +146,14 @@ export const ReactionChemicals: FunctionComponent<{
         ? reaction.products.map((el: any, index: any) => {
             if (el?.smiles) {
               return (
-                <div className="reaction-item">
-                  <ChemicalStructure
-                    key={`product-${el.name}-${index}`}
-                    svgId={`product-structure-${el.name}-${index}`}
-                    smiles={el.smiles}
-                  />
-                  <small>{el.name}</small>
-                </div>
+                <ReactionStructureItem
+                  key={`reactant-${rxnName}-${el.name}-${index}`}
+                  smiles={el.smiles}
+                  name={el.name}
+                  rxnName={rxnName}
+                  index={index}
+                  type="product"
+                />
               );
             } else if (el?.components && el.components.length) {
               return (
@@ -135,14 +161,14 @@ export const ReactionChemicals: FunctionComponent<{
                   {el.components.map((comp: any, compIdx: number) => {
                     if (comp?.smiles) {
                       return (
-                        <div className="reaction-item">
-                          <ChemicalStructure
-                            key={`product-complex-${comp.name}-${index}-${compIdx}`}
-                            svgId={`product-complex-component-${comp.name}-${index}-${compIdx}`}
-                            smiles={comp.smiles}
-                          />
-                          <small>{comp.name}</small>
-                        </div>
+                        <ReactionStructureItem
+                          key={`reactant-${rxnName}-${el.name}-${index}`}
+                          smiles={el.smiles}
+                          name={el.name}
+                          rxnName={rxnName}
+                          index={index}
+                          type="product"
+                        />
                       );
                     }
                   })}

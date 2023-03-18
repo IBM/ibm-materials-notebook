@@ -10,18 +10,21 @@ The extension can be found on the VS Code Marketplace: https://marketplace.visua
 
 ## References
 
-Initial pre-print publication for concepts implemented within this extension can be found on [ChemRxiv](https://chemrxiv.org/engage/chemrxiv/article-details/62b60865e84dd185e60214af)
-
-Chemical structures are rendered in the notebook extension using a small TypeScript adaptation of [SmilesDrawer](https://github.com/reymond-group/smilesDrawer). The published manuscript of SmilesDrawer can be found [here](https://pubs.acs.org/doi/10.1021/acs.jcim.7b00425).
+Preprint publication for concepts implemented within this extension can be found on [ChemRxiv](https://chemrxiv.org/engage/chemrxiv/article-details/62b60865e84dd185e60214af)
 
 ## Extension Settings
 
 - `ibm-materials-notebook.library`: Set folder path for workspace `/lib` folder for importing references.
-- `ibm-materials-notebook.exp`: Set folder path for workspace `/exp` folder for importing result references from other experiments in same workspace.
-- `ibm-materials-notebook.output`: Set folder path for JSON output of notebook document.
 
 ## Known Issues
 
-- Member completion suggestion for non-imported polymer graphs requires fixing to provide correct suggestions
+- Member completion suggestion for non-imported polymer graphs requires fixing to provide correct suggestions.
+- No ability to adjust chemical structure color themes in settings.
 
 ## Release Notes
+
+### v0.1.3
+
+    - Enabled workspace storage for persisting experiment outputs
+    - Enabled adjustment of chemical structure theme
+    - Added support for adding and validating BigSMILES strings to polymer definitions

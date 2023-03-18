@@ -1,13 +1,5 @@
-import { typeManager } from "./type-mananger";
-import { TEMPLATES } from "./templates";
-import { GROUPS, GroupTypes } from "./groups";
-import { PROPERTIES, PropertyTypes } from "./properties";
-
-export {
-  typeManager,
-  TEMPLATES,
-  GROUPS,
-  GroupTypes,
-  PROPERTIES,
-  PropertyTypes,
-};
+export { typeManager } from "./type-mananger";
+export { TEMPLATES } from "./templates";
+export { GROUPS, GroupTypes } from "./groups";
+export { PROPERTIES, PropertyTypes, ReactionRoles } from "./properties";
+export { TAGS } from "./tags";

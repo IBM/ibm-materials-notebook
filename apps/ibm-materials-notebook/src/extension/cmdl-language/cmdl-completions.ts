@@ -26,8 +26,18 @@ export class CmdlCompletions {
     }
   }
 
-  provideSemanticTokens(document: vscode.TextDocument) {
+  /**
+   * Provides semantic tokens for CMDL document
+   * @param document vscode.TextDocument
+   * @returns vscode.SemanticTokensBuilder | undefined
+   */
+  public provideSemanticTokens(
+    document: vscode.TextDocument
+  ): vscode.SemanticTokensBuilder | undefined {
     const { ast } = this.compiler.parseAST(document.getText());
+    if (!ast) {
+      return;
+    }
     const builder = new vscode.SemanticTokensBuilder();
 
     let queue = [ast.root];
@@ -101,8 +111,21 @@ export class CmdlCompletions {
     return builder;
   }
 
-  provideHover(position: vscode.Position, document: vscode.TextDocument) {
+  /**
+   * Provides hover items for current text document
+   * @TODO specify return type
+   * @param position vscode.Position
+   * @param document vscode.TextDocument
+   * @returns
+   */
+  public provideHover(
+    position: vscode.Position,
+    document: vscode.TextDocument
+  ): Record<string, any> | undefined {
     const { ast } = this.compiler.parseAST(document.getText());
+    if (!ast) {
+      return;
+    }
     const offset = document.offsetAt(position);
 
     const node = ast.getByOffset(offset);
@@ -145,11 +168,17 @@ export class CmdlCompletions {
    * @param document vscode.TextDocument
    * @returns vscode.CompletiionItem[]
    */
-  getCompletions(position: vscode.Position, document: vscode.TextDocument) {
+  public getCompletions(
+    position: vscode.Position,
+    document: vscode.TextDocument
+  ): vscode.CompletionItem[] | undefined {
     const { ast } = this.compiler.parseAST(document.getText());
     const range = document.getWordRangeAtPosition(position);
     const word = document.getText(range);
 
+    if (!ast) {
+      return;
+    }
     const node = ast.findNearestGroup();
 
     if (!node?.parent || !node?.parent?.image) {
@@ -241,7 +270,12 @@ export class CmdlCompletions {
     ];
   }
 
-  private createGroupCompletions(arr: IGroup[]) {
+  /**
+   * Creates completion items for groups
+   * @param arr IGroup[]
+   * @returns vscode.CompletionItem[]
+   */
+  private createGroupCompletions(arr: IGroup[]): vscode.CompletionItem[] {
     return arr.map((item) => {
       if (item.type === GroupTypes.NAMED) {
         return this.createNamedGroupCompletion(item);
@@ -251,7 +285,12 @@ export class CmdlCompletions {
     });
   }
 
-  private createPropertyCompletions(arr: IProperty[]) {
+  /**
+   * Creates completion items fro properties
+   * @param arr IProperty[]
+   * @returns vscode.CompletionItem[]
+   */
+  private createPropertyCompletions(arr: IProperty[]): vscode.CompletionItem[] {
     return arr.map((item) => {
       if (item.type === PropertyTypes.CATEGORICAL_MULTI) {
         return this.createCategoricalMulti(item);
@@ -269,7 +308,12 @@ export class CmdlCompletions {
     });
   }
 
-  private createRefProperty(prop: IProperty) {
+  /**
+   * Creates completion item for a reference property
+   * @param prop IProperty
+   * @returns vscode.CompletionItem
+   */
+  private createRefProperty(prop: IProperty): vscode.CompletionItem {
     const textSnippet = new vscode.SnippetString();
     textSnippet.appendText(`${prop.name}: `);
     textSnippet.appendTabstop();
@@ -284,7 +328,12 @@ export class CmdlCompletions {
     };
   }
 
-  private createCategoricalMulti(prop: IProperty) {
+  /**
+   * Creates completion item for a categorical property
+   * @param prop IProperty
+   * @returns vscode.CompletionItem
+   */
+  private createCategoricalMulti(prop: IProperty): vscode.CompletionItem {
     const textSnippet = new vscode.SnippetString();
     textSnippet.appendText(`${prop.name}: ["`);
     textSnippet.appendChoice(prop.categorical_values || []);
@@ -300,7 +349,12 @@ export class CmdlCompletions {
     };
   }
 
-  private createCategoricalSingle(prop: IProperty) {
+  /**
+   * Creates completion item for a single categorical property
+   * @param prop IProperty
+   * @returns vscode.CompletionItem
+   */
+  private createCategoricalSingle(prop: IProperty): vscode.CompletionItem {
     const textSnippet = new vscode.SnippetString();
     textSnippet.appendText(`${prop.name}: `);
     textSnippet.appendText('"');
@@ -317,7 +371,12 @@ export class CmdlCompletions {
     };
   }
 
-  private createTextCompletion(prop: IProperty) {
+  /**
+   * Creates completion item for a text property
+   * @param prop IProperty
+   * @returns vscode.CompletionItem
+   */
+  private createTextCompletion(prop: IProperty): vscode.CompletionItem {
     const textSnippet = new vscode.SnippetString();
     textSnippet.appendText(`${prop.name}: `);
     textSnippet.appendText('"');
@@ -334,7 +393,12 @@ export class CmdlCompletions {
     };
   }
 
-  private createNumericalCompletion(prop: IProperty) {
+  /**
+   * Creates completion item for a numerical property
+   * @param prop IProperty
+   * @returns vscode.CompletionItem
+   */
+  private createNumericalCompletion(prop: IProperty): vscode.CompletionItem {
     const textSnippet = new vscode.SnippetString();
     textSnippet.appendText(`${prop.name}: `);
     textSnippet.appendPlaceholder("VALUE");
@@ -349,7 +413,14 @@ export class CmdlCompletions {
     };
   }
 
-  private createNumericalUnitCompletion(prop: IProperty) {
+  /**
+   * Creates completion item for a numerical property with a unit
+   * @param prop IProperty
+   * @returns vscode.CompletionItem
+   */
+  private createNumericalUnitCompletion(
+    prop: IProperty
+  ): vscode.CompletionItem {
     const textSnippet = new vscode.SnippetString();
     textSnippet.appendText(`${prop.name}: `);
     textSnippet.appendPlaceholder("VALUE");
@@ -370,7 +441,12 @@ export class CmdlCompletions {
     };
   }
 
-  private createGeneralGroupCompletion(group: IGroup) {
+  /**
+   * Creates completion item for a group
+   * @param prop IGroup
+   * @returns vscode.CompletionItem
+   */
+  private createGeneralGroupCompletion(group: IGroup): vscode.CompletionItem {
     const textSnippet = new vscode.SnippetString();
     textSnippet.appendText(`${group.name} {`);
     textSnippet.appendText("\n");
@@ -387,7 +463,12 @@ export class CmdlCompletions {
       detail: group.detail,
     };
   }
-  private createNamedGroupCompletion(group: IGroup) {
+  /**
+   * Creates completion item for a group
+   * @param prop IGroup
+   * @returns vscode.CompletionItem
+   */
+  private createNamedGroupCompletion(group: IGroup): vscode.CompletionItem {
     const textSnippet = new vscode.SnippetString();
     textSnippet.appendText(`${group.name} `);
     textSnippet.appendPlaceholder("NAME");

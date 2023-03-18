@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
+    "watch:ext": "npm run watch -workspace=ibm-materials-notebook",
     "test": "npm run test -workspace=ibm-materials-notebook",
     "deploy": "npm run deploy -workspace=ibm-materials-notebook",
     "docs:build": "npm run docs:build -workspace=docs"

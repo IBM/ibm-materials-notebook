@@ -100,7 +100,10 @@ allTokens.forEach((tokenType) => {
   tokenVocabulary[tokenType.name] = tokenType;
 });
 
+const lexerInstance = new Lexer(allTokens);
+
 export {
+  lexerInstance,
   allTokens,
   tokenVocabulary,
   WhiteSpace,

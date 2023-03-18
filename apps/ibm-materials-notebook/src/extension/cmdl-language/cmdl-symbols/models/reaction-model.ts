@@ -1,16 +1,27 @@
 import { ChemicalSet } from "../chemicals";
 import { ChemicalOutput } from "../chemicals/chemical-factory";
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel } from "./base-model";
-import { cmdlLogger } from "../../logger";
+import { BaseModel, CMDLChemical, CMDLPolymer } from "./base-model";
+import { PROPERTIES, TAGS } from "../../cmdl-types";
+import { CMDLUnit } from "../symbol-types";
+import { ModelType } from "../../cmdl-types/groups/group-types";
+import { CMDLChemicalReference } from "./solution-model";
+import { CMDLComplex, ComplexChemical, ComplexPolymer } from "./complex-model";
+import { CMDLRxnProduct } from "./flow-model";
 
-interface ReactionOutput {
+export type REACTION = {
+  [PROPERTIES.TEMPERATURE]: CMDLUnit;
+  [PROPERTIES.VOLUME]?: CMDLUnit;
+  [PROPERTIES.REACTION_TIME]: CMDLUnit;
+};
+
+export interface CMDLReaction {
   name: string;
-  type: string;
-  temperature?: Record<string, any>;
-  volume?: Record<string, any>;
+  type: ModelType.REACTION;
+  temperature?: CMDLUnit | null;
+  volume?: CMDLUnit | null;
   reactants: ChemicalOutput[];
-  products: any[];
+  products: CMDLRxnProduct[];
 }
 
 /**
@@ -19,40 +30,58 @@ interface ReactionOutput {
 export class ReactionModel extends BaseModel {
   private reaction = new ChemicalSet();
 
-  constructor(name: string, modelAR: ModelActivationRecord, type: string) {
+  constructor(
+    name: string,
+    modelAR: ModelActivationRecord,
+    type: ModelType.REACTION
+  ) {
     super(name, modelAR, type);
   }
 
   public execute(globalAR: ModelActivationRecord): void {
     try {
-      const chemicals = this.modelAR.getValue("chemicals");
-      const products = chemicals
-        .filter((el: any) => el?.roles && el.roles.includes("product"))
-        .map((el: any) => {
-          const product = globalAR.getValue(el.name);
-          if (product.type === "complex") {
+      const chemicals =
+        this.modelAR.getValue<CMDLChemicalReference[]>("chemicals");
+      const products: CMDLRxnProduct[] = chemicals
+        .filter(
+          (el: CMDLChemicalReference) =>
+            el?.roles && el.roles.includes(TAGS.PRODUCT)
+        )
+        .map((el: CMDLChemicalReference) => {
+          const product = globalAR.getValue<
+            CMDLChemical | CMDLComplex | CMDLPolymer
+          >(el.name);
+
+          if (product.type === ModelType.COMPLEX) {
             return {
-              ...el,
+              name: el.name,
+              roles: el.roles,
               components: [
-                ...product.components.map((comp: any) => {
-                  return { name: comp.name, smiles: comp.smiles };
-                }),
+                ...product.components.map(
+                  (comp: ComplexPolymer | ComplexChemical) => {
+                    return { name: comp.name, smiles: comp.smiles };
+                  }
+                ),
               ],
             };
           } else {
             return {
-              ...el,
+              name: el.name,
+              roles: el.roles,
               smiles: product?.smiles ? product.smiles : null,
             };
           }
         });
 
       const reactants = chemicals.filter(
-        (el: any) => el?.roles && !el.roles.includes("product")
+        (el: CMDLChemicalReference) =>
+          el?.roles && !el.roles.includes(TAGS.PRODUCT)
       );
 
-      const volume = this.modelAR.getOptionalValue("volume");
-      const temperature = this.modelAR.getOptionalValue("temperature");
+      const volume = this.modelAR.getOptionalValue<CMDLUnit>(PROPERTIES.VOLUME);
+      const temperature = this.modelAR.getOptionalValue<CMDLUnit>(
+        PROPERTIES.TEMPERATURE
+      );
 
       const chemConfigs = this.createChemicalConfigs(reactants, globalAR, {
         volume,
@@ -63,9 +92,9 @@ export class ReactionModel extends BaseModel {
 
       const output = this.reaction.computeChemicalValues();
 
-      const reactionOutput: ReactionOutput = {
+      const reactionOutput: CMDLReaction = {
         name: this.name,
-        type: this.type,
+        type: ModelType.REACTION,
         volume: volume || null,
         temperature: temperature || null,
         products: products || [],

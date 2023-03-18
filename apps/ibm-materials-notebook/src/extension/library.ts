@@ -2,157 +2,138 @@ import * as fs from "fs";
 import * as path from "path";
 import * as vscode from "vscode";
 import { logger } from "../logger";
+import { ModelType } from "./cmdl-language/cmdl-types/groups/group-types";
 
 interface BaseReference {
   name: string;
-  type:
-    | "chemical"
-    | "polymer"
-    | "fragment"
-    | "complex"
-    | "polymer_graph"
-    | "reactor_graph";
-  state: "solid" | "liquid" | "gas";
+  type: ModelType;
 }
 
-interface LibraryChemical extends BaseReference {
-  molecular_weight: any;
-  density?: any;
-  smiles: string;
-}
+/**
+ * Interface with VS Code Memento class for local storage
+ */
+class LocalStorageService {
+  constructor(private storage: vscode.Memento) {}
 
-interface LibraryMaterial extends BaseReference {
-  mn_avg: any;
-  dispersity: any;
-  graph: any;
-}
+  /**
+   * Retrieves all keys currently exiting in storage
+   * @returns string[]
+   */
+  public getKeys(): readonly string[] {
+    return this.storage.keys();
+  }
 
-interface LibraryPolymerGraph extends BaseReference {
-  graph: any;
-  tree: any;
-}
+  /**
+   * Retrieves value from storage by value
+   * @param key string
+   * @returns T | undefined
+   */
+  public getValue<T>(key: string): T | undefined {
+    const value = this.storage.get<T>(key);
 
-interface LibraryReactorGraph extends BaseReference {
-  nodes: any[];
-  edges: any[];
-  outputNode: string;
-  reactors: any[];
+    if (!value) {
+      return undefined;
+    }
+
+    return value;
+  }
+
+  /**
+   * Determines if entity exists already in storage
+   * @param key string
+   * @returns boolean
+   */
+  public hasValue(key: string): boolean {
+    const value = this.storage.get(key);
+
+    if (!value) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Sets value to storage
+   * @TODO check if value exists already in storage
+   * @param key string
+   * @param value T
+   */
+  public setValue<T>(key: string, value: T): void {
+    //add separate method to check duplication for global values
+    this.storage.update(key, value);
+  }
+
+  /**
+   * Clears all values from storage
+   */
+  public clear() {
+    const keys = this.getKeys();
+
+    for (const key of keys) {
+      this.storage.update(key, undefined);
+    }
+  }
 }
 
 /**
  * Manages entities which may be imported into CMDL notebook documents
+ * Saves entities generated in experiments to workspaceStorage.
  */
 export class Library {
-  private readonly _collection = new Map<string, BaseReference>();
-  private readonly _exp_collection = new Map<string, BaseReference>();
-  expPath?: string;
-  libPath?: string;
+  private workspaceStorage: LocalStorageService;
+  private globalStorage: LocalStorageService;
+  private libPath: string;
 
-  /**
-   * Retrieves a item to import into a notebook document
-   * @param key string
-   * @returns BaseReference | undefined
-   */
-  public getItem(key: string) {
-    if (this._collection.has(key) && this._exp_collection.has(key)) {
-      throw new Error(`name collusion in library: ${key}`);
-    }
+  constructor(context: vscode.ExtensionContext, wsLibPath: string) {
+    this.libPath = wsLibPath;
+    this.workspaceStorage = new LocalStorageService(context.workspaceState);
+    this.globalStorage = new LocalStorageService(context.globalState);
 
-    if (this._collection.has(key)) {
-      return this._collection.get(key);
-    } else if (this._exp_collection.has(key)) {
-      return this._exp_collection.get(key);
-    } else {
-      return undefined;
-    }
+    logger.debug(`workspaceUri: ${context.storageUri?.fsPath}`);
   }
 
   /**
-   * Adds item to library
-   * @param item any
+   * Parses JSON files from lib folder of workspace directory and saves them to
+   * workspace storage.
+   * @TODO ensure clearing of stale values
    */
-  public addItem(item: any) {
-    if (this._exp_collection.has(item.name)) {
-      logger.warn(`Overwriting value for ${item.name} in repo library...`);
-    }
-
-    this._exp_collection.set(item.name, item);
-  }
-
-  /**
-   * Searches library based on string query
-   * @param query string
-   * @returns BaseReference[]
-   */
-  public search(query: string) {
-    const regex = new RegExp(query, "i");
-    let results = [];
-
-    for (const key of this._collection.keys()) {
-      let containsQuery = regex.test(key);
-      let item = this._collection.get(key);
-      if (containsQuery && item) {
-        results.push(item);
-      }
-    }
-
-    for (const key of this._exp_collection.keys()) {
-      let containsQuery = regex.test(key);
-      let item = this._exp_collection.get(key);
-      if (containsQuery && item) {
-        results.push(item);
-      }
-    }
-
-    return results;
-  }
-
-  /**
-   * Initializes one of the collections for the Library
-   * @param libPath path to library items
-   * @param collection exp | lib collection being initialized
-   */
-  async initLibrary(libPath: string, collection: "exp" | "lib") {
-    logger.info(`Initializing library...`);
-
-    if (collection === "lib") {
-      this.libPath = libPath;
-    } else {
-      this.expPath = libPath;
-    }
-
+  public async initialize(): Promise<void> {
     const basePath = vscode.workspace.workspaceFolders
       ? vscode.workspace.workspaceFolders[0].uri.path
       : __dirname;
-    const resolvedPath = path.join(basePath, libPath);
-    // logger.debug(`full library path:\n${resolvedPath}`);
+    const resolvedPath = path.join(basePath, "lib");
 
-    fs.readdir(resolvedPath, async (err, files) => {
+    await this.readLibDir(resolvedPath, "workspace");
+  }
+
+  /**
+   * Reads file directory and parses all files into storage for importing items
+   * @param path string
+   */
+  private async readLibDir(
+    path: string,
+    level: "workspace" | "extension"
+  ): Promise<void> {
+    logger.info(`Initializing library on path ${path}`);
+    fs.readdir(path, async (err, files) => {
       if (err) {
         logger.error(
-          `Encountered an error during library initialization: ${err.message}`
+          `Encountered an error during library initialization for path ${path}: ${err.message}`
         );
       } else {
         for (const file of files) {
           try {
-            const readfile = await fs.promises.readFile(
-              `${resolvedPath}/${file}`,
-              {
-                encoding: "utf8",
-              }
-            );
+            const readfile = await fs.promises.readFile(`${path}/${file}`, {
+              encoding: "utf8",
+            });
             const contents = JSON.parse(readfile);
-
-            if (collection === "lib") {
-              this.libPath = libPath;
-              contents.forEach((item: any) => {
-                this._collection.set(item.name, item);
-              });
-            } else {
-              this.expPath = libPath;
-              contents.forEach((item: any) => {
-                this._exp_collection.set(item.name, item);
-              });
+            for (const item of contents) {
+              if (level === "extension") {
+                this.globalStorage.setValue(item.name, item);
+              } else {
+                this.workspaceStorage.setValue(item.name, item);
+              }
             }
           } catch (error) {
             logger.warn(`Unable to initialize library contents from ${file}`);
@@ -160,6 +141,72 @@ export class Library {
         }
       }
     });
-    logger.verbose(`...finished library initialization`);
+  }
+
+  /**
+   * Retrieves a item to import into a notebook document
+   * @param key string
+   * @returns BaseReference | undefined
+   */
+  public getItem(key: string): BaseReference | undefined {
+    if (
+      this.workspaceStorage.hasValue(key) &&
+      this.globalStorage.hasValue(key)
+    ) {
+      logger.warn(
+        `Both global and workspace storage has entry for ${key}, returning workspace value...`
+      );
+      return this.workspaceStorage.getValue<BaseReference>(key);
+    } else if (this.workspaceStorage.hasValue(key)) {
+      return this.workspaceStorage.getValue<BaseReference>(key);
+    } else {
+      return this.globalStorage.getValue<BaseReference>(key);
+    }
+  }
+
+  /**
+   * Adds item to library
+   * @param item EntityReference
+   * @TODO ensure clearing of stale values
+   */
+  public addItem(item: any): void {
+    if (this.workspaceStorage.hasValue(item.name)) {
+      logger.warn(`Overwriting value for ${item.name} in repo library...`);
+    }
+
+    this.workspaceStorage.setValue(item.name, item);
+  }
+
+  /**
+   * Searches library based on string query
+   * @param query string
+   * @returns BaseReference[]
+   */
+  public search(query: string): BaseReference[] {
+    logger.silly(`searching storage for ${query}`);
+    const regex = new RegExp(query, "i");
+    let results = [];
+
+    for (const key of this.workspaceStorage.getKeys()) {
+      let containsQuery = regex.test(key);
+      let item = this.workspaceStorage.getValue<BaseReference>(key);
+      if (containsQuery && item) {
+        results.push(item);
+      }
+    }
+
+    for (const key of this.globalStorage.getKeys()) {
+      let containsQuery = regex.test(key);
+      let item = this.globalStorage.getValue<BaseReference>(key);
+      if (containsQuery && item) {
+        results.push(item);
+      }
+    }
+
+    logger.debug(
+      `search results: \n${results.map((el) => el.name).join("\n- ")}`
+    );
+
+    return results;
   }
 }

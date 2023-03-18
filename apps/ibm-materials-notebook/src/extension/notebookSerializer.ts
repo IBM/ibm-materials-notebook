@@ -4,7 +4,7 @@ import { logger } from "../logger";
 import { randomUUID } from "crypto";
 
 interface RawNotebookData {
-  metadata: Record<string, any>;
+  metadata: Record<string, string>;
   cells: RawNotebookCell[];
 }
 
@@ -29,7 +29,7 @@ export class CMDLNotebookSerializer implements vscode.NotebookSerializer {
    * @param raw RawNotebookCell
    * @returns vscode.NotebookCellOutputItem[]
    */
-  private convertRawToBytes(raw: RawNotebookCell) {
+  private convertRawToBytes(raw: RawNotebookCell): vscode.NotebookCellOutput[] {
     let results: vscode.NotebookCellOutputItem[] = [];
 
     for (const output of raw.outputs) {

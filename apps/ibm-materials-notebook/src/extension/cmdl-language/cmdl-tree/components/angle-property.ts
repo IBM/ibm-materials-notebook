@@ -6,6 +6,7 @@ import {
   ModelVisitor,
   SymbolTableBuilder,
 } from "../../cmdl-symbols";
+import { BaseError } from "../../errors";
 
 /**
  * Handles angle properties in polymer graph definitions
@@ -28,16 +29,29 @@ export class AngleProperty extends Property {
     });
   }
 
-  setValue(token: CmdlToken) {
+  /**
+   * Sets value and token properties on AngleProperty
+   * @param token CmdlToken
+   */
+  public setValue(token: CmdlToken): void {
     this.value = token.image;
     this.valueToken = token;
   }
 
-  setCurrentSide(string: "lhs" | "rhs") {
+  /**
+   * Sets the current side of the AngleProperty expression.
+   * @param string "lhs" | "rhs"
+   */
+  public setCurrentSide(string: "lhs" | "rhs"): void {
     this.currentSide = string;
   }
 
-  addReference(name: CmdlToken, path: CmdlToken[] = []) {
+  /**
+   * Adds a reference value for an element on a given side of the angle expression.
+   * @param name CmdlToken
+   * @param path CmdlToken[]
+   */
+  public addReference(name: CmdlToken, path: CmdlToken[] = []): void {
     const refValue = new ReferenceValue(name, path);
 
     if (this.currentSide === "lhs") {
@@ -47,14 +61,14 @@ export class AngleProperty extends Property {
     }
   }
 
-  public async doValidation() {
+  public async doValidation(): Promise<BaseError[]> {
     this.getPropertyType();
     this.validateProperty();
 
     return this.errors;
   }
 
-  print() {
+  public print(): Record<string, any> {
     return {
       name: this.name,
       value: this.value,
@@ -63,19 +77,34 @@ export class AngleProperty extends Property {
     };
   }
 
-  getSources() {
+  /**
+   * Returns sources for a particular edge within the polymer graph.
+   * Sources are on the lhs of the angle property expression
+   * @returns ReferenceValue[]
+   */
+  public getSources(): ReferenceValue[] {
     return this.lhs;
   }
 
-  getTargets() {
+  /**
+   * Returns targets for a particular edge within the polymer graph.
+   * Targets are on the rhs of the angle property expression
+   * @returns ReferencValue[]
+   */
+  public getTargets() {
     return this.rhs;
   }
 
-  getValues() {
+  public getValues(): string {
     return this.value;
   }
 
-  export() {
+  /**
+   * Exports AngleProperty to for further processing
+   * @TODO improve typing for export
+   * @returns
+   */
+  public export() {
     return {
       sources: this.lhs.map((el) => el.export()),
       targets: this.rhs.map((el) => el.export()),
@@ -83,7 +112,7 @@ export class AngleProperty extends Property {
     };
   }
 
-  accept(visitor: AstVisitor): void {
+  public accept(visitor: AstVisitor): void {
     if (visitor instanceof SymbolTableBuilder) {
       visitor.visitAngleProp(this);
     } else if (visitor instanceof ModelVisitor) {

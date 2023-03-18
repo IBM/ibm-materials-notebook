@@ -1,7 +1,6 @@
 import { CmdlToken } from "../../composite-tree-visitor";
 import { BaseError, FileError, RefError } from "../../errors";
 import { RecordNode } from "./base-components";
-import { importManager } from "../file-system";
 import { parseStringImage } from "../utils";
 import {
   AstVisitor,
@@ -9,7 +8,6 @@ import {
   SymbolTableBuilder,
 } from "../../cmdl-symbols";
 import { Library } from "../../../library";
-import { cmdlLogger as logger } from "../../logger";
 
 /**
  * Component AST node for handling import operations
@@ -24,7 +22,7 @@ export class ImportOp implements RecordNode {
   errors: BaseError[] = [];
   protected source: string;
   protected sourceToken: CmdlToken;
-  protected sourceData?: any;
+  protected sourceData?: Record<string, any>;
 
   constructor(token: CmdlToken, sourceToken: CmdlToken, alias?: CmdlToken) {
     this.name = token.image;
@@ -38,7 +36,7 @@ export class ImportOp implements RecordNode {
     this.parent = arg;
   }
 
-  async doValidation(library?: Library) {
+  public async doValidation(library?: Library): Promise<BaseError[]> {
     let msg: string;
     let err: BaseError;
 
@@ -59,27 +57,7 @@ export class ImportOp implements RecordNode {
       this.sourceData = ref;
       this.type = ref?.type ? ref.type : null;
     } else {
-      //check file path
-      const isValidFile = await importManager.fileExists(this.source);
-
-      if (!isValidFile) {
-        msg = `Unable to locate ${this.source}`;
-        err = new FileError(msg, this.sourceToken);
-        this.errors.push(err);
-        return this.errors;
-      }
-
-      const sourceData = await this.importSymbolData(this.source);
-
-      if (!sourceData[this.name]) {
-        msg = `${this.source} does not contain ${this.name}`;
-        err = new RefError(msg, this.sourceToken);
-        this.errors.push(err);
-        return this.errors;
-      }
-
-      this.sourceData = sourceData[this.name];
-      this.type = this.sourceData?.type ? this.sourceData.type : null;
+      throw new Error(`Invalid import source: ${this.source}!`);
     }
 
     if (!this.sourceData || !this.type) {
@@ -92,20 +70,18 @@ export class ImportOp implements RecordNode {
     return this.errors;
   }
 
-  private async importSymbolData(source: string) {
-    const file = await importManager.readFile(source);
-    const contents = JSON.parse(file);
-    return contents;
-  }
-
-  public print() {
+  public print(): Record<string, any> {
     return {
       name: this.name,
       source: this.source,
     };
   }
 
-  public getImportType() {
+  /**
+   * Gets type of entity imported
+   * @returns string
+   */
+  public getImportType(): string {
     if (!this.type) {
       throw new Error(
         `No type or template information available for ${this.name}`
@@ -115,7 +91,11 @@ export class ImportOp implements RecordNode {
     return this.type;
   }
 
-  public export() {
+  /**
+   * Exports data of imported entity
+   * @returns Record<string, any>
+   */
+  public export(): Record<string, any> {
     if (!this.sourceData || !this.type) {
       throw new Error(
         `Import ${this.name} does not have source data available`

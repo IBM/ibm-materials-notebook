@@ -7,7 +7,7 @@ import { CmdlTree } from "./cmdl-tree";
 import { ParserError } from "./errors";
 import { SymbolTable } from "./cmdl-symbols";
 import { ErrorTable } from "../errors";
-import { IRecognitionException } from "chevrotain";
+import { ILexingError, IRecognitionException } from "chevrotain";
 import { cmdlLogger as logger } from "./logger";
 
 export interface CompilerOuput {
@@ -33,7 +33,10 @@ export class CmdlCompiler {
    * @param text string CMDL text being parsed
    * @returns Object<string, CMDLTree | ParserError[]
    */
-  public parse(text: string) {
+  public parse(text: string): {
+    recordTree: CmdlTree;
+    parserErrors: ParserError[];
+  } {
     const lexingResult = lexerInstance.tokenize(text);
     parserInstance.input = lexingResult.tokens;
     const cst = parserInstance.parseRecord();
@@ -48,11 +51,20 @@ export class CmdlCompiler {
    * @param text string
    * @returns Object<string, CMDLAst | IRecognitionExemption[] | ILexingError[]>
    */
-  public parseAST(text: string) {
+  public parseAST(text: string): {
+    ast: CmdlAst | undefined;
+    parserErrors: IRecognitionException[];
+    lexErrors: ILexingError[];
+  } {
     const lexingResult = lexerInstance.tokenize(text);
     parserInstance.input = lexingResult.tokens;
     const cst = parserInstance.parseRecord();
-    const ast: CmdlAst = this.astVisitor.visit(cst, new CmdlAst());
+    let ast: CmdlAst | undefined;
+    try {
+      ast = this.astVisitor.visit(cst, new CmdlAst());
+    } catch (error) {
+      logger.error(`error creating CMDLAst: ${error}`);
+    }
     return {
       ast,
       parserErrors: parserInstance.errors,
@@ -60,7 +72,12 @@ export class CmdlCompiler {
     };
   }
 
-  private createParserErrors(errArr: IRecognitionException[]) {
+  /**
+   * Converts errors from parser to Cmdl ParserError class
+   * @param errArr IRecognitionException[]
+   * @returns ParserError[]
+   */
+  private createParserErrors(errArr: IRecognitionException[]): ParserError[] {
     if (!errArr.length) {
       return [];
     }

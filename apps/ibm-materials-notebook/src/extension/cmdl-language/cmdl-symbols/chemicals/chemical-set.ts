@@ -1,9 +1,16 @@
 import { BaseChemical, ChemPropKey } from "./base-chemical";
 import { UnitOperator, Unit } from "../units";
-import ChemicalFactory, { ChemicalConfig } from "./chemical-factory";
+import ChemicalFactory, {
+  ChemicalConfig,
+  ChemicalOutput,
+} from "./chemical-factory";
 import { Quantity } from "../symbol-types";
 import Big from "big.js";
+import { TAGS } from "../../cmdl-types";
 
+/**
+ * Class for managing sets of chemicals in a solution or reaction
+ */
 export default class ChemicalSet {
   private chemicalFactory = new ChemicalFactory();
   private chemicalMap = new Map<string, BaseChemical>();
@@ -13,32 +20,51 @@ export default class ChemicalSet {
   private totalSolventMass: Quantity | null = null;
   private totalReactionVolume: Quantity | null = null;
 
-  get chemicals() {
+  /**
+   * Retrieves chemicals from chemical set
+   */
+  get chemicals(): BaseChemical[] {
     return [...this.chemicalMap.values()];
   }
 
-  get chemicalValues() {
+  /**
+   * Retrieves output values of chemicals in the chemical set
+   */
+  get chemicalValues(): ChemicalOutput[] {
     return this.chemicals.map((item) => item.getValues());
   }
 
-  public insert(chem: ChemicalConfig) {
+  /**
+   * Inserts a chemical into the chemical set
+   * @param chem ChemicalConfig
+   */
+  public insert(chem: ChemicalConfig): void {
     let chemical = this.chemicalFactory.create(chem);
     this.merge(chemical);
   }
 
-  public insertMany(chemicals: ChemicalConfig[]) {
+  /**
+   * Inserts an array of chemicals into the current chemical set
+   * @param chemicals ChemicalConfig[]
+   */
+  public insertMany(chemicals: ChemicalConfig[]): void {
     for (const chemConfig of chemicals) {
       let chemical = this.chemicalFactory.create(chemConfig);
       this.merge(chemical);
     }
   }
 
+  /**
+   * Merges chemical with current chemical set.
+   * If chemical already exists in chemical set, the moles of each chemical are combined
+   * @param chemical BaseChemical
+   */
   public merge(chemical: BaseChemical) {
     if (chemical.limiting) {
       this.limiting = chemical;
     }
 
-    if (chemical.roles.includes("solvent")) {
+    if (chemical.roles.includes(TAGS.SOLVENT)) {
       this.hasSolvent = true;
     }
 
@@ -50,7 +76,11 @@ export default class ChemicalSet {
     }
   }
 
-  public computeChemicalValues() {
+  /**
+   * Computes quantity values, concentrations, and stochiometry for a chemical set
+   * @returns ChemicalOutput[]
+   */
+  public computeChemicalValues(): ChemicalOutput[] {
     try {
       if (![...this.chemicalMap.values()].length) {
         return [];
@@ -64,7 +94,11 @@ export default class ChemicalSet {
     }
   }
 
-  public computeSetValues() {
+  /**
+   * Computes quantity values, concentrations, and stochiometry for a chemical set
+   * @returns BaseChemical[]
+   */
+  public computeSetValues(): BaseChemical[] {
     try {
       if (![...this.chemicalMap.values()].length) {
         return [];
@@ -78,7 +112,10 @@ export default class ChemicalSet {
     }
   }
 
-  private computeRelativeRatios() {
+  /**
+   * Compute ratios for each chemical within a chemical set
+   */
+  private computeRelativeRatios(): void {
     try {
       if (this.limiting) {
         let limitingMoles = new Unit(
@@ -115,10 +152,13 @@ export default class ChemicalSet {
     }
   }
 
-  private computeTotalSolventVolume() {
+  /**
+   * Computes total volume of solvents in a chemical set
+   */
+  private computeTotalSolventVolume(): void {
     try {
       const solventUnitArray = this.chemicals
-        .filter((item) => item.roles.includes("solvent"))
+        .filter((item) => item.roles.includes(TAGS.SOLVENT))
         .map((el) => {
           let volUnit: Unit;
           if (el.volume) {
@@ -134,10 +174,13 @@ export default class ChemicalSet {
     }
   }
 
-  private computeTotalSolventMass() {
+  /**
+   * Computes total solvent mass for a chemical set
+   */
+  private computeTotalSolventMass(): void {
     try {
       const solventUnitArray = this.chemicals
-        .filter((item) => item.roles.includes("solvent"))
+        .filter((item) => item.roles.includes(TAGS.SOLVENT))
         .map((el) => {
           let unit = new Unit(el.getProperty(ChemPropKey.MASS));
           return unit;
@@ -148,7 +191,11 @@ export default class ChemicalSet {
     }
   }
 
-  private computeTotalReactionVolume() {
+  /**
+   * Computes total volume for an entire chemical set.
+   * Solid volumes are estimated a 1 g/ml.
+   */
+  private computeTotalReactionVolume(): void {
     try {
       let totalUnitArray = this.chemicals.map((item) => {
         let volUnit: Unit;
@@ -165,7 +212,10 @@ export default class ChemicalSet {
     }
   }
 
-  private computeVolumes() {
+  /**
+   * Computes all volume quantities for a chemical set
+   */
+  private computeVolumes(): void {
     try {
       if (this.hasSolvent) {
         this.computeTotalSolventMass();
@@ -207,7 +257,11 @@ export default class ChemicalSet {
     return configs;
   }
 
-  private updateConcentrations() {
+  /**
+   * Iterates through all chemicals and computes three different concentration values
+   * for the chemical within the current chemical set
+   */
+  private updateConcentrations(): void {
     this.chemicals.forEach((item) => {
       item.computeConcentration(this.totalReactionVolume, "molarity");
       item.computeConcentration(this.totalSolventMass, "molality");

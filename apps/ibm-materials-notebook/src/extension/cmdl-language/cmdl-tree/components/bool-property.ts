@@ -2,7 +2,7 @@ import { AstVisitor, SymbolTableBuilder } from "../../cmdl-symbols";
 import { CmdlToken } from "../../composite-tree-visitor";
 import { Property } from "./base-components";
 import { ModelVisitor } from "../../cmdl-symbols";
-import { InvalidPropertyError } from "../../errors";
+import { BaseError, InvalidPropertyError } from "../../errors";
 import { PropertyTypes } from "../../cmdl-types";
 
 /**
@@ -16,12 +16,17 @@ export class BoolProperty extends Property {
     super(token);
   }
 
-  setValue(val: string, token: CmdlToken) {
+  /**
+   * Sets value and token for the boolean property
+   * @param val string
+   * @param token CmdlToken
+   */
+  public setValue(val: string, token: CmdlToken): void {
     this.value = val;
     this.valueToken = token;
   }
 
-  public async doValidation() {
+  public async doValidation(): Promise<BaseError[]> {
     this.getPropertyType();
     this.validateProperty();
 
@@ -34,11 +39,11 @@ export class BoolProperty extends Property {
     return this.errors;
   }
 
-  getValues() {
+  public getValues(): string {
     return this.value;
   }
 
-  accept(visitor: AstVisitor): void {
+  public accept(visitor: AstVisitor): void {
     if (visitor instanceof SymbolTableBuilder) {
       visitor.visitProperty(this);
     } else if (visitor instanceof ModelVisitor) {
