@@ -10,7 +10,7 @@ export class VariableGroup extends NamedGroup {
     super(token, idToken);
   }
 
-  accept(visitor: AstVisitor): void {
+  public accept(visitor: AstVisitor): void {
     if (visitor instanceof SymbolTableBuilder) {
       visitor.visitVariableGroup(this);
     }

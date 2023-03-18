@@ -1,8 +1,9 @@
 import Gas from "./gas";
 import Solid from "./solid";
 import Liquid from "./liquid";
-import { ChemPropKey } from "./base-chemical";
+import { PROPERTIES } from "../../cmdl-types";
 import { NumberQuantity, Quantity } from "../symbol-types";
+import { ReactionRoles } from "../../cmdl-types";
 import Big from "big.js";
 
 export enum ChemStates {
@@ -12,7 +13,11 @@ export enum ChemStates {
 }
 
 export interface NamedQuantity extends Quantity {
-  name: ChemPropKey;
+  name:
+    | PROPERTIES.MASS
+    | PROPERTIES.VOLUME
+    | PROPERTIES.MOLES
+    | PROPERTIES.PRESSURE;
 }
 
 export interface ChemicalConfig {
@@ -21,7 +26,7 @@ export interface ChemicalConfig {
   smiles?: string;
   density: Big | null;
   state: ChemStates;
-  roles: string[];
+  roles: ReactionRoles[];
   quantity: NamedQuantity;
   volume?: Quantity;
   temperature?: Quantity;
@@ -38,7 +43,7 @@ export interface ChemicalOutput {
   moles: NumberQuantity;
   pressure: NumberQuantity | null;
   ratio: number | null;
-  roles: string[];
+  roles: ReactionRoles[];
   molarity: NumberQuantity;
   molality: NumberQuantity;
   moles_vol: NumberQuantity;
@@ -49,7 +54,7 @@ export interface ChemicalOutput {
  * Class for creating and initializing chemical instances from ChemicalConfigs
  */
 export default class ChemicalFactory {
-  public create(chemConfig: ChemicalConfig) {
+  public create(chemConfig: ChemicalConfig): Solid | Liquid | Gas {
     if (chemConfig.state === ChemStates.SOLID) {
       return this.buildSolid(chemConfig);
     } else if (chemConfig.state === ChemStates.GAS) {
@@ -66,7 +71,7 @@ export default class ChemicalFactory {
    * @param config ChemicalConfig
    * @returns Solid
    */
-  private buildSolid(config: ChemicalConfig) {
+  private buildSolid(config: ChemicalConfig): Solid {
     const solid = new Solid(
       config.name,
       config.roles,
@@ -83,7 +88,7 @@ export default class ChemicalFactory {
    * @param config ChemicalConfig
    * @returns Gas
    */
-  private buildGas(config: ChemicalConfig) {
+  private buildGas(config: ChemicalConfig): Gas {
     if (!config.volume || !config.temperature) {
       throw new Error(
         `Inadequate information to compute gas quantities: volume ${config.volume}, temperature: ${config.temperature}`
@@ -107,7 +112,7 @@ export default class ChemicalFactory {
    * @param config ChemicalConfig
    * @returns Liquid
    */
-  private buildLiquid(config: ChemicalConfig) {
+  private buildLiquid(config: ChemicalConfig): Liquid {
     if (!config.density) {
       throw new Error(`${config.name} does not have a valid density`);
     }

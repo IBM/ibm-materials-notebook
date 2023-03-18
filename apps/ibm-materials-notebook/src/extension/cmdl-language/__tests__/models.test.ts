@@ -4,6 +4,9 @@ import { CmdlCompiler } from "../cmdl-compiler";
 import { SymbolTable, SymbolTableBuilder } from "../cmdl-symbols";
 import { ErrorTable } from "../../errors";
 import { CmdlTree } from "../cmdl-tree";
+import { CMDLReaction } from "../cmdl-symbols/models/reaction-model";
+import { CMDLSolution } from "../cmdl-symbols/models/solution-model";
+import { CMDLPolymerGraph } from "../cmdl-symbols/models/polymer-graph-model";
 
 const compiler = new CmdlCompiler();
 
@@ -114,7 +117,7 @@ describe("Test model evaluation with compiler", () => {
     } = await evalutateText(reaction);
 
     const testAR = evaluateModel(recordTree);
-    const testRxn = testAR.getOptionalValue("TestReaction");
+    const testRxn = testAR.getOptionalValue<CMDLReaction>("TestReaction");
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -170,7 +173,7 @@ describe("Test model evaluation with compiler", () => {
       globalTable,
     } = await evalutateText(solution);
     const testAR = evaluateModel(recordTree);
-    const testRxn = testAR.getOptionalValue("TestSolution");
+    const testRxn = testAR.getOptionalValue<CMDLSolution>("TestSolution");
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -438,7 +441,7 @@ describe("Test model evaluation with compiler", () => {
     } = await evalutateText(polymerGraph);
 
     const testAR = evaluateModel(recordTree);
-    const testSample = testAR.getOptionalValue("egMeO_pVL");
+    const testSample = testAR.getOptionalValue<CMDLPolymerGraph>("egMeO_pVL");
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -601,7 +604,7 @@ it("evaluates a nested polymer graph model", async () => {
     await evalutateText(polymerGraphGrafted);
 
   const testAR = evaluateModel(recordTree);
-  const testSample = testAR.getOptionalValue("BASE");
+  const testSample = testAR.getOptionalValue<CMDLPolymerGraph>("BASE");
 
   expect(parserErrors.length).toBe(0);
   expect(semanticErrors.length).toBe(0);

@@ -1,9 +1,13 @@
 import Big from "big.js";
-import { Quantity, convertQty } from "../symbol-types";
+import { Quantity } from "../symbol-types";
+import { convertQty } from "../utils";
 import { ReactorComponent } from "./reactor-component";
 import { ChemicalConfig, ChemicalOutput } from "../chemicals/chemical-factory";
 import { ReactorChemicals } from "./reactor-chemicals";
-import { ReactorGroupOutput } from "./reactor-container";
+import {
+  ReactorGroupOutput,
+  SerializedReactorGroup,
+} from "./reactor-container";
 
 /**
  * Interface for node in a reactor graph
@@ -13,7 +17,7 @@ export interface ReactorNode {
   parent: ReactorNode | null;
   volume: Quantity | null;
   setParent(arg: ReactorNode): void;
-  getInputs(): any;
+  getInputs(): ReactorChemicals | ReactorChemicals[];
 }
 
 /**
@@ -34,7 +38,7 @@ export class Reactor implements ReactorNode {
    * Sets output node of the reactor group.
    * A reactor group should have only one output node
    */
-  setOutputNode() {
+  public setOutputNode(): void {
     for (const child of this.children) {
       if (
         child instanceof ReactorComponent &&
@@ -49,7 +53,7 @@ export class Reactor implements ReactorNode {
    * Adds a child component to the reactor group
    * @param child ReactorNode
    */
-  add(child: ReactorNode) {
+  public add(child: ReactorNode): void {
     child.setParent(this);
     this.children.push(child);
   }
@@ -58,7 +62,7 @@ export class Reactor implements ReactorNode {
    * Sets the parent of the reactor group
    * @param arg ReactorNode
    */
-  setParent(arg: ReactorNode): void {
+  public setParent(arg: ReactorNode): void {
     this.parent = arg;
   }
 
@@ -66,7 +70,7 @@ export class Reactor implements ReactorNode {
    * Computes the total volume of the reactor group
    * @returns undefined
    */
-  computeVolume() {
+  public computeVolume(): void {
     let volume = Big(0);
 
     for (const child of this.children) {
@@ -92,7 +96,7 @@ export class Reactor implements ReactorNode {
    * ReactorChemicals instance and passed to next reactor component
    * @returns ReactorChemicals
    */
-  getInputs(): ReactorChemicals {
+  public getInputs(): ReactorChemicals {
     if (!this.outputNode) {
       throw new Error(`reactor ${this.name} is has no output node`);
     }
@@ -128,7 +132,7 @@ export class Reactor implements ReactorNode {
    * Helper method for computing total flow rate for reactor group from inputs
    * @param arr ReactorChemicals[]
    */
-  private computeTotalFlowRate(arr: ReactorChemicals[]) {
+  private computeTotalFlowRate(arr: ReactorChemicals[]): void {
     if (!arr.length) {
       throw new Error(
         `Recieved no inputs to compute total flow rate for reactor ${this.name}`
@@ -149,7 +153,7 @@ export class Reactor implements ReactorNode {
   /**
    * Helper method to estimate residence time for the reactor group
    */
-  private computeResidenceTime() {
+  private computeResidenceTime(): void {
     if (!this.volume || !this.flowRate) {
       throw new Error(
         `incomplete information to compute residence time for reactor ${this.name}`
@@ -174,7 +178,7 @@ export class Reactor implements ReactorNode {
    * for addition to the ModelAR
    * @returns
    */
-  getOutput(): ReactorGroupOutput {
+  public getOutput(): ReactorGroupOutput {
     if (
       !this.volume ||
       !this.flowRate ||
@@ -197,7 +201,7 @@ export class Reactor implements ReactorNode {
    * Serializes reactor into an object
    * @returns SerializedReactorGroup
    */
-  serialize() {
+  public serialize(): SerializedReactorGroup {
     return {
       name: this.name,
       type: "reactor",

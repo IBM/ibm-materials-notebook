@@ -7,17 +7,15 @@ import { BaseModel } from "./base-model";
  * Model for reference groups. Tablulates child properties and merges into parent AR.
  */
 export class GroupModel extends BaseModel {
-  constructor(name: string, modelAR: ModelActivationRecord, type: string) {
+  constructor(
+    name: string,
+    modelAR: ModelActivationRecord,
+    type: ModelType.GROUP
+  ) {
     super(name, modelAR, type);
   }
 
-  execute(globalAR: ModelActivationRecord): void {
-    logger.verbose(
-      `evaluating group ${this.name}: 
-      -global AR: ${globalAR.type}
-      -model AR: ${this.modelAR.type}`
-    );
-
+  public execute(globalAR: ModelActivationRecord): void {
     const properties: Record<string, any> = {
       name: this.name,
       type: this.type,

@@ -1,9 +1,9 @@
 import Big from "big.js";
 import { Quantity } from "../../symbol-types";
 import { ReactorChemicals } from "../reactor-chemicals";
-import { ChemPropKey } from "../../chemicals/base-chemical";
 import { ChemStates } from "../../chemicals/chemical-factory";
 import { ChemicalConfig } from "../../chemicals/chemical-factory";
+import { PROPERTIES, TAGS } from "../../../cmdl-types";
 
 export const flowRate: Quantity = {
   unit: "ml/min",
@@ -29,12 +29,12 @@ const pMeBnOH: ChemicalConfig = {
   density: null,
   state: ChemStates.SOLID,
   quantity: {
-    name: ChemPropKey.MASS,
+    name: PROPERTIES.MASS,
     value: Big("488"),
     unit: "mg",
     uncertainty: null,
   },
-  roles: ["initiator"],
+  roles: [TAGS.INITIATOR],
   limiting: true,
 };
 
@@ -44,12 +44,12 @@ const kOtbu: ChemicalConfig = {
   density: null,
   state: ChemStates.SOLID,
   quantity: {
-    name: ChemPropKey.MASS,
+    name: PROPERTIES.MASS,
     value: Big("112"),
     unit: "mg",
     uncertainty: null,
   },
-  roles: ["catalyst"],
+  roles: [TAGS.CATALYST],
   limiting: false,
 };
 
@@ -59,12 +59,12 @@ const solvent: ChemicalConfig = {
   density: Big(0.8876),
   state: ChemStates.LIQUID,
   quantity: {
-    name: ChemPropKey.VOLUME,
+    name: PROPERTIES.VOLUME,
     value: Big("10"),
     unit: "ml",
     uncertainty: null,
   },
-  roles: ["solvent"],
+  roles: [TAGS.SOLVENT],
   limiting: false,
 };
 

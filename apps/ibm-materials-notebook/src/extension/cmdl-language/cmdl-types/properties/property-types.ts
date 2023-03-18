@@ -1,3 +1,5 @@
+import { TAGS } from "../tags";
+
 export enum PropertyTypes {
   CATEGORICAL_SINGLE = "categorical_single",
   CATEGORICAL_MULTI = "categorical_multi",
@@ -20,7 +22,7 @@ export interface IProperty {
   units?: string[];
   min?: number;
   max?: number;
-  categorical_values?: string[];
+  categorical_values?: TAGS[];
 }
 
 export enum PROPERTIES {

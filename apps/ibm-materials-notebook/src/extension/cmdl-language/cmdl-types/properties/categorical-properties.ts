@@ -19,23 +19,38 @@ const sourceType: IProperty = {
   categorical_values: [TAGS.JOURNAL, TAGS.NOTEBOOK],
 };
 
+const roles = [
+  TAGS.ATMOSPHERE,
+  TAGS.INITIATOR,
+  TAGS.CATALYST,
+  TAGS.MONOMER,
+  TAGS.REACTANT,
+  TAGS.REAGENT,
+  TAGS.SOLVENT,
+  TAGS.PRODUCT,
+];
+
 const reactionRoles: IProperty = {
   description: "Reaction roles for chemical or material",
   detail: "Reaction roles",
   type: PropertyTypes.CATEGORICAL_MULTI,
   name: PROPERTIES.ROLES,
   aliases: [],
-  categorical_values: [
-    TAGS.ATMOSPHERE,
-    TAGS.INITIATOR,
-    TAGS.CATALYST,
-    TAGS.MONOMER,
-    TAGS.REACTANT,
-    TAGS.REAGENT,
-    TAGS.SOLVENT,
-    TAGS.PRODUCT,
-  ],
+  categorical_values: roles,
 };
+
+const rolesType = [
+  TAGS.ATMOSPHERE,
+  TAGS.INITIATOR,
+  TAGS.CATALYST,
+  TAGS.MONOMER,
+  TAGS.REACTANT,
+  TAGS.REAGENT,
+  TAGS.SOLVENT,
+  TAGS.PRODUCT,
+] as const;
+
+export type ReactionRoles = typeof rolesType[number];
 
 const physicalState: IProperty = {
   description: "Physical state of chemical or material",

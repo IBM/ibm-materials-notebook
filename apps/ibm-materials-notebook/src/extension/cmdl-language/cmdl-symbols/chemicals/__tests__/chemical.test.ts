@@ -1,6 +1,5 @@
 import Big from "big.js";
 import { UNITS } from "../../../cmdl-types/units";
-import { ChemPropKey } from "../base-chemical";
 import ChemicalFactory, {
   ChemicalConfig,
   ChemStates,
@@ -8,6 +7,7 @@ import ChemicalFactory, {
 import Gas from "../gas";
 import Liquid from "../liquid";
 import Solid from "../solid";
+import { PROPERTIES, TAGS } from "../../../cmdl-types";
 
 export const solidChemicalMass: ChemicalConfig = {
   name: "p-methylbenzyl alcohol",
@@ -15,12 +15,12 @@ export const solidChemicalMass: ChemicalConfig = {
   density: null,
   state: ChemStates.SOLID,
   quantity: {
-    name: ChemPropKey.MASS,
+    name: PROPERTIES.MASS,
     value: Big("100"),
     unit: "mg",
     uncertainty: null,
   },
-  roles: ["initiator"],
+  roles: [TAGS.INITIATOR],
   limiting: true,
 };
 
@@ -30,12 +30,12 @@ const solidChemicalMoles: ChemicalConfig = {
   density: null,
   state: ChemStates.SOLID,
   quantity: {
-    name: ChemPropKey.MOLES,
+    name: PROPERTIES.MOLES,
     value: Big("100"),
     unit: "mmol",
     uncertainty: null,
   },
-  roles: ["initiator"],
+  roles: [TAGS.INITIATOR],
   limiting: false,
 };
 
@@ -45,12 +45,12 @@ const liquidChemicalMoles: ChemicalConfig = {
   density: Big(0.8876),
   state: ChemStates.LIQUID,
   quantity: {
-    name: ChemPropKey.MOLES,
+    name: PROPERTIES.MOLES,
     value: Big("10"),
     unit: "mol",
     uncertainty: null,
   },
-  roles: ["solvent"],
+  roles: [TAGS.SOLVENT],
   limiting: false,
 };
 
@@ -60,12 +60,12 @@ const liquidChemicalMass: ChemicalConfig = {
   density: Big(0.8876),
   state: ChemStates.LIQUID,
   quantity: {
-    name: ChemPropKey.MASS,
+    name: PROPERTIES.MASS,
     value: Big("20"),
     unit: "kg",
     uncertainty: null,
   },
-  roles: ["solvent"],
+  roles: [TAGS.SOLVENT],
   limiting: false,
 };
 
@@ -75,12 +75,12 @@ const liquidChemicalVol: ChemicalConfig = {
   density: Big(0.8876),
   state: ChemStates.LIQUID,
   quantity: {
-    name: ChemPropKey.VOLUME,
+    name: PROPERTIES.VOLUME,
     value: Big("300"),
     unit: "ml",
     uncertainty: null,
   },
-  roles: ["solvent"],
+  roles: [TAGS.SOLVENT],
   limiting: false,
 };
 
@@ -90,12 +90,12 @@ const liquidChemicalNoDensity: ChemicalConfig = {
   density: null,
   state: ChemStates.LIQUID,
   quantity: {
-    name: ChemPropKey.VOLUME,
+    name: PROPERTIES.VOLUME,
     value: Big("300"),
     unit: "ml",
     uncertainty: null,
   },
-  roles: ["solvent"],
+  roles: [TAGS.SOLVENT],
   limiting: false,
 };
 
@@ -105,7 +105,7 @@ const gasChemical: ChemicalConfig = {
   density: null,
   state: ChemStates.GAS,
   quantity: {
-    name: ChemPropKey.PRESSURE,
+    name: PROPERTIES.PRESSURE,
     value: Big("300"),
     unit: "atm",
     uncertainty: null,
@@ -120,7 +120,7 @@ const gasChemical: ChemicalConfig = {
     unit: "ml",
     value: Big("500"),
   },
-  roles: ["atmosphere"],
+  roles: [TAGS.ATMOSPHERE],
   limiting: false,
 };
 
@@ -130,7 +130,7 @@ const gasChemicalNoVol: ChemicalConfig = {
   density: null,
   state: ChemStates.GAS,
   quantity: {
-    name: ChemPropKey.PRESSURE,
+    name: PROPERTIES.PRESSURE,
     value: Big("300"),
     unit: "atm",
     uncertainty: null,
@@ -140,7 +140,7 @@ const gasChemicalNoVol: ChemicalConfig = {
     unit: "degC",
     value: Big("85"),
   },
-  roles: ["atmosphere"],
+  roles: [TAGS.ATMOSPHERE],
   limiting: false,
 };
 
@@ -150,7 +150,7 @@ const gasChemicalNoTemp: ChemicalConfig = {
   density: null,
   state: ChemStates.GAS,
   quantity: {
-    name: ChemPropKey.PRESSURE,
+    name: PROPERTIES.PRESSURE,
     value: Big("300"),
     unit: "atm",
     uncertainty: null,
@@ -160,7 +160,7 @@ const gasChemicalNoTemp: ChemicalConfig = {
     unit: "ml",
     value: Big("500"),
   },
-  roles: ["atmosphere"],
+  roles: [TAGS.ATMOSPHERE],
   limiting: false,
 };
 
@@ -357,7 +357,7 @@ describe("Test computations for chemicals", () => {
       pressure: null,
       smiles: null,
       ratio: 0.1,
-      roles: ["initiator"],
+      roles: [TAGS.INITIATOR],
       mw: Big(122.16),
       density: null,
       molarity: { unit: "mol/l", value: 0.091, uncertainty: null },

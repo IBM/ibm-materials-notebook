@@ -5,6 +5,7 @@ import { handleRounding } from "../../cmdl-tree/utils";
 import { UNITS } from "../../cmdl-types/units";
 import { ChemicalConfig, ChemicalOutput } from "./chemical-factory";
 import { NamedQuantity } from "./chemical-factory";
+import { ReactionRoles } from "../../cmdl-types";
 
 export enum ChemPropKey {
   MASS = "mass",
@@ -25,7 +26,7 @@ export abstract class BaseChemical {
   mw: Big | null = null;
   density: Big | null = null;
   smiles?: string;
-  roles: string[];
+  roles: ReactionRoles[];
   ratio: Big | null = null;
   mass: Quantity | null = null;
   volume: Quantity | null = null;
@@ -39,7 +40,7 @@ export abstract class BaseChemical {
 
   constructor(
     name: string,
-    roles: string[],
+    roles: ReactionRoles[],
     limiting: boolean,
     smiles?: string
   ) {
@@ -49,16 +50,42 @@ export abstract class BaseChemical {
     this.smiles = smiles;
   }
 
+  /**
+   * Computes missing values (mass, volume, moles...etc) for a given chemical
+   * @param qty NamedQuantity
+   */
   abstract computeValues(qty: NamedQuantity): void;
+
+  /**
+   * Merge identical chemicals in a chemical set
+   * @param chemical BaseChemical
+   */
   abstract merge(chemical: BaseChemical): void;
+
+  /**
+   * Compute moles of a given chemical in a reaction based on a volume
+   * @param volume Quantity
+   */
   abstract getMolesByVolume(volume: Quantity): ChemicalConfig;
+
+  /**
+   * Exports a chemical as a ChemicalConfig
+   */
   abstract export(): ChemicalConfig;
 
-  setLimiting() {
+  /**
+   * Sets whether or not the chemical is limiting in a reaction
+   */
+  public setLimiting(): void {
     this.limiting = true;
   }
 
-  getProperty(prop: ChemPropKey) {
+  /**
+   * Retrieves property of chemical based on a key
+   * @param prop ChemPropKey
+   * @returns Quantity
+   */
+  public getProperty(prop: ChemPropKey): Quantity {
     let value = this[prop];
 
     if (!value) {
@@ -67,7 +94,11 @@ export abstract class BaseChemical {
     return value;
   }
 
-  computeRatio(limitingValue: Big) {
+  /**
+   * Computes the ratio of this chemical in a reaction based on the limiting reagent moles
+   * @param limitingValue Big
+   */
+  public computeRatio(limitingValue: Big): void {
     if (!this.moles) {
       throw new Error(`Cannot compute ratio with invalid moles: ${this.moles}`);
     }
@@ -76,10 +107,16 @@ export abstract class BaseChemical {
     this.ratio = Big(scaledMoles.value).div(limitingValue);
   }
 
-  computeConcentration(
+  /**
+   * Computes the concentration of this chemical in a reaction
+   * @param totalQty Quantity | null
+   * @param type "molarity" | "molality" | "moles_vol"
+   * @returns
+   */
+  public computeConcentration(
     totalQty: Quantity | null,
     type: "molarity" | "molality" | "moles_vol"
-  ) {
+  ): void {
     if (!totalQty || !this.moles) {
       return;
     }
@@ -113,6 +150,11 @@ export abstract class BaseChemical {
     }
   }
 
+  /**
+   * Computes moles of a chemical based on current concentration and a new volume amount
+   * @param newVolume Quantity
+   * @returns Quantity
+   */
   protected computeMolsFromMolarity(newVolume: Quantity): Quantity {
     if (!this.molarity) {
       throw new Error(`\n-Unable to compute from molarity: ${this.name}`);
@@ -138,6 +180,11 @@ export abstract class BaseChemical {
     return { ...finalMoles.output(), uncertainty: null };
   }
 
+  /**
+   * Combines two identical chemicals based on their moles value
+   * @param chemical BaseChemical
+   * @returns Quantity
+   */
   protected combineMoles(chemical: BaseChemical): Quantity {
     if (this.name !== chemical.name) {
       throw new Error(`\n-Cannot merge two different chemicals`);
@@ -160,6 +207,10 @@ export abstract class BaseChemical {
     return { value: newValue, unit: this.moles.unit, uncertainty: null };
   }
 
+  /**
+   * Retrieves output of the chemical
+   * @returns ChemicalOutput
+   */
   public getValues(): ChemicalOutput {
     let returnValue = {
       name: this.name,

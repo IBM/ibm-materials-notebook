@@ -1,3 +1,1 @@
-import ChemicalSet from './chemical-set';
-
-export { ChemicalSet };
+export { default as ChemicalSet } from "./chemical-set";

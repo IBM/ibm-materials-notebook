@@ -25,7 +25,11 @@ export class GeneralGroup extends Group {
     this.validateGroupChild = this.validateGroupChild.bind(this);
   }
 
-  protected validateGroupName() {
+  /**
+   * Performs validation on Group name.
+   * @returns void
+   */
+  protected validateGroupName(): void {
     if (!this.groupProps) {
       return;
     }
@@ -37,7 +41,13 @@ export class GeneralGroup extends Group {
     }
   }
 
-  protected validateGroupChild(child: RecordNode, props: Set<string>) {
+  /**
+   * Performs validation on a child node of the group
+   * @param child RecordNode
+   * @param props Set<string>
+   * @returns void
+   */
+  protected validateGroupChild(child: RecordNode, props: Set<string>): void {
     if (!this.groupProps) {
       return;
     }
@@ -83,14 +93,18 @@ export class GeneralGroup extends Group {
     }
   }
 
-  public async doValidation() {
+  public async doValidation(): Promise<BaseError[]> {
     this.setGroupProps();
     this.validateGroupName();
     await this.validateChildren(this.validateGroupChild);
     return this.errors;
   }
 
-  public getSymbolRefs() {
+  /**
+   * Retrieves array of children for current group
+   * @returns RecordNode[]
+   */
+  public getSymbolRefs(): RecordNode[] {
     const symbolArr = [];
     for (const child of this.children) {
       symbolArr.push(child);
@@ -99,7 +113,7 @@ export class GeneralGroup extends Group {
     return symbolArr;
   }
 
-  accept(visitor: AstVisitor): void {
+  public accept(visitor: AstVisitor): void {
     if (visitor instanceof SymbolTableBuilder) {
       visitor.visitGroup(this);
     } else if (visitor instanceof ModelVisitor) {

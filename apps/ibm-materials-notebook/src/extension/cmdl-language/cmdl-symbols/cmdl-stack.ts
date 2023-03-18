@@ -5,7 +5,10 @@
 export class CmdlStack<T> {
   private _records: T[] = [];
 
-  get size() {
+  /**
+   * Retrieves the current size of the stack
+   */
+  get size(): number {
     return this._records.length;
   }
 
@@ -13,7 +16,7 @@ export class CmdlStack<T> {
    * Returns whether or not stack is empty
    * @returns boolean
    */
-  public isEmpty() {
+  public isEmpty(): boolean {
     return this._records.length === 0;
   }
 
@@ -21,15 +24,15 @@ export class CmdlStack<T> {
    * Adds record to the stack
    * @param record T
    */
-  public push(record: T) {
+  public push(record: T): void {
     this._records.push(record);
   }
 
   /**
    * Removes and returns top record from stack
-   * @returns T
+   * @returns T | undefined
    */
-  public pop() {
+  public pop(): T | undefined {
     return this._records.pop();
   }
 
@@ -37,7 +40,7 @@ export class CmdlStack<T> {
    * Returns top record from the stack
    * @returns T
    */
-  public peek() {
+  public peek(): T {
     return this._records[this._records.length - 1];
   }
 

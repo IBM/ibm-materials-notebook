@@ -1,31 +1,14 @@
-import { GeneralGroup } from "./general-group";
-import { ReferenceGroup } from "./reference-group";
-import { NamedGroup } from "./named-group";
-import { RecordNode } from "./base-components";
-import { VariableGroup } from "./variable-groups";
-import { ListProperty } from "./list-property";
-import { BoolProperty } from "./bool-property";
-import { StringProperty } from "./string-property";
-import { NumericalProperty } from "./numerical-property";
-import { AngleProperty } from "./angle-property";
-import { RefListProperty } from "./reference-list-property";
-import { RefProperty } from "./reference-property";
-import { VariableProperty } from "./variable-property";
-import { SymbolReference } from "./reference-group";
-
-export {
-  RecordNode,
-  GeneralGroup,
-  NamedGroup,
-  ReferenceGroup,
-  VariableGroup,
-  ListProperty,
-  BoolProperty,
-  StringProperty,
-  NumericalProperty,
-  AngleProperty,
-  RefListProperty,
-  RefProperty,
-  VariableProperty,
-  SymbolReference,
-};
+export { GeneralGroup } from "./general-group";
+export { ReferenceGroup } from "./reference-group";
+export { NamedGroup } from "./named-group";
+export { RecordNode } from "./base-components";
+export { VariableGroup } from "./variable-groups";
+export { ListProperty } from "./list-property";
+export { BoolProperty } from "./bool-property";
+export { StringProperty } from "./string-property";
+export { NumericalProperty } from "./numerical-property";
+export { AngleProperty } from "./angle-property";
+export { RefListProperty } from "./reference-list-property";
+export { RefProperty } from "./reference-property";
+export { VariableProperty } from "./variable-property";
+export { SymbolReference } from "./reference-group";

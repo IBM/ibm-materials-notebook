@@ -1,39 +1,46 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { PolymerContainer } from "../polymers";
-import { BigSMILES } from "bigsmiles";
-import { cmdlLogger } from "../../logger";
+import { BigSMILES } from "ts-bigsmiles";
+import { ModelType } from "../../cmdl-types/groups/group-types";
+import { CMDLRef, CMDLUnitless } from "../symbol-types";
+import { CMDLPolymerGraph } from "./polymer-graph-model";
+import { PROPERTIES } from "../../cmdl-types";
+import { JSONPolymerTree } from "../polymers/polymer-container";
+
+export type CMDLPolymerTreeValue = {
+  name: string;
+  path: string[];
+  [PROPERTIES.DEGREE_POLY]: CMDLUnitless;
+};
 
 export class Polymer extends BaseModel {
   private polymerContainer: PolymerContainer;
-  constructor(name: string, modelAR: ModelActivationRecord, type: string) {
+  constructor(
+    name: string,
+    modelAR: ModelActivationRecord,
+    type: ModelType.POLYMER
+  ) {
     super(name, modelAR, type);
     this.polymerContainer = new PolymerContainer(name);
   }
 
-  execute(globalAR: ModelActivationRecord): void {
-    const treeRef = this.modelAR.getOptionalValue("tree");
-    const treeValues = this.modelAR.getOptionalValue("treeValues");
-    const bigSmilesStr = this.modelAR.getOptionalValue("big_smiles");
+  public execute(globalAR: ModelActivationRecord): void {
+    const treeRef = this.modelAR.getValue<CMDLRef | JSONPolymerTree<null>>(
+      PROPERTIES.TREE
+    );
+    const treeValues =
+      this.modelAR.getOptionalValue<CMDLPolymerTreeValue[]>("treeValues");
 
-    let validatedStr: string | undefined;
-    if (bigSmilesStr) {
-      try {
-        const bigSmilesParser = new BigSMILES(bigSmilesStr);
-        validatedStr = bigSmilesParser.toString();
-        cmdlLogger.silly(`validated bigSMILES ${validatedStr}`);
-      } catch (error) {
-        cmdlLogger.warn(`Invalid bigSmiles string ${bigSmilesStr}!`);
-        throw new Error(
-          `Error during validating BigSMLIES ${bigSmilesStr}: ${
-            error as string
-          }`
-        );
+    if ("ref" in treeRef) {
+      const polymerGraph = globalAR.getOptionalValue<CMDLPolymerGraph>(
+        treeRef.ref
+      );
+
+      if (!polymerGraph) {
+        throw new Error(`Polymer graph for ${treeRef.ref} is undefined!`);
       }
-    }
 
-    if (treeRef?.ref) {
-      const polymerGraph = globalAR.getOptionalValue(treeRef.ref);
       this.polymerContainer.initializeTreeFromJSON(polymerGraph.tree);
     } else {
       this.polymerContainer.initializeTreeFromJSON(treeRef);
@@ -53,10 +60,8 @@ export class Polymer extends BaseModel {
     };
 
     for (const [name, value] of this.modelAR.all()) {
-      if (name === "tree") {
+      if (name === PROPERTIES.TREE) {
         properties[name] = this.polymerContainer.treeToJSON();
-      } else if (name === "big_smiles" && validatedStr) {
-        properties[name] = validatedStr;
       } else {
         properties[name] = value;
       }

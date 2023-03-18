@@ -3,7 +3,54 @@ import { PolymerGraph } from "./polymer-graph";
 import { PolymerTree } from "./polymer-tree";
 import { PolymerWeight } from "./polymer-weights";
 import { CMDLPolymerTree } from "./polymer-types";
+import { ModelType } from "../../cmdl-types/groups/group-types";
+import { CMDLNodeTree } from "../symbol-types";
+import { CMDLPolymerTreeValue } from "../models/polymer-model";
+import { RefResult } from "../models/sample-model";
 
+export interface JSONPolymerGraph {
+  nodes: JSONPolymerNode[];
+  edges: JSONPolymerConnection[];
+}
+
+export interface JSONPolymerContainer {
+  name: string;
+  parent: string | null;
+  connections: JSONPolymerConnection[];
+  children: (JSONPolymerContainer | JSONPolymerNode)[];
+}
+
+export interface JSONPolymerConnection {
+  source: string;
+  target: string;
+  weight: number;
+  quantity: string;
+}
+
+export interface JSONPolymerNode {
+  name: string;
+  mw: number;
+  smiles: string;
+  parent: string | null;
+  degree_poly?: string;
+}
+
+export interface JSONPolymerTree<T extends string | null> {
+  name: string;
+  connections: JSONPolymerConnection[];
+  parent: T;
+  children: (JSONPolymerTree<string> | JSONPolymerNode)[];
+}
+
+export interface JSONPolymerGraphStructure {
+  name: string;
+  type: ModelType.POLYMER_GRAPH;
+  tree: JSONPolymerTree<null>;
+}
+
+/**
+ * Top level class for managing polymer tree and graph representations
+ */
 export class PolymerContainer {
   name: string;
   tree = new PolymerTree();
@@ -13,6 +60,11 @@ export class PolymerContainer {
     this.name = name;
   }
 
+  /**
+   * Constructs a polymer composite tree data structure
+   * @param treeConfig CMDLPolymerTree
+   * @param record ModelActivationRecord
+   */
   buildTree(treeConfig: CMDLPolymerTree, record: ModelActivationRecord) {
     this.tree.initialize(treeConfig, record);
     this.tree.root?.setName();
@@ -20,14 +72,25 @@ export class PolymerContainer {
     this.tree.root?.updateConnectionPaths();
   }
 
-  initializeTreeFromJSON(tree: any) {
+  /**
+   * Initializes polymer tree data structure from imported JSON representation
+   * @param tree JSONPolymerTree<null>
+   */
+  initializeTreeFromJSON(tree: JSONPolymerTree<null>): void {
     this.tree.fromJSON(tree);
     this.tree.root?.setName();
     this.tree.root?.setPath();
     this.buildGraph();
   }
 
-  computePolymerWeights() {
+  /**
+   * Computes weights for each edge within the polymer graph depending
+   * on the degree polymerization for connected nodes.
+   * 1. Determines whether polymer is cyclic or linear
+   * 2. Scores polymer
+   * 3. Finalizes polymer edge weights
+   */
+  public computePolymerWeights(): void {
     const weightor = new PolymerWeight(this.graph);
     weightor.selectStrategy(this.tree);
     weightor.scorePolymer(this.tree);
@@ -37,71 +100,15 @@ export class PolymerContainer {
   /**
    * Method to convert polymer composite tree into a graph
    */
-  buildGraph() {
+  public buildGraph(): void {
     this.graph.initialize(this.tree);
-  }
-
-  serialize() {
-    const graph = this.graph.toJSON();
-    return { graph };
-  }
-
-  /**
-   * @deprecated
-   * @param graphStr string
-   */
-  deserialize(graphStr: string) {
-    try {
-      const graphArray = graphStr.split(";").filter((el) => el.length);
-      const propArrays = graphArray.map((el) => el.split("<"));
-
-      let nodeArray = [];
-      for (const node of propArrays) {
-        let nodeRecord: Record<string, any> = {
-          edges: [],
-        };
-
-        for (const item of node) {
-          if (!item.length) {
-            continue;
-          }
-
-          const propTuple = item.split(">");
-
-          if (
-            propTuple[0] === "name" ||
-            propTuple[0] === "mw" ||
-            propTuple[0] === "smiles"
-          ) {
-            nodeRecord[propTuple[0]] = propTuple[1];
-            continue;
-          }
-
-          if (propTuple[0] === "edge") {
-            let targetTuple = propTuple[2].split("|");
-            let edgeRecord = {
-              sourcePoint: propTuple[1].replace(/ -/, ""),
-              target: targetTuple[0].trim(),
-              weight: targetTuple[1],
-              quantity: targetTuple[2],
-            };
-            nodeRecord.edges.push(edgeRecord);
-          }
-        }
-        nodeArray.push(nodeRecord);
-      }
-
-      this.graph.initializeFromStr(nodeArray);
-    } catch (error) {
-      console.log(error);
-    }
   }
 
   /**
    * Method to convert polymer graph to a string
    * @returns string
    */
-  graphToString() {
+  public graphToString(): string {
     return this.graph.toString();
   }
 
@@ -109,7 +116,7 @@ export class PolymerContainer {
    * Method to convert polymer graph to a masked string
    * @returns string
    */
-  graphToMaskedString() {
+  public graphToMaskedString(): string {
     return this.graph.toMaskedString();
   }
 
@@ -117,29 +124,34 @@ export class PolymerContainer {
    * Method to convert polymer graph to a masked string
    * @returns string
    */
-  graphToCompressedString() {
+  public graphToCompressedString(): string {
     return this.graph.toCompressedString();
   }
 
   /**
-   * Method to convert polymer graph to an Object
+   * Method to convert polymer graph to an JSON object
    * @returns object
    */
-  graphToJSON() {
+  public graphToJSON(): JSONPolymerGraph {
     return this.graph.toJSON();
   }
 
-  getGraphNodes() {
+  /**
+   * Creates a node tree to enable embedding of
+   * nodes within the symbol table
+   * @returns CMDLNodeTree
+   */
+  public getGraphNodes(): CMDLNodeTree {
     const keys = this.graph.getNodeKeys();
 
-    const keyTree: Record<string, any> = {};
+    const keyTree: CMDLNodeTree = {};
 
     for (const key of keys) {
       let keyPath = key.split(".");
       traverseKeys(keyPath, keyTree);
     }
 
-    function traverseKeys(path: string[], keyTree: Record<string, any>): void {
+    function traverseKeys(path: string[], keyTree: CMDLNodeTree): void {
       if (!path.length) {
         return;
       }
@@ -155,18 +167,36 @@ export class PolymerContainer {
     return keyTree;
   }
 
-  getSmilesStr() {
+  /**
+   * Compiles a SMILES string for the polymer where each node
+   * element is separated by a "." character in the string
+   * @returns string
+   */
+  public getSmilesStr(): string {
     return this.tree.compileSmiles();
   }
 
-  addGraphValues(values: any[]) {
+  /**
+   * Embeds degree of polymerization values within their respective nodes
+   * in the polymer graph
+   * @param values CMDLPolymerTreeValue[] | RefResult[]
+   */
+  public addGraphValues(values: CMDLPolymerTreeValue[] | RefResult[]) {
     const baseName = this.tree.getBaseName();
     for (const prop of values) {
       let path = `${baseName}.${prop.path.join(".")}`;
-      this.graph.setNodeProperty(path, {
-        name: "degree_poly",
-        value: prop?.degree_poly ? prop.degree_poly : prop.value,
-      });
+
+      if ("degree_poly" in prop) {
+        this.graph.setNodeProperty(path, {
+          name: "degree_poly",
+          value: prop.degree_poly,
+        });
+      } else {
+        this.graph.setNodeProperty(path, {
+          name: "degree_poly",
+          value: prop.value,
+        });
+      }
     }
   }
 
@@ -174,15 +204,16 @@ export class PolymerContainer {
    * Method to convert polymer tree to an Object
    * @returns object
    */
-  treeToJSON() {
+  public treeToJSON() {
     return this.tree.toJSON();
   }
 
   /**
    * Method to convert polymer graph into BigSmiles
+   * @TODO improve scope of BigSMILES conversion
    * @returns string
    */
-  treeToBigSmiles() {
+  public treeToBigSmiles() {
     return this.tree.toBigSMILES();
   }
 }

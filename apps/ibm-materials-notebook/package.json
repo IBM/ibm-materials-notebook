@@ -43,22 +43,22 @@
       }
     ],
     "configuration": {
-      "title": "Materials Notebook",
+      "title": "IBM Materials Notebook",
       "properties": {
         "ibm-materials-notebook.library": {
-          "title": "Library Path",
+          "title": "Output path for workspace",
           "type": "string",
           "default": "./lib"
         },
-        "ibm-materials-notebook.exp": {
-          "title": "Experiment Path",
+        "ibm-materials-notebook.structure-theme": {
+          "title": "Chemical Structure Theme",
+          "default": "dark",
           "type": "string",
-          "default": "./exp"
-        },
-        "ibm-materials-notebook.output": {
-          "title": "Output Path",
-          "type": "string",
-          "default": "./output"
+          "enum": [
+            "dark",
+            "light"
+          ],
+          "markdownDescription": "Set theme for chemical structures drawn by the extension."
         }
       }
     },
@@ -145,10 +145,11 @@
     "webpack-dev-server": "^4.10.0"
   },
   "dependencies": {
-    "bigsmiles": "*",
     "big.js": "^6.2.1",
     "chevrotain": "^10.3.0",
-    "winston": "^3.8.2"
+    "winston": "^3.8.2",
+    "ts-bigsmiles": "*",
+    "ts-smiles-drawer": "*"
   },
   "jest": {
     "preset": "ts-jest",

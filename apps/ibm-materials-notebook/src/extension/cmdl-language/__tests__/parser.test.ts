@@ -1,10 +1,6 @@
 import { parserInstance } from "../parser";
 import { lexerInstance } from "../lexer";
 
-function log(arg: any) {
-  console.log(JSON.stringify(arg, null, 2));
-}
-
 describe("Test parser on simple fragment", () => {
   const importStatement = `import polymerA as polymerB from "placeC";`;
   it("parses an import statement", () => {

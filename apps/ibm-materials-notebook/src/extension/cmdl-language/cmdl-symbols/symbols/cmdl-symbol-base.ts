@@ -68,7 +68,7 @@ export class DeclarationSymbol extends BaseSymbol {
     }
   }
 
-  public print() {
+  public print(): string {
     return `${this.name} -> ${this.type}, ${this.modelType}`;
   }
 }
@@ -86,7 +86,7 @@ export class ReferenceSymbol extends BaseSymbol {
     this.path = path;
   }
 
-  public print() {
+  public print(): string {
     return `${this.name} -> ${this.type}`;
   }
 }
@@ -97,6 +97,7 @@ export class ReferenceSymbol extends BaseSymbol {
  */
 export class AngleSymbol extends BaseSymbol {
   connections: ConnectionSymbol[] = [];
+
   constructor(config: SymbolConfig) {
     super(config);
   }
@@ -105,10 +106,11 @@ export class AngleSymbol extends BaseSymbol {
    * Adds a connection symbol to the connections property
    * @param arg ConnectionSymbol
    */
-  addConnection(arg: ConnectionSymbol) {
+  public addConnection(arg: ConnectionSymbol): void {
     this.connections.push(arg);
   }
-  print() {
+
+  public print(): string {
     return `connections -> ${this.type}`;
   }
 }
@@ -120,6 +122,7 @@ export class ConnectionSymbol extends BaseSymbol {
   sources: ReferenceSymbol[];
   targets: ReferenceSymbol[];
   quantity: string;
+
   constructor(
     config: SymbolConfig,
     sources: ReferenceSymbol[],
@@ -132,7 +135,7 @@ export class ConnectionSymbol extends BaseSymbol {
     this.quantity = quantity;
   }
 
-  public print() {
+  public print(): string {
     return `${this.name} -> ${this.type}`;
   }
 }
@@ -144,7 +147,7 @@ export class GroupSymbol extends BaseSymbol {
   constructor(config: SymbolConfig) {
     super(config);
   }
-  public print() {
+  public print(): string {
     return `${this.name} -> ${this.type}`;
   }
 }
@@ -154,12 +157,13 @@ export class GroupSymbol extends BaseSymbol {
  */
 export class PropertySymbol<T> extends BaseSymbol {
   value: T;
+
   constructor(config: SymbolConfig, value: T) {
     super(config);
     this.value = value;
   }
 
-  public print() {
+  public print(): string {
     return `${this.name} ->${this.type}`;
   }
 }

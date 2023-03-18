@@ -3,7 +3,7 @@ import { ModelActivationRecord } from "../models";
 import { PolymerEdge } from "./polymer-edge";
 import { Container } from "./polymer-tree-container";
 import { PolymerNode } from "./polymer-node";
-import { PolymerTreeVisitor } from "./polymer-weights";
+import { PolymerTreeVisitor } from "./polymer-visitors";
 import { CMDLRef } from "../symbol-types";
 import {
   CMDLPolymerTree,
@@ -11,6 +11,12 @@ import {
   CMDLPolymerConnection,
   PolymerComponent,
 } from "./polymer-types";
+import { CMDLFragment } from "../models/base-model";
+import {
+  JSONPolymerContainer,
+  JSONPolymerNode,
+  JSONPolymerTree,
+} from "./polymer-container";
 
 /**
  * Tree representation of polymer structure. The tree representation enables facile conversion to a graph representation.
@@ -32,7 +38,10 @@ export class PolymerTree {
    * @param treeConfig Object
    * @param record ModelActivationRecord
    */
-  initialize(treeConfig: CMDLPolymerTree, record: ModelActivationRecord) {
+  public initialize(
+    treeConfig: CMDLPolymerTree,
+    record: ModelActivationRecord
+  ): void {
     const queue: (CMDLPolymerTree | CMDLPolymerContainer)[] = [treeConfig];
     let curr: CMDLPolymerTree | CMDLPolymerContainer | undefined;
 
@@ -46,7 +55,7 @@ export class PolymerTree {
       const container = new Container(curr.name);
 
       for (const node of curr.nodes) {
-        let fragment = record.getValue(node.ref.slice(1));
+        let fragment = record.getValue<CMDLFragment>(node.ref.slice(1));
 
         const entity = new PolymerNode({
           fragment: node.ref.slice(1),
@@ -74,6 +83,11 @@ export class PolymerTree {
     }
   }
 
+  /**
+   * Creates a new PolymerEdge object for the polymer tree
+   * @param conn CMDLPolymerConnection
+   * @param container Container
+   */
   private createEdges(conn: CMDLPolymerConnection, container: Container) {
     const newSources = this.parseConnectionPaths(conn.sources);
     const newTargets = this.parseConnectionPaths(conn.targets);
@@ -105,8 +119,8 @@ export class PolymerTree {
    * @param arr CMDLRef[][]
    * @returns string[][]
    */
-  private parseConnectionPaths(arr: CMDLRef[]) {
-    return arr.map((el: CMDLRef) => {
+  private parseConnectionPaths(arr: CMDLRef[]): string[][] {
+    return arr.map((el) => {
       return [el.ref.slice(1), ...el.path];
     });
   }
@@ -117,7 +131,7 @@ export class PolymerTree {
    * @param parent string | undefined
    * @returns void
    */
-  insert(arg: Container, parent?: string) {
+  public insert(arg: Container, parent?: string): void {
     if (!this.root) {
       this.root = arg;
       return;
@@ -149,7 +163,11 @@ export class PolymerTree {
     }
   }
 
-  visitRoot(arg: PolymerTreeVisitor) {
+  /**
+   * Visits root and only its immediate children
+   * @param arg PolymerTreeVisitor
+   */
+  public visitRoot(arg: PolymerTreeVisitor): void {
     if (!this.root) {
       throw new Error(`cannot visit an undefined polymer`);
     }
@@ -173,7 +191,13 @@ export class PolymerTree {
     }
   }
 
-  visit(arg: PolymerTreeVisitor) {
+  /**
+   * Iterates through polymer tree and visits each element
+   * which can accept a PolymerTreeVisitor. Used for computing
+   * weights on the polymer graph.
+   * @param arg PolymerTreeVisitor
+   */
+  public visit(arg: PolymerTreeVisitor): void {
     if (!this.root) {
       throw new Error(`cannot visit an undefined polymer`);
     }
@@ -196,7 +220,12 @@ export class PolymerTree {
     }
   }
 
-  compileSmiles() {
+  /**
+   * Compiles polymer tree to SMILES string with "." character
+   * separating each node
+   * @returns string
+   */
+  public compileSmiles(): string {
     if (!this.root) {
       throw new Error(`cannot visit an undefined polymer`);
     }
@@ -228,11 +257,14 @@ export class PolymerTree {
 
   /**
    * Creates polymer tree from JSON representation
-   * @param element any
+   * @param element JSONPolymerGraph
    * @param parent Container
    */
-  fromJSON(element: any, parent?: Container) {
-    if (element?.connections) {
+  public fromJSON(
+    element: JSONPolymerTree<null | string> | JSONPolymerNode,
+    parent?: Container
+  ): void {
+    if ("connections" in element) {
       const newContainer = new Container(element.name);
 
       for (const connection of element.connections) {
@@ -240,7 +272,7 @@ export class PolymerTree {
           sourcePath: connection.source.split("."),
           targetPath: connection.target.split("."),
           weight: connection.weight,
-          quantity: connection.quantity,
+          quantity: parseInt(connection.quantity),
         });
         newContainer.connections.push(conn);
       }
@@ -278,7 +310,11 @@ export class PolymerTree {
     }
   }
 
-  createContainerMap() {
+  /**
+   * Creates a JS Map of all containers in the polymer graph
+   * @returns Map<string, string[]>
+   */
+  public createContainerMap(): Map<string, string[]> {
     if (!this.root) {
       throw new Error(`cannot visit an undefined polymer`);
     }
@@ -311,15 +347,19 @@ export class PolymerTree {
    * Serializes tree to an object
    * @returns Object
    */
-  toJSON() {
+  public toJSON(): JSONPolymerContainer {
     if (!this.root) {
-      return {};
+      return {} as JSONPolymerContainer;
     }
 
     return this.root.toJSON();
   }
 
-  toBigSMILES() {
+  /**
+   * Method to convert the polymer tree to the BigSMILES string
+   * @returns string
+   */
+  public toBigSMILES(): string {
     if (!this.root) {
       throw new Error(`polymer tree is not initialized!`);
     }
@@ -331,7 +371,7 @@ export class PolymerTree {
    * Converts tree to string for logging purposes
    * @returns string
    */
-  print() {
+  public print(): string {
     if (!this.root) {
       return "Polymer tree not initialized";
     }

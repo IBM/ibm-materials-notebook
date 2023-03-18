@@ -11,7 +11,7 @@ export class ErrorTable {
    * @param uri string - cell uri
    * @param errors BaseError[]
    */
-  add(uri: string, errors: BaseError[]) {
+  public add(uri: string, errors: BaseError[]): void {
     let currentErrs = this._expErrors.get(uri);
     if (!currentErrs) {
       this._expErrors.set(uri, errors);
@@ -26,7 +26,7 @@ export class ErrorTable {
    * @param uri string - cell uri
    * @returns BaseError[]
    */
-  get(uri: string) {
+  public get(uri: string): BaseError[] {
     let errors = this._expErrors.get(uri);
 
     if (!errors) {
@@ -40,7 +40,7 @@ export class ErrorTable {
    * Deletes all errors for a given cell.
    * @param uri string - cell uri
    */
-  delete(uri: string) {
+  public delete(uri: string): void {
     this._expErrors.delete(uri);
   }
 
@@ -48,7 +48,7 @@ export class ErrorTable {
    * Retrieves all errors for notebook document
    * @returns BaseError[]
    */
-  all() {
+  public all(): BaseError[] {
     let allErrors: BaseError[] = [];
 
     for (const cellErrors of this._expErrors.values()) {
@@ -59,10 +59,10 @@ export class ErrorTable {
 
   /**
    * Serializes error table to an object for logging.
-   * @returns any
+   * @returns Record<string, BaseError[]>
    */
-  print() {
-    let output: Record<string, any> = {};
+  public print(): Record<string, BaseError[]> {
+    let output: Record<string, BaseError[]> = {};
 
     for (const [key, value] of this._expErrors.entries()) {
       output[key] = value;

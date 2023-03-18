@@ -4,4 +4,4 @@ This repository contains software and packages pertaining to the orgnization and
 
 ## Documentation
 
-Please see the official documentation webpage for details surrounding the applications and packages.
+Please see the [official documentation webpage](https://ibm.github.io/ibm-materials-notebook/) for details surrounding the applications and packages.

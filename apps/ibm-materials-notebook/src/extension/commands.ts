@@ -14,12 +14,14 @@ export interface VariableDict {
   };
 }
 
+//TODO: create command to automatically generate setup workspace
+
 /**
  * Sleep function to delay process
  * @param delay number ms to sleep process by
  * @returns Promise<unknown>
  */
-const sleep = (delay: number) =>
+const sleep = (delay: number): Promise<unknown> =>
   new Promise((resolve) => setTimeout(resolve, delay));
 
 /**
@@ -28,7 +30,10 @@ const sleep = (delay: number) =>
  * @param repo Repository
  * @returns Promise<unknown>
  */
-async function processRecordExport(docUri: vscode.Uri, repo: Repository) {
+async function processRecordExport(
+  docUri: vscode.Uri,
+  repo: Repository
+): Promise<unknown> {
   const opened = await vscode.workspace.openNotebookDocument(docUri);
   await sleep(10);
   let experiment = repo.findExperiment(opened.uri);

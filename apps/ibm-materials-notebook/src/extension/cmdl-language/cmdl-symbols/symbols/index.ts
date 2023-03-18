@@ -1,6 +1,6 @@
-import { SymbolTable, AstVisitor } from "./symbol-table";
-import { SymbolTableBuilder } from "./symbol-table-builder";
-import {
+export { SymbolTable, AstVisitor } from "./symbol-table";
+export { SymbolTableBuilder } from "./symbol-table-builder";
+export {
   DeclarationSymbol,
   PropertySymbol,
   ReferenceSymbol,
@@ -8,14 +8,3 @@ import {
   SymbolType,
   GroupSymbol,
 } from "./cmdl-symbol-base";
-export {
-  SymbolTable,
-  SymbolConfig,
-  SymbolType,
-  DeclarationSymbol as ModelSymbol,
-  PropertySymbol,
-  ReferenceSymbol,
-  GroupSymbol,
-  SymbolTableBuilder,
-  AstVisitor,
-};

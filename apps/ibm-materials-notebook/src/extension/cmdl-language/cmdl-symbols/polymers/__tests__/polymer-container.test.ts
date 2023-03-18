@@ -1,8 +1,13 @@
-import { PolymerContainer } from "../polymer-container";
+import { ModelType } from "../../../cmdl-types/groups/group-types";
+import { RefResult } from "../../models/sample-model";
+import {
+  JSONPolymerGraphStructure,
+  PolymerContainer,
+} from "../polymer-container";
 
-export const blockCopolymer = {
+export const blockCopolymer: JSONPolymerGraphStructure = {
   name: "egMeO_pVL",
-  type: "polymer_graph",
+  type: ModelType.POLYMER_GRAPH,
   tree: {
     name: "egMeO_pVL",
     connections: [
@@ -73,7 +78,7 @@ export const blockCopolymer = {
 
 export const multiInit = {
   name: "BASE",
-  type: "polymer_graph",
+  type: ModelType.POLYMER_GRAPH,
   tree: {
     name: "BASE",
     connections: [
@@ -130,7 +135,7 @@ export const multiInit = {
 
 export const statMulti = {
   name: "Base",
-  type: "polymer_graph",
+  type: ModelType.POLYMER_GRAPH,
   tree: {
     name: "BASE",
     connections: [
@@ -879,7 +884,7 @@ describe("Tests for weighting a block copolymer polymer graph", () => {
         },
       },
     ];
-    polymer.addGraphValues(values);
+    polymer.addGraphValues(values as RefResult[]);
     polymer.computePolymerWeights();
 
     const graph = polymer.graphToJSON();
@@ -913,7 +918,7 @@ describe("Tests for weighting a polymer with multifuncitional initiator", () => 
         },
       },
     ];
-    polymer.addGraphValues(values);
+    polymer.addGraphValues(values as RefResult[]);
     polymer.computePolymerWeights();
 
     const graph = polymer.graphToJSON();
@@ -957,7 +962,7 @@ describe("Tests for weighting a statistical co-polymer with multifuncitional ini
       },
     ];
 
-    polymer.addGraphValues(values);
+    polymer.addGraphValues(values as RefResult[]);
     polymer.computePolymerWeights();
 
     const graph = polymer.graphToJSON();
@@ -1009,7 +1014,7 @@ describe("Tests for weighting a grafted statistical co-polymer with multifunciti
         },
       },
     ];
-    polymer.addGraphValues(values);
+    polymer.addGraphValues(values as RefResult[]);
     polymer.computePolymerWeights();
 
     const graph = polymer.graphToJSON();
@@ -1042,7 +1047,7 @@ describe("Tests for weighting a dendrimer initiated polymer", () => {
         },
       },
     ];
-    polymer.addGraphValues(values);
+    polymer.addGraphValues(values as RefResult[]);
     polymer.computePolymerWeights();
 
     const graph = polymer.graphToJSON();
