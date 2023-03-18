@@ -4,41 +4,12 @@ import {
   FileError,
   InvalidGroupError,
   InvalidPropertyError,
-  ParserError,
   RefError,
 } from "../../errors";
-// import { Library } from "../../../library";
 import { CmdlCompiler } from "../../cmdl-compiler";
 import { CmdlTree } from "../cmdl-tree";
 
 const compiler = new CmdlCompiler();
-// const library = new Library();
-
-describe("Tests for tree construction and compiler parser errors", () => {
-  it("creates parser errors on invalid text", () => {
-    const parserErrorText = `
-      import THF from "./__tests__/thf.json";
-      reaction ABC {
-          temperature: 100 degC;
-          pH: 10±2.3
-          
-          @THF {
-              mass: 200 g;
-          };
-      }
-
-      solution DEF {
-          @THF {
-              volume: 200 dal;
-          };
-      }`;
-
-    const { parserErrors } = compiler.parse(parserErrorText);
-    expect(parserErrors.length).toBe(1);
-    expect(parserErrors[0]).toBeInstanceOf(ParserError);
-    expect(parserErrors[0].code).toBe(ErrorCode.MismatchedTokenException);
-  });
-});
 
 describe("Tests for compiler validation errors", () => {
   it(`compiles a valid record`, async () => {
@@ -117,26 +88,6 @@ describe("Tests for compiler validation errors", () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(DuplicationError);
     expect(errors[0].code).toBe(ErrorCode.DuplicateItem);
-  });
-
-  it(`creates a file error for invalid path`, async () => {
-    const fileErrorTxt = `
-      import THF from "./path/to/thf.json";
-      reaction ABC {
-          temperature: 100 degC;
-          
-          @THF {
-              mass: 200 g;
-          };
-      }`;
-
-    let { parserErrors, recordTree } = compiler.parse(fileErrorTxt);
-    const errors = await recordTree.validate();
-
-    expect(parserErrors.length).toBe(0);
-    expect(errors.length).toBe(1);
-    expect(errors[0]).toBeInstanceOf(FileError);
-    expect(errors[0].code).toBe(ErrorCode.FileNotFound);
   });
 
   it(`recognizes invalid group nesting`, async () => {

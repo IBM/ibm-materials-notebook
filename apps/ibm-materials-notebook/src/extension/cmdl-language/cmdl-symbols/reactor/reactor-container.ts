@@ -13,7 +13,7 @@ export interface ReactorEdge {
 
 export interface CMDLReactorNode {
   name: string;
-  type: string;
+  type: "component";
   [PROPERTIES.DESCRIPTION]?: string;
   [PROPERTIES.INNER_DIAMETER]?: CMDLUnit;
   [PROPERTIES.OUTER_DIAMETER]?: CMDLUnit;
@@ -38,7 +38,7 @@ export interface SerializedReactorGroup {
 
 export interface CMDLReactor {
   name: string;
-  type: string;
+  type: "reactor";
   [PROPERTIES.NODES]: CMDLReactorNode[];
 }
 

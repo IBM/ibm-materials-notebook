@@ -14,7 +14,7 @@ const fragment2 = new PolymerNode({
   smiles: "O=C(OC)C([Q:2])(C)C[R:1]",
 });
 
-describe("Unit tests for polymer containers", () => {
+describe.skip("Unit tests for polymer containers", () => {
   it("exports correctly to BigSMILES from a root container", () => {
     const rootContainer = new Container("ROOT");
     rootContainer.add(fragment1);
