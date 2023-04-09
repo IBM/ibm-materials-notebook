@@ -1,13 +1,11 @@
-# IBM Materials Data Samples
+# Materials Data
 
-This repository contains example experimental data and generated materials in CMDL Notebooks used for the [initial publication](https://chemrxiv.org/engage/chemrxiv/article-details/63e668409da0bc6b33b1870c).
+[![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC_BY--NC--ND_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
 
-## Usage
+This folder contains data surrounding the training and output surrounding the polymer RT described in the [manuscript](https://chemrxiv.org/engage/chemrxiv/article-details/63e668409da0bc6b33b1870c)
 
-Each folder can be opened as an individual workspace in VS Code using the IBM Materials Notebook Extension.
+The [generated_polymers](./generated_polymers/) folder contains CMDL notebook files with all 2500 generated polymers described in the manuscript.
 
-## Descriptions
+The [polymerData.json](polymerData.json) file contains all of the experimental polymer data from historical datasets and their graph representation used to train the RT for polymer generation described in the manuscript.
 
-Below are brief descriptions on the data contained within each folder.
-
-### [Generated Polymers](./generated_polymers/)
+The [generated_blockcopolymer.csv](generated_blockcopolymer.csv) file contains the generated output from the RT model.
