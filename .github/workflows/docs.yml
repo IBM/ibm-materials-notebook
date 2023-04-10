@@ -54,6 +54,7 @@ jobs:
           path: apps/docs/docs/.vuepress/dist
 
 
+  # Deploy vuepress site
   deploy:
     environment:
       name: github-pages
@@ -64,19 +65,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
-
-    # runs-on: ubuntu-latest
-
-    # steps:
-    #   # please check out the docs of the workflow for more details
-    #   # @see https://github.com/crazy-max/ghaction-github-pages
-    #   - name: Deploy to GitHub Pages
-    #     uses: crazy-max/ghaction-github-pages@v3
-    #     with:
-    #       # deploy to gh-pages branch
-    #       target_branch: gh-pages
-    #       # deploy the default output dir of VuePress
-    #       build_dir: apps/docs/docs/.vuepress/dist
-    #     env:
-    #       # @see https://docs.github.com/en/actions/reference/authentication-in-a-workflow#about-the-github_token-secret
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
