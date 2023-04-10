@@ -1,12 +1,17 @@
 # Import Tutorial
 
 ::: warning
-The `import` API is under active development. It is stable enough to use in for documenting experimental work, but there will likely breaking changes in the not too distant future to streamline the usability of this feature.
+The local saving, sharing, and loading of named CMDL entities (small-molecule chemicals, polymers, reactions, reactors, etc.) is being migrated to take advantage VS Code extension and workspace storage capabilities. Many of the features described here may change in subsequent versions of the extension.
 :::
 
 ## Introduction
 
-Importing references is a more facile for documenting information flow in an notebook document. Currently, imports are centrally managed by the IBM materials Notebook extension which will look for the `/lib` and `/exp` directories in the workspace folder for JSON files. These files will be parsed into an in-memory database for referencing in experimental notebooks.
+Importing references is a more facile for documenting information flow in an notebook document. Currently, imports are centrally managed by the IBM materials Notebook extension which will look for the `/lib` workspace folder for JSON files. These files will be loaded into the [VS Code workspace storage](https://code.visualstudio.com/api/extension-capabilities/common-capabilities#data-storage)
+
+::: warning
+Currently, for the `import` feature to work properly, the folder containing the `/lib` folder and the CMDL notebooks should be opened as root folder. Accessing this folder from higher up in a directory
+may or may not load the entities properly into the workspace storage.
+:::
 
 Because of this, it is recommended that experimental notebook data is organized around specific projects or physical notebooks, such that these documents can re-use the similar chemical documents.
 
@@ -14,11 +19,11 @@ Here we will demonstrate the use of the `import` keyword in the context of a cha
 
 ## Setup
 
-To demonstrate the `import` feature of IBM Materials Notebooks, make a copy of the batch tutorial notebook and save it as `batch_exp_import.cmdnb` in the same workspace used for the [batch experiment tutorial](tutorial.md). Or, you may copy the completed notebook provided in the `/examples/batch_tutorial` directory on the [IBM Materials Notebook GitHub repository](https://github.com/IBM/ibm-materials-notebook).
+To demonstrate the `import` feature of IBM Materials Notebooks, make a copy of the batch tutorial notebook and save it as `batch_exp_import.cmdnb` in the same workspace used for the [batch experiment tutorial](tutorial.md). Or, you may copy the completed notebook provided in the `/examples/batch_tutorial` directory on the [IBM Materials Notebook GitHub repository](https://github.com/IBM/ibm-materials-notebook/tree/main/apps/ibm-materials-notebook).
 
-Finally, we will need ensure to provide the workspace with JSON data of chemicals to import. These files can be copied from the `/lib` and `/exp` directory in the the `/examples/batch_tutorial` on the [IBM Materials Notebook GitHub repository](https://github.com/IBM/ibm-materials-notebook). Once these files have been copied over, close and reload the workspace folder, which will allow the extension to load the new data into the in-memory database.
+Finally, we will need ensure to provide the workspace with JSON data of chemicals to import. These files can be copied from the `/lib` directory in the [batch tutorial](https://github.com/IBM/ibm-materials-notebook/tree/main/apps/docs/examples/batch_tutorial). Once these files have been copied over, close and reload the workspace folder, which will allow the extension to load the new data into the in-memory database.
 
-**Note**: If you have completed and ran successfully the notebook from the `batch tutorial` then the needed file from the `/exp` directory should already be present.
+**Note**: If you have completed and ran successfully the notebook from the `batch tutorial` then the needed file from the `/lib` directory should already be present.
 
 ## Converting the Batch Experiment to use Imports
 
@@ -214,7 +219,12 @@ sample Test-II-123A {
 }
 ```
 
-Running the cells and saving should generate a new record in the `/output` and `/exp` directories.
+Running the cells and saving should generate a new record in the `/lib` directories.
+
+::: warning
+Currently the extension automatically exports entities and records as JSON files if no errors are present. This will likely be updated in future versions to provide users more fine-grained control as to how
+records and entities are handled.
+:::
 
 ### Next Steps
 

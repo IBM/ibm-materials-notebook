@@ -8,9 +8,7 @@ IBM Materials Notebook can be installed as a VS Code extension from the [extensi
 
 ```bash
 └─ workspace
-   ├─ exp # <- outputs from experiment record
    └─ lib # <- library of chemcials, polymers, reactors, etc.
-   └─ output # <- output of compiled experimental record
 ```
 
 The path and name for each of these folders can be changed in the VS Code extension settings. Currently, these folders are not automatically created for a experiment workspace and must be created by the user. Workspace templates and automated workspace setup will be part of forthcoming updates.
