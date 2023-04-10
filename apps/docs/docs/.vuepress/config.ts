@@ -27,6 +27,7 @@ export default defineUserConfig({
       { text: "Home", link: "/" },
       { text: "Guide", link: "/guide" },
       { text: "CMDL", link: "/cmdl" },
+      { text: "GitHub", link: "https://github.com/IBM/ibm-materials-notebook" },
     ],
     sidebar: {
       "/guide": [
@@ -38,6 +39,7 @@ export default defineUserConfig({
             "/guide/tutorial.md",
             "/guide/import_tutorial.md",
             "/guide/flow_exp_tutorial.md",
+            "/guide/variable_tutorial.md",
           ],
         },
       ],
