@@ -49,7 +49,7 @@ jobs:
         run: npm run docs:build
       
       - name: Upload artifact
-        run: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v1
         with:
           path: apps/docs/docs/.vuepress/dist
 
