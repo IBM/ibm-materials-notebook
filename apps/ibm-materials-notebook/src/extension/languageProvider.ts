@@ -22,11 +22,11 @@ class CompletionItemProvider implements vscode.CompletionItemProvider {
     vscode.CompletionItem[] | vscode.CompletionList<vscode.CompletionItem>
   > {
     //Supress completions if line starts with keyword import
-    const lineStart = new vscode.Position(position.line, 0);
-    const importRange = document.getWordRangeAtPosition(lineStart, /import/);
+    const importRegex = new RegExp(/^import/);
+    const importRange = document.getWordRangeAtPosition(position);
     const importWord = document.getText(importRange);
 
-    if (importWord) {
+    if (importRegex.test(importWord)) {
       return;
     }
 
