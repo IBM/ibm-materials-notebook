@@ -351,7 +351,7 @@ export function registerCommands(repo: Repository): vscode.Disposable {
               `${folderPath}/generated_output_${start}-${stop}.cmdnb`,
               content
             );
-            start = stop;
+            start += 50;
             stop += 50;
           }
         });

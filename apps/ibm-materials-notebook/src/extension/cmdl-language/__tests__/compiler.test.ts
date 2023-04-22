@@ -33,10 +33,13 @@ describe("Tests for compilation and symbol table construction", () => {
         molecular_weight: 80.1 g/mol;
         density: 0.878 g/ml;
         state: "liquid";
+        inchi: "1S/C4H8O/c1-2-4-5-3-1/h1-4H2";
+        inchi_key: "WYURNTSHIVDZCO-UHFFFAOYSA-N";
       }`;
     const { parserErrors, symbolErrors, semanticErrors, globalTable } =
       await evalutateText(refGroup);
 
+    console.log(JSON.stringify(semanticErrors, null, 2));
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
     expect(symbolErrors.length).toBe(0);

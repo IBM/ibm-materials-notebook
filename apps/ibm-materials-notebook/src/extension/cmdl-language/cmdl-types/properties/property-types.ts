@@ -86,6 +86,7 @@ export enum PROPERTIES {
   STATE = "state",
 
   //text
+  ALIASES = "aliases",
   NAME = "name",
   TITLE = "title",
   OWNER = "owner",
