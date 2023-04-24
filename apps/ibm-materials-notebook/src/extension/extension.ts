@@ -8,7 +8,7 @@ import { Repository } from "./respository";
 import { Library } from "./library";
 import { NOTEBOOK } from "./languageProvider";
 import { logger } from "../logger";
-import { registerCommands } from "./commands";
+import { registerCommands } from "./commandProvider";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed

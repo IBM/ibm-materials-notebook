@@ -102,14 +102,16 @@ export class Library {
     const basePath = vscode.workspace.workspaceFolders
       ? vscode.workspace.workspaceFolders[0].uri.path
       : __dirname;
-    const resolvedPath = path.join(basePath, "lib");
+    const resolvedPath = path.join(basePath, this.libPath);
 
     await this.readLibDir(resolvedPath, "workspace");
   }
 
   /**
    * Reads file directory and parses all files into storage for importing items
+   * @todo factor out global storage updates into separate function
    * @param path string
+   * @param level "workspace | extension"
    */
   private async readLibDir(
     path: string,
