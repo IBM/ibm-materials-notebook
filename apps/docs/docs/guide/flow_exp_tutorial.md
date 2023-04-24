@@ -8,7 +8,7 @@ In following tutorial we'll go through how to setup and execute a flow experimen
 
 ## Experiment Setup
 
-Setup a new workspace and copy the JSON files from the `/examples/flow_tutorial/lib` into your own `/lib` directory. Once complete, create a new notebook entitled `flow_tutorial.cmdnb`.
+Setup a new workspace and copy the JSON files from the [`/examples/flow_tutorial/lib`](https://github.com/IBM/ibm-materials-notebook/tree/main/apps/docs/examples/flow_exp_tutorial) into your own `/lib` directory. Once complete, create a new notebook entitled `flow_tutorial.cmdnb`.
 
 In a new cell in the notebook add the following imports, metadata, and polymer reference definition:
 

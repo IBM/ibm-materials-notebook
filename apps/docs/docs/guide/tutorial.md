@@ -13,9 +13,7 @@ Once everything is setup, your home directory should look like the following:
 
 ```bash
 └─ my_experiment_workspace # <- root workspace folder directory
-   ├─ exp # <- folder for common experiment outputs
    └─ lib # <- folder for common workspace imports such as chemicals, polymers, reactors, etc.
-   └─ output # <- output of compiled experimental records
 ```
 
 For the initial tutorial, the exp and lib folders will largely not be used to provide imports as everything will be defined within a single notebook. Later tutorials will cover the importing of different references and the finer details of workspace setup.
@@ -28,9 +26,7 @@ Your root directory should now have a new file:
 
 ```bash
 └─ my_experiment_workspace
-   ├─ exp
    └─ lib
-   └─ output
    |
    └─ batch_experiment.cmbnb # <- notebook file for tutorial
 ```
@@ -585,7 +581,7 @@ For this tutorial we can add a [markdown cell](README.md#adding-a-markdown-cell)
 
 > In a nitrogen filled glovebox, a 20 ml scintillation vial was charged with L-lactide, mPEG-OH, THF (1.8 ml), and a magnetic stir-bar. The mixture was stirred until fully homogenous, approximately 5 min. While stirring vigorously, a solution of KOtBu in THF (0.2 ml) was added. After 5 s, an aliquout was removed and quenched with a solution of excess benzoic acid in THF and analyzed by 1H NMR and GPC. After 10 s, the reaction mixture was quenched by the addition of a solution of benzoic acid in THF. A sample of the crude reaction mixture was analyzed by 1H NMR and GPC and the remainder of the material was purified by precipitation from MeOH. The solids were collected via centrifugation and decanting of the supernatent. This process of precipation and centrifugation was repeated a total of three times. The isolated material was dried in a vacuum oven at 40 °C until a constant mass was achieved.
 
-The advantage of using markdown is the abilitiy to link images and urls within the text to enrich the content and information shared. As mentioned, above future versions of CMDL will aim to leverage this capapbilites to enhance experimental documentation. However, currently all information entered into markdown cells _will not_ be exported into experimental records. For examples of linking images and urls within the notebook document, see the corresponding notebook for this tutorial provided in the `examples/batch_experiment` folder.
+The advantage of using markdown is the abilitiy to link images and urls within the text to enrich the content and information shared. As mentioned, above future versions of CMDL will aim to leverage this capapbilites to enhance experimental documentation. However, currently all information entered into markdown cells _will not_ be exported into experimental records. For examples of linking images and urls within the notebook document, see the corresponding notebook for this tutorial provided in the [`examples/batch_experiment` folder](https://github.com/IBM/ibm-materials-notebook/tree/main/apps/docs/examples).
 
 ## Experiment Metadata
 
@@ -620,9 +616,13 @@ Details surrounding the nature of these fields can be found in the CMDL referenc
 
 Once the metadata is set, saving the notebook itself should export the experimental record to a JSON format. The fields and arrangement of JSON export are determined by the default CMDL schema. Future versions of CMDL and the IBM Materials Notebook will enable users to customize the schema export for their records. Additional features allowing direct export to local or remote databases are also planned.
 
-The exported recored will be written to the `/output` folder. Any changes made to the notebook document that are then saved (assuming the metadata is defined and there are no errors) will overwrite the corresponding JSON export in the `/output` folder.
+The exported recored will be written to the `/lib` folder. Any changes made to the notebook document that are then saved (assuming the metadata is defined and there are no errors) will overwrite the corresponding JSON export in the `/lib` folder.
 
-Saving the notebook document will also export any products of the reaction to the `/exp` folder. This enables them to be referenced by other experiments within the same workspace and will be discussed in the [import tutorial](import_tutorial.md).
+Saving the notebook document will also export any products of the reaction to the `/lib` folder. This enables them to be referenced by other experiments within the same workspace and will be discussed in the [import tutorial](import_tutorial.md).
+
+:::warning
+The local saving, sharing, and loading of named CMDL entities (small-molecule chemicals, polymers, reactions, reactors, etc.) is being migrated to take advantage VS Code extension and workspace storage capabilities. Many of the features described here may change in subsequent versions of the extension.
+:::
 
 ## Next Steps
 

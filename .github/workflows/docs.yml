@@ -7,10 +7,15 @@ on:
   # trigger deployment manually
   workflow_dispatch:
 
-jobs:
-  docs:
-    runs-on: ubuntu-latest
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
+jobs:
+  #build vuepress site job
+  build:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -42,16 +47,21 @@ jobs:
       # run build script
       - name: Build VuePress site
         run: npm run docs:build
-
-      # please check out the docs of the workflow for more details
-      # @see https://github.com/crazy-max/ghaction-github-pages
-      - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v3
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          # deploy to gh-pages branch
-          target_branch: gh-pages
-          # deploy the default output dir of VuePress
-          build_dir: apps/docs/docs/.vuepress/dist
-        env:
-          # @see https://docs.github.com/en/actions/reference/authentication-in-a-workflow#about-the-github_token-secret
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: apps/docs/docs/.vuepress/dist
+
+
+  # Deploy vuepress site
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

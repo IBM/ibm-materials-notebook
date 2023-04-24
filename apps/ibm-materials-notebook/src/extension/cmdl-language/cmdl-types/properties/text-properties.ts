@@ -8,6 +8,14 @@ const name: IProperty = {
   aliases: [],
 };
 
+const aliases: IProperty = {
+  description: "aliases for a chemical or material",
+  detail: "aliases",
+  name: PROPERTIES.ALIASES,
+  type: PropertyTypes.CATEGORICAL_MULTI,
+  aliases: [],
+};
+
 const description: IProperty = {
   description: "short description of item",
   detail: "description",
@@ -91,7 +99,7 @@ const inchi: IProperty = {
 const inchiKey: IProperty = {
   description: "InChi key",
   detail: "InChi Key",
-  name: PROPERTIES.INCHI,
+  name: PROPERTIES.INCHI_KEY,
   type: PropertyTypes.TEXT,
   aliases: [],
 };
@@ -145,4 +153,5 @@ export const textProperties = [
   recordId,
   limiting,
   refId,
+  aliases,
 ];
