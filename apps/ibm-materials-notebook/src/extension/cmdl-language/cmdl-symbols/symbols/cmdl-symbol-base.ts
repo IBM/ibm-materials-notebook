@@ -56,15 +56,22 @@ export abstract class BaseSymbol {
  */
 export class DeclarationSymbol extends BaseSymbol {
   aliasedName: string | null = null;
+  imported: boolean = false;
 
   constructor(
     config: SymbolConfig,
     public modelType: ModelType,
-    aliasedName?: string
+    aliasedName?: string,
+    imported?: boolean
   ) {
     super(config);
+
     if (aliasedName) {
       this.aliasedName = aliasedName;
+    }
+
+    if (imported) {
+      this.imported = true;
     }
   }
 

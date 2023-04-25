@@ -324,7 +324,8 @@ export class SymbolTableBuilder implements AstVisitor {
         def: this.uri,
       },
       model,
-      importData.alias
+      importData.alias,
+      true
     );
 
     this.addSymbol(declSymbol);
@@ -363,7 +364,8 @@ export class SymbolTableBuilder implements AstVisitor {
         def: this.uri,
       },
       model,
-      importData.alias
+      importData.alias,
+      true
     );
 
     this.addSymbol(declSymbol);
@@ -392,7 +394,8 @@ export class SymbolTableBuilder implements AstVisitor {
         def: this.uri,
       },
       model,
-      importData.alias
+      importData.alias,
+      true
     );
 
     this.addSymbol(declSymbol);

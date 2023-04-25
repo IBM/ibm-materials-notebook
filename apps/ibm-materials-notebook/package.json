@@ -23,23 +23,31 @@
     "commands": [
       {
         "command": "ibm-materials-notebook.new",
-        "title": "New Materials Notebook"
+        "title": "CMDL: New Materials Notebook"
       },
       {
         "command": "ibm-materials-notebook.exportWorkspace",
-        "title": "Export Current Workspace"
+        "title": "CMDL: Export Current Workspace"
       },
       {
         "command": "ibm-materials-notebook.toCSV",
-        "title": "Export Notebook Variables to CSV"
+        "title": "CMDL: Export Notebook Variables to CSV"
       },
       {
         "command": "ibm-materials-notebook.loadCSV",
-        "title": "Create New Materials Notebooks From CSV"
+        "title": "CMDL: Create New Materials Notebooks From CSV"
       },
       {
         "command": "ibm-materials-notebook.parseGeneratedPolymers",
-        "title": "Create Notebooks From Generated Polymers"
+        "title": "CMDL: Create Notebooks From Generated Polymers"
+      },
+      {
+        "command": "ibm-materials-notebook.addToGlobalStorage",
+        "title": "CMDL: Add Repository to Global Extension Storage"
+      },
+      {
+        "command": "ibm-materials-notebook.exportEntities",
+        "title": "CMDL: Export Entities from Current Active Notebook"
       }
     ],
     "configuration": {

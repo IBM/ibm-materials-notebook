@@ -18,7 +18,7 @@ export async function activate(context: vscode.ExtensionContext) {
     .get("library") as string;
 
   const library = new Library(context, wsLibPath);
-  await library.initialize();
+  await library.initializeWorkspaceStorage();
 
   const repository = new Repository(wsLibPath, library);
   logger.info("IBM Materials notebook extension is activated");
@@ -35,7 +35,8 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(registerLanguageProvider(repository, library));
-  context.subscriptions.push(registerCommands(repository));
+  //TODO: add library to register commands
+  context.subscriptions.push(registerCommands(repository, library));
 }
 
 // this method is called when your extension is deactivated

@@ -5,12 +5,12 @@ import {
   exportToCsv,
   parseVariableCSV,
   parseGeneratedPolymers,
+  addToGlobalStorage,
+  exportCurrentNotebookEntities,
 } from "./commands";
 import { Repository } from "./respository";
+import { Library } from "./library";
 
-//TODO: refactor command functions to multiple files for legibility
-//TODO: add command to setup/inspect global storage
-//TODO: add command to export single record
 //TODO: create command to automatically generate setup workspace
 
 /**
@@ -18,7 +18,10 @@ import { Repository } from "./respository";
  * @param repo Repository
  * @returns vscode.Disposable
  */
-export function registerCommands(repo: Repository): vscode.Disposable {
+export function registerCommands(
+  repo: Repository,
+  lib: Library
+): vscode.Disposable {
   const subscriptions: vscode.Disposable[] = [];
 
   subscriptions.push(
@@ -31,18 +34,19 @@ export function registerCommands(repo: Repository): vscode.Disposable {
   subscriptions.push(
     vscode.commands.registerCommand(
       "ibm-materials-notebook.exportWorkspace",
-      exportCurrentWorkspce
+      () => exportCurrentWorkspce(repo)
     )
   );
 
   subscriptions.push(
-    vscode.commands.registerCommand("ibm-materials-notebook.toCSV", exportToCsv)
+    vscode.commands.registerCommand("ibm-materials-notebook.toCSV", () =>
+      exportToCsv(repo)
+    )
   );
 
   subscriptions.push(
-    vscode.commands.registerCommand(
-      "ibm-materials-notebook.loadCSV",
-      parseVariableCSV
+    vscode.commands.registerCommand("ibm-materials-notebook.loadCSV", () =>
+      parseVariableCSV(repo)
     )
   );
 
@@ -50,6 +54,20 @@ export function registerCommands(repo: Repository): vscode.Disposable {
     vscode.commands.registerCommand(
       "ibm-materials-notebook.parseGeneratedPolymers",
       parseGeneratedPolymers
+    )
+  );
+
+  subscriptions.push(
+    vscode.commands.registerCommand(
+      "ibm-materials-notebook.addToGlobalStorage",
+      () => addToGlobalStorage(lib)
+    )
+  );
+
+  subscriptions.push(
+    vscode.commands.registerCommand(
+      "ibm-materials-notebook.exportEntities",
+      () => exportCurrentNotebookEntities(repo)
     )
   );
 

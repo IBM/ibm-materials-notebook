@@ -7,7 +7,7 @@ import {
   ModelVisitor,
   SymbolTableBuilder,
 } from "../../cmdl-symbols";
-import { TAGS } from "../../cmdl-types";
+import { PropertyTypes, TAGS } from "../../cmdl-types";
 
 /**
  * Handles list properties in CMDL record trees
@@ -50,15 +50,19 @@ export class ListProperty extends Property {
       return;
     }
 
-    if (!this.propertyType.categorical_values) {
-      msg = `${this.name} is not a list property`;
+    if (!this.valueToken) {
+      msg = `${this.name} does not have a value token`;
       err = new InvalidPropertyError(msg, this.nameToken);
       this.errors.push(err);
       return;
     }
 
-    if (!this.valueToken) {
-      msg = `${this.name} does not have a value token`;
+    if (this.propertyType.type === PropertyTypes.LIST) {
+      return;
+    }
+
+    if (!this.propertyType.categorical_values) {
+      msg = `${this.name} is not a valid categorical property`;
       err = new InvalidPropertyError(msg, this.nameToken);
       this.errors.push(err);
       return;

@@ -12,7 +12,7 @@ const aliases: IProperty = {
   description: "aliases for a chemical or material",
   detail: "aliases",
   name: PROPERTIES.ALIASES,
-  type: PropertyTypes.CATEGORICAL_MULTI,
+  type: PropertyTypes.LIST,
   aliases: [],
 };
 

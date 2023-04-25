@@ -182,6 +182,18 @@ export class SymbolTable {
   }
 
   /**
+   * Retrieves all DeclarationSymbols from notebook. Excludes those imported from local storage
+   * @returns BaseSymbol[]
+   */
+  public getDeclaredEntities(): BaseSymbol[] {
+    return [...this._symbols.values()].filter(
+      (el) =>
+        el.type === SymbolType.DECLARATION &&
+        !(el as DeclarationSymbol).imported
+    );
+  }
+
+  /**
    * Retrieves array of symbol members of nested symbol table
    * @todo - improve description
    * @param path string[]

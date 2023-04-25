@@ -71,15 +71,27 @@ class ImportProvder implements vscode.CompletionItemProvider {
     const completionItems: vscode.CompletionItem[] = matchingItems.map(
       (item) => {
         const textSnippet = new vscode.SnippetString();
-        textSnippet.appendText(`${item.name} from "cmdl.lib";`);
+        if (item[1] === "lib") {
+          textSnippet.appendText(`${item[0].name} from "cmdl.lib";`);
 
-        return {
-          label: item.name,
-          insertText: textSnippet,
-          kind: vscode.CompletionItemKind.Constant,
-          documentation: "chemical documentation",
-          detail: "chemical detail",
-        };
+          return {
+            label: item[0].name,
+            insertText: textSnippet,
+            kind: vscode.CompletionItemKind.Constant,
+            documentation: "entity documentation",
+            detail: "entity detail",
+          };
+        } else {
+          textSnippet.appendText(`${item[0].name} from "cmdl.global";`);
+
+          return {
+            label: item[0].name,
+            insertText: textSnippet,
+            kind: vscode.CompletionItemKind.Interface,
+            documentation: "entity documentation",
+            detail: "entity detail",
+          };
+        }
       }
     );
 

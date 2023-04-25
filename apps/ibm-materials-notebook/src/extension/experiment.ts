@@ -202,6 +202,20 @@ export class Experiment {
   }
 
   /**
+   * Exports all declared entities, excluding imported ones, from the current notebook
+   */
+  public exportEntities() {
+    const entitySymbols = this._symbolTable.getDeclaredEntities();
+    const entityOutput = [];
+
+    for (const symbol of entitySymbols) {
+      const entity = this._globalAR.getValue(symbol.name);
+      entityOutput.push(entity);
+    }
+    return entityOutput;
+  }
+
+  /**
    * Method to extract template variables from experiment and format for writing to CSV file
    */
   public toCSV(): string {

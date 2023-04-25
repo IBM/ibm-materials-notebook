@@ -9,6 +9,8 @@ interface BaseReference {
   type: ModelType;
 }
 
+type ReferenceSource = [BaseReference, "lib" | "global"];
+
 /**
  * Interface with VS Code Memento class for local storage
  */
@@ -98,30 +100,41 @@ export class Library {
    * workspace storage.
    * @TODO ensure clearing of stale values
    */
-  public async initialize(): Promise<void> {
+  public async initializeWorkspaceStorage(): Promise<void> {
     const basePath = vscode.workspace.workspaceFolders
       ? vscode.workspace.workspaceFolders[0].uri.path
       : __dirname;
     const resolvedPath = path.join(basePath, this.libPath);
 
-    await this.readLibDir(resolvedPath, "workspace");
+    await this.readLibDir(resolvedPath, this.workspaceStorage);
+  }
+
+  /**
+   * Reads JSON values into global storage from target repository
+   * @param path string
+   */
+  public async initializeGlobalStorage(path: string): Promise<void> {
+    await this.readLibDir(path, this.globalStorage);
   }
 
   /**
    * Reads file directory and parses all files into storage for importing items
-   * @todo factor out global storage updates into separate function
+   * Expects entities to be encoded into JSON files
    * @param path string
-   * @param level "workspace | extension"
+   * @param storageService LocalStorageService
    */
   private async readLibDir(
     path: string,
-    level: "workspace" | "extension"
+    storageService: LocalStorageService
   ): Promise<void> {
     logger.info(`Initializing library on path ${path}`);
     fs.readdir(path, async (err, files) => {
       if (err) {
         logger.error(
           `Encountered an error during library initialization for path ${path}: ${err.message}`
+        );
+        vscode.window.showErrorMessage(
+          `Encountered an error during library initialization for path ${path}`
         );
       } else {
         for (const file of files) {
@@ -131,11 +144,7 @@ export class Library {
             });
             const contents = JSON.parse(readfile);
             for (const item of contents) {
-              if (level === "extension") {
-                this.globalStorage.setValue(item.name, item);
-              } else {
-                this.workspaceStorage.setValue(item.name, item);
-              }
+              storageService.setValue(item.name, item);
             }
           } catch (error) {
             logger.warn(`Unable to initialize library contents from ${file}`);
@@ -182,18 +191,17 @@ export class Library {
   /**
    * Searches library based on string query
    * @param query string
-   * @returns BaseReference[]
+   * @returns ReferenceSource[]
    */
-  public search(query: string): BaseReference[] {
-    logger.silly(`searching storage for ${query}`);
+  public search(query: string): ReferenceSource[] {
     const regex = new RegExp(query, "i");
-    let results = [];
+    let results: ReferenceSource[] = [];
 
     for (const key of this.workspaceStorage.getKeys()) {
       let containsQuery = regex.test(key);
       let item = this.workspaceStorage.getValue<BaseReference>(key);
       if (containsQuery && item) {
-        results.push(item);
+        results.push([item, "lib"]);
       }
     }
 
@@ -201,13 +209,9 @@ export class Library {
       let containsQuery = regex.test(key);
       let item = this.globalStorage.getValue<BaseReference>(key);
       if (containsQuery && item) {
-        results.push(item);
+        results.push([item, "global"]);
       }
     }
-
-    logger.debug(
-      `search results: \n${results.map((el) => el.name).join("\n- ")}`
-    );
 
     return results;
   }

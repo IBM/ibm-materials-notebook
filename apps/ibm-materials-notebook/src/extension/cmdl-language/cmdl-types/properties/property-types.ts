@@ -3,6 +3,7 @@ import { TAGS } from "../tags";
 export enum PropertyTypes {
   CATEGORICAL_SINGLE = "categorical_single",
   CATEGORICAL_MULTI = "categorical_multi",
+  LIST = "list",
   NUMERICAL = "numerical",
   NUMERICAL_UNIT = "numerical_unit",
   TEXT = "text",

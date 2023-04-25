@@ -40,7 +40,7 @@ export class ImportOp implements RecordNode {
     let msg: string;
     let err: BaseError;
 
-    if (this.source === "cmdl.lib") {
+    if (this.source === "cmdl.lib" || this.source === "cmdl.global") {
       if (!library) {
         throw new Error(`Library unavailable for importing values!`);
       }
