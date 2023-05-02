@@ -169,6 +169,17 @@ export class Experiment {
   }
 
   /**
+   * Method to execute all cells in notebook
+   */
+  public async executeAll(): Promise<void> {
+    const cellUris = this._cells.keys();
+
+    for (const uri of cellUris) {
+      this.executeCell(uri);
+    }
+  }
+
+  /**
    * Creates model visitor and traverses cell record tree to evaluate defined models.
    * Saves model output to global AR.
    * @TODO Optimize to avoid unecessary recomputation if nothing has changed

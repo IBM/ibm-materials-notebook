@@ -15,7 +15,7 @@ export interface VariableDict {
  * @param delay number ms to sleep process by
  * @returns Promise<unknown>
  */
-const sleep = (delay: number): Promise<unknown> =>
+export const sleep = (delay: number): Promise<unknown> =>
   new Promise((resolve) => setTimeout(resolve, delay));
 
 /**

@@ -48,6 +48,10 @@
       {
         "command": "ibm-materials-notebook.exportEntities",
         "title": "CMDL: Export Entities from Current Active Notebook"
+      },
+      {
+        "command": "ibm-materials-notebook.exportWorkspaceEntities",
+        "title": "CMDL: Export Entities from Current Workspace"
       }
     ],
     "configuration": {

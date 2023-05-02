@@ -236,6 +236,7 @@ export class ModelARManager {
     const value = this.searchRecords<T>(key);
 
     if (!value) {
+      logger.error(`Unable to locate ${key}`);
       throw new Error(`Unable to locate ${key}`);
     }
 

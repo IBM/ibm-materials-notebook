@@ -7,6 +7,7 @@ import {
   parseGeneratedPolymers,
   addToGlobalStorage,
   exportCurrentNotebookEntities,
+  exportCurrentWorkspaceEntities,
 } from "./commands";
 import { Repository } from "./respository";
 import { Library } from "./library";
@@ -68,6 +69,13 @@ export function registerCommands(
     vscode.commands.registerCommand(
       "ibm-materials-notebook.exportEntities",
       () => exportCurrentNotebookEntities(repo)
+    )
+  );
+
+  subscriptions.push(
+    vscode.commands.registerCommand(
+      "ibm-materials-notebook.exportWorkspaceEntities",
+      () => exportCurrentWorkspaceEntities(repo)
     )
   );
 
