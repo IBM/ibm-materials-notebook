@@ -357,6 +357,7 @@ export class PolymerTree {
 
   /**
    * Method to convert the polymer tree to the BigSMILES string
+   * @deprecated
    * @returns string
    */
   public toBigSMILES(): string {

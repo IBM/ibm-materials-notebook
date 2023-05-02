@@ -130,6 +130,7 @@ export class Container implements PolymerComponent {
   /**
    * Exports polymer container to BigSMILES format.
    * This method not viable for all polymer types
+   * @deprecated
    * @returns string
    */
   public exportToBigSMILES(): string {

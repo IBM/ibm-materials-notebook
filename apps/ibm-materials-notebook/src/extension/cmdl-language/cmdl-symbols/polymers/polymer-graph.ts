@@ -130,103 +130,22 @@ export class PolymerGraph {
   }
 
   /**
-   * Serializes graph to string representation
-   * @returns string
-   */
-  public toString(): string {
-    let output = "";
-    let queue = [...this.adjacencyList.keys()];
-    let key: string | undefined;
-
-    while (queue.length) {
-      key = queue.shift();
-
-      if (!key) {
-        break;
-      }
-
-      let node = this.nodes.get(key);
-      let adjList = this.adjacencyList.get(key);
-
-      if (!node || !adjList) {
-        throw new Error(`unable to find data for node ${key}`);
-      }
-
-      let nodeString = `${node.toString()}`;
-
-      for (const edge of adjList) {
-        nodeString = `${nodeString}${edge.toString()}`;
-      }
-      output = `${output}${nodeString};`;
-    }
-    return output;
-  }
-
-  /**
    * Serializes graph to string but, masks absolute paths for conciseness
-   * @TODO remove SMILES conflicting characters
    * @returns string
    */
-  public toMaskedString(): string {
+  public toString() {
     let output = "";
     let queue = [...this.adjacencyList.keys()];
     let key: string | undefined;
 
-    const masks = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
-    let maskIndex = 0;
+    let groupNumber = 1;
 
     const maskMap = new Map<string, string>();
 
     for (const node of this.nodes.keys()) {
-      const nodeMask = masks[maskIndex];
+      const nodeMask = `[@${groupNumber}]`;
       maskMap.set(node, nodeMask);
-      maskIndex++;
-    }
-
-    while (queue.length) {
-      key = queue.shift();
-
-      if (!key) {
-        break;
-      }
-
-      let node = this.nodes.get(key);
-      let adjList = this.adjacencyList.get(key);
-      let nodeMask = maskMap.get(key);
-
-      if (!node || !adjList || !nodeMask) {
-        throw new Error(`unable to find data for node ${key}`);
-      }
-
-      let nodeString = `${node.toMaskedString(nodeMask)}`;
-
-      for (const edge of adjList) {
-        nodeString = `${nodeString}${edge.toMaskedString(maskMap)}`;
-      }
-      output = `${output}<${nodeString}>`;
-    }
-    return output;
-  }
-
-  /**
-   * Serializes graph to string but, masks absolute paths for conciseness
-   * @TODO remove SMILES conflicting characters
-   * @returns string
-   */
-  public toCompressedString() {
-    let output = "";
-    let queue = [...this.adjacencyList.keys()];
-    let key: string | undefined;
-
-    const masks = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
-    let maskIndex = 0;
-
-    const maskMap = new Map<string, string>();
-
-    for (const node of this.nodes.keys()) {
-      const nodeMask = masks[maskIndex];
-      maskMap.set(node, nodeMask);
-      maskIndex++;
+      groupNumber++;
     }
 
     while (queue.length) {
@@ -247,7 +166,7 @@ export class PolymerGraph {
       let nodeString = `${node.toCompressedString(nodeMask)}`;
 
       for (const edge of adjList) {
-        nodeString = `${nodeString}|${edge.toCompressedString(maskMap)}`;
+        nodeString = `${nodeString};${edge.toCompressedString(maskMap)}`;
       }
       output = `${output}<${nodeString}>`;
     }

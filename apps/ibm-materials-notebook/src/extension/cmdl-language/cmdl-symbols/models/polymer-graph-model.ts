@@ -68,8 +68,6 @@ export class PolymerGraphModel extends BaseModel {
         graph: this.polymerContainer.graphToJSON(),
         tree: this.polymerContainer.treeToJSON(),
         str: this.polymerContainer.graphToString(),
-        maskedStr: this.polymerContainer.graphToMaskedString(),
-        compressedStr: this.polymerContainer.graphToCompressedString(),
       };
 
       globalAR.setValue(this.name, {

@@ -82,38 +82,13 @@ export class PolymerNode implements PolymerComponent {
   }
 
   /**
-   * Serializes to string format for export
-   * @returns string
-   */
-  public toString(): string {
-    const smiles = this.sanitizeSmiles();
-    let base = `<name>${this.name}<mw>${this.mw.toNumber()}<smiles>${smiles}`;
-
-    for (const [key, value] of this.properties.entries()) {
-      base = `${base}<${key}>${value?.value || value}`;
-    }
-
-    return base;
-  }
-
-  /**
-   * Serializes to more concise format by masking absolute paths
-   * @param mask string
-   * @returns string
-   */
-  public toMaskedString(mask: string): string {
-    const smiles = this.sanitizeSmiles();
-    return `<name>${mask}<mw>${this.mw.toNumber()}<smiles>${smiles}`;
-  }
-
-  /**
    * Serializes polymer node into a more compressed string format
    * @param mask string
    * @returns string
    */
   public toCompressedString(mask: string): string {
     const smiles = this.sanitizeSmiles();
-    return `${mask}|${smiles}`;
+    return `${mask};${smiles}`;
   }
 
   /**
@@ -138,10 +113,11 @@ export class PolymerNode implements PolymerComponent {
 
   /**
    * Exports node smiles string to BigSMILES format
+   * @deprecated
    * @TODO update method as per edge cases
    * @returns string
    */
-  exportToBigSMILES(): string {
+  public exportToBigSMILES(): string {
     if (!this.smiles.length) {
       return "";
     }

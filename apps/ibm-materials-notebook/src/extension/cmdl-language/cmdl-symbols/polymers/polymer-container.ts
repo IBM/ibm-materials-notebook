@@ -113,22 +113,6 @@ export class PolymerContainer {
   }
 
   /**
-   * Method to convert polymer graph to a masked string
-   * @returns string
-   */
-  public graphToMaskedString(): string {
-    return this.graph.toMaskedString();
-  }
-
-  /**
-   * Method to convert polymer graph to a masked string
-   * @returns string
-   */
-  public graphToCompressedString(): string {
-    return this.graph.toCompressedString();
-  }
-
-  /**
    * Method to convert polymer graph to an JSON object
    * @returns object
    */
@@ -211,6 +195,7 @@ export class PolymerContainer {
   /**
    * Method to convert polymer graph into BigSmiles
    * @TODO improve scope of BigSMILES conversion
+   * @deprecated
    * @returns string
    */
   public treeToBigSmiles() {
