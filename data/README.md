@@ -1,6 +1,6 @@
 # Materials Data
 
-[![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC_BY--NC--ND_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 This folder contains data surrounding the training and output surrounding the polymer RT described in the [manuscript](https://chemrxiv.org/engage/chemrxiv/article-details/63e668409da0bc6b33b1870c)
 
