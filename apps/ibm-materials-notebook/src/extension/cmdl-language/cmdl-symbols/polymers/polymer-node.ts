@@ -154,7 +154,7 @@ export class PolymerNode implements PolymerComponent {
    * Serialized the polymer node to a string for printing to the console
    * @returns string
    */
-  print(): string {
+  public print(): string {
     return `entity: ${this.name}, mw: ${this.mw.toNumber()}, smiles: ${
       this.smiles
     };\n`;
@@ -164,5 +164,5 @@ export class PolymerNode implements PolymerComponent {
    * Accepts a polymer tree visitor for polymer weight computations
    * @param visitor PolymerTreeVisitor
    */
-  accept(visitor: PolymerTreeVisitor): void {}
+  public accept(visitor: PolymerTreeVisitor): void {}
 }

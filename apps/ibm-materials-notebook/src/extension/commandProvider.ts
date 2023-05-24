@@ -8,6 +8,9 @@ import {
   addToGlobalStorage,
   exportCurrentNotebookEntities,
   exportCurrentWorkspaceEntities,
+  clearGlobalStorage,
+  clearWorkspaceStorage,
+  addToWorkspaceStorage,
 } from "./commands";
 import { Repository } from "./respository";
 import { Library } from "./library";
@@ -67,6 +70,13 @@ export function registerCommands(
 
   subscriptions.push(
     vscode.commands.registerCommand(
+      "ibm-materials-notebook.addToWorkspaceStorage",
+      () => addToWorkspaceStorage(lib)
+    )
+  );
+
+  subscriptions.push(
+    vscode.commands.registerCommand(
       "ibm-materials-notebook.exportEntities",
       () => exportCurrentNotebookEntities(repo)
     )
@@ -76,6 +86,20 @@ export function registerCommands(
     vscode.commands.registerCommand(
       "ibm-materials-notebook.exportWorkspaceEntities",
       () => exportCurrentWorkspaceEntities(repo)
+    )
+  );
+
+  subscriptions.push(
+    vscode.commands.registerCommand(
+      "ibm-materials-notebook.clearGlobalStorage",
+      () => clearGlobalStorage(lib)
+    )
+  );
+
+  subscriptions.push(
+    vscode.commands.registerCommand(
+      "ibm-materials-notebook.clearWorkspaceStorage",
+      () => clearWorkspaceStorage(lib)
     )
   );
 

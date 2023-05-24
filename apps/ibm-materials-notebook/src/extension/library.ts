@@ -96,15 +96,20 @@ export class Library {
   }
 
   /**
-   * Parses JSON files from lib folder of workspace directory and saves them to
-   * workspace storage.
+   * Parses JSON files from lib folder of a workspace directory and saves them to
+   * workspace storage. Defaults to current workspace if path is not supplied.
    * @TODO ensure clearing of stale values
    */
-  public async initializeWorkspaceStorage(): Promise<void> {
-    const basePath = vscode.workspace.workspaceFolders
-      ? vscode.workspace.workspaceFolders[0].uri.path
-      : __dirname;
-    const resolvedPath = path.join(basePath, this.libPath);
+  public async initializeWorkspaceStorage(libPath?: string): Promise<void> {
+    let resolvedPath: string;
+    if (!libPath) {
+      const basePath = vscode.workspace.workspaceFolders
+        ? vscode.workspace.workspaceFolders[0].uri.path
+        : __dirname;
+      resolvedPath = path.join(basePath, this.libPath);
+    } else {
+      resolvedPath = libPath;
+    }
 
     await this.readLibDir(resolvedPath, this.workspaceStorage);
   }
@@ -214,5 +219,19 @@ export class Library {
     }
 
     return results;
+  }
+
+  /**
+   * Clears items from global storage
+   */
+  public clearGlobalStorage(): void {
+    this.globalStorage.clear();
+  }
+
+  /**
+   * Clears items from global storage
+   */
+  public clearWorkspaceStorage(): void {
+    this.workspaceStorage.clear();
   }
 }

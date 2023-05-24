@@ -2,13 +2,16 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import { Repository } from "../respository";
-import { sleep } from "./utils";
 import { logger } from "../../logger";
 
-//TODO: create command to export entities from entire repository to separate JSON files
+//TODO: add declared entities from notebook to workspace storage
+//TODO: add declared entities from repository to workspace storage
+//TODO: refresh global storage
+//TODO: refresh workspace storage
 
 /**
  * Exports current notebook entities to a single JSON file
+ * @param repo Repository
  */
 export async function exportCurrentNotebookEntities(repo: Repository) {
   const activeNotebook = vscode.window.activeNotebookEditor;
@@ -55,6 +58,10 @@ export async function exportCurrentNotebookEntities(repo: Repository) {
   });
 }
 
+/**
+ * Method to export declared entities in all repo notebook to JSON files
+ * @param repo Repository
+ */
 export async function exportCurrentWorkspaceEntities(repo: Repository) {
   const documents = await vscode.workspace.findFiles("*.cmdnb");
 
@@ -71,7 +78,6 @@ export async function exportCurrentWorkspaceEntities(repo: Repository) {
     return;
   }
 
-  logger.info(`Exporting entities from ${documents.length} files`);
   for (const docUri of documents) {
     const openedDoc = await vscode.workspace.openNotebookDocument(docUri);
     const exp = repo.findExperiment(openedDoc.uri);
@@ -101,5 +107,7 @@ export async function exportCurrentWorkspaceEntities(repo: Repository) {
     });
   }
 
-  vscode.window.showInformationMessage("Completed entity from workspace");
+  vscode.window.showInformationMessage(
+    "Completed entity export from workspace"
+  );
 }
