@@ -1,6 +1,4 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
-import * as path from "path";
 import { NOTEBOOK } from "./languageProvider";
 import { logger } from "../logger";
 import { Experiment } from "./experiment";
@@ -111,92 +109,93 @@ export class Repository {
       })
     );
 
-    this._disposables.push(
-      vscode.workspace.onDidSaveNotebookDocument((event) => {
-        logger.notice(
-          ">>vscode notebook saved event recieved, exporting contents to JSON lib"
-        );
+    //@deprecated
+    //TODO: enable exports for created entities and imports from files
+    //   this._disposables.push(
+    //     vscode.workspace.onDidSaveNotebookDocument((event) => {
+    //       logger.notice(">>vscode notebook saved event recieved");
 
-        let experiment = this.findExperiment(event.uri);
+    //       let experiment = this.findExperiment(event.uri);
 
-        if (!experiment) {
-          logger.error(`Experiment: ${event.uri.toString()} not found!`);
-          return;
-        }
+    //       if (!experiment) {
+    //         logger.error(`Experiment: ${event.uri.toString()} not found!`);
+    //         return;
+    //       }
 
-        const output = experiment.toJSON();
+    //       const output = experiment.toJSON();
 
-        if (!output) {
-          logger.error(`Encountered error during extracting record output!`);
-          return;
-        }
+    //       if (!output) {
+    //         logger.error(`Encountered error during extracting record output!`);
+    //         return;
+    //       }
 
-        const rootUri = vscode.workspace.getWorkspaceFolder(event.uri);
+    //       const rootUri = vscode.workspace.getWorkspaceFolder(event.uri);
 
-        if (!rootUri) {
-          logger.error(
-            `No uri for current experiment at ${event.uri.toString()} found!`
-          );
-          return;
-        }
+    //       if (!rootUri) {
+    //         logger.error(
+    //           `No uri for current experiment at ${event.uri.toString()} found!`
+    //         );
+    //         return;
+    //       }
 
-        const filepath = event.uri.path.split("/");
-        const fileName = filepath[filepath.length - 1].split(".");
+    //       const filepath = event.uri.path.split("/");
+    //       const fileName = filepath[filepath.length - 1].split(".");
 
-        if (output?.results && output.results?.outputs) {
-          let resultOutputs: CmdlEntity[] = [];
-          for (const result of output.results.outputs) {
-            let newResult: CmdlEntity = {
-              ...result,
-              name: `${result.sampleId}-${result.name}`,
-              base_name: result.name,
-              source: {
-                title: output.title,
-                record_id: output.metadata?.record_id || null,
-                notebook_id: experiment.id,
-                lastUpdated: new Date(Date.now()).toISOString(),
-              },
-            };
+    //       if (output?.results && output.results?.outputs) {
+    //         let resultOutputs: CmdlEntity[] = [];
+    //         for (const result of output.results.outputs) {
+    //           let newResult: CmdlEntity = {
+    //             ...result,
+    //             name: `${result.sampleId}-${result.name}`,
+    //             base_name: result.name,
+    //             source: {
+    //               title: output.title,
+    //               record_id: output.metadata?.record_id || null,
+    //               notebook_id: experiment.id,
+    //               lastUpdated: new Date(Date.now()).toISOString(),
+    //             },
+    //           };
 
-            this.library.addItem(newResult);
-            resultOutputs.push(newResult);
-          }
-        }
+    //           this.library.addItem(newResult);
+    //           resultOutputs.push(newResult);
+    //         }
+    //       }
 
-        this.writeToOutput(output, fileName, rootUri);
-      })
-    );
+    //       this.writeToOutput(output, fileName, rootUri);
+    //     })
+    //   );
   }
 
-  /**
-   * Writes JSON record output from experimental notebook to file
-   * @param contents Contents to write to a JSON output
-   * @param fileName string[] Array containing parts of a filename
-   * @param rootUri vscode.WorkspaceFolder
-   */
-  private writeToOutput(
-    contents: any,
-    fileName: string[],
-    rootUri: vscode.WorkspaceFolder
-  ): void {
-    fs.writeFile(
-      path.join(
-        rootUri.uri.fsPath,
-        `${this.outputPath}/${fileName[0] || test}.json`
-      ),
-      JSON.stringify(contents, null, 2),
-      (err) => {
-        if (err) {
-          logger.error(`Error during writing to file: ${err?.message}`);
-        } else {
-          vscode.window.showInformationMessage(
-            `Successfully exported experiment to JSON`
-          );
-          logger.info(`Successfully exported experiment to JSON`);
-        }
-      }
-    );
-  }
+  // /**
+  //  * Writes JSON record output from experimental notebook to file
+  //  * @param contents Contents to write to a JSON output
+  //  * @param fileName string[] Array containing parts of a filename
+  //  * @param rootUri vscode.WorkspaceFolder
+  //  * @deprecated
+  //  */
+  // private writeToOutput(
+  //   contents: any,
+  //   fileName: string[],
+  //   rootUri: vscode.WorkspaceFolder
+  // ): void {
+  //   fs.writeFile(
+  //     path.join(
+  //       rootUri.uri.fsPath,
+  //       `${this.outputPath}/${fileName[0] || test}.json`
+  //     ),
+  //     JSON.stringify(contents, null, 2),
+  //     (err) => {
+  //       if (err) {
+  //         logger.error(`Error during writing to file: ${err?.message}`);
+  //       } else {
+  //         vscode.window.showInformationMessage(
+  //           `Successfully exported experiment to JSON`
+  //         );
+  //         logger.info(`Successfully exported experiment to JSON`);
+  //       }
+  //     }
+  //   );
+  // }
 
   /**
    * Finds experiment in current repository

@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
-import * as path from "path";
 import { logger } from "../../logger";
 import { processRecordExport } from "./utils";
 import { Repository } from "../respository";
@@ -21,12 +20,23 @@ export async function newCmdlNotebook() {
 }
 
 /**
- * Exports current CMDL workspace
- * @todo allow user to select destination
+ * Exports current CMDL workspace to single JSON file and saves to user selected destination.
  */
 export async function exportCurrentWorkspce(repo: Repository) {
   const documents = await vscode.workspace.findFiles("*.cmdnb");
   logger.silly(`total documents: ${documents.length}`);
+
+  const exportFolder = await vscode.window.showOpenDialog({
+    canSelectFiles: false,
+    canSelectMany: false,
+    canSelectFolders: true,
+  });
+
+  const workspaceFolder = vscode.workspace.getWorkspaceFolder(documents[0]);
+
+  if (!exportFolder || !workspaceFolder) {
+    return;
+  }
 
   const outputArr = await Promise.all(
     documents.map(async (doc) => {
@@ -49,16 +59,18 @@ export async function exportCurrentWorkspce(repo: Repository) {
   }
 
   fs.writeFile(
-    path.join(rootUri.uri.fsPath, `exp/export.json`),
+    `${exportFolder[0].fsPath}/${workspaceFolder.name}_export.json`,
     JSON.stringify(outputArr, null, 2),
     (err) => {
       if (err) {
         logger.error(`Error during writing to file: ${err?.message}`);
       } else {
         vscode.window.showInformationMessage(
-          `Successfully exported experiment to JSON`
+          `Successfully exported workspace ${workspaceFolder.name} to JSON`
         );
-        logger.info(`Successfully exported experiment to JSON`);
+        logger.info(
+          `Successfully exported workspace  ${workspaceFolder.name} to JSON`
+        );
       }
     }
   );
