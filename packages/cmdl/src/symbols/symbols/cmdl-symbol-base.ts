@@ -1,5 +1,5 @@
-import { ModelType } from "../../cmdl-types/groups/group-types";
-import { CmdlToken } from "../../composite-tree-visitor";
+import { ModelType } from "cmdl-types";
+import { CmdlToken } from "../../cmdl-types";
 
 /**
  * Interface for CMDL symbol configuraton

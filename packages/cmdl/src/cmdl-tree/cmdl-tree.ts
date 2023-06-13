@@ -1,4 +1,4 @@
-import { logger } from "../../../logger";
+import { logger } from "../logger";
 import { Library } from "../../library";
 import { ModelVisitor } from "../symbols/models";
 import { AstVisitor } from "../symbols/symbols/symbol-table";

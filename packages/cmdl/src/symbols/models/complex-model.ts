@@ -1,7 +1,6 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType } from "../../cmdl-types/groups/group-types";
-import { PROPERTIES } from "../../cmdl-types";
+import { ModelType, PROPERTIES } from "cmdl-types";
 import { CMDLChemical, CMDLPolymer } from "./base-model";
 
 type ComplexRef = {

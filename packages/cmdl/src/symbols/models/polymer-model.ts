@@ -5,7 +5,7 @@ import { BigSMILES } from "ts-bigsmiles";
 import { ModelType } from "../../cmdl-types/groups/group-types";
 import { CMDLRef, CMDLUnitless } from "../symbol-types";
 import { CMDLPolymerGraph } from "./polymer-graph-model";
-import { PROPERTIES } from "../../cmdl-types";
+import { PROPERTIES } from "cmdl-types";
 import { JSONPolymerTree } from "../polymers/polymer-container";
 
 export type CMDLPolymerTreeValue = {

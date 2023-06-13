@@ -11,10 +11,9 @@ import { AstVisitor } from "../symbols/symbol-table";
 import { ModelFactory } from "./model-factory";
 import { ModelActivationRecord } from "./model-AR";
 import { CmdlStack } from "../cmdl-stack";
-import { cmdlLogger as logger } from "../../logger";
+import { logger } from "../../logger";
 import { Property } from "../../cmdl-tree/components/base-components";
-import { typeManager } from "../../cmdl-types";
-import { ModelType } from "../../cmdl-types/groups/group-types";
+import { typeManager, ModelType } from "cmdl-types";
 import { ImportOp } from "../../cmdl-tree/components/import-group";
 
 /**

@@ -1,7 +1,7 @@
 import { ReactorContainer } from "../reactor";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType } from "../../cmdl-types/groups/group-types";
+import { ModelType } from "cmdl-types";
 import {
   CMDLReactor,
   CMDLReactorNode,

@@ -1,6 +1,5 @@
 import { ModelActivationRecord } from "./model-AR";
-import { cmdlLogger as logger } from "../../logger";
-import { ModelType } from "../../cmdl-types/groups/group-types";
+import { ModelType } from "cmdl-types";
 import { BaseModel } from "./base-model";
 
 /**

@@ -1,6 +1,6 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType } from "../../cmdl-types/groups/group-types";
+import { ModelType } from "cmdl-types";
 
 /**
  * Model for chemicals and chemical fragments. Tabulates values and writes to parent AR.

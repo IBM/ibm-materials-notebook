@@ -9,6 +9,7 @@ import { CmdlAst, CmdlNode } from "./cmdl-ast";
 
 /**
  * Assists in providing completion items for CMDL language
+ * TODO: move to language server
  */
 export class CmdlCompletions {
   private readonly compiler = new CmdlCompiler();

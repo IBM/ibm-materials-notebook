@@ -1,5 +1,5 @@
 import { parseStringImage } from "./cmdl-tree/utils";
-import { CmdlToken } from "./composite-tree-visitor";
+import { CmdlToken } from "./cmdl-types";
 import { AstNodes } from "./cst-visitor";
 
 type PrintNode = {

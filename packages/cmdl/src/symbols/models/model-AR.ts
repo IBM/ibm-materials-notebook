@@ -1,5 +1,4 @@
-import { cmdlLogger as logger } from "../../logger";
-import { CMDLRecordTypes } from "../symbol-types";
+import { logger } from "../../logger";
 
 /**
  * Activation record for managing computed model values and properties for each scope

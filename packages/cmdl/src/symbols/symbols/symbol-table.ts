@@ -1,6 +1,6 @@
 import { ErrorTable } from "../../../errors";
 import { RefError } from "../../errors";
-import { cmdlLogger as logger } from "../../logger";
+import { logger } from "../../logger";
 import {
   AngleSymbol,
   BaseSymbol,

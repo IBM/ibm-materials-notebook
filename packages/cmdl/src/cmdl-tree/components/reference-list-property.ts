@@ -1,4 +1,4 @@
-import { CmdlToken } from "../../composite-tree-visitor";
+import { CmdlToken } from "../../cmdl-types";
 import { Property } from "./base-components";
 import { AstVisitor, ModelVisitor, SymbolTableBuilder } from "../../symbols";
 import { SymbolReference } from "./reference-group";

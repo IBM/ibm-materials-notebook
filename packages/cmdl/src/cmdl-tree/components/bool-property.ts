@@ -1,9 +1,9 @@
 import { AstVisitor, SymbolTableBuilder } from "../../symbols";
-import { CmdlToken } from "../../composite-tree-visitor";
+import { CmdlToken } from "../../cmdl-types";
 import { Property } from "./base-components";
 import { ModelVisitor } from "../../symbols";
 import { BaseError, InvalidPropertyError } from "../../errors";
-import { PropertyTypes } from "../../cmdl-types";
+import { PropertyTypes } from "cmdl-types";
 
 /**
  * Handles boolean properties in CMDL Record trees

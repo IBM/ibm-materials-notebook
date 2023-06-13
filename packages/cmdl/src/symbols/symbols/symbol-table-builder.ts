@@ -1,4 +1,4 @@
-import { cmdlLogger as logger } from "../../logger";
+import { logger } from "../../logger";
 import { SymbolTable, AstVisitor } from "./symbol-table";
 import {
   ConnectionSymbol,
@@ -12,7 +12,7 @@ import {
 } from "./cmdl-symbol-base";
 import { BaseError, DuplicationError, RefError } from "../../errors";
 import { Group, Property } from "../../cmdl-tree/components/base-components";
-import { typeManager } from "../../cmdl-types";
+import { typeManager, ModelType } from "cmdl-types";
 import {
   AngleProperty,
   NamedGroup,
@@ -28,11 +28,9 @@ import { ErrorTable } from "../../../errors";
 import { CmdlStack } from "../cmdl-stack";
 import { ReferenceValue } from "../../cmdl-tree/components/reference-list-property";
 import { PolymerContainer } from "../polymers";
-import { CmdlToken } from "../../composite-tree-visitor";
-import { ModelType } from "../../cmdl-types/groups/group-types";
-import { ReactorContainer } from "../reactor";
+import { CmdlToken } from "../../cmdl-types";
+import { ReactorContainer, SerializedReactor } from "cmdl-reactors";
 import { CMDLNodeTree } from "../symbol-types";
-import { SerializedReactor } from "../reactor/reactor-container";
 
 /**
  * Visits record tree and constructs symbol table for entire document

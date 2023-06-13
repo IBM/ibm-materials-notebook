@@ -1,11 +1,10 @@
 import { ModelActivationRecord } from "./model-AR";
-import { cmdlLogger as logger } from "../../logger";
+import { logger } from "../../logger";
 import { BaseModel, CMDLChemical, CMDLPolymer } from "./base-model";
 import { PolymerContainer } from "../polymers";
-import { ModelType } from "../../cmdl-types/groups/group-types";
-import { PROPERTIES } from "../../cmdl-types";
+import { PROPERTIES, ModelType } from "cmdl-types";
 import { CMDLComplex } from "./complex-model";
-import { CMDLUnit } from "../symbol-types";
+import { CMDLUnit } from "cmdl-units";
 import { CMDLChemicalReference } from "./solution-model";
 import { JSONPolymerContainer } from "../polymers/polymer-container";
 

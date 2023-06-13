@@ -1,5 +1,5 @@
-import { typeManager } from "../../cmdl-types";
-import { CmdlToken } from "../../composite-tree-visitor";
+import { typeManager, IGroup, IProperty } from "cmdl-types";
+import { CmdlToken } from "../../cmdl-types";
 import {
   BaseError,
   DuplicationError,
@@ -7,8 +7,6 @@ import {
   InvalidPropertyError,
   MissingValueError,
 } from "../../errors";
-import { IGroup } from "../../cmdl-types/groups";
-import { IProperty } from "../../cmdl-types/properties";
 import { CmdlTree } from "../cmdl-tree";
 import { AstVisitor } from "../../symbols";
 import { ReferenceValue } from "./reference-list-property";

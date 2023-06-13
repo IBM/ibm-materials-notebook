@@ -1,9 +1,9 @@
-import { CmdlToken } from "../../composite-tree-visitor";
+import { CmdlToken } from "../../cmdl-types";
 import { BaseError, InvalidPropertyError } from "../../errors";
 import { parseStringImage } from "../utils";
 import { Property } from "./base-components";
 import { AstVisitor, ModelVisitor, SymbolTableBuilder } from "../../symbols";
-import { PropertyTypes, TAGS } from "../../cmdl-types";
+import { PropertyTypes, TAGS } from "cmdl-types";
 
 /**
  * Handles list properties in CMDL record trees

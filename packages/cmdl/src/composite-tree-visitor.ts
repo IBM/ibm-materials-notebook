@@ -1,6 +1,7 @@
 import { IToken } from "chevrotain";
-import { parserInstance } from "./parser";
+import { CmdlToken } from "./cmdl-types";
 import {
+  parserInstance,
   GroupCstChildren,
   GroupDeclarationCstChildren,
   GroupItemCstChildren,
@@ -19,7 +20,7 @@ import {
   ReferencePipeCstChildren,
   VariableGroupCstChildren,
   AliasClauseCstChildren,
-} from "./cmdl_parser";
+} from "./parser";
 import { ImportOp } from "./cmdl-tree/components/import-group";
 import { GeneralGroup } from "./cmdl-tree/components";
 import { CmdlTree } from "./cmdl-tree";
@@ -37,15 +38,6 @@ import {
   VariableProperty,
   AngleProperty,
 } from "./cmdl-tree/components";
-
-export type CmdlToken = {
-  image: string;
-  type: string;
-  startLine: number | undefined;
-  endLine: number | undefined;
-  startOffset: number | undefined;
-  endOffset: number | undefined;
-};
 
 const BaseVisitor = parserInstance.getBaseCstVisitorConstructor();
 

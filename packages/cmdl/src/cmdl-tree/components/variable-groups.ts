@@ -1,4 +1,4 @@
-import { CmdlToken } from "../../composite-tree-visitor";
+import { CmdlToken } from "../../cmdl-types";
 import { AstVisitor, SymbolTableBuilder } from "../../symbols";
 import { NamedGroup } from "./named-group";
 

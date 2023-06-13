@@ -1,9 +1,9 @@
-import { CmdlToken } from "../../composite-tree-visitor";
+import { CmdlToken } from "../../cmdl-types";
 import { parseStringImage } from "../utils";
 import { Property } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../../symbols";
 import { ModelVisitor } from "../../symbols";
-import { PROPERTIES, PropertyTypes } from "../../cmdl-types";
+import { PROPERTIES, PropertyTypes } from "cmdl-types";
 import { BaseError, InvalidPropertyError } from "../../errors";
 import { BigSMILES } from "ts-bigsmiles";
 

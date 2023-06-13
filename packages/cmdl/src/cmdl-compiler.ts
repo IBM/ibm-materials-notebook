@@ -1,7 +1,6 @@
 import { CstRecordVisitor } from "./composite-tree-visitor";
 import { CstVisitor } from "./cst-visitor";
-import { lexerInstance } from "./lexer";
-import { parserInstance } from "./parser";
+import { lexerInstance, parserInstance } from "./parser";
 import { CmdlAst } from "./cmdl-ast";
 import { CmdlTree } from "./cmdl-tree";
 import { ParserError } from "./errors";

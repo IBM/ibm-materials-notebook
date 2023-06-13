@@ -10,7 +10,7 @@ import { Polymer } from "./polymer-model";
 import { ReactionModel } from "./reaction-model";
 import { Reactor } from "./reactor-model";
 import { SampleOutput } from "./sample-model";
-import { ModelType } from "../../cmdl-types/groups/group-types";
+import { ModelType } from "cmdl-types";
 import { GroupModel } from "./group-model";
 import { BaseModel } from "./base-model";
 

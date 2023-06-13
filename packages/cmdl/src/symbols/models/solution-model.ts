@@ -1,11 +1,9 @@
-import { ChemicalSet } from "../chemicals";
-import { cmdlLogger as logger } from "../../logger";
+import { logger } from "../../logger";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { PROPERTIES, ReactionRoles } from "../../cmdl-types";
-import { CMDLRef, CMDLUnit } from "../symbol-types";
-import { ModelType } from "../../cmdl-types/groups/group-types";
-import { ChemicalConfig, ChemicalOutput } from "../chemicals/chemical-factory";
+import { PROPERTIES, ReactionRoles, ModelType, CMDLRef } from "cmdl-types";
+import { CMDLUnit } from "cmdl-units";
+import { ChemicalConfig, ChemicalOutput, ChemicalSet } from "cmdl-chemicals";
 
 /**
  * Reference to any chemical entity in CMDL within a reaction or solution group

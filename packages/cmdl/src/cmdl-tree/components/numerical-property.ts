@@ -1,4 +1,4 @@
-import { CmdlToken } from "../../composite-tree-visitor";
+import { CmdlToken } from "../../cmdl-types";
 import {
   BaseError,
   InvalidPropertyError,

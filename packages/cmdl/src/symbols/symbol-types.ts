@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { GROUPS, PROPERTIES, TAGS } from "../cmdl-types";
+import { GROUPS, PROPERTIES, TAGS } from "cmdl-types";
 import { CMDLChemical, CMDLFragment, CMDLPolymer } from "./models/base-model";
 import { CMDLComplex } from "./models/complex-model";
 import { CMDLFlowRxn } from "./models/flow-model";

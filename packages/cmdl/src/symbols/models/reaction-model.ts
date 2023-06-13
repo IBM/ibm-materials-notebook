@@ -1,10 +1,8 @@
-import { ChemicalSet } from "../chemicals";
-import { ChemicalOutput } from "../chemicals/chemical-factory";
+import { ChemicalSet, ChemicalOutput } from "cmdl-chemicals";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel, CMDLChemical, CMDLPolymer } from "./base-model";
-import { PROPERTIES, TAGS } from "../../cmdl-types";
-import { CMDLUnit } from "../symbol-types";
-import { ModelType } from "../../cmdl-types/groups/group-types";
+import { PROPERTIES, TAGS, ModelType } from "cmdl-types";
+import { CMDLUnit } from "cmdl-units";
 import { CMDLChemicalReference } from "./solution-model";
 import { CMDLComplex, ComplexChemical, ComplexPolymer } from "./complex-model";
 import { CMDLRxnProduct } from "./flow-model";

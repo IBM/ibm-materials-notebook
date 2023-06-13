@@ -1,18 +1,17 @@
-import { ReactorChemicals, ReactorContainer } from "../reactor";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel, CMDLChemical, CMDLPolymer } from "./base-model";
-import { ModelType } from "../../cmdl-types/groups/group-types";
+import { ModelType, PROPERTIES, ReactionRoles, CMDLRef } from "cmdl-types";
 import {
   CMDLChemicalReference,
   CMDLSolution,
   CMDLSolutionReference,
 } from "./solution-model";
-import { CMDLRef } from "../symbol-types";
 import {
   ReactorGroupOutput,
   SerializedReactor,
-} from "../reactor/reactor-container";
-import { PROPERTIES, ReactionRoles } from "../../cmdl-types";
+  ReactorChemicals,
+  ReactorContainer,
+} from "cmdl-reactors";
 
 type ComplexComponents = {
   name: string;

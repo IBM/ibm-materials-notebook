@@ -1,8 +1,7 @@
 import { PolymerContainer } from "../polymers";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType } from "../../cmdl-types/groups/group-types";
-import { CMDLRef } from "../symbol-types";
+import { ModelType, CMDLRef } from "cmdl-types";
 import {
   CMDLPolymerConnection,
   CMDLPolymerContainer,

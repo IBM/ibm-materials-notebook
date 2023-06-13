@@ -1,7 +1,7 @@
-import { CmdlToken } from "../../composite-tree-visitor";
+import { CmdlToken } from "../../cmdl-types";
 import { BaseError, InvalidGroupError } from "../../errors";
 import { Group, Property, RecordNode } from "./base-components";
-import { IGroup } from "../../cmdl-types/groups";
+import { IGroup } from "cmdl-types";
 import { CmdlTree } from "../cmdl-tree";
 import { GeneralGroup } from "./general-group";
 import { AstVisitor, SymbolTableBuilder } from "../../symbols";

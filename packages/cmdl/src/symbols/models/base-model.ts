@@ -1,12 +1,8 @@
 import { ModelActivationRecord } from "./model-AR";
-import {
-  ChemicalConfig,
-  ChemStates,
-  NamedQuantity,
-} from "../chemicals/chemical-factory";
-import { GROUPS, ModelType } from "../../cmdl-types/groups/group-types";
-import { PROPERTIES } from "../../cmdl-types";
-import { CMDLUnit, CMDLUnitless } from "../symbol-types";
+import { CMDLUnit } from "cmdl-units";
+import { ChemicalConfig, ChemStates, NamedQuantity } from "cmdl-chemicals";
+import { PROPERTIES, GROUPS, ModelType } from "cmdl-types";
+import { CMDLUnitless } from "../symbol-types";
 import Big from "big.js";
 import { CMDLChemicalReference } from "./solution-model";
 

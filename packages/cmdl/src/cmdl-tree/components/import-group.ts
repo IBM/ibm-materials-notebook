@@ -1,4 +1,4 @@
-import { CmdlToken } from "../../composite-tree-visitor";
+import { CmdlToken } from "../../cmdl-types";
 import { BaseError, FileError, RefError } from "../../errors";
 import { RecordNode } from "./base-components";
 import { parseStringImage } from "../utils";
