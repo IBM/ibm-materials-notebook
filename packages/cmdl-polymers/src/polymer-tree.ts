@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { ModelActivationRecord } from "../models";
+// import { ModelActivationRecord } from "../models";
 import { PolymerEdge } from "./polymer-edge";
 import { Container } from "./polymer-tree-container";
 import { PolymerNode } from "./polymer-node";
@@ -11,7 +11,7 @@ import {
   CMDLPolymerConnection,
   PolymerComponent,
 } from "./polymer-types";
-import { CMDLFragment } from "../models/base-model";
+// import { CMDLFragment } from "../models/base-model";
 import {
   JSONPolymerContainer,
   JSONPolymerNode,
@@ -39,8 +39,8 @@ export class PolymerTree {
    * @param record ModelActivationRecord
    */
   public initialize(
-    treeConfig: CMDLPolymerTree,
-    record: ModelActivationRecord
+    treeConfig: CMDLPolymerTree
+    // record: ModelActivationRecord
   ): void {
     const queue: (CMDLPolymerTree | CMDLPolymerContainer)[] = [treeConfig];
     let curr: CMDLPolymerTree | CMDLPolymerContainer | undefined;
@@ -55,15 +55,13 @@ export class PolymerTree {
       const container = new Container(curr.name);
 
       for (const node of curr.nodes) {
-        let fragment = record.getValue<CMDLFragment>(node.ref.slice(1));
-
-        const entity = new PolymerNode({
-          fragment: node.ref.slice(1),
-          mw: Big(fragment.molecular_weight.value),
-          smiles: fragment.smiles,
-        });
-
-        container.add(entity);
+        // let fragment = record.getValue<CMDLFragment>(node.ref.slice(1));
+        // const entity = new PolymerNode({
+        //   fragment: node.ref.slice(1),
+        //   mw: Big(fragment.molecular_weight.value),
+        //   smiles: fragment.smiles,
+        // });
+        // container.add(entity);
       }
 
       if (curr?.connections) {

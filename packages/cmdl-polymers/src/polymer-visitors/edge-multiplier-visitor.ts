@@ -3,7 +3,7 @@ import { PolymerComponent } from "../polymer-types";
 import { Container } from "../polymer-tree-container";
 import { PolymerWeight } from "../polymer-weights";
 import { PolymerTreeVisitor } from "./strategy-visitor";
-import { cmdlLogger as logger } from "../../../logger";
+// import { cmdlLogger as logger } from "../../../logger";
 
 /**
  * Class for assigning correct multipliers for various edges
@@ -107,9 +107,9 @@ export class EdgeMultiplier implements PolymerTreeVisitor {
         this.weightor.totalScore += graftMultiplier;
 
         if (edge.quantity > 1) {
-          logger.warn(
-            `network material encountered: ${edge.sourceName} -> ${edge.targetName}, edge multiplier unchanged`
-          );
+          // logger.warn(
+          //   `network material encountered: ${edge.sourceName} -> ${edge.targetName}, edge multiplier unchanged`
+          // );
         }
 
         this.visited.add(targetGroup);
@@ -124,9 +124,9 @@ export class EdgeMultiplier implements PolymerTreeVisitor {
       if (graftMultiplier) {
         this.weightor.totalScore += graftMultiplier;
         if (edge.quantity > 1) {
-          logger.warn(
-            `network material encountered: ${edge.sourceName} -> ${edge.targetName}, edge multiplier unchanged`
-          );
+          // logger.warn(
+          //   `network material encountered: ${edge.sourceName} -> ${edge.targetName}, edge multiplier unchanged`
+          // );
         }
       } else {
         this.weightor.edgeMultiplier *= edge.quantity;
@@ -151,9 +151,9 @@ export class EdgeMultiplier implements PolymerTreeVisitor {
         this.weightor.totalScore += graftMultiplier;
 
         if (edge.quantity > 1) {
-          logger.warn(
-            `network material encountered: ${edge.sourceName} -> ${edge.targetName}, edge multiplier unchanged`
-          );
+          // logger.warn(
+          //   `network material encountered: ${edge.sourceName} -> ${edge.targetName}, edge multiplier unchanged`
+          // );
         }
 
         this.visited.add(edge.targetName);
@@ -173,9 +173,9 @@ export class EdgeMultiplier implements PolymerTreeVisitor {
         this.weightor.totalScore += graftMultiplier;
 
         if (edge.quantity > 1) {
-          logger.warn(
-            `network material encountered: ${edge.sourceName} -> ${edge.targetName}, edge multiplier unchanged`
-          );
+          // logger.warn(
+          //   `network material encountered: ${edge.sourceName} -> ${edge.targetName}, edge multiplier unchanged`
+          // );
         }
       } else {
         this.weightor.totalScore++;

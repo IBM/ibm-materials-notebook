@@ -1,9 +1,13 @@
 import * as vscode from "vscode";
-import { typeManager } from "./cmdl-types";
+import {
+  typeManager,
+  IProperty,
+  PropertyTypes,
+  GroupTypes,
+  IGroup,
+} from "cmdl-types";
 import { CmdlCompiler } from "./cmdl-compiler";
 import { logger } from "./logger";
-import { GroupTypes, IGroup } from "./cmdl-types/groups";
-import { IProperty, PropertyTypes } from "./cmdl-types/properties";
 import { AstNodes } from "./cst-visitor";
 import { CmdlAst, CmdlNode } from "./cmdl-ast";
 

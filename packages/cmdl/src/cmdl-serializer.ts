@@ -2,6 +2,7 @@ import { logger } from "./logger";
 
 /**
  * Serializes AI generated polymer representations to CMDL for SME inspection
+ * TODO: generalize serializer to other data models
  */
 export class CMDLSerializer {
   /**

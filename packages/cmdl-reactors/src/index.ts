@@ -3,4 +3,6 @@ export {
   ReactorContainer,
   SerializedReactor,
   ReactorGroupOutput,
+  CMDLReactor,
+  CMDLReactorNode,
 } from "./reactor-container";

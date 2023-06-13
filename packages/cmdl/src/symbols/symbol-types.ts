@@ -1,13 +1,17 @@
 import Big from "big.js";
 import { GROUPS, PROPERTIES, TAGS } from "cmdl-types";
-import { CMDLChemical, CMDLFragment, CMDLPolymer } from "./models/base-model";
-import { CMDLComplex } from "./models/complex-model";
-import { CMDLFlowRxn } from "./models/flow-model";
-import { CMDLPolymerGraph } from "./models/polymer-graph-model";
-import { CMDLReaction } from "./models/reaction-model";
-import { CMDLFlowReactor } from "./models/reactor-model";
-import { CMDLSampleOutput } from "./models/sample-model";
-import { CMDLSolution } from "./models/solution-model";
+import {
+  CMDLChemical,
+  CMDLFragment,
+  CMDLPolymer,
+} from "../intepreter/base-model";
+import { CMDLComplex } from "../intepreter/complex-model";
+import { CMDLFlowRxn } from "../intepreter/flow-model";
+import { CMDLPolymerGraph } from "../intepreter/polymer-graph-model";
+import { CMDLReaction } from "../intepreter/reaction-model";
+import { CMDLFlowReactor } from "../intepreter/reactor-model";
+import { CMDLSampleOutput } from "../intepreter/sample-model";
+import { CMDLSolution } from "../intepreter/solution-model";
 
 export interface CMDLRef {
   ref: string;

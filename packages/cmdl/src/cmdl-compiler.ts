@@ -4,20 +4,11 @@ import { lexerInstance, parserInstance } from "./parser";
 import { CmdlAst } from "./cmdl-ast";
 import { CmdlTree } from "./cmdl-tree";
 import { ParserError } from "./errors";
-import { SymbolTable } from "./symbols";
-import { ErrorTable } from "../errors";
 import { ILexingError, IRecognitionException } from "chevrotain";
 import { logger } from "./logger";
 
 export interface CompilerOuput {
   recordTree: CmdlTree;
-}
-
-export interface CompilerInput {
-  text: string;
-  uri: string;
-  table: SymbolTable;
-  errTable: ErrorTable;
 }
 
 /**

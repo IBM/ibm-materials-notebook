@@ -1,8 +1,8 @@
-import { ModelActivationRecord } from "../models";
+// import { ModelActivationRecord } from "../models";
 import { PolymerGraph } from "./polymer-graph";
 import { PolymerTree } from "./polymer-tree";
 import { PolymerWeight } from "./polymer-weights";
-import { CMDLPolymerTree } from "./polymer-types";
+// import { CMDLPolymerTree } from "./polymer-types";
 import { CMDLNodeTree, ModelType, RefResult, PROPERTIES } from "cmdl-types";
 
 export type CMDLUnitless = {
@@ -69,17 +69,17 @@ export class PolymerContainer {
     this.name = name;
   }
 
-  /**
-   * Constructs a polymer composite tree data structure
-   * @param treeConfig CMDLPolymerTree
-   * @param record ModelActivationRecord
-   */
-  buildTree(treeConfig: CMDLPolymerTree, record: ModelActivationRecord) {
-    this.tree.initialize(treeConfig, record);
-    this.tree.root?.setName();
-    this.tree.root?.setPath();
-    this.tree.root?.updateConnectionPaths();
-  }
+  // /**
+  //  * Constructs a polymer composite tree data structure
+  //  * @param treeConfig CMDLPolymerTree
+  //  * @param record ModelActivationRecord
+  //  */
+  // buildTree(treeConfig: CMDLPolymerTree, record: ModelActivationRecord) {
+  //   this.tree.initialize(treeConfig, record);
+  //   this.tree.root?.setName();
+  //   this.tree.root?.setPath();
+  //   this.tree.root?.updateConnectionPaths();
+  // }
 
   /**
    * Initializes polymer tree data structure from imported JSON representation

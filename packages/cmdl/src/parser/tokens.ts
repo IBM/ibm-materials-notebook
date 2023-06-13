@@ -40,9 +40,16 @@ const From = createToken({
   pattern: /from/,
   longer_alt: Identifier,
 });
+
 const Import = createToken({
   name: "Import",
   pattern: /import/,
+  longer_alt: Identifier,
+});
+
+const Export = createToken({
+  name: "Export",
+  pattern: /export/,
   longer_alt: Identifier,
 });
 
@@ -72,6 +79,7 @@ const allTokens = [
   WhiteSpace,
   NumberLiteral,
   Import,
+  Export,
   As,
   From,
   True,
@@ -111,6 +119,7 @@ export {
   Identifier,
   UncertaintyOperator,
   Import,
+  Export,
   From,
   RCurly,
   LCurly,

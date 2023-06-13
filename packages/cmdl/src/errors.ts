@@ -1,5 +1,5 @@
 import { IRecognitionException, IToken } from "chevrotain";
-import { CmdlToken } from "./cmdl-types";
+import { CmdlToken } from "./cmdl-parser-types";
 
 export enum ErrorCode {
   MismatchedTokenException = "MismatchedTokenException",
