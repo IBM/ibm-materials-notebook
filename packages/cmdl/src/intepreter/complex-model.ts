@@ -1,29 +1,6 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType, PROPERTIES } from "cmdl-types";
-import { CMDLChemical, CMDLPolymer } from "./base-model";
-
-//TODO: move type definitions to cmdl-types
-
-type ComplexRef = {
-  name: string;
-  path: string[];
-  [PROPERTIES.RATIO]: number;
-};
-
-export type ComplexPolymer = CMDLPolymer & {
-  [PROPERTIES.RATIO]: number;
-};
-
-export type ComplexChemical = CMDLChemical & {
-  [PROPERTIES.RATIO]: number;
-};
-
-export type CMDLComplex = {
-  name: string;
-  type: ModelType.COMPLEX;
-  components: (ComplexChemical | ComplexPolymer)[];
-};
+import { ModelType, PROPERTIES, CMDL } from "cmdl-types";
 
 export class Complex extends BaseModel {
   constructor(
@@ -41,9 +18,9 @@ export class Complex extends BaseModel {
     };
     for (const [name, value] of this.modelAR.all()) {
       if (name === PROPERTIES.COMPONENTS) {
-        let updatedComponents = (value as ComplexRef[]).map(
-          (item: ComplexRef) => {
-            let compRef = globalAR.getValue<CMDLChemical | CMDLPolymer>(
+        let updatedComponents = (value as CMDL.ComplexReference[]).map(
+          (item: CMDL.ComplexReference) => {
+            let compRef = globalAR.getValue<CMDL.Chemical | CMDL.Polymer>(
               item.name
             );
             return {

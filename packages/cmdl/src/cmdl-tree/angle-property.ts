@@ -1,8 +1,9 @@
-import { CmdlToken } from "../../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-parser-types";
 import { Property } from "./base-components";
 import { ReferenceValue } from "./reference-list-property";
-import { AstVisitor, ModelVisitor, SymbolTableBuilder } from "../../symbols";
-import { BaseError } from "../../errors";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
+import { BaseError } from "../errors";
+import { ModelVisitor } from "../intepreter";
 
 /**
  * Handles angle properties in polymer graph definitions

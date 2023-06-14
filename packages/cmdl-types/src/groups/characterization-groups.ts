@@ -1,6 +1,8 @@
 import { IGroup, GroupTypes, GROUPS, ModelType } from "./group-types";
 import { PROPERTIES } from "../properties";
 
+//TODO: simplify characterization data references
+
 const dsc: IGroup = {
   name: GROUPS.DSC,
   type: GroupTypes.NAMED,

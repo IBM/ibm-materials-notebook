@@ -1,36 +1,11 @@
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel, CMDLChemical, CMDLPolymer } from "./base-model";
-import { ModelType, PROPERTIES, ReactionRoles, CMDLRef } from "cmdl-types";
+import { BaseModel } from "./base-model";
+import { ModelType, CMDL } from "cmdl-types";
 import {
-  CMDLChemicalReference,
-  CMDLSolution,
-  CMDLSolutionReference,
-} from "./solution-model";
-import {
-  ReactorGroupOutput,
   SerializedReactor,
   ReactorChemicals,
   ReactorContainer,
 } from "cmdl-reactors";
-
-type ComplexComponents = {
-  name: string;
-  [PROPERTIES.SMILES]: string;
-};
-
-export type CMDLRxnProduct = {
-  name: string;
-  [PROPERTIES.SMILES]?: string | null;
-  [PROPERTIES.ROLES]: ReactionRoles[];
-  components?: ComplexComponents[];
-};
-
-export type CMDLFlowRxn = {
-  name: string;
-  type: ModelType.FLOW_REACTION;
-  reactions: ReactorGroupOutput[];
-  products: CMDLRxnProduct[];
-};
 
 export class FlowReaction extends BaseModel {
   private reactorContainer = new ReactorContainer();
@@ -44,14 +19,17 @@ export class FlowReaction extends BaseModel {
   }
 
   public execute(globalAR: ModelActivationRecord): void {
-    const reactorRef = this.modelAR.getValue<CMDLRef>("reactor");
+    const reactorRef = this.modelAR.getValue<CMDL.Reference>("reactor");
     const solutions =
-      this.modelAR.getValue<CMDLSolutionReference[]>("solutions");
-    const products = this.modelAR.getValue<CMDLChemicalReference[]>("products");
+      this.modelAR.getValue<CMDL.SolutionReference[]>("solutions");
+    const products =
+      this.modelAR.getValue<CMDL.ChemicalReference[]>("products");
 
-    const finalProducts: CMDLRxnProduct[] = products.map(
-      (el: CMDLChemicalReference) => {
-        const product = globalAR.getValue<CMDLChemical | CMDLPolymer>(el.name);
+    const finalProducts: CMDL.Product[] = products.map(
+      (el: CMDL.ChemicalReference) => {
+        const product = globalAR.getValue<CMDL.Chemical | CMDL.Polymer>(
+          el.name
+        );
         return {
           name: el.name,
           smiles: product?.smiles ? product.smiles : null,
@@ -65,7 +43,7 @@ export class FlowReaction extends BaseModel {
     this.reactorContainer.deserialize(reactorConfig);
 
     for (const solution of solutions) {
-      let solutionOutput = globalAR.getValue<CMDLSolution>(solution.name);
+      let solutionOutput = globalAR.getValue<CMDL.Solution>(solution.name);
 
       const solutionChemicals = new ReactorChemicals(solution.flow_rate);
       solutionChemicals.setChemicals(solutionOutput.componentConfigs);

@@ -1,16 +1,8 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { PolymerContainer, JSONPolymerTree } from "cmdl-polymers";
-import { ModelType, CMDLRef } from "cmdl-types";
-import { CMDLUnitless } from "../symbols/symbol-types";
-import { CMDLPolymerGraph } from "./polymer-graph-model";
+import { ModelType, CMDL } from "cmdl-types";
 import { PROPERTIES } from "cmdl-types";
-
-export type CMDLPolymerTreeValue = {
-  name: string;
-  path: string[];
-  [PROPERTIES.DEGREE_POLY]: CMDLUnitless;
-};
 
 export class Polymer extends BaseModel {
   private polymerContainer: PolymerContainer;
@@ -24,14 +16,14 @@ export class Polymer extends BaseModel {
   }
 
   public execute(globalAR: ModelActivationRecord): void {
-    const treeRef = this.modelAR.getValue<CMDLRef | JSONPolymerTree<null>>(
-      PROPERTIES.TREE
-    );
+    const treeRef = this.modelAR.getValue<
+      CMDL.Reference | JSONPolymerTree<null>
+    >(PROPERTIES.TREE);
     const treeValues =
-      this.modelAR.getOptionalValue<CMDLPolymerTreeValue[]>("treeValues");
+      this.modelAR.getOptionalValue<CMDL.PolymerTreeValue[]>("treeValues");
 
     if ("ref" in treeRef) {
-      const polymerGraph = globalAR.getOptionalValue<CMDLPolymerGraph>(
+      const polymerGraph = globalAR.getOptionalValue<CMDL.PolymerGraph>(
         treeRef.ref
       );
 

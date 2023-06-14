@@ -1,24 +1,7 @@
 import BaseUnit from "./base-unit";
 import Big from "big.js";
 import { UnitPrefixes } from "./unit-conversions";
-
-export type Quantity = {
-  unit: string;
-  value: Big;
-  uncertainty: Big | null;
-};
-
-export type NumberQuantity = {
-  unit: string;
-  value: number;
-  uncertainty: number | null;
-};
-
-export type CMDLUnit = {
-  unit: string;
-  value: string;
-  uncertainty: string | null;
-};
+import { CMDL } from "cmdl-types";
 
 /**
  * Top-level class for managing and converting units
@@ -30,8 +13,12 @@ export default class Unit {
   numerator: BaseUnit[];
   denominator: BaseUnit[];
 
-  constructor({ unit, value }: Quantity) {
-    this._value = value;
+  constructor({ unit, value }: CMDL.Qty) {
+    if (!unit) {
+      throw new Error("Invalid unit, no unit defined");
+    }
+
+    this._value = Big(value);
     this.unit = unit;
     this.subUnits = [];
     this.numerator = [];

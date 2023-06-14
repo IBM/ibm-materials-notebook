@@ -1,50 +1,7 @@
 import { ModelActivationRecord } from "./model-AR";
-import { CMDLUnit } from "cmdl-units";
-import { ChemicalConfig, ChemStates, NamedQuantity } from "cmdl-chemicals";
-import { PROPERTIES, GROUPS, ModelType } from "cmdl-types";
-import { CMDLUnitless } from "../symbols/symbol-types";
+import { ChemicalConfig, NamedQuantity } from "cmdl-chemicals";
+import { PROPERTIES, GROUPS, ModelType, CMDL } from "cmdl-types";
 import Big from "big.js";
-import { CMDLChemicalReference } from "./solution-model";
-
-//TODO: Move to cmdl-types
-type QuantityNames =
-  | PROPERTIES.MASS
-  | PROPERTIES.VOLUME
-  | PROPERTIES.MOLES
-  | PROPERTIES.PRESSURE;
-
-//TODO: Move to cmdl-types
-export type CMDLChemical = {
-  name: string;
-  type: ModelType.CHEMICAL;
-  [PROPERTIES.INCHI_KEY]?: string;
-  [PROPERTIES.INCHI]?: string;
-  [PROPERTIES.MOL_WEIGHT]: CMDLUnit;
-  [PROPERTIES.SMILES]: string;
-  [PROPERTIES.DENSITY]?: CMDLUnit;
-  [PROPERTIES.STATE]: ChemStates;
-};
-
-//TODO: Move to cmdl-types
-export type CMDLFragment = {
-  name: string;
-  type: ModelType.FRAGMENT;
-  [PROPERTIES.SMILES]: string;
-  [PROPERTIES.MOL_WEIGHT]: CMDLUnit;
-};
-
-//TODO: Move to cmdl-types
-export type CMDLPolymer = {
-  name: string;
-  type: ModelType.POLYMER;
-  [PROPERTIES.MN_AVG]: CMDLUnit;
-  [PROPERTIES.BIG_SMILES]?: string;
-  [PROPERTIES.SMILES]: string;
-  [PROPERTIES.MW_AVG]?: CMDLUnit;
-  [PROPERTIES.DISPERSITY]?: CMDLUnitless;
-  [PROPERTIES.STATE]: ChemStates;
-  [PROPERTIES.TREE]: any;
-};
 
 /**
  * Base class for interpreter models
@@ -69,14 +26,14 @@ export abstract class BaseModel {
    * @param globalAR ModelActivationRecord
    */
   protected createChemicalConfigs(
-    chemicals: CMDLChemicalReference[],
+    chemicals: CMDL.ChemicalReference[],
     globalAR: ModelActivationRecord,
-    params?: { volume?: CMDLUnit; temperature?: CMDLUnit }
+    params?: { volume?: CMDL.StringQty; temperature?: CMDL.StringQty }
   ): ChemicalConfig[] {
     let configs: ChemicalConfig[] = [];
 
     for (const chemical of chemicals) {
-      let parentValues = globalAR.getValue<CMDLChemical | CMDLPolymer>(
+      let parentValues = globalAR.getValue<CMDL.Chemical | CMDL.Polymer>(
         chemical.name
       );
       const quantity = this.extractQuantity(chemical);
@@ -115,7 +72,7 @@ export abstract class BaseModel {
       };
 
       if (
-        chemicalConfig.state === ChemStates.LIQUID &&
+        chemicalConfig.state === CMDL.ChemStates.LIQUID &&
         !chemicalConfig.density &&
         chemicalConfig.quantity.name === PROPERTIES.VOLUME
       ) {
@@ -125,7 +82,7 @@ export abstract class BaseModel {
       }
 
       if (
-        chemicalConfig.state === ChemStates.GAS &&
+        chemicalConfig.state === CMDL.ChemStates.GAS &&
         chemicalConfig.quantity.name !== PROPERTIES.PRESSURE
       ) {
         throw new Error(
@@ -146,7 +103,7 @@ export abstract class BaseModel {
    * @param chemical CMDLChemical | CMDLPolymer
    * @returns any
    */
-  private getMw(chemical: CMDLChemical | CMDLPolymer): any {
+  private getMw(chemical: CMDL.Chemical | CMDL.Polymer): any {
     if (chemical.type === ModelType.CHEMICAL) {
       return chemical.molecular_weight.value;
     } else {
@@ -181,8 +138,8 @@ export abstract class BaseModel {
    * @param ref CMDLChemicalRefrerence
    * @returns NamedQuantity
    */
-  private extractQuantity(ref: CMDLChemicalReference): NamedQuantity {
-    let name: QuantityNames;
+  private extractQuantity(ref: CMDL.ChemicalReference): NamedQuantity {
+    let name: CMDL.QuantityNames;
     if (ref?.mass) {
       return {
         name: PROPERTIES.MASS,

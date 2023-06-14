@@ -1,42 +1,8 @@
 import { logger } from "../logger";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { PROPERTIES, ReactionRoles, ModelType, CMDLRef } from "cmdl-types";
-import { CMDLUnit } from "cmdl-units";
-import { ChemicalConfig, ChemicalOutput, ChemicalSet } from "cmdl-chemicals";
-
-/**
- * Reference to any chemical entity in CMDL within a reaction or solution group
- */
-export type CMDLChemicalReference = {
-  name: string;
-  path: string[];
-  [PROPERTIES.MASS]?: CMDLUnit;
-  [PROPERTIES.MOLES]?: CMDLUnit;
-  [PROPERTIES.VOLUME]?: CMDLUnit;
-  [PROPERTIES.PRESSURE]?: CMDLUnit;
-  [PROPERTIES.ROLES]: ReactionRoles[];
-  [PROPERTIES.LIMITING]?: boolean;
-};
-
-export type CMDLSolutionReference = {
-  name: string;
-  path: string[];
-  [PROPERTIES.FLOW_RATE]: CMDLUnit;
-  [PROPERTIES.INPUT]: CMDLRef;
-};
-
-/**
- * Solution entity within defined within CMDL
- */
-export type CMDLSolution = {
-  name: string;
-  type: ModelType.SOLUTION;
-  components: ChemicalOutput[];
-  componentConfigs: ChemicalConfig[];
-};
-
-export type CMDLSolutionExport = Omit<CMDLSolution, "componentConfigs">;
+import { ModelType, CMDL } from "cmdl-types";
+import { ChemicalSet } from "cmdl-chemicals";
 
 export class Solution extends BaseModel {
   private solution = new ChemicalSet();
@@ -52,7 +18,7 @@ export class Solution extends BaseModel {
   public execute(globalAR: ModelActivationRecord): void {
     try {
       const chemicals =
-        this.modelAR.getValue<CMDLChemicalReference[]>("chemicals");
+        this.modelAR.getValue<CMDL.ChemicalReference[]>("chemicals");
       let chemConfigs = this.createChemicalConfigs(chemicals, globalAR);
       logger.debug(`chemicals for solution ${this.name}`, { meta: chemicals });
 
@@ -61,7 +27,7 @@ export class Solution extends BaseModel {
       let output = this.solution.computeChemicalValues();
       let configs = this.solution.exportSet();
 
-      const solutionOutput: CMDLSolution = {
+      const solutionOutput: CMDL.Solution = {
         name: this.name,
         type: ModelType.SOLUTION,
         components: output,

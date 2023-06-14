@@ -1,9 +1,10 @@
-import { CmdlToken } from "../../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-parser-types";
 import { Property } from "./base-components";
-import { AstVisitor, ModelVisitor, SymbolTableBuilder } from "../../symbols";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
+import { ModelVisitor } from "../intepreter";
 import { SymbolReference } from "./reference-group";
-import { CMDLRef } from "../../symbols/symbol-types";
-import { BaseError } from "../../errors";
+import { BaseError } from "../errors";
+import { CMDL } from "cmdl-types";
 
 /**
  * Represents individual references within a reference list property
@@ -44,10 +45,10 @@ export class ReferenceValue extends Property implements SymbolReference {
   }
 
   /**
-   * Export reference value as CMDLReference
-   * @returns CMDLRef
+   * Export reference value as CMDL Reference
+   * @returns CMDL.Reference
    */
-  public export(): CMDLRef {
+  public export(): CMDL.Reference {
     return {
       ref: this.name,
       path: this.path.map((el) => el.image),
@@ -92,9 +93,9 @@ export class RefListProperty extends Property {
 
   /**
    * Exports the values of the reference list property
-   * @returns CMDLRef[]
+   * @returns CMDL.Reference[]
    */
-  public export(): CMDLRef[] {
+  public export(): CMDL.Reference[] {
     return this.value.map((el) => el.export());
   }
 

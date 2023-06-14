@@ -1,5 +1,5 @@
-import { CmdlToken } from "../../cmdl-parser-types";
-import { AstVisitor, SymbolTableBuilder } from "../../symbols";
+import { CmdlToken } from "../cmdl-parser-types";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { NamedGroup } from "./named-group";
 
 /**

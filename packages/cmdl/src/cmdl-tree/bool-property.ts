@@ -1,8 +1,8 @@
-import { AstVisitor, SymbolTableBuilder } from "../../symbols";
-import { CmdlToken } from "../../cmdl-parser-types";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
+import { CmdlToken } from "../cmdl-parser-types";
 import { Property } from "./base-components";
-import { ModelVisitor } from "../../symbols";
-import { BaseError, InvalidPropertyError } from "../../errors";
+import { ModelVisitor } from "../intepreter";
+import { BaseError, InvalidPropertyError } from "../errors";
 import { PropertyTypes } from "cmdl-types";
 
 /**

@@ -1,6 +1,7 @@
 import { IGroup, GROUPS, GroupTypes } from "./group-types";
 import { PROPERTIES } from "../properties";
 
+//TODO: Convert to named group
 const experiment: IGroup = {
   name: GROUPS.META,
   type: GroupTypes.UNAMED,
@@ -21,6 +22,7 @@ const experiment: IGroup = {
   ],
 };
 
+//TODO: available only in manifest file
 const source: IGroup = {
   name: GROUPS.SOURCE,
   type: GroupTypes.UNAMED,

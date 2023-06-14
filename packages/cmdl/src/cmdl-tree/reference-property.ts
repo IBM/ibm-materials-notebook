@@ -1,10 +1,10 @@
-import { CmdlToken } from "../../cmdl-parser-types";
-import { InvalidPropertyError } from "../../errors";
+import { CmdlToken } from "../cmdl-parser-types";
+import { InvalidPropertyError } from "../errors";
 import { Property, Group } from "./base-components";
-import { AstVisitor, SymbolTableBuilder } from "../../symbols";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { SymbolReference } from "./reference-group";
-import { ModelVisitor } from "../../symbols";
-import { BaseError } from "../../errors";
+import { ModelVisitor } from "../intepreter";
+import { BaseError } from "../errors";
 
 /**
  * Handles reference properties within CMDL record trees

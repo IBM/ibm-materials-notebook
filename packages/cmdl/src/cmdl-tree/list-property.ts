@@ -2,8 +2,9 @@ import { CmdlToken } from "../cmdl-parser-types";
 import { BaseError, InvalidPropertyError } from "../errors";
 import { parseStringImage } from "./utils";
 import { Property } from "./base-components";
-import { AstVisitor, ModelVisitor, SymbolTableBuilder } from "../symbols";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { PropertyTypes, TAGS } from "cmdl-types";
+import { ModelVisitor } from "../intepreter";
 
 /**
  * Handles list properties in CMDL record trees

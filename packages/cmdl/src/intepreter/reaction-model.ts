@@ -1,27 +1,7 @@
-import { ChemicalSet, ChemicalOutput } from "cmdl-chemicals";
+import { ChemicalSet } from "cmdl-chemicals";
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel, CMDLChemical, CMDLPolymer } from "./base-model";
-import { PROPERTIES, TAGS, ModelType } from "cmdl-types";
-import { CMDLUnit } from "cmdl-units";
-import { CMDLChemicalReference } from "./solution-model";
-import { CMDLComplex, ComplexChemical, ComplexPolymer } from "./complex-model";
-import { CMDLRxnProduct } from "./flow-model";
-
-//TODO: move types to cmdl-types
-export type REACTION = {
-  [PROPERTIES.TEMPERATURE]: CMDLUnit;
-  [PROPERTIES.VOLUME]?: CMDLUnit;
-  [PROPERTIES.REACTION_TIME]: CMDLUnit;
-};
-
-export interface CMDLReaction {
-  name: string;
-  type: ModelType.REACTION;
-  temperature?: CMDLUnit | null;
-  volume?: CMDLUnit | null;
-  reactants: ChemicalOutput[];
-  products: CMDLRxnProduct[];
-}
+import { BaseModel } from "./base-model";
+import { PROPERTIES, TAGS, ModelType, CMDL } from "cmdl-types";
 
 /**
  * Interpreter model to compute reaction stoichiometry for an experiment
@@ -40,15 +20,15 @@ export class ReactionModel extends BaseModel {
   public execute(globalAR: ModelActivationRecord): void {
     try {
       const chemicals =
-        this.modelAR.getValue<CMDLChemicalReference[]>("chemicals");
-      const products: CMDLRxnProduct[] = chemicals
+        this.modelAR.getValue<CMDL.ChemicalReference[]>("chemicals");
+      const products: CMDL.Product[] = chemicals
         .filter(
-          (el: CMDLChemicalReference) =>
+          (el: CMDL.ChemicalReference) =>
             el?.roles && el.roles.includes(TAGS.PRODUCT)
         )
-        .map((el: CMDLChemicalReference) => {
+        .map((el: CMDL.ChemicalReference) => {
           const product = globalAR.getValue<
-            CMDLChemical | CMDLComplex | CMDLPolymer
+            CMDL.Chemical | CMDL.Complex | CMDL.Polymer
           >(el.name);
 
           if (product.type === ModelType.COMPLEX) {
@@ -57,7 +37,7 @@ export class ReactionModel extends BaseModel {
               roles: el.roles,
               components: [
                 ...product.components.map(
-                  (comp: ComplexPolymer | ComplexChemical) => {
+                  (comp: CMDL.ComplexPolymer | CMDL.ComplexChemical) => {
                     return { name: comp.name, smiles: comp.smiles };
                   }
                 ),
@@ -73,12 +53,14 @@ export class ReactionModel extends BaseModel {
         });
 
       const reactants = chemicals.filter(
-        (el: CMDLChemicalReference) =>
+        (el: CMDL.ChemicalReference) =>
           el?.roles && !el.roles.includes(TAGS.PRODUCT)
       );
 
-      const volume = this.modelAR.getOptionalValue<CMDLUnit>(PROPERTIES.VOLUME);
-      const temperature = this.modelAR.getOptionalValue<CMDLUnit>(
+      const volume = this.modelAR.getOptionalValue<CMDL.StringQty>(
+        PROPERTIES.VOLUME
+      );
+      const temperature = this.modelAR.getOptionalValue<CMDL.StringQty>(
         PROPERTIES.TEMPERATURE
       );
 
@@ -91,7 +73,7 @@ export class ReactionModel extends BaseModel {
 
       const output = this.reaction.computeChemicalValues();
 
-      const reactionOutput: CMDLReaction = {
+      const reactionOutput: CMDL.Reaction = {
         name: this.name,
         type: ModelType.REACTION,
         volume: volume || null,

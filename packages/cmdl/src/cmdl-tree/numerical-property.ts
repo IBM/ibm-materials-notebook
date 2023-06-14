@@ -1,13 +1,13 @@
-import { CmdlToken } from "../../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-parser-types";
 import {
   BaseError,
   InvalidPropertyError,
   MissingValueError,
   RangeError,
-} from "../../errors";
+} from "../errors";
 import { Property, Group } from "./base-components";
-import { AstVisitor, SymbolTableBuilder } from "../../symbols";
-import { ModelVisitor } from "../../symbols";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
+import { ModelVisitor } from "../intepreter";
 import Big from "big.js";
 
 /**

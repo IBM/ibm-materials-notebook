@@ -26,7 +26,6 @@ import {
   Group,
   Property,
 } from "../cmdl-tree";
-import { ErrorTable } from "../errors";
 import { CmdlStack } from "../cmdl-stack";
 import { PolymerContainer } from "cmdl-polymers";
 import { CmdlToken } from "../cmdl-parser-types";
@@ -35,14 +34,15 @@ import { CMDLNodeTree } from "./symbol-types";
 
 /**
  * Visits record tree and constructs symbol table for entire document
+ * TODO: enable namespacing for module resolution and imports
  */
 export class SymbolTableBuilder implements AstVisitor {
+  //Add namespace/parent property
   private tableStack = new CmdlStack<SymbolTable>();
-  errors: ErrorTable;
+  errors = new Map<string, BaseError[]>();
   uri: string;
 
-  constructor(global: SymbolTable, errTable: ErrorTable, uri: string) {
-    this.errors = errTable;
+  constructor(global: SymbolTable, uri: string) {
     this.uri = uri;
     this.tableStack.push(global);
   }
@@ -142,7 +142,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Gets any generated errors during symbol table construction
    * @returns BaseError[]
    */
-  public getErrors(): BaseError[] {
+  public getErrors(): BaseError[] | undefined {
     return this.errors.get(this.uri);
   }
 
@@ -154,7 +154,7 @@ export class SymbolTableBuilder implements AstVisitor {
     try {
       node.accept(this);
     } catch (error) {
-      this.errors.add(this.uri, [error] as BaseError[]);
+      this.errors.set(this.uri, [error] as BaseError[]);
       logger.warn(
         `Unable to visit node ${node.name}:\n-${(error as Error).message}`
       );
@@ -276,6 +276,7 @@ export class SymbolTableBuilder implements AstVisitor {
 
   /**
    * Creates a declaration symbol and adds to current scope
+   * TODO: refactor import op for module resolution
    * @param node ImportOp
    */
   public visitImportOp(node: ImportOp): void {
@@ -293,6 +294,7 @@ export class SymbolTableBuilder implements AstVisitor {
 
   /**
    * Method for handling importing a reactor graph to a CMDL notebook
+   * TODO: refactor import op for module resolution
    * @param node ImportOp
    * @param model ModelType
    */
@@ -337,6 +339,7 @@ export class SymbolTableBuilder implements AstVisitor {
 
   /**
    * Method for handeling importing a polymer graph representation into a CMDL notebook
+   * TODO: refactor import op for module resolution
    * @param node ImportOp
    * @param model ModelType
    */
@@ -377,6 +380,7 @@ export class SymbolTableBuilder implements AstVisitor {
 
   /**
    * Method for handling general imports to a CMDL notebook
+   * TODO: refactor import op for module resolution
    * @param node ImportOp
    * @param model ModelType
    */

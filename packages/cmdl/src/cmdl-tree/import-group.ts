@@ -2,7 +2,8 @@ import { CmdlToken } from "../cmdl-parser-types";
 import { BaseError, FileError, RefError } from "../errors";
 import { RecordNode } from "./base-components";
 import { parseStringImage } from "./utils";
-import { AstVisitor, ModelVisitor, SymbolTableBuilder } from "../symbols";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
+import { ModelVisitor } from "../intepreter";
 
 /**
  * Component AST node for handling import operations

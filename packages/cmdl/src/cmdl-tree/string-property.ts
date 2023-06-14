@@ -1,10 +1,10 @@
-import { CmdlToken } from "../../cmdl-parser-types";
-import { parseStringImage } from "../utils";
+import { CmdlToken } from "../cmdl-parser-types";
+import { parseStringImage } from "./utils";
 import { Property } from "./base-components";
-import { AstVisitor, SymbolTableBuilder } from "../../symbols";
-import { ModelVisitor } from "../../symbols";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
+import { ModelVisitor } from "../intepreter";
 import { PROPERTIES, PropertyTypes } from "cmdl-types";
-import { BaseError, InvalidPropertyError } from "../../errors";
+import { BaseError, InvalidPropertyError } from "../errors";
 import { BigSMILES } from "ts-bigsmiles";
 
 /**

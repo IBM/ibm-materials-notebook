@@ -1,19 +1,7 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType } from "cmdl-types";
-import {
-  CMDLReactor,
-  CMDLReactorNode,
-  SerializedReactor,
-  ReactorContainer,
-} from "cmdl-reactors";
-
-//TODO: move types to cmdl-types
-
-export type CMDLFlowReactor = SerializedReactor & {
-  name: string;
-  type: ModelType.REACTOR_GRAPH;
-};
+import { ModelType, CMDL } from "cmdl-types";
+import { ReactorContainer } from "cmdl-reactors";
 
 export class Reactor extends BaseModel {
   private container = new ReactorContainer();
@@ -42,7 +30,7 @@ export class Reactor extends BaseModel {
       globalAR.setValue(this.name, properties);
     } else {
       const nodes =
-        this.modelAR.getValue<(CMDLReactorNode | CMDLReactor)[]>("nodes");
+        this.modelAR.getValue<(CMDL.ReactorNode | CMDL.Reactor)[]>("nodes");
 
       for (const node of nodes) {
         if (node.type === "reactor") {

@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { Quantity, NumberQuantity, CMDLUnit } from "./unit-compound";
+import { CMDL } from "cmdl-types";
 import Unit from "./unit-compound";
 
 const MIN_EXP_PLACES = -3;
@@ -9,7 +9,7 @@ const MIN_EXP_PLACES = -3;
  * @param unit Quantity
  * @returns Object
  */
-function minimizeExponent(unit: Quantity) {
+function minimizeExponent(unit: CMDL.BigQty) {
   if (unit.value.e >= 3 || unit.value.e <= -3) {
     let direction = unit.value.e > 0 ? 1 : -1;
     let scaledUnit = new Unit(unit);
@@ -21,14 +21,14 @@ function minimizeExponent(unit: Quantity) {
 
 /**
  * Handles rounding of numeric values during stoichiometry calculations
- * @param unit Quantity | null
+ * @param unit CMDL.BigQty | null
  * @param adjustExponent boolean
  * @returns NumberQuantity
  */
 export function handleRounding(
-  unit: Quantity | null,
+  unit: CMDL.BigQty | null,
   adjustExponent = false
-): NumberQuantity {
+): CMDL.NumericQty {
   if (!unit) {
     throw new Error(`Unit is not defined: ${unit}`);
   }
@@ -60,7 +60,7 @@ export function handleRounding(
  * @param qty Quantity
  * @returns CMDLUnit
  */
-export function convertQty(qty: Quantity): CMDLUnit {
+export function convertQty(qty: CMDL.BigQty): CMDL.StringQty {
   return {
     ...qty,
     value: String(qty.value.toNumber()),

@@ -1,3 +1,2 @@
-export { SymbolTable, SymbolTableBuilder, AstVisitor } from "./symbols";
-export { ModelVisitor, ModelARManager } from "./models";
-export { PolymerContainer } from "./polymers";
+export { SymbolTable, AstVisitor } from "./symbol-table";
+export { SymbolTableBuilder } from "./symbol-table-builder";

@@ -1,7 +1,7 @@
-import { CmdlToken } from "../../cmdl-parser-types";
-import { AstVisitor, SymbolTableBuilder } from "../../symbols";
+import { CmdlToken } from "../cmdl-parser-types";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { Property } from "./base-components";
-import { BaseError } from "../../errors";
+import { BaseError } from "../errors";
 
 /**
  * Handles variable properties with CMDL record trees

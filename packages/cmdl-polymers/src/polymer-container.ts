@@ -1,21 +1,7 @@
-// import { ModelActivationRecord } from "../models";
 import { PolymerGraph } from "./polymer-graph";
 import { PolymerTree } from "./polymer-tree";
 import { PolymerWeight } from "./polymer-weights";
-// import { CMDLPolymerTree } from "./polymer-types";
-import { CMDLNodeTree, ModelType, RefResult, PROPERTIES } from "cmdl-types";
-
-export type CMDLUnitless = {
-  unit: null;
-  value: string;
-  uncertainty: string | null;
-};
-
-export type CMDLPolymerTreeValue = {
-  name: string;
-  path: string[];
-  [PROPERTIES.DEGREE_POLY]: CMDLUnitless;
-};
+import { ModelType, CMDL } from "cmdl-types";
 
 export interface JSONPolymerGraph {
   nodes: JSONPolymerNode[];
@@ -69,11 +55,12 @@ export class PolymerContainer {
     this.name = name;
   }
 
-  // /**
-  //  * Constructs a polymer composite tree data structure
-  //  * @param treeConfig CMDLPolymerTree
-  //  * @param record ModelActivationRecord
-  //  */
+  /**
+   * Constructs a polymer composite tree data structure
+   * @param treeConfig CMDLPolymerTree
+   * @param record ModelActivationRecord
+   * TODO: remove coupling with model activation record
+   */
   // buildTree(treeConfig: CMDLPolymerTree, record: ModelActivationRecord) {
   //   this.tree.initialize(treeConfig, record);
   //   this.tree.root?.setName();
@@ -134,17 +121,17 @@ export class PolymerContainer {
    * nodes within the symbol table
    * @returns CMDLNodeTree
    */
-  public getGraphNodes(): CMDLNodeTree {
+  public getGraphNodes(): CMDL.NodeTree {
     const keys = this.graph.getNodeKeys();
 
-    const keyTree: CMDLNodeTree = {};
+    const keyTree: CMDL.NodeTree = {};
 
     for (const key of keys) {
       let keyPath = key.split(".");
       traverseKeys(keyPath, keyTree);
     }
 
-    function traverseKeys(path: string[], keyTree: CMDLNodeTree): void {
+    function traverseKeys(path: string[], keyTree: CMDL.NodeTree): void {
       if (!path.length) {
         return;
       }
@@ -174,7 +161,7 @@ export class PolymerContainer {
    * in the polymer graph
    * @param values CMDLPolymerTreeValue[] | RefResult[]
    */
-  public addGraphValues(values: CMDLPolymerTreeValue[] | RefResult[]) {
+  public addGraphValues(values: CMDL.PolymerTreeValue[] | CMDL.RefResult[]) {
     const baseName = this.tree.getBaseName();
     for (const prop of values) {
       let path = `${baseName}.${prop.path.join(".")}`;

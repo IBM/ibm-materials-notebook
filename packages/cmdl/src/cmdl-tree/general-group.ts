@@ -1,13 +1,10 @@
-import { CmdlToken } from "../../cmdl-parser-types";
-import {
-  BaseError,
-  InvalidGroupError,
-  InvalidPropertyError,
-} from "../../errors";
+import { CmdlToken } from "../cmdl-parser-types";
+import { BaseError, InvalidGroupError, InvalidPropertyError } from "../errors";
 import { Group, Property, RecordNode } from "./base-components";
 import { IGroup, GroupTypes } from "cmdl-types";
 import { ReferenceGroup } from "./reference-group";
-import { AstVisitor, ModelVisitor, SymbolTableBuilder } from "../../symbols";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
+import { ModelVisitor } from "../intepreter";
 
 /**
  * Handles general, unnamed groups in CMDL record trees

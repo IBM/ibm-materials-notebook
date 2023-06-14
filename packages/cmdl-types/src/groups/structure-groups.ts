@@ -37,6 +37,7 @@ const polymerGraph: IGroup = {
   properties: [PROPERTIES.NODES, PROPERTIES.CONNECTIONS],
 };
 
+//TODO: deprecate in favor of SMILES parser
 const connectionPoint: IGroup = {
   name: GROUPS.POINT,
   type: GroupTypes.NAMED,
