@@ -1,8 +1,8 @@
 import { IToken } from "chevrotain";
 import { CmdlToken } from "./cmdl-parser-types";
 import { CmdlAst, CmdlNode } from "./cmdl-ast";
+import { parserInstance } from "./parser";
 import {
-  parserInstance,
   GroupCstChildren,
   GroupDeclarationCstChildren,
   GroupItemCstChildren,
@@ -21,7 +21,7 @@ import {
   ReferencePipeCstChildren,
   VariableGroupCstChildren,
   AliasClauseCstChildren,
-} from "./parser";
+} from "./parser-types";
 
 export enum AstNodes {
   RECORD = "RECORD",

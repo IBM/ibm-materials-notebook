@@ -15,6 +15,7 @@ export class ListProperty extends Property {
 
   constructor(token: CmdlToken) {
     super(token);
+    this.valueToken = [];
   }
 
   /**

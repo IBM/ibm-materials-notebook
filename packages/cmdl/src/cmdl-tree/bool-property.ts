@@ -10,7 +10,6 @@ import { PropertyTypes } from "cmdl-types";
  */
 export class BoolProperty extends Property {
   protected value: string = "";
-  protected valueToken?: CmdlToken;
 
   constructor(token: CmdlToken) {
     super(token);

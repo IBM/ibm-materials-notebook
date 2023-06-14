@@ -8,7 +8,6 @@ import { BaseError } from "../errors";
  */
 export class VariableProperty extends Property {
   protected value: string = "";
-  protected valueToken?: CmdlToken;
 
   constructor(token: CmdlToken) {
     super(token);

@@ -1,9 +1,5 @@
-export { typeManager } from "./cmdl-types/type-mananger";
-export { IProperty } from "./cmdl-types/properties";
+export { typeManager, IProperty } from "cmdl-types";
 export { CmdlCompiler, CompilerOuput } from "./cmdl-compiler";
-export {
-  SymbolTable,
-  ModelARManager,
-  ModelVisitor,
-  PolymerContainer,
-} from "./symbols";
+export { SymbolTable } from "./symbols";
+export { ModelARManager, ModelVisitor } from "./intepreter";
+export { PolymerContainer } from "cmdl-polymers";

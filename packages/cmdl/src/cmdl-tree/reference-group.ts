@@ -6,6 +6,7 @@ import { CmdlTree } from "../cmdl-tree";
 import { GeneralGroup } from "./general-group";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
+import { typeManager } from "cmdl-types";
 
 export interface SymbolReference extends RecordNode {
   path: CmdlToken[];
@@ -40,7 +41,7 @@ export class ReferenceGroup extends Group implements SymbolReference {
       return;
     }
 
-    const groupProps = this.typeManager.getGroup(this.parent.name);
+    const groupProps = typeManager.getGroup(this.parent.name);
 
     if (!groupProps) {
       let msg = `${this.name} is not a recognized group`;

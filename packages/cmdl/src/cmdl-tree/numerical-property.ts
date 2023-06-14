@@ -9,6 +9,7 @@ import { Property, Group } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
 import { CMDL } from "cmdl-types";
+import { typeManager } from "cmdl-types";
 import Big from "big.js";
 
 /**
@@ -24,6 +25,7 @@ export class NumericalProperty extends Property {
 
   constructor(token: CmdlToken) {
     super(token);
+    this.valueToken = undefined;
   }
 
   /**
@@ -129,7 +131,7 @@ export class NumericalProperty extends Property {
         return;
       }
 
-      const unitType = this.typeManager.getUnit(this.unit);
+      const unitType = typeManager.getUnit(this.unit);
 
       if (!unitType) {
         msg = `${this.unit} is an unrecognized unit type`;

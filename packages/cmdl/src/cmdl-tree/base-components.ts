@@ -46,7 +46,6 @@ export abstract class Group implements RecordNode {
   nameToken: CmdlToken;
   parent: RecordNode | CmdlTree | null = null;
   errors: BaseError[] = [];
-  protected readonly typeManager = typeManager;
   children: RecordNode[] = [];
   protected groupProps?: IGroup;
 
@@ -72,7 +71,7 @@ export abstract class Group implements RecordNode {
    * Sets the allowed property types on the group for validation purposes
    */
   protected setGroupProps(): void {
-    const groupProps = this.typeManager.getGroup(this.name);
+    const groupProps = typeManager.getGroup(this.name);
 
     if (!groupProps) {
       let msg = `${this.name} is not a recognized group`;
@@ -144,7 +143,6 @@ export abstract class Property implements RecordNode {
   nameToken: CmdlToken;
   parent: RecordNode | CmdlTree | null = null;
   errors: BaseError[] = [];
-  protected readonly typeManager = typeManager;
   protected value: string[] | string | boolean | ReferenceValue[] | null = null;
   protected valueToken?: CmdlToken | CmdlToken[];
   protected propertyType?: IProperty;
@@ -163,7 +161,7 @@ export abstract class Property implements RecordNode {
    * @returns void
    */
   protected getPropertyType(): void {
-    const propertyType = this.typeManager.getProperty(this.name);
+    const propertyType = typeManager.getProperty(this.name);
 
     if (!propertyType) {
       let msg = `${this.name} is an unrecognized property`;

@@ -10,8 +10,6 @@ import { ModelVisitor } from "../intepreter";
  * Handles general, unnamed groups in CMDL record trees
  */
 export class GeneralGroup extends Group {
-  protected groupProps?: IGroup;
-
   constructor(token: CmdlToken) {
     super(token);
     this.validateGroupChild = this.validateGroupChild.bind(this);

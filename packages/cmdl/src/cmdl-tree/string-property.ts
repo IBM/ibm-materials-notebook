@@ -12,7 +12,6 @@ import { BigSMILES } from "ts-bigsmiles";
  */
 export class StringProperty extends Property {
   protected value: string = "";
-  protected valueToken?: CmdlToken;
 
   constructor(token: CmdlToken) {
     super(token);

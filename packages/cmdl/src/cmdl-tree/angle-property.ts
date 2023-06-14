@@ -12,7 +12,6 @@ export class AngleProperty extends Property {
   protected lhs: ReferenceValue[] = [];
   protected rhs: ReferenceValue[] = [];
   protected value: string = "1";
-  protected valueToken?: CmdlToken;
   protected currentSide: "lhs" | "rhs" = "lhs";
 
   constructor(lAngle: CmdlToken, rAngle: CmdlToken) {

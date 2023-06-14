@@ -11,7 +11,6 @@ import { BaseError } from "../errors";
  */
 export class RefProperty extends Property implements SymbolReference {
   protected value: string = "";
-  protected valueToken?: CmdlToken;
   path: CmdlToken[] = [];
 
   constructor(token: CmdlToken) {

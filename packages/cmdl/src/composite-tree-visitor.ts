@@ -1,7 +1,7 @@
 import { IToken } from "chevrotain";
 import { CmdlToken } from "./cmdl-parser-types";
+import { parserInstance } from "./parser";
 import {
-  parserInstance,
   GroupCstChildren,
   GroupDeclarationCstChildren,
   GroupItemCstChildren,
@@ -20,7 +20,7 @@ import {
   ReferencePipeCstChildren,
   VariableGroupCstChildren,
   AliasClauseCstChildren,
-} from "./parser";
+} from "./parser-types";
 import {
   ImportOp,
   GeneralGroup,

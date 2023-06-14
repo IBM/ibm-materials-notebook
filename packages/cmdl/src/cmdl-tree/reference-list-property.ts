@@ -48,7 +48,7 @@ export class ReferenceValue extends Property implements SymbolReference {
    * Export reference value as CMDL Reference
    * @returns CMDL.Reference
    */
-  public export(): CMDL.Reference {
+  public export() {
     return {
       ref: this.name,
       path: this.path.map((el) => el.image),
