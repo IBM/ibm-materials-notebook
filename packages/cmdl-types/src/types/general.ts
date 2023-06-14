@@ -1,13 +1,8 @@
 import { PROPERTIES } from "../properties";
 import { GROUPS } from "../groups";
 import { TAGS } from "../tags";
-import {
-  Chemical,
-  Polymer,
-  Fragment,
-  Complex,
-  PolymerGraph,
-} from "./chemicals";
+import { Chemical, Fragment, Complex } from "./chemicals";
+import { Polymer, PolymerGraph } from "./polymer";
 import { FlowReactor } from "./reactors";
 import { FlowRxn, Reaction, Solution } from "./reactions";
 import { SampleOutput } from "./characterization";

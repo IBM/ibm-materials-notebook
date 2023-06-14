@@ -1,6 +1,8 @@
-import { PolymerGraph } from "./polymer-graph";
-import { PolymerTree } from "./polymer-tree";
-import { PolymerWeight } from "./polymer-weights";
+import { PolymerGraph } from "./graph";
+import { PolymerTree } from "./tree";
+import { PolymerWeight } from "./weights";
+import { PolymerNode } from "./node";
+import { Container } from "./tree-container";
 import { ModelType, CMDL } from "cmdl-types";
 
 export interface JSONPolymerGraph {
@@ -55,22 +57,43 @@ export class PolymerContainer {
     this.name = name;
   }
 
+  public insertContainer(container: Container, parent?: string): void {
+    this.tree.insert(container, parent);
+  }
+
+  public createPolymerContainer(name: string): Container {
+    return new Container(name);
+  }
+
+  public createPolymerNode(name: string, fragment: CMDL.Fragment): PolymerNode {
+    return new PolymerNode({
+      fragment: name,
+      mw: fragment.molecular_weight.value,
+      smiles: fragment.smiles,
+    });
+  }
+
+  public createPolymerEdges(
+    conn: CMDL.PolymerConnection,
+    container: Container
+  ): void {
+    this.tree.createEdges(conn, container);
+  }
+
   /**
    * Constructs a polymer composite tree data structure
-   * @param treeConfig CMDLPolymerTree
-   * @param record ModelActivationRecord
-   * TODO: remove coupling with model activation record
    */
-  // buildTree(treeConfig: CMDLPolymerTree, record: ModelActivationRecord) {
-  //   this.tree.initialize(treeConfig, record);
-  //   this.tree.root?.setName();
-  //   this.tree.root?.setPath();
-  //   this.tree.root?.updateConnectionPaths();
-  // }
+  build(): void {
+    this.tree.root?.setName();
+    this.tree.root?.setPath();
+    this.tree.root?.updateConnectionPaths();
+    this.buildGraph();
+  }
 
   /**
    * Initializes polymer tree data structure from imported JSON representation
    * @param tree JSONPolymerTree<null>
+   *
    */
   initializeTreeFromJSON(tree: JSONPolymerTree<null>): void {
     this.tree.fromJSON(tree);
@@ -96,7 +119,7 @@ export class PolymerContainer {
   /**
    * Method to convert polymer composite tree into a graph
    */
-  public buildGraph(): void {
+  private buildGraph(): void {
     this.graph.initialize(this.tree);
   }
 

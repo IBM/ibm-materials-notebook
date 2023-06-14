@@ -57,10 +57,10 @@ export class ReactionModel extends BaseModel {
           el?.roles && !el.roles.includes(TAGS.PRODUCT)
       );
 
-      const volume = this.modelAR.getOptionalValue<CMDL.StringQty>(
+      const volume = this.modelAR.getOptionalValue<CMDL.BigQty>(
         PROPERTIES.VOLUME
       );
-      const temperature = this.modelAR.getOptionalValue<CMDL.StringQty>(
+      const temperature = this.modelAR.getOptionalValue<CMDL.BigQty>(
         PROPERTIES.TEMPERATURE
       );
 

@@ -1,28 +1,4 @@
 import { PolymerTreeVisitor } from "./polymer-visitors";
-import { CMDLRef } from "cmdl-types";
-
-export interface CMDLPolymerConnection {
-  sources: CMDLRef[];
-  targets: CMDLRef[];
-  quantity: string;
-}
-
-export interface CMDLPolymerContainer {
-  name: string;
-  nodes: CMDLRef[];
-  type: string;
-  connections?: CMDLPolymerConnection[];
-  containers?: CMDLPolymerContainer[];
-  parent?: string;
-}
-
-export interface CMDLPolymerTree {
-  name: string;
-  nodes: CMDLRef[];
-  connections?: CMDLPolymerConnection[];
-  containers?: CMDLPolymerContainer[];
-  parent?: string;
-}
 
 export interface Serializable {
   /**

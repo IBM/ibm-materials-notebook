@@ -1,9 +1,9 @@
-import { PolymerTree } from "./polymer-tree";
-import { PolymerComponent } from "./polymer-types";
-import { Container } from "./polymer-tree-container";
-import { PolymerNode } from "./polymer-node";
-import { PolymerEdge } from "./polymer-edge";
-import { JSONPolymerGraph } from "./polymer-container";
+import { PolymerTree } from "./tree";
+import { PolymerComponent } from "./types";
+import { Container } from "./tree-container";
+import { PolymerNode } from "./node";
+import { PolymerEdge } from "./edge";
+import { JSONPolymerGraph } from "./container";
 
 /**
  * Class for handling polymer graph representation

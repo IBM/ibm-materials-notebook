@@ -1,37 +1,36 @@
 import { PROPERTIES, ReactionRoles } from "../properties";
 import { ModelType } from "../groups/group-types";
-import { StringQty, NumericQty } from "./units";
+import { NumericQty, BigQty, NamedQty } from "./quantities";
 import { Polymer } from "./polymer";
-import { ChemStates } from "./reference";
+import { BaseModel, ChemStates } from "./reference";
+import Big from "big.js";
 
-export type Chemical = {
-  name: string;
+export interface Chemical extends BaseModel {
   type: ModelType.CHEMICAL;
   [PROPERTIES.INCHI_KEY]?: string;
   [PROPERTIES.INCHI]?: string;
-  [PROPERTIES.MOL_WEIGHT]: StringQty;
+  [PROPERTIES.MOL_WEIGHT]: BigQty;
   [PROPERTIES.SMILES]: string;
-  [PROPERTIES.DENSITY]?: StringQty;
+  [PROPERTIES.DENSITY]?: BigQty;
   [PROPERTIES.STATE]: ChemStates;
-};
+}
 
 export type ChemicalReference = {
   name: string;
   path: string[];
-  [PROPERTIES.MASS]?: StringQty;
-  [PROPERTIES.MOLES]?: StringQty;
-  [PROPERTIES.VOLUME]?: StringQty;
-  [PROPERTIES.PRESSURE]?: StringQty;
+  [PROPERTIES.MASS]?: BigQty;
+  [PROPERTIES.MOLES]?: BigQty;
+  [PROPERTIES.VOLUME]?: BigQty;
+  [PROPERTIES.PRESSURE]?: BigQty;
   [PROPERTIES.ROLES]: ReactionRoles[];
   [PROPERTIES.LIMITING]?: boolean;
 };
 
-export type Fragment = {
-  name: string;
+export interface Fragment extends BaseModel {
   type: ModelType.FRAGMENT;
   [PROPERTIES.SMILES]: string;
-  [PROPERTIES.MOL_WEIGHT]: StringQty;
-};
+  [PROPERTIES.MOL_WEIGHT]: BigQty;
+}
 
 export type ComplexReference = {
   name: string;
@@ -67,5 +66,18 @@ export interface ChemicalOutput {
   molarity: NumericQty;
   molality: NumericQty;
   moles_vol: NumericQty;
+  limiting: boolean;
+}
+
+export interface ChemicalConfig {
+  name: string;
+  mw: Big;
+  smiles?: string;
+  density: Big | null;
+  state: ChemStates;
+  roles: ReactionRoles[];
+  quantity: NamedQty;
+  volume?: BigQty;
+  temperature?: BigQty;
   limiting: boolean;
 }

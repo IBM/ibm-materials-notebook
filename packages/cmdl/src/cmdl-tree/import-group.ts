@@ -68,11 +68,11 @@ export class ImportOp implements RecordNode {
     return this.errors;
   }
 
-  public print(): Record<string, any> {
-    return {
-      name: this.name,
-      source: this.source,
-    };
+  public print(): string {
+    return `
+      name: ${this.name},
+      source: ${this.source},
+    `;
   }
 
   /**

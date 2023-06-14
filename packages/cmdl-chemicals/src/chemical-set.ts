@@ -1,11 +1,8 @@
 import { BaseChemical, ChemPropKey } from "./base-chemical";
-import { UnitOperator, Unit, Quantity } from "cmdl-units";
-import ChemicalFactory, {
-  ChemicalConfig,
-  ChemicalOutput,
-} from "./chemical-factory";
+import { UnitOperator, Unit } from "cmdl-units";
+import ChemicalFactory from "./chemical-factory";
 import Big from "big.js";
-import { TAGS } from "cmdl-types";
+import { TAGS, CMDL } from "cmdl-types";
 
 /**
  * Class for managing sets of chemicals in a solution or reaction
@@ -15,9 +12,9 @@ export default class ChemicalSet {
   private chemicalMap = new Map<string, BaseChemical>();
   private limiting: BaseChemical | null = null;
   private hasSolvent: boolean = false;
-  private totalSolventVolume: Quantity | null = null;
-  private totalSolventMass: Quantity | null = null;
-  private totalReactionVolume: Quantity | null = null;
+  private totalSolventVolume: CMDL.BigQty | null = null;
+  private totalSolventMass: CMDL.BigQty | null = null;
+  private totalReactionVolume: CMDL.BigQty | null = null;
 
   /**
    * Retrieves chemicals from chemical set
@@ -29,24 +26,24 @@ export default class ChemicalSet {
   /**
    * Retrieves output values of chemicals in the chemical set
    */
-  get chemicalValues(): ChemicalOutput[] {
+  get chemicalValues(): CMDL.ChemicalOutput[] {
     return this.chemicals.map((item) => item.getValues());
   }
 
   /**
    * Inserts a chemical into the chemical set
-   * @param chem ChemicalConfig
+   * @param chem CMDL.ChemicalConfig
    */
-  public insert(chem: ChemicalConfig): void {
+  public insert(chem: CMDL.ChemicalConfig): void {
     let chemical = this.chemicalFactory.create(chem);
     this.merge(chemical);
   }
 
   /**
    * Inserts an array of chemicals into the current chemical set
-   * @param chemicals ChemicalConfig[]
+   * @param chemicals CMDL.ChemicalConfig[]
    */
-  public insertMany(chemicals: ChemicalConfig[]): void {
+  public insertMany(chemicals: CMDL.ChemicalConfig[]): void {
     for (const chemConfig of chemicals) {
       let chemical = this.chemicalFactory.create(chemConfig);
       this.merge(chemical);
@@ -77,9 +74,9 @@ export default class ChemicalSet {
 
   /**
    * Computes quantity values, concentrations, and stochiometry for a chemical set
-   * @returns ChemicalOutput[]
+   * @returns CMDL.ChemicalOutput[]
    */
-  public computeChemicalValues(): ChemicalOutput[] {
+  public computeChemicalValues(): CMDL.ChemicalOutput[] {
     try {
       if (![...this.chemicalMap.values()].length) {
         return [];
@@ -231,8 +228,8 @@ export default class ChemicalSet {
    * Returns a set of mole values from a solution based on a volume
    *
    */
-  public getMolesByVolume(volume: Quantity): ChemicalConfig[] {
-    const configs: ChemicalConfig[] = [];
+  public getMolesByVolume(volume: CMDL.BigQty): CMDL.ChemicalConfig[] {
+    const configs: CMDL.ChemicalConfig[] = [];
 
     for (const chem of this.chemicalMap.values()) {
       let chemConfig = chem.getMolesByVolume(volume);
@@ -245,8 +242,8 @@ export default class ChemicalSet {
   /**
    * Exports current chemical set to corresponding chemical configs
    */
-  public exportSet(): ChemicalConfig[] {
-    const configs: ChemicalConfig[] = [];
+  public exportSet(): CMDL.ChemicalConfig[] {
+    const configs: CMDL.ChemicalConfig[] = [];
 
     for (const chem of this.chemicalMap.values()) {
       let chemConfig = chem.export();

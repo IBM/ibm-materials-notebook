@@ -1,8 +1,8 @@
-import { PolymerEdge } from "../polymer-edge";
-import { PolymerComponent } from "../polymer-types";
-import { Container } from "../polymer-tree-container";
-import { CycliStrategy } from "../polymer-strategies";
-import { PolymerWeight } from "../polymer-weights";
+import { PolymerEdge } from "../edge";
+import { PolymerComponent } from "../types";
+import { Container } from "../tree-container";
+import { CycliStrategy } from "../strategies";
+import { PolymerWeight } from "../weights";
 import { PolymerTreeVisitor } from "./strategy-visitor";
 import Big from "big.js";
 

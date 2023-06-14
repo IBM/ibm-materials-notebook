@@ -1,8 +1,6 @@
-import { Unit, Quantity, handleRounding } from "cmdl-units";
+import { Unit, handleRounding } from "cmdl-units";
 import Big from "big.js";
-import { UNITS, ReactionRoles } from "cmdl-types";
-import { ChemicalConfig, ChemicalOutput } from "./chemical-factory";
-import { NamedQuantity } from "./chemical-factory";
+import { UNITS, ReactionRoles, CMDL } from "cmdl-types";
 
 export enum ChemPropKey {
   MASS = "mass",
@@ -25,14 +23,14 @@ export abstract class BaseChemical {
   smiles?: string;
   roles: ReactionRoles[];
   ratio: Big | null = null;
-  mass: Quantity | null = null;
-  volume: Quantity | null = null;
-  moles: Quantity | null = null;
-  pressure: Quantity | null = null;
-  molarity: Quantity | null = null;
-  molality: Quantity | null = null;
-  moles_vol: Quantity | null = null;
-  solidVol: Quantity | null = null;
+  mass: CMDL.BigQty | null = null;
+  volume: CMDL.BigQty | null = null;
+  moles: CMDL.BigQty | null = null;
+  pressure: CMDL.BigQty | null = null;
+  molarity: CMDL.BigQty | null = null;
+  molality: CMDL.BigQty | null = null;
+  moles_vol: CMDL.BigQty | null = null;
+  solidVol: CMDL.BigQty | null = null;
   limiting: boolean = false;
 
   constructor(
@@ -49,9 +47,9 @@ export abstract class BaseChemical {
 
   /**
    * Computes missing values (mass, volume, moles...etc) for a given chemical
-   * @param qty NamedQuantity
+   * @param qty CMDL.NamedQty
    */
-  abstract computeValues(qty: NamedQuantity): void;
+  abstract computeValues(qty: CMDL.NamedQty): void;
 
   /**
    * Merge identical chemicals in a chemical set
@@ -61,14 +59,14 @@ export abstract class BaseChemical {
 
   /**
    * Compute moles of a given chemical in a reaction based on a volume
-   * @param volume Quantity
+   * @param volume CMDL.BigQty
    */
-  abstract getMolesByVolume(volume: Quantity): ChemicalConfig;
+  abstract getMolesByVolume(volume: CMDL.BigQty): CMDL.ChemicalConfig;
 
   /**
    * Exports a chemical as a ChemicalConfig
    */
-  abstract export(): ChemicalConfig;
+  abstract export(): CMDL.ChemicalConfig;
 
   /**
    * Sets whether or not the chemical is limiting in a reaction
@@ -80,9 +78,9 @@ export abstract class BaseChemical {
   /**
    * Retrieves property of chemical based on a key
    * @param prop ChemPropKey
-   * @returns Quantity
+   * @returns CMDL.BigQty
    */
-  public getProperty(prop: ChemPropKey): Quantity {
+  public getProperty(prop: ChemPropKey): CMDL.BigQty {
     let value = this[prop];
 
     if (!value) {
@@ -106,12 +104,12 @@ export abstract class BaseChemical {
 
   /**
    * Computes the concentration of this chemical in a reaction
-   * @param totalQty Quantity | null
+   * @param totalQty CMDL.BigQty | null
    * @param type "molarity" | "molality" | "moles_vol"
    * @returns
    */
   public computeConcentration(
-    totalQty: Quantity | null,
+    totalQty: CMDL.BigQty | null,
     type: "molarity" | "molality" | "moles_vol"
   ): void {
     if (!totalQty || !this.moles) {
@@ -149,10 +147,10 @@ export abstract class BaseChemical {
 
   /**
    * Computes moles of a chemical based on current concentration and a new volume amount
-   * @param newVolume Quantity
-   * @returns Quantity
+   * @param newVolume CMDL.BigQty
+   * @returns CMDL.BigQty
    */
-  protected computeMolsFromMolarity(newVolume: Quantity): Quantity {
+  protected computeMolsFromMolarity(newVolume: CMDL.BigQty): CMDL.BigQty {
     if (!this.molarity) {
       throw new Error(`\n-Unable to compute from molarity: ${this.name}`);
     }
@@ -180,9 +178,9 @@ export abstract class BaseChemical {
   /**
    * Combines two identical chemicals based on their moles value
    * @param chemical BaseChemical
-   * @returns Quantity
+   * @returns CMDL.BigQty
    */
-  protected combineMoles(chemical: BaseChemical): Quantity {
+  protected combineMoles(chemical: BaseChemical): CMDL.BigQty {
     if (this.name !== chemical.name) {
       throw new Error(`\n-Cannot merge two different chemicals`);
     }
@@ -206,13 +204,13 @@ export abstract class BaseChemical {
 
   /**
    * Retrieves output of the chemical
-   * @returns ChemicalOutput
+   * @returns CMDL.ChemicalOutput
    */
-  public getValues(): ChemicalOutput {
+  public getValues(): CMDL.ChemicalOutput {
     let returnValue = {
       name: this.name,
-      mw: this.mw ? this.mw : null,
-      density: this.density ? this.density : null,
+      mw: this.mw ? this.mw.toNumber() : null,
+      density: this.density ? this.density.toNumber() : null,
       smiles: this.smiles ? this.smiles : null,
       mass: handleRounding(this.mass, true),
       volume: this.volume ? handleRounding(this.volume, true) : this.volume,

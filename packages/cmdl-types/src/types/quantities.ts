@@ -48,3 +48,11 @@ export type QuantityNames =
   | PROPERTIES.VOLUME
   | PROPERTIES.MOLES
   | PROPERTIES.PRESSURE;
+
+export interface NamedQty extends BigQty {
+  name:
+    | PROPERTIES.MASS
+    | PROPERTIES.VOLUME
+    | PROPERTIES.MOLES
+    | PROPERTIES.PRESSURE;
+}

@@ -1,5 +1,5 @@
-import { PolymerComponent } from "./polymer-types";
-import { PolymerEdge } from "./polymer-edge";
+import { PolymerComponent } from "./types";
+import { PolymerEdge } from "./edge";
 import {
   EdgeWeightor,
   PolymerTreeVisitor,
@@ -7,8 +7,8 @@ import {
   StrategyVisitor,
   EdgeMultiplier,
 } from "./polymer-visitors";
-import { JSONPolymerContainer } from "./polymer-container";
-import { PolymerNode } from "./polymer-node";
+import { JSONPolymerContainer } from "./container";
+import { PolymerNode } from "./node";
 
 /**
  * Class for managing groups of nodes, other containers, and connections between them.

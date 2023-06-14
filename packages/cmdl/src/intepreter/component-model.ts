@@ -13,7 +13,7 @@ export class ComponentModel extends BaseModel {
   public execute(globalAR: ModelActivationRecord): void {
     const type =
       this.type === ModelType.CHAR_DATA ? this.modelAR.name : this.type;
-    const properties: Record<string, any> = {
+    const properties: Record<string, unknown> = {
       name: this.name,
       type: type,
     };

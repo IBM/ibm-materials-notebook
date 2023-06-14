@@ -36,9 +36,9 @@ export interface RecordNode {
    */
   accept(visitor: AstVisitor): void;
   /**
-   * Convert node to object for printing to console
+   * Convert node to string for printing to console
    */
-  print(): Record<string, any>;
+  print(): string;
 }
 
 export abstract class Group implements RecordNode {
@@ -117,7 +117,7 @@ export abstract class Group implements RecordNode {
     return this.errors;
   }
 
-  public print(): Record<string, any> {
+  public print(): string {
     let parentName = null;
 
     if (this.parent && this.parent instanceof Group) {
@@ -125,11 +125,12 @@ export abstract class Group implements RecordNode {
     }
 
     const children = this.children.map((el) => el.print());
-    return {
-      name: this.name,
-      parent: parentName,
-      children,
-    };
+    return `
+    name: ${this.name},
+    parent: ${parentName},
+    children:
+    ${children}
+    `;
   }
 
   abstract accept(visitor: AstVisitor): void;
@@ -193,21 +194,18 @@ export abstract class Property implements RecordNode {
     return this.errors;
   }
 
-  public print(): Record<
-    string,
-    string[] | string | boolean | ReferenceValue[] | null
-  > {
+  public print(): string {
     let parentName = null;
 
     if (this.parent && this.parent instanceof Group) {
       parentName = this.parent.name;
     }
 
-    return {
-      name: this.name,
-      value: this.value,
-      parent: parentName,
-    };
+    return `
+    name: ${this.name},
+    value: ${this.value},
+    parent: ${parentName},
+    `;
   }
 
   /**

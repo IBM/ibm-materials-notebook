@@ -1,4 +1,4 @@
-import { JSONPolymerConnection } from "./polymer-container";
+import { JSONPolymerConnection } from "./container";
 import {
   PolymerTreeVisitor,
   EdgeWeightor,

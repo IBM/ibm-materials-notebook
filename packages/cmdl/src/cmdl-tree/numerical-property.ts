@@ -8,6 +8,7 @@ import {
 import { Property, Group } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
+import { CMDL } from "cmdl-types";
 import Big from "big.js";
 
 /**
@@ -159,27 +160,23 @@ export class NumericalProperty extends Property {
     }
   }
 
-  public print(): Record<string, any> {
+  public print(): string {
     let parentName = null;
 
     if (this.parent && this.parent instanceof Group) {
       parentName = this.parent.name;
     }
 
-    return {
-      name: this.name,
-      value: this.value,
-      unit: this.unit || null,
-      uncertainty: this.uncertainty || null,
-      parent: parentName,
-    };
+    return `
+      name: ${this.name},
+      value: ${this.value},
+      unit: ${this.unit || null},
+      uncertainty: ${this.uncertainty || null},
+      parent: ${parentName},
+    `;
   }
 
-  public getValues(): {
-    value: Big;
-    unit: string | null;
-    uncertainty: Big | null;
-  } {
+  public getValues(): CMDL.BigQty | CMDL.BigQtyUnitless {
     if (!this.value) {
       throw new Error(`${this.name} has no value!`);
     }

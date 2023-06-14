@@ -1,5 +1,5 @@
-import { PolymerNode } from "../polymer-node";
-import { Container } from "../polymer-tree-container";
+import { PolymerNode } from "../node";
+import { Container } from "../tree-container";
 import Big from "big.js";
 
 const fragment1 = new PolymerNode({

@@ -1,8 +1,8 @@
-import { PolymerTree } from "./polymer-tree";
-import { PolymerEdge } from "./polymer-edge";
-import { PolymerNode } from "./polymer-node";
-import { PolymerGraph } from "./polymer-graph";
-import { PolymerStrategy } from "./polymer-strategies";
+import { PolymerTree } from "./tree";
+import { PolymerEdge } from "./edge";
+import { PolymerNode } from "./node";
+import { PolymerGraph } from "./graph";
+import { PolymerStrategy } from "./strategies";
 import {
   SideChainVisitor,
   StrategyVisitor,

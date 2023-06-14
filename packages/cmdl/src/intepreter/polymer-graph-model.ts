@@ -19,8 +19,10 @@ export class PolymerGraphModel extends BaseModel {
   }
 
   public execute(globalAR: ModelActivationRecord): void {
+    //! deprecated: refactoring import resolution...
     const importedTree = this.modelAR.getOptionalValue("tree");
 
+    //! deprecated: refactoring import resolution
     if (importedTree) {
       const properties: Record<string, any> = {
         name: this.name,
@@ -33,7 +35,7 @@ export class PolymerGraphModel extends BaseModel {
 
       globalAR.setValue(this.name, properties);
     } else {
-      const nodes = this.modelAR.getOptionalValue<CMDL.Reference[]>("nodes");
+      const nodes = this.modelAR.getValue<CMDL.Reference[]>("nodes");
       const connections =
         this.modelAR.getOptionalValue<CMDL.PolymerConnection[]>("connections");
       const containers =
@@ -41,13 +43,14 @@ export class PolymerGraphModel extends BaseModel {
 
       const treeConfig = {
         name: this.name,
+        type: "graph_root",
         nodes: nodes ? nodes : [],
         connections: connections ? connections : [],
         containers: containers ? containers : [],
       };
 
-      // this.polymerContainer.buildTree(treeConfig, globalAR);
-      this.polymerContainer.buildGraph();
+      this.initializePolymer(treeConfig, globalAR, this.polymerContainer);
+      this.polymerContainer.build();
 
       const graphOutput = {
         graph: this.polymerContainer.graphToJSON(),

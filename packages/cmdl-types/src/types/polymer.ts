@@ -1,6 +1,6 @@
 import { Reference, ChemStates } from "./reference";
 import { PROPERTIES } from "../properties";
-import { StringQty, StringQtyUnitless } from "./units";
+import { BigQty, StringQtyUnitless } from "./quantities";
 import { ModelType } from "../groups/group-types";
 
 /**
@@ -9,15 +9,18 @@ import { ModelType } from "../groups/group-types";
 export type Polymer = {
   name: string;
   type: ModelType.POLYMER;
-  [PROPERTIES.MN_AVG]: StringQty;
+  [PROPERTIES.MN_AVG]?: BigQty;
   [PROPERTIES.BIG_SMILES]?: string;
   [PROPERTIES.SMILES]: string;
-  [PROPERTIES.MW_AVG]?: StringQty;
+  [PROPERTIES.MW_AVG]?: BigQty;
   [PROPERTIES.DISPERSITY]?: StringQtyUnitless;
   [PROPERTIES.STATE]: ChemStates;
-  [PROPERTIES.TREE]: any; //polymer graph representation reference
+  [PROPERTIES.TREE]?: any; //polymer graph representation reference
 };
 
+/**
+ * Values assigned to nodes in polymer graph
+ */
 export type PolymerTreeValue = {
   name: string;
   path: string[];
@@ -25,7 +28,7 @@ export type PolymerTreeValue = {
 };
 
 /**
- * Polymer graph representation parsed from CMDL?
+ * Polymer graph representation written to Model AR
  */
 export type PolymerGraph = {
   name: string;
@@ -33,8 +36,6 @@ export type PolymerGraph = {
   graph: any;
   tree: any;
   str: string;
-  maskedStr: string;
-  compressedStr: string;
 };
 
 export interface PolymerConnection {
@@ -47,14 +48,6 @@ export interface PolymerContainer {
   name: string;
   nodes: Reference[];
   type: string;
-  connections?: PolymerConnection[];
-  containers?: PolymerContainer[];
-  parent?: string;
-}
-
-export interface PolymerTree {
-  name: string;
-  nodes: Reference[];
   connections?: PolymerConnection[];
   containers?: PolymerContainer[];
   parent?: string;

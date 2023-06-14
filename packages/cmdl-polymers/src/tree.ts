@@ -1,22 +1,15 @@
 import Big from "big.js";
-// import { ModelActivationRecord } from "../models";
-import { PolymerEdge } from "./polymer-edge";
-import { Container } from "./polymer-tree-container";
-import { PolymerNode } from "./polymer-node";
+import { PolymerEdge } from "./edge";
+import { Container } from "./tree-container";
+import { PolymerNode } from "./node";
 import { PolymerTreeVisitor } from "./polymer-visitors";
-import { CMDLRef } from "cmdl-types";
-import {
-  CMDLPolymerTree,
-  CMDLPolymerContainer,
-  CMDLPolymerConnection,
-  PolymerComponent,
-} from "./polymer-types";
-// import { CMDLFragment } from "../models/base-model";
+import { CMDL } from "cmdl-types";
+import { PolymerComponent } from "./types";
 import {
   JSONPolymerContainer,
   JSONPolymerNode,
   JSONPolymerTree,
-} from "./polymer-container";
+} from "./container";
 
 /**
  * Tree representation of polymer structure. The tree representation enables facile conversion to a graph representation.
@@ -33,60 +26,11 @@ export class PolymerTree {
   }
 
   /**
-   * Initializes tree from values extracted from model activation record.
-   * The globalAR is supplied as a second param to provide access to values for imported or defined fragments
-   * @param treeConfig Object
-   * @param record ModelActivationRecord
-   */
-  public initialize(
-    treeConfig: CMDLPolymerTree
-    // record: ModelActivationRecord
-  ): void {
-    const queue: (CMDLPolymerTree | CMDLPolymerContainer)[] = [treeConfig];
-    let curr: CMDLPolymerTree | CMDLPolymerContainer | undefined;
-
-    while (queue.length) {
-      curr = queue.shift();
-
-      if (!curr) {
-        break;
-      }
-
-      const container = new Container(curr.name);
-
-      for (const node of curr.nodes) {
-        // let fragment = record.getValue<CMDLFragment>(node.ref.slice(1));
-        // const entity = new PolymerNode({
-        //   fragment: node.ref.slice(1),
-        //   mw: Big(fragment.molecular_weight.value),
-        //   smiles: fragment.smiles,
-        // });
-        // container.add(entity);
-      }
-
-      if (curr?.connections) {
-        for (const conn of curr.connections) {
-          this.createEdges(conn, container);
-        }
-
-        if (curr?.containers?.length) {
-          for (const cont of curr.containers) {
-            cont.parent = curr.name;
-            queue.unshift(cont);
-          }
-        }
-      }
-
-      this.insert(container, curr?.parent);
-    }
-  }
-
-  /**
    * Creates a new PolymerEdge object for the polymer tree
    * @param conn CMDLPolymerConnection
    * @param container Container
    */
-  private createEdges(conn: CMDLPolymerConnection, container: Container) {
+  public createEdges(conn: CMDL.PolymerConnection, container: Container) {
     const newSources = this.parseConnectionPaths(conn.sources);
     const newTargets = this.parseConnectionPaths(conn.targets);
 
@@ -117,7 +61,7 @@ export class PolymerTree {
    * @param arr CMDLRef[][]
    * @returns string[][]
    */
-  private parseConnectionPaths(arr: CMDLRef[]): string[][] {
+  private parseConnectionPaths(arr: CMDL.Reference[]): string[][] {
     return arr.map((el) => {
       return [el.ref.slice(1), ...el.path];
     });

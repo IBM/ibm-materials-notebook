@@ -1,9 +1,9 @@
 import { PROPERTIES } from "../properties";
-import { StringQty } from "./units";
+import { BigQty, StringQty } from "./quantities";
 import { ModelType } from "../groups/group-types";
 import { ReactionRoles } from "../properties";
 import { Reference } from "./reference";
-import { ChemicalOutput } from "./chemicals";
+import { ChemicalOutput, ChemicalConfig } from "./chemicals";
 
 type ComplexComponents = {
   name: string;
@@ -27,9 +27,9 @@ export type FlowRxn = {
 export interface Reaction {
   name: string;
   type: ModelType.REACTION;
-  [PROPERTIES.TEMPERATURE]?: StringQty;
-  [PROPERTIES.VOLUME]?: StringQty;
-  [PROPERTIES.REACTION_TIME]?: StringQty;
+  [PROPERTIES.TEMPERATURE]: BigQty | null;
+  [PROPERTIES.VOLUME]: BigQty | null;
+  [PROPERTIES.REACTION_TIME]?: BigQty;
   reactants: ChemicalOutput[];
   products: Product[];
 }
@@ -37,7 +37,7 @@ export interface Reaction {
 export type SolutionReference = {
   name: string;
   path: string[];
-  [PROPERTIES.FLOW_RATE]: StringQty;
+  [PROPERTIES.FLOW_RATE]: BigQty;
   [PROPERTIES.INPUT]: Reference;
 };
 
@@ -45,5 +45,5 @@ export type Solution = {
   name: string;
   type: ModelType.SOLUTION;
   components: ChemicalOutput[];
-  //   componentConfigs: ChemicalConfig[];
+  componentConfigs: ChemicalConfig[];
 };

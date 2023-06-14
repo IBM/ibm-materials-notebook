@@ -1,6 +1,6 @@
 import { ModelActivationRecord } from "./model-AR";
-import { ChemicalConfig, NamedQuantity } from "cmdl-chemicals";
 import { PROPERTIES, GROUPS, ModelType, CMDL } from "cmdl-types";
+import { PolymerContainer } from "cmdl-polymers";
 import Big from "big.js";
 
 /**
@@ -28,45 +28,35 @@ export abstract class BaseModel {
   protected createChemicalConfigs(
     chemicals: CMDL.ChemicalReference[],
     globalAR: ModelActivationRecord,
-    params?: { volume?: CMDL.StringQty; temperature?: CMDL.StringQty }
-  ): ChemicalConfig[] {
-    let configs: ChemicalConfig[] = [];
+    params?: { volume?: CMDL.BigQty; temperature?: CMDL.BigQty }
+  ): CMDL.ChemicalConfig[] {
+    let configs: CMDL.ChemicalConfig[] = [];
 
     for (const chemical of chemicals) {
       let parentValues = globalAR.getValue<CMDL.Chemical | CMDL.Polymer>(
         chemical.name
       );
+
+      if (!parentValues?.state) {
+        throw new Error(`Physical state is undefined on ${chemical.name}`);
+      }
+
       const quantity = this.extractQuantity(chemical);
       const mwValue = this.getMw(parentValues);
+      const density =
+        "density" in parentValues && parentValues?.density
+          ? parentValues.density.value
+          : null;
 
-      const chemicalConfig: ChemicalConfig = {
+      const chemicalConfig: CMDL.ChemicalConfig = {
         name: chemical.name,
         mw: mwValue,
         smiles: parentValues.smiles,
-        density:
-          "density" in parentValues && parentValues?.density
-            ? Big(parentValues.density.value)
-            : null,
+        density: density,
         state: parentValues.state,
         roles: chemical.roles,
-        temperature: params?.temperature
-          ? {
-              value: Big(params.temperature.value),
-              unit: params.temperature.unit,
-              uncertainty: params.temperature?.uncertainty
-                ? Big(params.temperature.uncertainty)
-                : null,
-            }
-          : undefined,
-        volume: params?.volume
-          ? {
-              value: Big(params.volume.value),
-              unit: params.volume.unit,
-              uncertainty: params.volume?.uncertainty
-                ? Big(params.volume.uncertainty)
-                : null,
-            }
-          : undefined,
+        temperature: params?.temperature,
+        volume: params?.volume,
         limiting: chemical?.limiting ? true : false,
         quantity,
       };
@@ -138,7 +128,7 @@ export abstract class BaseModel {
    * @param ref CMDLChemicalRefrerence
    * @returns NamedQuantity
    */
-  private extractQuantity(ref: CMDL.ChemicalReference): NamedQuantity {
+  private extractQuantity(ref: CMDL.ChemicalReference): CMDL.NamedQty {
     let name: CMDL.QuantityNames;
     if (ref?.mass) {
       return {
@@ -174,6 +164,46 @@ export abstract class BaseModel {
       };
     } else {
       throw new Error(`Quantity is unavailable for ${ref.name}!`);
+    }
+  }
+
+  protected initializePolymer(
+    treeConfig: CMDL.PolymerContainer,
+    record: ModelActivationRecord,
+    polymer: PolymerContainer
+  ): void {
+    const queue: CMDL.PolymerContainer[] = [treeConfig];
+    let curr: CMDL.PolymerContainer | undefined;
+
+    while (queue.length) {
+      curr = queue.shift();
+
+      if (!curr) {
+        break;
+      }
+
+      const container = polymer.createPolymerContainer(curr.name);
+
+      for (const node of curr.nodes) {
+        const fragment = record.getValue<CMDL.Fragment>(node.ref.slice(1));
+        const entity = polymer.createPolymerNode(node.ref.slice(1), fragment);
+        container.add(entity);
+      }
+
+      if (curr?.connections) {
+        for (const conn of curr.connections) {
+          polymer.createPolymerEdges(conn, container);
+        }
+
+        if (curr?.containers?.length) {
+          for (const cont of curr.containers) {
+            cont.parent = curr.name;
+            queue.unshift(cont);
+          }
+        }
+      }
+
+      polymer.insertContainer(container, curr?.parent);
     }
   }
 }

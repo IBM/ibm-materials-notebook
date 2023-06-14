@@ -70,18 +70,18 @@ export class RefProperty extends Property implements SymbolReference {
     return this.value;
   }
 
-  public print(): Record<string, any> {
+  public print(): string {
     let parentName = null;
 
     if (this.parent && this.parent instanceof Group) {
       parentName = this.parent.name;
     }
 
-    return {
-      name: this.name,
-      value: this.value,
-      parent: parentName,
-    };
+    return `
+      name: ${this.name},
+      value: ${this.value},
+      parent: ${parentName},
+    `;
   }
 
   public accept(visitor: AstVisitor): void {

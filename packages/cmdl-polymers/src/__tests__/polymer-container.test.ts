@@ -1,9 +1,6 @@
 import { ModelType } from "../../../cmdl-types/groups/group-types";
 import { RefResult } from "../../models/sample-model";
-import {
-  JSONPolymerGraphStructure,
-  PolymerContainer,
-} from "../polymer-container";
+import { JSONPolymerGraphStructure, PolymerContainer } from "../container";
 
 export const blockCopolymer: JSONPolymerGraphStructure = {
   name: "egMeO_pVL",

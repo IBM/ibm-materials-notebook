@@ -1,6 +1,6 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { PolymerContainer, JSONPolymerTree } from "cmdl-polymers";
+import { PolymerContainer } from "cmdl-polymers";
 import { ModelType, CMDL } from "cmdl-types";
 import { PROPERTIES } from "cmdl-types";
 
@@ -16,9 +16,7 @@ export class Polymer extends BaseModel {
   }
 
   public execute(globalAR: ModelActivationRecord): void {
-    const treeRef = this.modelAR.getValue<
-      CMDL.Reference | JSONPolymerTree<null>
-    >(PROPERTIES.TREE);
+    const treeRef = this.modelAR.getValue<CMDL.Reference>(PROPERTIES.TREE);
     const treeValues =
       this.modelAR.getOptionalValue<CMDL.PolymerTreeValue[]>("treeValues");
 
@@ -33,7 +31,9 @@ export class Polymer extends BaseModel {
 
       this.polymerContainer.initializeTreeFromJSON(polymerGraph.tree);
     } else {
-      this.polymerContainer.initializeTreeFromJSON(treeRef);
+      //! deprecated for import resolution
+      // this.polymerContainer.initializeTreeFromJSON(treeRef);
+      throw new Error(`Deprecated initialization from JSON`);
     }
 
     if (treeValues) {
@@ -42,18 +42,20 @@ export class Polymer extends BaseModel {
     }
 
     const polymerSmiles = this.polymerContainer.getSmilesStr();
+    const state = this.modelAR.getValue<CMDL.ChemStates>("state");
 
-    const properties: Record<string, any> = {
+    const properties: CMDL.Polymer = {
       name: this.name,
-      type: this.type,
+      type: ModelType.POLYMER,
       smiles: polymerSmiles,
+      state: state,
     };
 
     for (const [name, value] of this.modelAR.all()) {
       if (name === PROPERTIES.TREE) {
         properties[name] = this.polymerContainer.treeToJSON();
       } else {
-        properties[name] = value;
+        properties[name as keyof CMDL.Polymer] = value;
       }
     }
 

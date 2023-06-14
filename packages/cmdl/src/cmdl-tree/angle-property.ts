@@ -65,13 +65,13 @@ export class AngleProperty extends Property {
     return this.errors;
   }
 
-  public print(): Record<string, any> {
-    return {
-      name: this.name,
-      value: this.value,
-      lhs: this.lhs.map((el) => el.print()),
-      rhs: this.rhs.map((el) => el.print()),
-    };
+  public print(): string {
+    return `
+      name: ${this.name},
+      value: ${this.value},
+      lhs: ${this.lhs.map((el) => el.print())},
+      rhs: ${this.rhs.map((el) => el.print())},
+    `;
   }
 
   /**

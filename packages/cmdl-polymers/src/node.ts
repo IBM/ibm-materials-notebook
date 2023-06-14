@@ -1,8 +1,8 @@
 import Big from "big.js";
-import { PolymerComponent } from "./polymer-types";
-import { Container } from "./polymer-tree-container";
+import { PolymerComponent } from "./types";
+import { Container } from "./tree-container";
 import { PolymerTreeVisitor } from "./polymer-visitors";
-import { JSONPolymerNode } from "./polymer-container";
+import { JSONPolymerNode } from "./container";
 
 export interface EntityConfig {
   fragment: string;

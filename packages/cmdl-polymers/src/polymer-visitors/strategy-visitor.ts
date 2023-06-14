@@ -1,11 +1,7 @@
-import { PolymerEdge } from "../polymer-edge";
-import { PolymerComponent } from "../polymer-types";
-import { Container } from "../polymer-tree-container";
-import {
-  PolymerStrategy,
-  LinearStrategy,
-  CycliStrategy,
-} from "../polymer-strategies";
+import { PolymerEdge } from "../edge";
+import { PolymerComponent } from "../types";
+import { Container } from "../tree-container";
+import { PolymerStrategy, LinearStrategy, CycliStrategy } from "../strategies";
 
 /**
  * Interface for visitors for PolymerTree

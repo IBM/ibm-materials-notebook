@@ -1,4 +1,4 @@
-import { PolymerNode } from "../polymer-node";
+import { PolymerNode } from "../node";
 import Big from "big.js";
 
 describe("Unit tests for polymer node class", () => {

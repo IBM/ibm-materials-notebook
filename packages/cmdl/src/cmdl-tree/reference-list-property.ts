@@ -37,11 +37,11 @@ export class ReferenceValue extends Property implements SymbolReference {
    * Converts to an object for printing to the console
    * @returns Record<string, any>
    */
-  public print(): Record<string, any> {
-    return {
-      name: this.name,
-      path: this.getPath(),
-    };
+  public print(): string {
+    return `
+      name: ${this.name},
+      path: ${this.getPath()},
+    `;
   }
 
   /**
@@ -99,12 +99,12 @@ export class RefListProperty extends Property {
     return this.value.map((el) => el.export());
   }
 
-  public print(): Record<string, any> {
-    return {
-      name: this.name,
-      value: this.value.map((el) => el.print()),
-      parent: this.parent?.name,
-    };
+  public print(): string {
+    return `
+      name: ${this.name},
+      value: ${this.value.map((el) => el.print())},
+      parent: ${this.parent?.name},
+    `;
   }
 
   public accept(visitor: AstVisitor): void {

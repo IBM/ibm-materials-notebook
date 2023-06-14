@@ -1,8 +1,6 @@
-import { PROPERTIES, ReactionRoles, typeManager } from "cmdl-types";
+import { PROPERTIES, ReactionRoles, typeManager, CMDL } from "cmdl-types";
 import { BaseChemical } from "./base-chemical";
-import { ChemicalConfig, ChemStates, NamedQuantity } from "./chemical-factory";
 import Big from "big.js";
-import { Quantity } from "cmdl-units";
 
 /**
  * Class representing a liquid chemical within a reaction or solution
@@ -22,7 +20,7 @@ export default class Liquid extends BaseChemical {
   }
 
   //TODO: Implement more rigorous operations with units
-  public computeValues(qty: NamedQuantity): void {
+  public computeValues(qty: CMDL.NamedQty): void {
     if (!this.mw) {
       throw new Error(
         `Missing or invalid mw value for ${this.name}: ${this.mw}`
@@ -108,7 +106,7 @@ export default class Liquid extends BaseChemical {
     this.computeValues({ name: PROPERTIES.MOLES, ...newMoles });
   }
 
-  public getMolesByVolume(volume: Quantity): ChemicalConfig {
+  public getMolesByVolume(volume: CMDL.BigQty): CMDL.ChemicalConfig {
     if (!this.mw) {
       throw new Error(`\n-Mw is invalid for ${this.name}`);
     }
@@ -131,12 +129,12 @@ export default class Liquid extends BaseChemical {
         uncertainty: null,
       },
       roles: this.roles,
-      state: ChemStates.LIQUID,
+      state: CMDL.ChemStates.LIQUID,
       limiting: this.limiting,
     };
   }
 
-  public export(): ChemicalConfig {
+  public export(): CMDL.ChemicalConfig {
     if (!this.mw || !this.density || !this.moles) {
       throw new Error(`Cannot export incomplete liquid chemical ${this.name}`);
     }
@@ -153,7 +151,7 @@ export default class Liquid extends BaseChemical {
         uncertainty: null,
       },
       roles: this.roles,
-      state: ChemStates.LIQUID,
+      state: CMDL.ChemStates.LIQUID,
       limiting: this.limiting,
     };
   }

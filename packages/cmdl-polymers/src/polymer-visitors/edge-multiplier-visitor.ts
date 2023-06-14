@@ -1,7 +1,7 @@
-import { PolymerEdge } from "../polymer-edge";
-import { PolymerComponent } from "../polymer-types";
-import { Container } from "../polymer-tree-container";
-import { PolymerWeight } from "../polymer-weights";
+import { PolymerEdge } from "../edge";
+import { PolymerComponent } from "../types";
+import { Container } from "../tree-container";
+import { PolymerWeight } from "../weights";
 import { PolymerTreeVisitor } from "./strategy-visitor";
 // import { cmdlLogger as logger } from "../../../logger";
 

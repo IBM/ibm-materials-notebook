@@ -1,7 +1,7 @@
 import { PROPERTIES } from "../properties";
 import { ModelType } from "../groups/group-types";
 import { ChemicalReference } from "./chemicals";
-import { StringQty } from "./units";
+import { StringQty } from "./quantities";
 
 export type CharData = {
   name: string;

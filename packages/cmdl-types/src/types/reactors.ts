@@ -1,4 +1,4 @@
-import { StringQty } from "./units";
+import { StringQty } from "./quantities";
 import { PROPERTIES } from "../properties";
 import { Reference } from "./reference";
 import { ModelType } from "../groups/group-types";
