@@ -1,4 +1,4 @@
-import { StringQty } from "./quantities";
+import { BigQty } from "./quantities";
 import { PROPERTIES } from "../properties";
 import { Reference } from "./reference";
 import { ModelType } from "../groups/group-types";
@@ -7,10 +7,10 @@ export interface ReactorNode {
   name: string;
   type: "component";
   [PROPERTIES.DESCRIPTION]?: string;
-  [PROPERTIES.INNER_DIAMETER]?: StringQty;
-  [PROPERTIES.OUTER_DIAMETER]?: StringQty;
-  [PROPERTIES.VOLUME]?: StringQty;
-  [PROPERTIES.LENGTH]?: StringQty;
+  [PROPERTIES.INNER_DIAMETER]?: BigQty;
+  [PROPERTIES.OUTER_DIAMETER]?: BigQty;
+  [PROPERTIES.VOLUME]?: BigQty;
+  [PROPERTIES.LENGTH]?: BigQty;
   [PROPERTIES.TARGET]: Reference;
 }
 

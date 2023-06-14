@@ -34,7 +34,7 @@ const serializedReactor: SerializedReactor = {
       next: "Collection",
       volume: {
         unit: "ml",
-        value: "2",
+        value: 2,
         uncertainty: null,
       },
       parent: "PolyReactor",

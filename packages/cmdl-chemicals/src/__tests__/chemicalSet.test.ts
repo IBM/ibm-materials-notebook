@@ -1,15 +1,14 @@
 import ChemicalSet from "../chemical-set";
-import { ChemicalConfig, ChemStates } from "../chemical-factory";
 import Big from "big.js";
 import { solidChemicalMass } from "./chemical.test";
 import Solid from "../solid";
-import { PROPERTIES, TAGS } from "../../../cmdl-types";
+import { PROPERTIES, TAGS, CMDL } from "cmdl-types";
 
-const catalyst: ChemicalConfig = {
+const catalyst: CMDL.ChemicalConfig = {
   name: "KOME",
   mw: Big(70.132),
   density: null,
-  state: ChemStates.SOLID,
+  state: CMDL.ChemStates.SOLID,
   quantity: {
     name: PROPERTIES.MASS,
     value: Big("1"),
@@ -20,11 +19,11 @@ const catalyst: ChemicalConfig = {
   limiting: true,
 };
 
-const solvent: ChemicalConfig = {
+const solvent: CMDL.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: Big(0.8876),
-  state: ChemStates.LIQUID,
+  state: CMDL.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.VOLUME,
     value: Big("1"),

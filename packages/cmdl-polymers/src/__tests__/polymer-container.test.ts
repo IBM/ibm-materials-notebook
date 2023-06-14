@@ -1,5 +1,4 @@
-import { ModelType } from "../../../cmdl-types/groups/group-types";
-import { RefResult } from "../../models/sample-model";
+import { ModelType, CMDL } from "cmdl-types";
 import { JSONPolymerGraphStructure, PolymerContainer } from "../container";
 
 export const blockCopolymer: JSONPolymerGraphStructure = {
@@ -881,7 +880,7 @@ describe("Tests for weighting a block copolymer polymer graph", () => {
         },
       },
     ];
-    polymer.addGraphValues(values as RefResult[]);
+    polymer.addGraphValues(values as CMDL.RefResult[]);
     polymer.computePolymerWeights();
 
     const graph = polymer.graphToJSON();
@@ -915,7 +914,7 @@ describe("Tests for weighting a polymer with multifuncitional initiator", () => 
         },
       },
     ];
-    polymer.addGraphValues(values as RefResult[]);
+    polymer.addGraphValues(values as CMDL.RefResult[]);
     polymer.computePolymerWeights();
 
     const graph = polymer.graphToJSON();
@@ -959,7 +958,7 @@ describe("Tests for weighting a statistical co-polymer with multifuncitional ini
       },
     ];
 
-    polymer.addGraphValues(values as RefResult[]);
+    polymer.addGraphValues(values as CMDL.RefResult[]);
     polymer.computePolymerWeights();
 
     const graph = polymer.graphToJSON();
@@ -1011,7 +1010,7 @@ describe("Tests for weighting a grafted statistical co-polymer with multifunciti
         },
       },
     ];
-    polymer.addGraphValues(values as RefResult[]);
+    polymer.addGraphValues(values as CMDL.RefResult[]);
     polymer.computePolymerWeights();
 
     const graph = polymer.graphToJSON();
@@ -1044,7 +1043,7 @@ describe("Tests for weighting a dendrimer initiated polymer", () => {
         },
       },
     ];
-    polymer.addGraphValues(values as RefResult[]);
+    polymer.addGraphValues(values as CMDL.RefResult[]);
     polymer.computePolymerWeights();
 
     const graph = polymer.graphToJSON();

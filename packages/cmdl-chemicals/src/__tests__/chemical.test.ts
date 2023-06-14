@@ -1,19 +1,15 @@
 import Big from "big.js";
-import { UNITS } from "../../../cmdl-types/units";
-import ChemicalFactory, {
-  ChemicalConfig,
-  ChemStates,
-} from "../chemical-factory";
+import { UNITS, CMDL, PROPERTIES, TAGS } from "cmdl-types";
+import ChemicalFactory from "../chemical-factory";
 import Gas from "../gas";
 import Liquid from "../liquid";
 import Solid from "../solid";
-import { PROPERTIES, TAGS } from "../../../cmdl-types";
 
-export const solidChemicalMass: ChemicalConfig = {
+export const solidChemicalMass: CMDL.ChemicalConfig = {
   name: "p-methylbenzyl alcohol",
   mw: Big(122.16),
   density: null,
-  state: ChemStates.SOLID,
+  state: CMDL.ChemStates.SOLID,
   quantity: {
     name: PROPERTIES.MASS,
     value: Big("100"),
@@ -24,11 +20,11 @@ export const solidChemicalMass: ChemicalConfig = {
   limiting: true,
 };
 
-const solidChemicalMoles: ChemicalConfig = {
+const solidChemicalMoles: CMDL.ChemicalConfig = {
   name: "p-methylbenzyl alcohol",
   mw: Big(122.16),
   density: null,
-  state: ChemStates.SOLID,
+  state: CMDL.ChemStates.SOLID,
   quantity: {
     name: PROPERTIES.MOLES,
     value: Big("100"),
@@ -39,11 +35,11 @@ const solidChemicalMoles: ChemicalConfig = {
   limiting: false,
 };
 
-const liquidChemicalMoles: ChemicalConfig = {
+const liquidChemicalMoles: CMDL.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: Big(0.8876),
-  state: ChemStates.LIQUID,
+  state: CMDL.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.MOLES,
     value: Big("10"),
@@ -54,11 +50,11 @@ const liquidChemicalMoles: ChemicalConfig = {
   limiting: false,
 };
 
-const liquidChemicalMass: ChemicalConfig = {
+const liquidChemicalMass: CMDL.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: Big(0.8876),
-  state: ChemStates.LIQUID,
+  state: CMDL.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.MASS,
     value: Big("20"),
@@ -69,11 +65,11 @@ const liquidChemicalMass: ChemicalConfig = {
   limiting: false,
 };
 
-const liquidChemicalVol: ChemicalConfig = {
+const liquidChemicalVol: CMDL.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: Big(0.8876),
-  state: ChemStates.LIQUID,
+  state: CMDL.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.VOLUME,
     value: Big("300"),
@@ -84,11 +80,11 @@ const liquidChemicalVol: ChemicalConfig = {
   limiting: false,
 };
 
-const liquidChemicalNoDensity: ChemicalConfig = {
+const liquidChemicalNoDensity: CMDL.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: null,
-  state: ChemStates.LIQUID,
+  state: CMDL.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.VOLUME,
     value: Big("300"),
@@ -99,11 +95,11 @@ const liquidChemicalNoDensity: ChemicalConfig = {
   limiting: false,
 };
 
-const gasChemical: ChemicalConfig = {
+const gasChemical: CMDL.ChemicalConfig = {
   name: "CO2",
   mw: Big(44.01),
   density: null,
-  state: ChemStates.GAS,
+  state: CMDL.ChemStates.GAS,
   quantity: {
     name: PROPERTIES.PRESSURE,
     value: Big("300"),
@@ -124,11 +120,11 @@ const gasChemical: ChemicalConfig = {
   limiting: false,
 };
 
-const gasChemicalNoVol: ChemicalConfig = {
+const gasChemicalNoVol: CMDL.ChemicalConfig = {
   name: "CO2",
   mw: Big(44.01),
   density: null,
-  state: ChemStates.GAS,
+  state: CMDL.ChemStates.GAS,
   quantity: {
     name: PROPERTIES.PRESSURE,
     value: Big("300"),
@@ -144,11 +140,11 @@ const gasChemicalNoVol: ChemicalConfig = {
   limiting: false,
 };
 
-const gasChemicalNoTemp: ChemicalConfig = {
+const gasChemicalNoTemp: CMDL.ChemicalConfig = {
   name: "CO2",
   mw: Big(44.01),
   density: null,
-  state: ChemStates.GAS,
+  state: CMDL.ChemStates.GAS,
   quantity: {
     name: PROPERTIES.PRESSURE,
     value: Big("300"),
@@ -358,7 +354,7 @@ describe("Test computations for chemicals", () => {
       smiles: null,
       ratio: 0.1,
       roles: [TAGS.INITIATOR],
-      mw: Big(122.16),
+      mw: 122.16,
       density: null,
       molarity: { unit: "mol/l", value: 0.091, uncertainty: null },
       molality: { unit: "mol/kg", value: 0.1023, uncertainty: null },

@@ -1,18 +1,15 @@
 import Big from "big.js";
-import { CMDLUnit, Quantity } from "../../symbol-types";
 import { Reactor } from "../reactor-group";
 import { ReactorComponent } from "../reactor-component";
 import { testChemicals } from "./reactor-chem.test";
-import { ChemStates } from "../../chemicals/chemical-factory";
-import { ChemicalConfig } from "../../chemicals/chemical-factory";
 import { ReactorChemicals } from "../reactor-chemicals";
-import { PROPERTIES, TAGS } from "../../../cmdl-types";
+import { PROPERTIES, TAGS, CMDL } from "cmdl-types";
 
-const kOtbu: ChemicalConfig = {
+const kOtbu: CMDL.ChemicalConfig = {
   name: "l-lactide",
   mw: Big(144.12),
   density: null,
-  state: ChemStates.SOLID,
+  state: CMDL.ChemStates.SOLID,
   quantity: {
     name: PROPERTIES.MASS,
     value: Big("1441.2"),
@@ -23,11 +20,11 @@ const kOtbu: ChemicalConfig = {
   limiting: true,
 };
 
-const monomerSolvent: ChemicalConfig = {
+const monomerSolvent: CMDL.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: Big(0.8876),
-  state: ChemStates.LIQUID,
+  state: CMDL.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.VOLUME,
     value: Big("10"),
@@ -47,13 +44,13 @@ const NODE_C = "node_c";
 const NODE_D = "node_d";
 const NODE_E = "node_e";
 
-const nodeVolume: CMDLUnit = {
+const nodeVolume: CMDL.BigQty = {
   uncertainty: null,
   unit: "mcl",
-  value: "500",
+  value: Big(500),
 };
 
-export const flowRate: Quantity = {
+export const flowRate: CMDL.BigQty = {
   unit: "ml/min",
   value: Big(10),
   uncertainty: null,
@@ -183,9 +180,9 @@ describe("Tests for reactor", () => {
 
     expect(outputs).toBeTruthy();
     expect(outputs.reactants.length).toBe(4);
-    expect(outputs.volume.value).toBe("1.5");
+    expect(outputs.volume.value).toBe(1.5);
     expect(outputs.volume.unit).toBe("ml");
-    expect(outputs.residenceTime.value).toBe("4.5");
+    expect(outputs.residenceTime.value).toBe(4.5);
     expect(outputs.volume.unit).toBe("ml");
   });
 });

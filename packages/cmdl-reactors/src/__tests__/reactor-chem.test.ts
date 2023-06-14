@@ -1,33 +1,30 @@
 import Big from "big.js";
-import { Quantity } from "../../symbol-types";
 import { ReactorChemicals } from "../reactor-chemicals";
-import { ChemStates } from "../../chemicals/chemical-factory";
-import { ChemicalConfig } from "../../chemicals/chemical-factory";
-import { PROPERTIES, TAGS } from "../../../cmdl-types";
+import { PROPERTIES, TAGS, CMDL } from "cmdl-types";
 
-export const flowRate: Quantity = {
+export const flowRate: CMDL.BigQty = {
   unit: "ml/min",
   value: Big(10),
   uncertainty: null,
 };
 
-const totalFlowRate: Quantity = {
+const totalFlowRate: CMDL.BigQty = {
   unit: "ml/min",
   value: Big(20),
   uncertainty: null,
 };
 
-const reactorVolume: Quantity = {
+const reactorVolume: CMDL.BigQty = {
   unit: "ml",
   value: Big(1),
   uncertainty: null,
 };
 
-const pMeBnOH: ChemicalConfig = {
+const pMeBnOH: CMDL.ChemicalConfig = {
   name: "p-methylbenzyl alcohol",
   mw: Big(122.16),
   density: null,
-  state: ChemStates.SOLID,
+  state: CMDL.ChemStates.SOLID,
   quantity: {
     name: PROPERTIES.MASS,
     value: Big("488"),
@@ -38,11 +35,11 @@ const pMeBnOH: ChemicalConfig = {
   limiting: true,
 };
 
-const kOtbu: ChemicalConfig = {
+const kOtbu: CMDL.ChemicalConfig = {
   name: "potassium tert-butoxide",
   mw: Big(112.212),
   density: null,
-  state: ChemStates.SOLID,
+  state: CMDL.ChemStates.SOLID,
   quantity: {
     name: PROPERTIES.MASS,
     value: Big("112"),
@@ -53,11 +50,11 @@ const kOtbu: ChemicalConfig = {
   limiting: false,
 };
 
-const solvent: ChemicalConfig = {
+const solvent: CMDL.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: Big(0.8876),
-  state: ChemStates.LIQUID,
+  state: CMDL.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.VOLUME,
     value: Big("10"),

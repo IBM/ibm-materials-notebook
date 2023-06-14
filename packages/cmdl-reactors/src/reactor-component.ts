@@ -1,8 +1,9 @@
-import { Unit, Quantity, CMDLUnit, convertQty } from "cmdl-units";
+import { Unit, convertQty } from "cmdl-units";
 import Big from "big.js";
 import { ReactorNode, Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
 import { SerializedReactorComponent } from "./reactor-container";
+import { CMDL } from "cmdl-types";
 
 /**
  * Class representing an individual component in a continuous-flow reactor
@@ -11,10 +12,10 @@ export class ReactorComponent implements ReactorNode {
   input: ReactorChemicals | null = null;
   sources: ReactorComponent[] = [];
   next: ReactorComponent | null = null;
-  volume: Quantity | null = null;
-  length?: CMDLUnit;
-  inner_diameter?: CMDLUnit;
-  outer_diameter?: CMDLUnit;
+  volume: CMDL.BigQty | null = null;
+  length?: CMDL.BigQty;
+  inner_diameter?: CMDL.BigQty;
+  outer_diameter?: CMDL.BigQty;
   description?: string;
   parent: ReactorNode | null = null;
 
@@ -38,9 +39,9 @@ export class ReactorComponent implements ReactorNode {
 
   /**
    * Sets the volume of the reactor component
-   * @param volume CMDLUnit
+   * @param volume CMDL.BigQty
    */
-  public setVolume(volume: CMDLUnit): void {
+  public setVolume(volume: CMDL.BigQty): void {
     this.volume = this.normalizeVolume(volume);
   }
 
@@ -103,27 +104,19 @@ export class ReactorComponent implements ReactorNode {
   /**
    * Normalizes component volume to ml for calculation purposes
    * @param vol CMDLUnit
-   * @returns Quantity
+   * @returns CMDL.BigQty
    */
-  private normalizeVolume(vol: CMDLUnit): Quantity {
+  private normalizeVolume(vol: CMDL.BigQty): CMDL.BigQty {
     if (!vol.unit) {
       throw new Error(`Missing unit for volume in reactor component!`);
     }
 
     if (vol.unit !== "ml") {
-      let normalVol = new Unit({
-        unit: vol.unit,
-        value: Big(vol.value),
-        uncertainty: vol.uncertainty ? Big(vol.uncertainty) : null,
-      });
+      let normalVol = new Unit(vol);
       normalVol.convertTo("ml");
       return { ...normalVol.output(), uncertainty: null };
     } else {
-      return {
-        unit: vol.unit,
-        value: Big(vol.value),
-        uncertainty: null,
-      };
+      return vol;
     }
   }
 
@@ -137,10 +130,14 @@ export class ReactorComponent implements ReactorNode {
       type: "component",
       sources: this.sources.map((el) => el.name),
       next: this.next ? this.next.name : null,
-      inner_diameter: this.inner_diameter,
-      outer_diameter: this.outer_diameter,
+      inner_diameter: this.inner_diameter
+        ? convertQty(this.inner_diameter)
+        : undefined,
+      outer_diameter: this.outer_diameter
+        ? convertQty(this.outer_diameter)
+        : undefined,
       description: this.description,
-      length: this.length,
+      length: this.length ? convertQty(this.length) : undefined,
       volume: this.volume ? convertQty(this.volume) : undefined,
       parent: this.parent ? this.parent.name : null,
     };

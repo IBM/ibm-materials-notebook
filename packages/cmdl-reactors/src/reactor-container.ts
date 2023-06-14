@@ -2,28 +2,22 @@ import { Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
 import { ReactorComponent } from "./reactor-component";
 import { logger } from "./logger";
-import { CMDLUnit } from "cmdl-units";
-import { ChemicalOutput } from "cmdl-chemicals";
-import { PROPERTIES, CMDLRef, CMDLNodeTree } from "cmdl-types";
+import { CMDL, PROPERTIES } from "cmdl-types";
+import Big from "big.js";
 
 export interface ReactorEdge {
   id: string;
   target: string | null;
 }
 
-export interface CMDLReactorNode {
+export interface SerializedReactorComponent {
   name: string;
   type: "component";
   [PROPERTIES.DESCRIPTION]?: string;
-  [PROPERTIES.INNER_DIAMETER]?: CMDLUnit;
-  [PROPERTIES.OUTER_DIAMETER]?: CMDLUnit;
-  [PROPERTIES.VOLUME]?: CMDLUnit;
-  [PROPERTIES.LENGTH]?: CMDLUnit;
-  [PROPERTIES.TARGET]: CMDLRef;
-}
-
-export interface SerializedReactorComponent
-  extends Omit<CMDLReactorNode, "target"> {
+  [PROPERTIES.INNER_DIAMETER]?: CMDL.NumericQty;
+  [PROPERTIES.OUTER_DIAMETER]?: CMDL.NumericQty;
+  [PROPERTIES.VOLUME]?: CMDL.NumericQty;
+  [PROPERTIES.LENGTH]?: CMDL.NumericQty;
   sources: string[];
   next: string | null;
   parent: string | null;
@@ -36,12 +30,6 @@ export interface SerializedReactorGroup {
   children: string[];
 }
 
-export interface CMDLReactor {
-  name: string;
-  type: "reactor";
-  [PROPERTIES.NODES]: CMDLReactorNode[];
-}
-
 export interface SerializedReactor {
   nodes: SerializedReactorComponent[];
   edges: ReactorEdge[];
@@ -51,10 +39,10 @@ export interface SerializedReactor {
 
 export interface ReactorGroupOutput {
   name: string;
-  flowRate: CMDLUnit;
-  residenceTime: CMDLUnit;
-  volume: CMDLUnit;
-  reactants: ChemicalOutput[];
+  flowRate: CMDL.NumericQty;
+  residenceTime: CMDL.NumericQty;
+  volume: CMDL.NumericQty;
+  reactants: CMDL.ChemicalOutput[];
 }
 
 /**
@@ -71,7 +59,7 @@ export class ReactorContainer {
    * Parses and creates a new reactor from a CMDL representation
    * @param component CMDLReactor
    */
-  public addReactor(component: CMDLReactor): void {
+  public addReactor(component: CMDL.Reactor): void {
     logger.debug(`reactor:`, { meta: component });
     const reactor = new Reactor(component.name);
     reactor.parent = null;
@@ -93,7 +81,7 @@ export class ReactorContainer {
    * @param component CMDLReactorNode
    * @returns ReactorComponent
    */
-  public addNode(component: CMDLReactorNode): ReactorComponent {
+  public addNode(component: CMDL.ReactorNode): ReactorComponent {
     const node = new ReactorComponent(component.name);
     let target = component?.target;
     let volume = component?.volume;
@@ -187,8 +175,8 @@ export class ReactorContainer {
    * Method to traverse reactor graph and create an outline of the node tree
    * @returns CMDLNodeTree
    */
-  public getReactorNodeTree(): CMDLNodeTree {
-    const nodeTree: CMDLNodeTree = {};
+  public getReactorNodeTree(): CMDL.NodeTree {
+    const nodeTree: CMDL.NodeTree = {};
 
     for (const node of this.nodeMap.values()) {
       if (!node.parent) {
@@ -259,7 +247,11 @@ export class ReactorContainer {
       let newNode = new ReactorComponent(node.name);
 
       if (node.volume) {
-        newNode.setVolume(node.volume);
+        newNode.setVolume({
+          ...node.volume,
+          value: Big(node.volume.value),
+          uncertainty: null,
+        });
       }
 
       if (node.parent) {

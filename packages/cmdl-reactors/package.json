@@ -8,6 +8,8 @@
   "dependencies": {
     "cmdl-units": "*",
     "cmdl-chemicals": "*",
+    "cmdl-types": "*",
+    "big.js": "^6.2.1",
     "logger": "*"
   },
   "devDependencies": {

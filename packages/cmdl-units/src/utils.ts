@@ -60,10 +60,10 @@ export function handleRounding(
  * @param qty Quantity
  * @returns CMDLUnit
  */
-export function convertQty(qty: CMDL.BigQty): CMDL.StringQty {
+export function convertQty(qty: CMDL.BigQty): CMDL.NumericQty {
   return {
     ...qty,
-    value: String(qty.value.toNumber()),
-    uncertainty: qty.uncertainty ? String(qty.value.toNumber()) : null,
+    value: qty.value.toNumber(),
+    uncertainty: qty.uncertainty ? qty.value.toNumber() : null,
   };
 }
