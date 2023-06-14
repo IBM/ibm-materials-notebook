@@ -1,26 +1,23 @@
-import { ModelVisitor } from "../cmdl-symbols";
-import { ModelARManager } from "../cmdl-symbols/models";
+import { ModelVisitor, ModelARManager } from "../intepreter";
 import { CmdlCompiler } from "../cmdl-compiler";
-import { SymbolTable, SymbolTableBuilder } from "../cmdl-symbols";
-import { ErrorTable } from "../../errors";
+import { SymbolTable, SymbolTableBuilder } from "../symbols";
 import { CmdlTree } from "../cmdl-tree";
-import { CMDLReaction } from "../cmdl-symbols/models/reaction-model";
-import { CMDLSolution } from "../cmdl-symbols/models/solution-model";
-import { CMDLPolymerGraph } from "../cmdl-symbols/models/polymer-graph-model";
+import { CMDL } from "cmdl-types";
+import { BaseError } from "../errors";
 
 const compiler = new CmdlCompiler();
 
 async function evalutateText(text: string) {
   const uri = "test/uri";
-  const globalTable = new SymbolTable("GLOBAL");
-  const errTable = new ErrorTable();
-  const builder = new SymbolTableBuilder(globalTable, errTable, uri);
+  const errors = new Map<string, BaseError[]>();
+  const globalTable = new SymbolTable("GLOBAL", null, errors);
+  const builder = new SymbolTableBuilder(globalTable, uri);
 
   let { parserErrors, recordTree } = compiler.parse(text);
   const semanticErrors = await recordTree.validate();
   recordTree.createSymbolTable(builder);
-  globalTable.validate(errTable);
-  const symbolErrors = errTable.get(uri);
+  globalTable.validate();
+  const symbolErrors = globalTable.errors.get(uri) || [];
 
   return {
     parserErrors,
@@ -117,7 +114,7 @@ describe("Test model evaluation with compiler", () => {
     } = await evalutateText(reaction);
 
     const testAR = evaluateModel(recordTree);
-    const testRxn = testAR.getOptionalValue<CMDLReaction>("TestReaction");
+    const testRxn = testAR.getOptionalValue<CMDL.Reaction>("TestReaction");
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -173,7 +170,7 @@ describe("Test model evaluation with compiler", () => {
       globalTable,
     } = await evalutateText(solution);
     const testAR = evaluateModel(recordTree);
-    const testRxn = testAR.getOptionalValue<CMDLSolution>("TestSolution");
+    const testRxn = testAR.getOptionalValue<CMDL.Solution>("TestSolution");
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -441,7 +438,7 @@ describe("Test model evaluation with compiler", () => {
     } = await evalutateText(polymerGraph);
 
     const testAR = evaluateModel(recordTree);
-    const testSample = testAR.getOptionalValue<CMDLPolymerGraph>("egMeO_pVL");
+    const testSample = testAR.getOptionalValue<CMDL.PolymerGraph>("egMeO_pVL");
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -604,7 +601,7 @@ it("evaluates a nested polymer graph model", async () => {
     await evalutateText(polymerGraphGrafted);
 
   const testAR = evaluateModel(recordTree);
-  const testSample = testAR.getOptionalValue<CMDLPolymerGraph>("BASE");
+  const testSample = testAR.getOptionalValue<CMDL.PolymerGraph>("BASE");
 
   expect(parserErrors.length).toBe(0);
   expect(semanticErrors.length).toBe(0);

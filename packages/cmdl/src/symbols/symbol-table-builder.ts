@@ -30,7 +30,7 @@ import { CmdlStack } from "../cmdl-stack";
 import { PolymerContainer } from "cmdl-polymers";
 import { CmdlToken } from "../cmdl-parser-types";
 import { ReactorContainer, SerializedReactor } from "cmdl-reactors";
-import { CMDLNodeTree } from "./symbol-types";
+import { CMDL } from "cmdl-types";
 
 /**
  * Visits record tree and constructs symbol table for entire document
@@ -123,7 +123,7 @@ export class SymbolTableBuilder implements AstVisitor {
    */
   private enterNewScope(name: string): void {
     const currentScope = this.tableStack.peek();
-    const nestedScope = new SymbolTable(name, currentScope);
+    const nestedScope = new SymbolTable(name, currentScope, this.errors);
     this.tableStack.push(nestedScope);
   }
 
@@ -425,7 +425,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * @param keyObj CMDLNodeTree
    * @param nameToken CMDLToken
    */
-  public createGraphSymbols(keyObj: CMDLNodeTree, nameToken: CmdlToken): void {
+  public createGraphSymbols(keyObj: CMDL.NodeTree, nameToken: CmdlToken): void {
     for (const key of Object.keys(keyObj)) {
       const propSymbol = new ReferenceSymbol(
         {
@@ -489,7 +489,7 @@ export class SymbolTableBuilder implements AstVisitor {
       const parentTable = this.tableStack.peek();
       const refSymName = refSymbol.name.slice(1);
       const ref = parentTable.getGlobalScopeSym(refSymName);
-      const keyObj: CMDLNodeTree = {};
+      const keyObj: CMDL.NodeTree = {};
 
       ref?.copySymbolTree(keyObj, refSymName);
       this.createGraphSymbols(keyObj[refSymName], refProp.nameToken);

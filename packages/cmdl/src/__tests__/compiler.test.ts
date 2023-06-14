@@ -1,21 +1,21 @@
 import { DuplicationError, ErrorCode } from "../errors";
 import { CmdlCompiler } from "../cmdl-compiler";
-import { SymbolTable, SymbolTableBuilder } from "../cmdl-symbols";
-import { ErrorTable } from "../../errors";
+import { SymbolTable, SymbolTableBuilder } from "../symbols";
+import { BaseError } from "../errors";
 
 const compiler = new CmdlCompiler();
 
 async function evalutateText(text: string) {
   const uri = "test/uri";
-  const globalTable = new SymbolTable("GLOBAL");
-  const errTable = new ErrorTable();
-  const builder = new SymbolTableBuilder(globalTable, errTable, uri);
+  const errors = new Map<string, BaseError[]>();
+  const globalTable = new SymbolTable("GLOBAL", null, errors);
+  const builder = new SymbolTableBuilder(globalTable, uri);
 
   let { parserErrors, recordTree } = compiler.parse(text);
   const semanticErrors = await recordTree.validate();
   recordTree.createSymbolTable(builder);
-  globalTable.validate(errTable);
-  const symbolErrors = errTable.get(uri);
+  globalTable.validate();
+  const symbolErrors = builder.getErrors() || [];
 
   return {
     parserErrors,

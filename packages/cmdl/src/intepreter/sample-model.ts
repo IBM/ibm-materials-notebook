@@ -88,7 +88,7 @@ export class SampleOutput extends BaseModel {
     globalAR: ModelActivationRecord
   ): CMDL.SampleResult[] {
     const resultRecord = this.extractReferences(charData);
-    let timePoint = this.modelAR.getOptionalValue<CMDL.Quantity>(
+    let timePoint = this.modelAR.getOptionalValue<CMDL.BigQty>(
       PROPERTIES.TIME_POINT
     );
 

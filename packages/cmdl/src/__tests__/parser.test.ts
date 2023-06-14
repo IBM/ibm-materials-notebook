@@ -1,5 +1,4 @@
-import { parserInstance } from "../parser";
-import { lexerInstance } from "../lexer";
+import { parserInstance, lexerInstance } from "../parser";
 
 describe("Test parser on simple fragment", () => {
   const importStatement = `import polymerA as polymerB from "placeC";`;

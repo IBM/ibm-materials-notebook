@@ -1,5 +1,4 @@
-import { parserInstance } from "../parser";
-import { lexerInstance } from "../lexer";
+import { parserInstance, lexerInstance } from "../parser";
 import { CstVisitor } from "../cst-visitor";
 import { CmdlAst } from "../cmdl-ast";
 

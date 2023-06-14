@@ -26,11 +26,16 @@ export class SymbolTable {
   enclosingScope: SymbolTable | null;
   nestedScopes: SymbolTable[] = [];
   readonly _symbols = new Map<string, BaseSymbol>();
-  errors = new Map<string, BaseError[]>();
+  errors: Map<string, BaseError[]>;
 
-  constructor(scope: string, parentScope: SymbolTable | null = null) {
+  constructor(
+    scope: string,
+    parentScope: SymbolTable | null = null,
+    errMap: Map<string, BaseError[]>
+  ) {
     this.scope = scope;
     this.enclosingScope = parentScope;
+    this.errors = errMap;
     parentScope?.nestedScopes.push(this);
   }
 

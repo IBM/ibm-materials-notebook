@@ -1,22 +1,22 @@
 import { PROPERTIES } from "../properties";
 import { ModelType } from "../groups/group-types";
 import { ChemicalReference } from "./chemicals";
-import { StringQty } from "./quantities";
+import { BigQty } from "./quantities";
 
 export type CharData = {
   name: string;
   type: string;
   references?: ChemicalReference[];
-  [key: string]: ChemicalReference[] | string | StringQty | undefined;
+  [key: string]: ChemicalReference[] | string | BigQty | undefined;
 };
 
 export type SampleResult = {
   name: string;
   type: ModelType;
-  [PROPERTIES.TIME_POINT]: StringQty | null;
+  [PROPERTIES.TIME_POINT]: BigQty | null;
   sampleId: string;
   [key: string]:
-    | StringQty
+    | BigQty
     | string
     | ModelType
     | null
@@ -45,10 +45,5 @@ export type CharOutput = {
   technique: string;
   sampleId: string;
   references: string[];
-  [key: string]:
-    | string
-    | string[]
-    | undefined
-    | ChemicalReference[]
-    | StringQty;
+  [key: string]: string | string[] | undefined | ChemicalReference[] | BigQty;
 };
