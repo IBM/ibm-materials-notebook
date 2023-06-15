@@ -1,4 +1,4 @@
-import { BaseError } from "./cmdl-language/errors";
+import { BaseError } from "cmdl";
 
 /**
  * Manages errors for each cell in notebook

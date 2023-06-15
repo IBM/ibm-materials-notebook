@@ -1,16 +1,15 @@
-import { CMDLRxnProduct } from "../cmdl-language/cmdl-symbols/models/flow-model";
-import { CMDLReaction } from "../cmdl-language/cmdl-symbols/models/reaction-model";
-import {
-  CMDLCharOutput,
-  CMDLSampleResult,
-} from "../cmdl-language/cmdl-symbols/models/sample-model";
-import {
-  CMDLMetaData,
-  CMDLRecordRefs,
-  CMDLRecordSource,
-} from "../cmdl-language/cmdl-symbols/symbol-types";
-import { TAGS } from "../cmdl-language/cmdl-types";
-import { ModelType } from "../cmdl-language/cmdl-types/groups/group-types";
+// import { CMDLRxnProduct } from "../cmdl-language/cmdl-symbols/models/flow-model";
+// import { CMDLReaction } from "../cmdl-language/cmdl-symbols/models/reaction-model";
+// import {
+//   CMDLCharOutput,
+//   CMDLSampleResult,
+// } from "../cmdl-language/cmdl-symbols/models/sample-model";
+// import {
+//   CMDLMetaData,
+//   CMDLRecordRefs,
+//   CMDLRecordSource,
+// } from "../cmdl-language/cmdl-symbols/symbol-types";
+import { TAGS, CMDL, ModelType } from "cmdl";
 import { BaseRecord, RecordBuilder, ExperimentMetadata } from "./base-builder";
 
 export interface Results {

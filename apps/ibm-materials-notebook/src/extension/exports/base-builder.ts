@@ -1,9 +1,4 @@
-import {
-  CMDLMetaData,
-  CMDLRecordRefs,
-  CMDLRecordTypes,
-} from "../cmdl-language/cmdl-symbols/symbol-types";
-import { TAGS } from "../cmdl-language/cmdl-types";
+import { TAGS, CMDLMetaData, CMDLRecordRefs, CMDLRecordTypes } from "cmdl";
 import { ExpRecord } from "./exp-builder";
 import { FlowRecord } from "./flow-exp-builder";
 

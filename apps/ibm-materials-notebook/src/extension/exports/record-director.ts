@@ -1,16 +1,12 @@
 import { logger } from "../../logger";
-import { typeManager } from "../cmdl-language";
-import { ITemplates, TEMPLATES } from "../cmdl-language/cmdl-types/templates";
+import { ITemplates, TEMPLATES, CMDL, typeManager } from "cmdl";
 import { RecordBuilder } from "./base-builder";
-// import { MaterialBuilder } from "./material-builder";
 import { ExpRecord, ExperimentBuilder } from "./exp-builder";
 import { FlowExperimentBuilder, FlowRecord } from "./flow-exp-builder";
-// import { PolymerGraphBuilder } from "./polymer-graph-builder";
-// import { ReactorBuilder } from "./reactor-builder";
-import {
-  CMDLMetaData,
-  CMDLRecordTypes,
-} from "../cmdl-language/cmdl-symbols/symbol-types";
+// import {
+//   CMDLMetaData,
+//   CMDLRecordTypes,
+// } from "../cmdl-language/cmdl-symbols/symbol-types";
 
 /**
  * Manages building of record objects to write to JSON

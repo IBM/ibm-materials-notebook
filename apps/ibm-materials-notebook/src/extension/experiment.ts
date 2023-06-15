@@ -1,24 +1,24 @@
 import * as vscode from "vscode";
-import { CmdlTree } from "./cmdl-language/cmdl-tree";
-import { CmdlCompiler, ModelARManager, ModelVisitor } from "./cmdl-language";
-import { SymbolTable } from "./cmdl-language";
-import { logger } from "../logger";
-import { ErrorTable } from "./errors";
 import {
+  CmdlCompiler,
+  ModelARManager,
+  ModelVisitor,
+  CmdlTree,
+  SymbolTable,
   PropertySymbol,
   SymbolTableBuilder,
   SymbolType,
-} from "./cmdl-language/cmdl-symbols/symbols";
+  CmdlCompletions,
+  CMDLMetaData,
+  CMDLRecordTypes,
+  BaseError,
+  BaseSymbol,
+} from "cmdl";
+import { logger } from "../logger";
+import { ErrorTable } from "./errors";
 import { RecordDirector } from "./exports/record-director";
 import { VariableDict } from "./commands";
 import { Library } from "./library";
-import { CmdlCompletions } from "./cmdl-language/cmdl-completions";
-import {
-  CMDLMetaData,
-  CMDLRecordTypes,
-} from "./cmdl-language/cmdl-symbols/symbol-types";
-import { BaseError } from "./cmdl-language/errors";
-import { BaseSymbol } from "./cmdl-language/cmdl-symbols/symbols/cmdl-symbol-base";
 import { ExpRecord } from "./exports/exp-builder";
 import { FlowRecord } from "./exports/flow-exp-builder";
 

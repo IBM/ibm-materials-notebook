@@ -3,20 +3,20 @@ import { NOTEBOOK } from "./languageProvider";
 import { logger } from "../logger";
 import { Experiment } from "./experiment";
 import { Library } from "./library";
-import { CMDLSampleResult } from "./cmdl-language/cmdl-symbols/models/sample-model";
+// import { CMDLSampleResult } from "./cmdl-language/cmdl-symbols/models/sample-model";
 
-interface CmdlEntitySource {
-  title: string | undefined;
-  record_id: string | null;
-  notebook_id: string;
-  lastUpdated: string;
-}
+// interface CmdlEntitySource {
+//   title: string | undefined;
+//   record_id: string | null;
+//   notebook_id: string;
+//   lastUpdated: string;
+// }
 
-interface CmdlEntity extends CMDLSampleResult {
-  name: string;
-  base_name: string;
-  source: CmdlEntitySource;
-}
+// interface CmdlEntity extends CMDLSampleResult {
+//   name: string;
+//   base_name: string;
+//   source: CmdlEntitySource;
+// }
 
 /**
  * Manages all materials notebooks (.cmdnb) in workspace

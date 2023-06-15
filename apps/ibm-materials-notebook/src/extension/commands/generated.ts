@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as rl from "readline";
 import * as fs from "fs";
-import { CMDLSerializer } from "../cmdl-language/cmdl-serializer";
+import { CMDLSerializer } from "cmdl";
 import { logger } from "../../logger";
 
 /**
