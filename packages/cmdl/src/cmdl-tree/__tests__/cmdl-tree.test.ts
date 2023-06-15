@@ -1,15 +1,15 @@
 import {
   DuplicationError,
   ErrorCode,
-  FileError,
+  // FileError,
   InvalidGroupError,
   InvalidPropertyError,
   RefError,
 } from "../../errors";
-import { CmdlCompiler } from "../../cmdl-compiler";
+import { Compiler } from "../../cmdl-compiler";
 import { CmdlTree } from "../cmdl-tree";
 
-const compiler = new CmdlCompiler();
+const compiler = new Compiler();
 
 describe("Tests for compiler validation errors", () => {
   it(`compiles a valid record`, async () => {

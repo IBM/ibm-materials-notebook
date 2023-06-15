@@ -1,11 +1,11 @@
 import { ModelVisitor, ModelARManager } from "../intepreter";
-import { CmdlCompiler } from "../cmdl-compiler";
+import { Compiler } from "../cmdl-compiler";
 import { SymbolTable, SymbolTableBuilder } from "../symbols";
 import { CmdlTree } from "../cmdl-tree";
 import { TYPES } from "cmdl-types";
 import { BaseError } from "../errors";
 
-const compiler = new CmdlCompiler();
+const compiler = new Compiler();
 
 async function evalutateText(text: string) {
   const uri = "test/uri";

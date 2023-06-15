@@ -1,10 +1,10 @@
-import { TAGS, CMDLMetaData, CMDLRecordRefs, CMDLRecordTypes } from "cmdl";
+import { CMDLTypes } from "cmdl";
 import { ExpRecord } from "./exp-builder";
 import { FlowRecord } from "./flow-exp-builder";
 
 export interface RecordBuilder {
   record: BaseRecord;
-  setMetadata(arg: CMDLMetaData): void;
+  setMetadata(arg: CMDLTypes.TYPES.MetaData): void;
   setReferences(ref: any): void;
   getResult(): any;
   reset(): void;
@@ -27,19 +27,19 @@ export interface ExperimentMetadata extends RecordMetadata {
 export abstract class BaseRecord {
   title?: string;
   metadata?: RecordMetadata;
-  tags?: TAGS[] = [];
-  references: Record<string, CMDLRecordRefs> = {};
+  tags?: CMDLTypes.TAGS[] = [];
+  references: Record<string, CMDLTypes.TYPES.RecordRefs> = {};
 
   /**
    * Creates metadata for the record
    * @param arg any
    */
-  abstract setMetadata(arg: CMDLMetaData): void;
+  abstract setMetadata(arg: CMDLTypes.TYPES.MetaData): void;
   /**
    * Creates Refrences for the record
    * @param arg any
    */
-  abstract setReference(arg: CMDLRecordTypes): void;
+  abstract setReference(arg: CMDLTypes.TYPES.RecordTypes): void;
   /**
    * Basic validation of record export
    */

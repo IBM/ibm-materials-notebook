@@ -1,9 +1,9 @@
 import { DuplicationError, ErrorCode } from "../errors";
-import { CmdlCompiler } from "../cmdl-compiler";
+import { Compiler } from "../cmdl-compiler";
 import { SymbolTable, SymbolTableBuilder } from "../symbols";
 import { BaseError } from "../errors";
 
-const compiler = new CmdlCompiler();
+const compiler = new Compiler();
 
 async function evalutateText(text: string) {
   const uri = "test/uri";

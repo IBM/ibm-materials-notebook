@@ -7,14 +7,14 @@ import { ParserError } from "./errors";
 import { ILexingError, IRecognitionException } from "chevrotain";
 import { logger } from "./logger";
 
-export interface CompilerOuput {
+export interface CompilerOutput {
   recordTree: CmdlTree;
 }
 
 /**
  * Compiler for TYPES. Lexes and parses CMDL syntax.
  */
-export class CmdlCompiler {
+export class Compiler {
   private readonly astVisitor = new CstVisitor();
   private readonly treeVisitor = new CstRecordVisitor();
 

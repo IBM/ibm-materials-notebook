@@ -1,36 +1,25 @@
-// import { CMDLRxnProduct } from "../cmdl-language/cmdl-symbols/models/flow-model";
-// import { CMDLReaction } from "../cmdl-language/cmdl-symbols/models/reaction-model";
-// import {
-//   CMDLCharOutput,
-//   CMDLSampleResult,
-// } from "../cmdl-language/cmdl-symbols/models/sample-model";
-// import {
-//   CMDLMetaData,
-//   CMDLRecordRefs,
-//   CMDLRecordSource,
-// } from "../cmdl-language/cmdl-symbols/symbol-types";
-import { TAGS, TYPES, ModelType } from "cmdl";
+import { CMDLTypes } from "cmdl";
 import { BaseRecord, RecordBuilder, ExperimentMetadata } from "./base-builder";
 
 export interface Results {
-  inputs: CMDLSampleResult[];
-  outputs: CMDLSampleResult[];
+  inputs: CMDLTypes.TYPES.SampleResult[];
+  outputs: CMDLTypes.TYPES.SampleResult[];
 }
 
 export interface RecordBase {
   title?: string;
   date?: string;
-  tags?: TAGS[];
+  tags?: CMDLTypes.TAGS[];
   metadata?: ExperimentMetadata;
-  samples: CMDLSampleResult[];
-  charData: CMDLCharOutput[];
-  sources: CMDLRecordSource[];
+  samples: CMDLTypes.TYPES.SampleResult[];
+  charData: CMDLTypes.TYPES.CharOutput[];
+  sources: CMDLTypes.TYPES.RecordSource[];
   results: Results;
-  references: CMDLRecordRefs[];
+  references: CMDLTypes.TYPES.RecordRefs[];
 }
 
 export interface ExpRecord extends RecordBase {
-  reactions: CMDLReaction[];
+  reactions: CMDLTypes.TYPES.Reaction[];
 }
 
 /**
@@ -39,10 +28,10 @@ export interface ExpRecord extends RecordBase {
 class ExperimentRecord extends BaseRecord {
   date?: string;
   metadata?: ExperimentMetadata;
-  reactions: CMDLReaction[] = [];
-  samples: CMDLSampleResult[] = [];
-  charData: CMDLCharOutput[] = [];
-  sources: CMDLRecordSource[] = [];
+  reactions: CMDLTypes.TYPES.Reaction[] = [];
+  samples: CMDLTypes.TYPES.SampleResult[] = [];
+  charData: CMDLTypes.TYPES.CharOutput[] = [];
+  sources: CMDLTypes.TYPES.RecordSource[] = [];
 
   setReference(arg: any): void {
     if (this.references[arg.name]) {
@@ -52,7 +41,7 @@ class ExperimentRecord extends BaseRecord {
     }
   }
 
-  setMetadata(arg: CMDLMetaData): void {
+  setMetadata(arg: CMDLTypes.TYPES.MetaData): void {
     this.title = arg.title;
     this.date = arg.date;
     this.tags = arg.tags;
@@ -80,7 +69,7 @@ class ExperimentRecord extends BaseRecord {
 
   export(): ExpRecord {
     //extract products from reactions
-    let products: CMDLRxnProduct[] = [];
+    let products: CMDLTypes.TYPES.Product[] = [];
     for (const reaction of this.reactions) {
       products = products.concat(reaction.products);
     }
@@ -131,20 +120,20 @@ export class ExperimentBuilder implements RecordBuilder {
     this.record.setMetadata(arg);
   }
 
-  setReferences(ref: CMDLRecordRefs): void {
-    if (ref.type === ModelType.REACTION) {
+  setReferences(ref: CMDLTypes.TYPES.RecordRefs): void {
+    if (ref.type === CMDLTypes.ModelType.REACTION) {
       this.record.reactions.push(ref);
     }
 
-    if (ref.type === ModelType.SAMPLE) {
+    if (ref.type === CMDLTypes.ModelType.SAMPLE) {
       this.record.samples = this.record.samples.concat(ref.results);
       this.record.charData = this.record.charData.concat(ref.charData);
     }
 
     if (
-      ref.type === ModelType.CHEMICAL ||
-      ref.type === ModelType.POLYMER ||
-      ref.type === ModelType.COMPLEX
+      ref.type === CMDLTypes.ModelType.CHEMICAL ||
+      ref.type === CMDLTypes.ModelType.POLYMER ||
+      ref.type === CMDLTypes.ModelType.COMPLEX
     ) {
       this.record.setReference(ref);
     }

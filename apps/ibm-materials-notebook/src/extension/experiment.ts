@@ -1,19 +1,13 @@
 import * as vscode from "vscode";
 import {
-  CmdlCompiler,
-  ModelARManager,
-  ModelVisitor,
   CmdlTree,
-  SymbolTable,
-  PropertySymbol,
-  SymbolTableBuilder,
-  SymbolType,
-  CmdlCompletions,
-  CMDLMetaData,
-  CMDLRecordTypes,
-  BaseError,
-  BaseSymbol,
+  CMDLErrors,
+  CMDLSymbols,
+  CMDLInterpreter,
+  CMDLCompiler,
+  CMDLTypes,
 } from "cmdl";
+import { CmdlCompletions } from "./cmdl-completion";
 import { logger } from "../logger";
 import { ErrorTable } from "./errors";
 import { RecordDirector } from "./exports/record-director";
@@ -38,9 +32,9 @@ export class Experiment {
   private readonly library: Library;
   private readonly _cells = new Map<string, CmdlCell>();
   private readonly _errorTable = new ErrorTable();
-  private readonly _compiler = new CmdlCompiler();
-  private readonly _symbolTable = new SymbolTable("GLOBAL");
-  private readonly _globalAR: ModelARManager;
+  private readonly _compiler = new CMDLCompiler.Compiler();
+  private readonly _symbolTable = new CMDLSymbols.SymbolTable("GLOBAL");
+  private readonly _globalAR: CMDLInterpreter.ModelARManager;
 
   /**
    * Creates a new Experiment instance
@@ -53,7 +47,7 @@ export class Experiment {
     this.uri = uri.toString();
     const filepath = uri.path.split("/");
     this.fileName = filepath[filepath.length - 1];
-    this._globalAR = new ModelARManager(this.uri);
+    this._globalAR = new CMDLInterpreter.ModelARManager(this.uri);
     this.library = library;
   }
 
@@ -89,12 +83,12 @@ export class Experiment {
       this._errorTable.delete(uri);
 
       const { recordTree, parserErrors } = this._compiler.parse(doc.getText());
-      const semanticErrors = await recordTree.validate(this.library);
+      const semanticErrors = await recordTree.validate();
 
       this._errorTable.add(uri, parserErrors);
       this._errorTable.add(uri, semanticErrors);
 
-      const builder = new SymbolTableBuilder(
+      const builder = new CMDLSymbols.SymbolTableBuilder(
         this._symbolTable,
         this._errorTable,
         uri
@@ -154,9 +148,9 @@ export class Experiment {
   /**
    * Method to retrieve errors for a given cell from the cell table
    * @param uri uri string from vscode text document
-   * @returns BaseError[]
+   * @returns CMDLErrors.BaseError[]
    */
-  public getCellErrors(uri: string): BaseError[] {
+  public getCellErrors(uri: string): CMDLErrors.BaseError[] {
     return this._errorTable.get(uri);
   }
 
@@ -193,7 +187,7 @@ export class Experiment {
     }
 
     const globalAR = this._globalAR.createGlobalAR(uri);
-    const modelVisitor = new ModelVisitor(globalAR, uri);
+    const modelVisitor = new CMDLInterpreter.ModelVisitor(globalAR, uri);
 
     cell.recordTree.evaluate(modelVisitor);
   }
@@ -203,11 +197,11 @@ export class Experiment {
    * @param query text string from completion provider
    * @returns string[]
    */
-  public getSymbols(): BaseSymbol[] {
+  public getSymbols(): CMDLSymbols.BaseSymbol[] {
     return this._symbolTable.getBaseSymbols();
   }
 
-  public getSymbolMembers(word: string): BaseSymbol[] | undefined {
+  public getSymbolMembers(word: string): CMDLSymbols.BaseSymbol[] | undefined {
     const path = word.split(".");
     return this._symbolTable.getSymbolMembers(path);
   }
@@ -232,11 +226,11 @@ export class Experiment {
   public toCSV(): string {
     const templateVariableSymbols = this._symbolTable.exportVariables();
     const templateVariables = templateVariableSymbols
-      .map((el) => {
-        if (el.type === SymbolType.VARIABLE_DEC) {
+      .map((el: any) => {
+        if (el.type === CMDLSymbols.SymbolType.VARIABLE_DEC) {
           return el.name;
         } else {
-          return (el as PropertySymbol<string>).value;
+          return (el as CMDLSymbols.PropertySymbol<string>).value;
         }
       })
       .join(",");
@@ -326,7 +320,8 @@ export class Experiment {
       return;
     }
 
-    const metadata = this._globalAR.getOptionalValue<CMDLMetaData>("metadata");
+    const metadata =
+      this._globalAR.getOptionalValue<CMDLTypes.TYPES.MetaData>("metadata");
 
     if (!metadata) {
       vscode.window.showWarningMessage(
@@ -339,7 +334,7 @@ export class Experiment {
     //TODO: force notebookId to be readonly after merge with metadata
     metadata.notebookId = this.id;
     const recordManager = new RecordDirector();
-    const values = this._globalAR.all<CMDLRecordTypes>();
+    const values = this._globalAR.all<CMDLTypes.TYPES.RecordTypes>();
 
     const record = recordManager.build(metadata, values);
     return record;

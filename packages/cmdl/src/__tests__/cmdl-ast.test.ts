@@ -1,7 +1,7 @@
-import { CmdlCompiler } from "../cmdl-compiler";
+import { Compiler } from "../cmdl-compiler";
 
 describe("Tests for cmdl-ast for completion providers", () => {
-  const compiler = new CmdlCompiler();
+  const compiler = new Compiler();
 
   it("returns a null value when no nearby groups", () => {
     const text = `reaction`;

@@ -1,29 +1,11 @@
-// import {
-//   CMDLFlowRxn,
-//   CMDLRxnProduct,
-// } from "../cmdl-language/cmdl-symbols/models/flow-model";
-// import { CMDLFlowReactor } from "../cmdl-language/cmdl-symbols/models/reactor-model";
-// import {
-//   CMDLCharOutput,
-//   CMDLSampleResult,
-// } from "../cmdl-language/cmdl-symbols/models/sample-model";
-// import {
-//   CMDLSolution,
-//   CMDLSolutionExport,
-// } from "../cmdl-language/cmdl-symbols/models/solution-model";
-// import {
-//   CMDLMetaData,
-//   CMDLRecordRefs,
-//   CMDLRecordSource,
-// } from "../cmdl-language/cmdl-symbols/symbol-types";
-import { ModelType, CMDL } from "cmdl";
+import { CMDLTypes } from "cmdl";
 import { BaseRecord, ExperimentMetadata, RecordBuilder } from "./base-builder";
 import { RecordBase } from "./exp-builder";
 
 export interface FlowRecord extends RecordBase {
-  solutions: CMDLSolutionExport[];
-  reactor?: CMDLFlowReactor;
-  runs: CMDLFlowRxn[];
+  solutions: CMDLTypes.TYPES.SolutionReference[];
+  reactor?: CMDLTypes.TYPES.FlowReactor;
+  runs: CMDLTypes.TYPES.FlowRxn[];
 }
 
 /**
@@ -32,12 +14,12 @@ export interface FlowRecord extends RecordBase {
 class FlowExperimentRecord extends BaseRecord {
   date?: string;
   metadata?: ExperimentMetadata;
-  solutions: CMDLSolution[] = [];
-  reactor?: CMDLFlowReactor;
-  runs: CMDLFlowRxn[] = [];
-  samples: CMDLSampleResult[] = [];
-  charData: CMDLCharOutput[] = [];
-  sources: CMDLRecordSource[] = [];
+  solutions: CMDLTypes.TYPES.Solution[] = [];
+  reactor?: CMDLTypes.TYPES.FlowReactor;
+  runs: CMDLTypes.TYPES.FlowRxn[] = [];
+  samples: CMDLTypes.TYPES.SampleResult[] = [];
+  charData: CMDLTypes.TYPES.CharOutput[] = [];
+  sources: CMDLTypes.TYPES.RecordSource[] = [];
 
   setReference(arg: any): void {
     if (this.references[arg.name]) {
@@ -47,7 +29,7 @@ class FlowExperimentRecord extends BaseRecord {
     }
   }
 
-  setMetadata(arg: CMDLMetaData): void {
+  setMetadata(arg: CMDLTypes.TYPES.MetaData): void {
     this.title = arg.title;
     this.date = arg.date;
     this.tags = arg.tags;
@@ -74,7 +56,7 @@ class FlowExperimentRecord extends BaseRecord {
   }
 
   export(): FlowRecord {
-    const solutions: CMDLSolutionExport[] = this.solutions.map((el) => {
+    const solutions: CMDLTypes.TYPES.Solution[] = this.solutions.map((el) => {
       return {
         name: el.name,
         type: el.type,
@@ -83,7 +65,7 @@ class FlowExperimentRecord extends BaseRecord {
     });
 
     //extract products from reactions
-    let products: CMDLRxnProduct[] = [];
+    let products: CMDLTypes.TYPES.Product[] = [];
     for (const run of this.runs) {
       products = products.concat(run.products);
     }
@@ -131,29 +113,29 @@ export class FlowExperimentBuilder implements RecordBuilder {
     this.record = new FlowExperimentRecord();
   }
 
-  setMetadata(arg: CMDLMetaData): void {
+  setMetadata(arg: CMDLTypes.TYPES.MetaData): void {
     this.record.setMetadata(arg);
   }
 
-  setReferences(ref: CMDLRecordRefs): void {
-    if (ref.type === ModelType.FLOW_REACTION) {
+  setReferences(ref: CMDLTypes.TYPES.RecordRefs): void {
+    if (ref.type === CMDLTypes.ModelType.FLOW_REACTION) {
       this.record.runs.push(ref);
     }
 
-    if (ref.type === ModelType.REACTOR_GRAPH) {
+    if (ref.type === CMDLTypes.ModelType.REACTOR_GRAPH) {
       this.record.reactor = ref;
     }
 
-    if (ref.type === ModelType.SOLUTION) {
+    if (ref.type === CMDLTypes.ModelType.SOLUTION) {
       this.record.solutions.push(ref);
     }
 
-    if (ref.type === ModelType.SAMPLE) {
+    if (ref.type === CMDLTypes.ModelType.SAMPLE) {
       this.record.samples = this.record.samples.concat(ref.results);
       this.record.charData = this.record.charData.concat(ref.charData);
     }
 
-    if (ref.type === ModelType.CHEMICAL) {
+    if (ref.type === CMDLTypes.ModelType.CHEMICAL) {
       this.record.setReference(ref);
     }
   }

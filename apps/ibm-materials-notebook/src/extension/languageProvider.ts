@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { logger } from "../logger";
-import { CmdlCompletions } from "cmdl";
+import { CmdlCompletions } from "./cmdl-completion";
 import { Repository } from "./respository";
 import { Library } from "./library";
 import { Validation } from "./notebookValidator";
