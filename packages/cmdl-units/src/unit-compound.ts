@@ -1,7 +1,7 @@
 import BaseUnit from "./base-unit";
 import Big from "big.js";
 import { UnitPrefixes } from "./unit-conversions";
-import { CMDL } from "cmdl-types";
+import { TYPES } from "cmdl-types";
 
 /**
  * Top-level class for managing and converting units
@@ -13,7 +13,7 @@ export default class Unit {
   numerator: BaseUnit[];
   denominator: BaseUnit[];
 
-  constructor({ unit, value }: CMDL.Qty) {
+  constructor({ unit, value }: TYPES.Qty) {
     if (!unit) {
       throw new Error("Invalid unit, no unit defined");
     }

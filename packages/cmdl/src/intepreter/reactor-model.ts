@@ -1,6 +1,6 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType, CMDL } from "cmdl-types";
+import { ModelType, TYPES } from "cmdl-types";
 import { ReactorContainer } from "cmdl-reactors";
 
 export class Reactor extends BaseModel {
@@ -30,7 +30,7 @@ export class Reactor extends BaseModel {
       globalAR.setValue(this.name, properties);
     } else {
       const nodes =
-        this.modelAR.getValue<(CMDL.ReactorNode | CMDL.Reactor)[]>("nodes");
+        this.modelAR.getValue<(TYPES.ReactorNode | TYPES.Reactor)[]>("nodes");
 
       for (const node of nodes) {
         if (node.type === "reactor") {

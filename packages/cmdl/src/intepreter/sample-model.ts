@@ -2,7 +2,7 @@ import { ModelActivationRecord } from "./model-AR";
 import { logger } from "../logger";
 import { BaseModel } from "./base-model";
 import { PolymerContainer, JSONPolymerContainer } from "cmdl-polymers";
-import { PROPERTIES, ModelType, CMDL } from "cmdl-types";
+import { PROPERTIES, ModelType, TYPES } from "cmdl-types";
 
 /**
  * Output model for characterization samples
@@ -20,7 +20,8 @@ export class SampleOutput extends BaseModel {
 
   public execute(globalAR: ModelActivationRecord): void {
     try {
-      let charData = this.modelAR.getOptionalValue<CMDL.CharData[]>("charData");
+      let charData =
+        this.modelAR.getOptionalValue<TYPES.CharData[]>("charData");
 
       if (!charData) {
         return;
@@ -29,7 +30,7 @@ export class SampleOutput extends BaseModel {
       const results = this.createResults(charData, globalAR);
       const formattedCharData = this.formatCharacterizationData(charData);
 
-      const sampleOutput: CMDL.SampleOutput = {
+      const sampleOutput: TYPES.SampleOutput = {
         name: this.name,
         type: ModelType.SAMPLE,
         results: results,
@@ -48,14 +49,14 @@ export class SampleOutput extends BaseModel {
 
   /**
    * Formats characterization data for writing to globalAR
-   * @param charData CMDL.CharData[]
-   * @returns CMDL.CharOutput[]
+   * @param charData TYPES.CharData[]
+   * @returns TYPES.CharOutput[]
    */
   private formatCharacterizationData(
-    charData: CMDL.CharData[]
-  ): CMDL.CharOutput[] {
+    charData: TYPES.CharData[]
+  ): TYPES.CharOutput[] {
     return charData.map((char) => {
-      const charRecord: CMDL.CharOutput = {
+      const charRecord: TYPES.CharOutput = {
         technique: char.type,
         name: char.name,
         sampleId: this.name,
@@ -84,11 +85,11 @@ export class SampleOutput extends BaseModel {
    * @returns CMDLSampleResult[]
    */
   private createResults(
-    charData: CMDL.CharData[],
+    charData: TYPES.CharData[],
     globalAR: ModelActivationRecord
-  ): CMDL.SampleResult[] {
+  ): TYPES.SampleResult[] {
     const resultRecord = this.extractReferences(charData);
-    let timePoint = this.modelAR.getOptionalValue<CMDL.BigQty>(
+    let timePoint = this.modelAR.getOptionalValue<TYPES.BigQty>(
       PROPERTIES.TIME_POINT
     );
 
@@ -96,10 +97,10 @@ export class SampleOutput extends BaseModel {
 
     for (const [key, value] of Object.entries(resultRecord)) {
       let globalRef = globalAR.getValue<
-        CMDL.Chemical | CMDL.Complex | CMDL.Polymer
+        TYPES.Chemical | TYPES.Complex | TYPES.Polymer
       >(key);
 
-      const finalResult: CMDL.SampleResult = {
+      const finalResult: TYPES.SampleResult = {
         name: key,
         type: globalRef.type,
         time_point: timePoint || null,
@@ -127,17 +128,17 @@ export class SampleOutput extends BaseModel {
    * @returns Record<string, RefResult[]>
    */
   private extractReferences(
-    charData: CMDL.CharData[]
-  ): Record<string, CMDL.RefResult[]> {
-    const resultRecord: Record<string, CMDL.RefResult[]> = {};
-    charData.forEach((charExp: CMDL.CharData) => {
+    charData: TYPES.CharData[]
+  ): Record<string, TYPES.RefResult[]> {
+    const resultRecord: Record<string, TYPES.RefResult[]> = {};
+    charData.forEach((charExp: TYPES.CharData) => {
       if (charExp?.references) {
-        charExp.references.forEach((ref: CMDL.ChemicalReference) => {
-          let refResults: CMDL.RefResult[] = [];
+        charExp.references.forEach((ref: TYPES.ChemicalReference) => {
+          let refResults: TYPES.RefResult[] = [];
 
           for (const [key, value] of Object.entries(ref)) {
             if (key !== "name" && key !== "path") {
-              let refResult: CMDL.RefResult = {
+              let refResult: TYPES.RefResult = {
                 technique: charExp.type,
                 source: charExp.name,
                 property: key,
@@ -168,9 +169,9 @@ export class SampleOutput extends BaseModel {
    * @param value RefResult
    */
   private createComplex(
-    result: CMDL.SampleResult,
-    ref: CMDL.Complex,
-    value: CMDL.RefResult[]
+    result: TYPES.SampleResult,
+    ref: TYPES.Complex,
+    value: TYPES.RefResult[]
   ): void {
     result.components = ref.components;
 
@@ -186,9 +187,9 @@ export class SampleOutput extends BaseModel {
    * @param value RefResult[]
    */
   private createSmallMolecule(
-    result: CMDL.SampleResult,
-    ref: CMDL.Chemical,
-    value: CMDL.RefResult[]
+    result: TYPES.SampleResult,
+    ref: TYPES.Chemical,
+    value: TYPES.RefResult[]
   ): void {
     result.molecular_weight = ref.molecular_weight;
     result.smiles = ref.smiles;
@@ -210,9 +211,9 @@ export class SampleOutput extends BaseModel {
    * @param value RefResult[]
    */
   private createPolymer(
-    result: CMDL.SampleResult,
-    ref: CMDL.Polymer,
-    value: CMDL.RefResult[]
+    result: TYPES.SampleResult,
+    ref: TYPES.Polymer,
+    value: TYPES.RefResult[]
   ): void {
     result.state = ref.state;
 
@@ -231,7 +232,10 @@ export class SampleOutput extends BaseModel {
     }
   }
 
-  private setMeasuredProperty(prop: CMDL.RefResult, result: CMDL.SampleResult) {
+  private setMeasuredProperty(
+    prop: TYPES.RefResult,
+    result: TYPES.SampleResult
+  ) {
     const propValue = {
       ...prop.value,
       source: prop.source,
@@ -251,8 +255,8 @@ export class SampleOutput extends BaseModel {
    * @param polymerWeights RefResult[]
    */
   private computePolymerWeights(
-    ref: CMDL.Polymer,
-    polymerWeights: CMDL.RefResult[]
+    ref: TYPES.Polymer,
+    polymerWeights: TYPES.RefResult[]
   ): { tree: JSONPolymerContainer } {
     const polymer = new PolymerContainer(ref.name);
     polymer.initializeTreeFromJSON(ref.tree);

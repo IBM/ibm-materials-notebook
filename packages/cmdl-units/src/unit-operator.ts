@@ -3,7 +3,7 @@ import { isCompatible } from "./comparators";
 import Big from "big.js";
 import { UnitPrefixes } from "./unit-conversions";
 import BaseUnit from "./base-unit";
-import { CMDL } from "cmdl-types";
+import { TYPES } from "cmdl-types";
 
 /**
  *Performs basic unit operations
@@ -18,7 +18,7 @@ export default class UnitOperator {
   static sum(
     unitList: Unit[],
     scale: UnitPrefixes = "base"
-  ): CMDL.BigQty | null {
+  ): TYPES.BigQty | null {
     if (!unitList.length) {
       return null;
     }
@@ -34,7 +34,7 @@ export default class UnitOperator {
       throw new Error(`Attempting to add incompatible units: ${unitList}`);
     }
 
-    let sumObject: CMDL.BigQty = unitList.reduce(
+    let sumObject: TYPES.BigQty = unitList.reduce(
       (acc, item) => {
         item.scaleTo(scale);
 

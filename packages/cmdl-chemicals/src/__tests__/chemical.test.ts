@@ -1,15 +1,15 @@
 import Big from "big.js";
-import { UNITS, CMDL, PROPERTIES, TAGS } from "cmdl-types";
+import { UNITS, TYPES, PROPERTIES, TAGS } from "cmdl-types";
 import ChemicalFactory from "../chemical-factory";
 import Gas from "../gas";
 import Liquid from "../liquid";
 import Solid from "../solid";
 
-export const solidChemicalMass: CMDL.ChemicalConfig = {
+export const solidChemicalMass: TYPES.ChemicalConfig = {
   name: "p-methylbenzyl alcohol",
   mw: Big(122.16),
   density: null,
-  state: CMDL.ChemStates.SOLID,
+  state: TYPES.ChemStates.SOLID,
   quantity: {
     name: PROPERTIES.MASS,
     value: Big("100"),
@@ -20,11 +20,11 @@ export const solidChemicalMass: CMDL.ChemicalConfig = {
   limiting: true,
 };
 
-const solidChemicalMoles: CMDL.ChemicalConfig = {
+const solidChemicalMoles: TYPES.ChemicalConfig = {
   name: "p-methylbenzyl alcohol",
   mw: Big(122.16),
   density: null,
-  state: CMDL.ChemStates.SOLID,
+  state: TYPES.ChemStates.SOLID,
   quantity: {
     name: PROPERTIES.MOLES,
     value: Big("100"),
@@ -35,11 +35,11 @@ const solidChemicalMoles: CMDL.ChemicalConfig = {
   limiting: false,
 };
 
-const liquidChemicalMoles: CMDL.ChemicalConfig = {
+const liquidChemicalMoles: TYPES.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: Big(0.8876),
-  state: CMDL.ChemStates.LIQUID,
+  state: TYPES.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.MOLES,
     value: Big("10"),
@@ -50,11 +50,11 @@ const liquidChemicalMoles: CMDL.ChemicalConfig = {
   limiting: false,
 };
 
-const liquidChemicalMass: CMDL.ChemicalConfig = {
+const liquidChemicalMass: TYPES.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: Big(0.8876),
-  state: CMDL.ChemStates.LIQUID,
+  state: TYPES.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.MASS,
     value: Big("20"),
@@ -65,11 +65,11 @@ const liquidChemicalMass: CMDL.ChemicalConfig = {
   limiting: false,
 };
 
-const liquidChemicalVol: CMDL.ChemicalConfig = {
+const liquidChemicalVol: TYPES.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: Big(0.8876),
-  state: CMDL.ChemStates.LIQUID,
+  state: TYPES.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.VOLUME,
     value: Big("300"),
@@ -80,11 +80,11 @@ const liquidChemicalVol: CMDL.ChemicalConfig = {
   limiting: false,
 };
 
-const liquidChemicalNoDensity: CMDL.ChemicalConfig = {
+const liquidChemicalNoDensity: TYPES.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: null,
-  state: CMDL.ChemStates.LIQUID,
+  state: TYPES.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.VOLUME,
     value: Big("300"),
@@ -95,11 +95,11 @@ const liquidChemicalNoDensity: CMDL.ChemicalConfig = {
   limiting: false,
 };
 
-const gasChemical: CMDL.ChemicalConfig = {
+const gasChemical: TYPES.ChemicalConfig = {
   name: "CO2",
   mw: Big(44.01),
   density: null,
-  state: CMDL.ChemStates.GAS,
+  state: TYPES.ChemStates.GAS,
   quantity: {
     name: PROPERTIES.PRESSURE,
     value: Big("300"),
@@ -120,11 +120,11 @@ const gasChemical: CMDL.ChemicalConfig = {
   limiting: false,
 };
 
-const gasChemicalNoVol: CMDL.ChemicalConfig = {
+const gasChemicalNoVol: TYPES.ChemicalConfig = {
   name: "CO2",
   mw: Big(44.01),
   density: null,
-  state: CMDL.ChemStates.GAS,
+  state: TYPES.ChemStates.GAS,
   quantity: {
     name: PROPERTIES.PRESSURE,
     value: Big("300"),
@@ -140,11 +140,11 @@ const gasChemicalNoVol: CMDL.ChemicalConfig = {
   limiting: false,
 };
 
-const gasChemicalNoTemp: CMDL.ChemicalConfig = {
+const gasChemicalNoTemp: TYPES.ChemicalConfig = {
   name: "CO2",
   mw: Big(44.01),
   density: null,
-  state: CMDL.ChemStates.GAS,
+  state: TYPES.ChemStates.GAS,
   quantity: {
     name: PROPERTIES.PRESSURE,
     value: Big("300"),

@@ -12,7 +12,7 @@ export interface CompilerOuput {
 }
 
 /**
- * Compiler for CMDL. Lexes and parses CMDL syntax.
+ * Compiler for TYPES. Lexes and parses CMDL syntax.
  */
 export class CmdlCompiler {
   private readonly astVisitor = new CstVisitor();

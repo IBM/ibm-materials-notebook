@@ -1,7 +1,7 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { PolymerContainer } from "cmdl-polymers";
-import { ModelType, CMDL } from "cmdl-types";
+import { ModelType, TYPES } from "cmdl-types";
 import { PROPERTIES } from "cmdl-types";
 
 export class Polymer extends BaseModel {
@@ -16,12 +16,12 @@ export class Polymer extends BaseModel {
   }
 
   public execute(globalAR: ModelActivationRecord): void {
-    const treeRef = this.modelAR.getValue<CMDL.Reference>(PROPERTIES.TREE);
+    const treeRef = this.modelAR.getValue<TYPES.Reference>(PROPERTIES.TREE);
     const treeValues =
-      this.modelAR.getOptionalValue<CMDL.PolymerTreeValue[]>("treeValues");
+      this.modelAR.getOptionalValue<TYPES.PolymerTreeValue[]>("treeValues");
 
     if ("ref" in treeRef) {
-      const polymerGraph = globalAR.getOptionalValue<CMDL.PolymerGraph>(
+      const polymerGraph = globalAR.getOptionalValue<TYPES.PolymerGraph>(
         treeRef.ref
       );
 
@@ -42,9 +42,9 @@ export class Polymer extends BaseModel {
     }
 
     const polymerSmiles = this.polymerContainer.getSmilesStr();
-    const state = this.modelAR.getValue<CMDL.ChemStates>("state");
+    const state = this.modelAR.getValue<TYPES.ChemStates>("state");
 
-    const properties: CMDL.Polymer = {
+    const properties: TYPES.Polymer = {
       name: this.name,
       type: ModelType.POLYMER,
       smiles: polymerSmiles,
@@ -55,7 +55,7 @@ export class Polymer extends BaseModel {
       if (name === PROPERTIES.TREE) {
         properties[name] = this.polymerContainer.treeToJSON();
       } else {
-        properties[name as keyof CMDL.Polymer] = value;
+        properties[name as keyof TYPES.Polymer] = value;
       }
     }
 

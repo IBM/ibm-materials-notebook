@@ -4,11 +4,11 @@ import { solidChemicalMass } from "./chemical.test";
 import Solid from "../solid";
 import { PROPERTIES, TAGS, CMDL } from "cmdl-types";
 
-const catalyst: CMDL.ChemicalConfig = {
+const catalyst: TYPES.ChemicalConfig = {
   name: "KOME",
   mw: Big(70.132),
   density: null,
-  state: CMDL.ChemStates.SOLID,
+  state: TYPES.ChemStates.SOLID,
   quantity: {
     name: PROPERTIES.MASS,
     value: Big("1"),
@@ -19,11 +19,11 @@ const catalyst: CMDL.ChemicalConfig = {
   limiting: true,
 };
 
-const solvent: CMDL.ChemicalConfig = {
+const solvent: TYPES.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: Big(0.8876),
-  state: CMDL.ChemStates.LIQUID,
+  state: TYPES.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.VOLUME,
     value: Big("1"),

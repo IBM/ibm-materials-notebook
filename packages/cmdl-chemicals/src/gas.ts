@@ -1,7 +1,7 @@
 import { Unit } from "cmdl-units";
 import Big from "big.js";
 import { BaseChemical } from "./base-chemical";
-import { UNITS, PROPERTIES, ReactionRoles, CMDL } from "cmdl-types";
+import { UNITS, PROPERTIES, ReactionRoles, TYPES } from "cmdl-types";
 
 /**
  * Class representing gaseous chemicals in a reaction
@@ -20,10 +20,10 @@ export default class Gas extends BaseChemical {
 
   /**
    * Initializes gas values based on pressure and reactor volume
-   * @param volume CMDL.BigQty
-   * @param pressure CMDL.BigQty
+   * @param volume TYPES.BigQty
+   * @param pressure TYPES.BigQty
    */
-  public initializeValues(volume: CMDL.BigQty, pressure: CMDL.BigQty) {
+  public initializeValues(volume: TYPES.BigQty, pressure: TYPES.BigQty) {
     if (pressure && pressure.unit !== "atm") {
       const pressureUnit = new Unit(pressure);
       pressureUnit.changeUnitBase("atm");
@@ -41,7 +41,7 @@ export default class Gas extends BaseChemical {
     }
   }
 
-  public computeValues(temp: CMDL.BigQty) {
+  public computeValues(temp: TYPES.BigQty) {
     if (!this.pressure || !this.volume || !this.mw) {
       throw new Error(`Incomplete data to compute gas values in ${this.name}`);
     }
@@ -63,11 +63,11 @@ export default class Gas extends BaseChemical {
     throw new Error(`Cannot merge for gaseous reagents`);
   }
 
-  public getMolesByVolume(volume: CMDL.BigQty): CMDL.ChemicalConfig {
+  public getMolesByVolume(volume: TYPES.BigQty): TYPES.ChemicalConfig {
     throw new Error(`Not implmented for gaseous reagents`);
   }
 
-  public export(): CMDL.ChemicalConfig {
+  public export(): TYPES.ChemicalConfig {
     if (!this.mw || !this.pressure || !this.volume) {
       throw new Error(`Cannot export incomplete gas chemical ${this.name}`);
     }
@@ -84,7 +84,7 @@ export default class Gas extends BaseChemical {
         uncertainty: null,
       },
       roles: this.roles,
-      state: CMDL.ChemStates.GAS,
+      state: TYPES.ChemStates.GAS,
       limiting: this.limiting,
     };
   }

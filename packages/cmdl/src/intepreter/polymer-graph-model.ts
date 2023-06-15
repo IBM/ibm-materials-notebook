@@ -1,7 +1,7 @@
 import { PolymerContainer } from "cmdl-polymers";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType, CMDL } from "cmdl-types";
+import { ModelType, TYPES } from "cmdl-types";
 
 /**
  * Model for creating polymer graph
@@ -35,11 +35,11 @@ export class PolymerGraphModel extends BaseModel {
 
       globalAR.setValue(this.name, properties);
     } else {
-      const nodes = this.modelAR.getValue<CMDL.Reference[]>("nodes");
+      const nodes = this.modelAR.getValue<TYPES.Reference[]>("nodes");
       const connections =
-        this.modelAR.getOptionalValue<CMDL.PolymerConnection[]>("connections");
+        this.modelAR.getOptionalValue<TYPES.PolymerConnection[]>("connections");
       const containers =
-        this.modelAR.getOptionalValue<CMDL.PolymerContainer[]>("containers");
+        this.modelAR.getOptionalValue<TYPES.PolymerContainer[]>("containers");
 
       const treeConfig = {
         name: this.name,

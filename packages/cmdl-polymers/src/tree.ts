@@ -3,7 +3,7 @@ import { PolymerEdge } from "./edge";
 import { Container } from "./tree-container";
 import { PolymerNode } from "./node";
 import { PolymerTreeVisitor } from "./polymer-visitors";
-import { CMDL } from "cmdl-types";
+import { TYPES } from "cmdl-types";
 import { PolymerComponent } from "./types";
 import {
   JSONPolymerContainer,
@@ -30,7 +30,7 @@ export class PolymerTree {
    * @param conn CMDLPolymerConnection
    * @param container Container
    */
-  public createEdges(conn: CMDL.PolymerConnection, container: Container) {
+  public createEdges(conn: TYPES.PolymerConnection, container: Container) {
     const newSources = this.parseConnectionPaths(conn.sources);
     const newTargets = this.parseConnectionPaths(conn.targets);
 
@@ -61,7 +61,7 @@ export class PolymerTree {
    * @param arr CMDLRef[][]
    * @returns string[][]
    */
-  private parseConnectionPaths(arr: CMDL.Reference[]): string[][] {
+  private parseConnectionPaths(arr: TYPES.Reference[]): string[][] {
     return arr.map((el) => {
       return [el.ref.slice(1), ...el.path];
     });

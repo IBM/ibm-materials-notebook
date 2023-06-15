@@ -1,6 +1,6 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType, PROPERTIES, CMDL } from "cmdl-types";
+import { ModelType, PROPERTIES, TYPES } from "cmdl-types";
 
 export class Complex extends BaseModel {
   constructor(
@@ -18,9 +18,9 @@ export class Complex extends BaseModel {
     };
     for (const [name, value] of this.modelAR.all()) {
       if (name === PROPERTIES.COMPONENTS) {
-        let updatedComponents = (value as CMDL.ComplexReference[]).map(
-          (item: CMDL.ComplexReference) => {
-            let compRef = globalAR.getValue<CMDL.Chemical | CMDL.Polymer>(
+        let updatedComponents = (value as TYPES.ComplexReference[]).map(
+          (item: TYPES.ComplexReference) => {
+            let compRef = globalAR.getValue<TYPES.Chemical | TYPES.Polymer>(
               item.name
             );
             return {

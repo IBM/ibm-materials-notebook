@@ -1,6 +1,6 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType, CMDL } from "cmdl-types";
+import { ModelType, TYPES } from "cmdl-types";
 import {
   SerializedReactor,
   ReactorChemicals,
@@ -19,15 +19,15 @@ export class FlowReaction extends BaseModel {
   }
 
   public execute(globalAR: ModelActivationRecord): void {
-    const reactorRef = this.modelAR.getValue<CMDL.Reference>("reactor");
+    const reactorRef = this.modelAR.getValue<TYPES.Reference>("reactor");
     const solutions =
-      this.modelAR.getValue<CMDL.SolutionReference[]>("solutions");
+      this.modelAR.getValue<TYPES.SolutionReference[]>("solutions");
     const products =
-      this.modelAR.getValue<CMDL.ChemicalReference[]>("products");
+      this.modelAR.getValue<TYPES.ChemicalReference[]>("products");
 
-    const finalProducts: CMDL.Product[] = products.map(
-      (el: CMDL.ChemicalReference) => {
-        const product = globalAR.getValue<CMDL.Chemical | CMDL.Polymer>(
+    const finalProducts: TYPES.Product[] = products.map(
+      (el: TYPES.ChemicalReference) => {
+        const product = globalAR.getValue<TYPES.Chemical | TYPES.Polymer>(
           el.name
         );
         return {
@@ -43,7 +43,7 @@ export class FlowReaction extends BaseModel {
     this.reactorContainer.deserialize(reactorConfig);
 
     for (const solution of solutions) {
-      let solutionOutput = globalAR.getValue<CMDL.Solution>(solution.name);
+      let solutionOutput = globalAR.getValue<TYPES.Solution>(solution.name);
 
       const solutionChemicals = new ReactorChemicals(solution.flow_rate);
       solutionChemicals.setChemicals(solutionOutput.componentConfigs);

@@ -2,7 +2,7 @@ import { Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
 import { ReactorComponent } from "./reactor-component";
 import { logger } from "./logger";
-import { CMDL, PROPERTIES } from "cmdl-types";
+import { TYPES, PROPERTIES } from "cmdl-types";
 import Big from "big.js";
 
 export interface ReactorEdge {
@@ -14,10 +14,10 @@ export interface SerializedReactorComponent {
   name: string;
   type: "component";
   [PROPERTIES.DESCRIPTION]?: string;
-  [PROPERTIES.INNER_DIAMETER]?: CMDL.NumericQty;
-  [PROPERTIES.OUTER_DIAMETER]?: CMDL.NumericQty;
-  [PROPERTIES.VOLUME]?: CMDL.NumericQty;
-  [PROPERTIES.LENGTH]?: CMDL.NumericQty;
+  [PROPERTIES.INNER_DIAMETER]?: TYPES.NumericQty;
+  [PROPERTIES.OUTER_DIAMETER]?: TYPES.NumericQty;
+  [PROPERTIES.VOLUME]?: TYPES.NumericQty;
+  [PROPERTIES.LENGTH]?: TYPES.NumericQty;
   sources: string[];
   next: string | null;
   parent: string | null;
@@ -39,10 +39,10 @@ export interface SerializedReactor {
 
 export interface ReactorGroupOutput {
   name: string;
-  flowRate: CMDL.NumericQty;
-  residenceTime: CMDL.NumericQty;
-  volume: CMDL.NumericQty;
-  reactants: CMDL.ChemicalOutput[];
+  flowRate: TYPES.NumericQty;
+  residenceTime: TYPES.NumericQty;
+  volume: TYPES.NumericQty;
+  reactants: TYPES.ChemicalOutput[];
 }
 
 /**
@@ -59,7 +59,7 @@ export class ReactorContainer {
    * Parses and creates a new reactor from a CMDL representation
    * @param component CMDLReactor
    */
-  public addReactor(component: CMDL.Reactor): void {
+  public addReactor(component: TYPES.Reactor): void {
     logger.debug(`reactor:`, { meta: component });
     const reactor = new Reactor(component.name);
     reactor.parent = null;
@@ -81,7 +81,7 @@ export class ReactorContainer {
    * @param component CMDLReactorNode
    * @returns ReactorComponent
    */
-  public addNode(component: CMDL.ReactorNode): ReactorComponent {
+  public addNode(component: TYPES.ReactorNode): ReactorComponent {
     const node = new ReactorComponent(component.name);
     let target = component?.target;
     let volume = component?.volume;
@@ -175,8 +175,8 @@ export class ReactorContainer {
    * Method to traverse reactor graph and create an outline of the node tree
    * @returns CMDLNodeTree
    */
-  public getReactorNodeTree(): CMDL.NodeTree {
-    const nodeTree: CMDL.NodeTree = {};
+  public getReactorNodeTree(): TYPES.NodeTree {
+    const nodeTree: TYPES.NodeTree = {};
 
     for (const node of this.nodeMap.values()) {
       if (!node.parent) {

@@ -1,6 +1,6 @@
 import Big from "big.js";
 import { convertQty } from "cmdl-units";
-import { CMDL } from "cmdl-types";
+import { TYPES } from "cmdl-types";
 import { ReactorComponent } from "./reactor-component";
 import { ReactorChemicals } from "./reactor-chemicals";
 import {
@@ -14,7 +14,7 @@ import {
 export interface ReactorNode {
   name: string;
   parent: ReactorNode | null;
-  volume: CMDL.BigQty | null;
+  volume: TYPES.BigQty | null;
   setParent(arg: ReactorNode): void;
   getInputs(): ReactorChemicals | ReactorChemicals[];
 }
@@ -23,10 +23,10 @@ export interface ReactorNode {
  * Class representing a reactor group within a CMDL continuous-flow reactor representation
  */
 export class Reactor implements ReactorNode {
-  volume: CMDL.BigQty | null = null;
-  flowRate: CMDL.BigQty | null = null;
-  residenceTime: CMDL.BigQty | null = null;
-  reactorOutput: CMDL.ChemicalOutput[] = [];
+  volume: TYPES.BigQty | null = null;
+  flowRate: TYPES.BigQty | null = null;
+  residenceTime: TYPES.BigQty | null = null;
+  reactorOutput: TYPES.ChemicalOutput[] = [];
   outputNode: ReactorComponent | null = null;
   parent: ReactorNode | null = null;
   children: ReactorNode[] = [];
@@ -113,7 +113,7 @@ export class Reactor implements ReactorNode {
       throw new Error(`reactor ${this.name} has no flow rate set`);
     }
 
-    let newConfigs: CMDL.ChemicalConfig[] = [];
+    let newConfigs: TYPES.ChemicalConfig[] = [];
     for (const input of inputs) {
       let chemMoles = input.getByVolume(this.flowRate, this.volume);
       newConfigs = newConfigs.concat(chemMoles);

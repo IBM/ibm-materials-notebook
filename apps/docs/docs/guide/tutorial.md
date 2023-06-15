@@ -33,7 +33,7 @@ Your root directory should now have a new file:
 
 ## References
 
-References are a key component underlying all experiment documentation in CMDL. References are simply entities that are either used or produced by experiments. This includes chemicals, materials, or physical hardware such as continuous-flow reactors. References can have multiple roles inside an experiment. For instance, a reference specifying ethyl acetate may be used as both a solvent in a chemical reaction and as a solvent in the experimental workup.
+References are a key component underlying all experiment documentation in TYPES. References are simply entities that are either used or produced by experiments. This includes chemicals, materials, or physical hardware such as continuous-flow reactors. References can have multiple roles inside an experiment. For instance, a reference specifying ethyl acetate may be used as both a solvent in a chemical reaction and as a solvent in the experimental workup.
 
 ::: warning
 Currently reference names starting with numbers, such as `1-pyrenebutanol` are not supported.
@@ -128,7 +128,7 @@ A composite tree for a polymer can be thought of breaking the structure into thr
 2.  A `connection` or `edge`, representing a chemical bond between two nodes.
 3.  A `container` which can contain child nodes, connections between child nodes, or other containers
 
-In the followin examples, we'll define two simple polymer graph representations in CMDL. For more complicated examples of polymeric materials, see the polymer graph folder in examples.
+In the followin examples, we'll define two simple polymer graph representations in TYPES. For more complicated examples of polymeric materials, see the polymer graph folder in examples.
 
 ### Fragment References
 
@@ -573,7 +573,7 @@ Executing the cell containing samples `Test-I-123A` and `Test-I-123B` will provi
 
 ## Experimental Protocols
 
-Currently writing of experimental protocols is not directly supported in CMDL. As markdown cells may be interleaved with, we recommend documentation of experimental protocols using markdown. Future versions of CMDL will incorporate functionality to ingest and link experimental protocols with the larger experimental record as well as translate it into a series of machine readable steps.
+Currently writing of experimental protocols is not directly supported in TYPES. As markdown cells may be interleaved with, we recommend documentation of experimental protocols using markdown. Future versions of CMDL will incorporate functionality to ingest and link experimental protocols with the larger experimental record as well as translate it into a series of machine readable steps.
 
 ### Example Protocol
 
@@ -626,6 +626,6 @@ The local saving, sharing, and loading of named CMDL entities (small-molecule ch
 
 ## Next Steps
 
-This tutorial covered all of the necessary features needed to get started documenting experimental work using the IBM Materials Notebook extension and CMDL. While explicit defnintion of small-molecule and polymer references in each notebook document is certainly a viable approach, it can be very verbose, cumbersome and potentially error-prone.
+This tutorial covered all of the necessary features needed to get started documenting experimental work using the IBM Materials Notebook extension and TYPES. While explicit defnintion of small-molecule and polymer references in each notebook document is certainly a viable approach, it can be very verbose, cumbersome and potentially error-prone.
 
 In the next tutorial, we'll cover features that enable importing and aliasing of commonly used chemical references to streamline experimental documentation. All of this can be found in the [import tutorial](import_tutorial.md)

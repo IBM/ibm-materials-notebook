@@ -1,14 +1,14 @@
 import { ReactorChemicals } from "../reactor-chemicals";
 import { ReactorComponent } from "../reactor-component";
 import { flowRate } from "./reactor-chem.test";
-import { CMDL } from "cmdl-types";
+import { TYPES } from "cmdl-types";
 import Big from "big.js";
 
 const NODE_A = "node_a";
 const NODE_B = "node_b";
 const NODE_C = "node_c";
 
-const nodeVolume: CMDL.BigQty = {
+const nodeVolume: TYPES.BigQty = {
   uncertainty: null,
   unit: "mcl",
   value: Big(500),

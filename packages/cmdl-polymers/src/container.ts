@@ -3,7 +3,7 @@ import { PolymerTree } from "./tree";
 import { PolymerWeight } from "./weights";
 import { PolymerNode } from "./node";
 import { Container } from "./tree-container";
-import { ModelType, CMDL } from "cmdl-types";
+import { ModelType, TYPES } from "cmdl-types";
 
 export interface JSONPolymerGraph {
   nodes: JSONPolymerNode[];
@@ -65,7 +65,10 @@ export class PolymerContainer {
     return new Container(name);
   }
 
-  public createPolymerNode(name: string, fragment: CMDL.Fragment): PolymerNode {
+  public createPolymerNode(
+    name: string,
+    fragment: TYPES.Fragment
+  ): PolymerNode {
     return new PolymerNode({
       fragment: name,
       mw: fragment.molecular_weight.value,
@@ -74,7 +77,7 @@ export class PolymerContainer {
   }
 
   public createPolymerEdges(
-    conn: CMDL.PolymerConnection,
+    conn: TYPES.PolymerConnection,
     container: Container
   ): void {
     this.tree.createEdges(conn, container);
@@ -144,17 +147,17 @@ export class PolymerContainer {
    * nodes within the symbol table
    * @returns CMDLNodeTree
    */
-  public getGraphNodes(): CMDL.NodeTree {
+  public getGraphNodes(): TYPES.NodeTree {
     const keys = this.graph.getNodeKeys();
 
-    const keyTree: CMDL.NodeTree = {};
+    const keyTree: TYPES.NodeTree = {};
 
     for (const key of keys) {
       let keyPath = key.split(".");
       traverseKeys(keyPath, keyTree);
     }
 
-    function traverseKeys(path: string[], keyTree: CMDL.NodeTree): void {
+    function traverseKeys(path: string[], keyTree: TYPES.NodeTree): void {
       if (!path.length) {
         return;
       }
@@ -184,7 +187,7 @@ export class PolymerContainer {
    * in the polymer graph
    * @param values CMDLPolymerTreeValue[] | RefResult[]
    */
-  public addGraphValues(values: CMDL.PolymerTreeValue[] | CMDL.RefResult[]) {
+  public addGraphValues(values: TYPES.PolymerTreeValue[] | TYPES.RefResult[]) {
     const baseName = this.tree.getBaseName();
     for (const prop of values) {
       let path = `${baseName}.${prop.path.join(".")}`;

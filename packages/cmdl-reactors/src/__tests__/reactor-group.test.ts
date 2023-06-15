@@ -5,11 +5,11 @@ import { testChemicals } from "./reactor-chem.test";
 import { ReactorChemicals } from "../reactor-chemicals";
 import { PROPERTIES, TAGS, CMDL } from "cmdl-types";
 
-const kOtbu: CMDL.ChemicalConfig = {
+const kOtbu: TYPES.ChemicalConfig = {
   name: "l-lactide",
   mw: Big(144.12),
   density: null,
-  state: CMDL.ChemStates.SOLID,
+  state: TYPES.ChemStates.SOLID,
   quantity: {
     name: PROPERTIES.MASS,
     value: Big("1441.2"),
@@ -20,11 +20,11 @@ const kOtbu: CMDL.ChemicalConfig = {
   limiting: true,
 };
 
-const monomerSolvent: CMDL.ChemicalConfig = {
+const monomerSolvent: TYPES.ChemicalConfig = {
   name: "THF",
   mw: Big(72.11),
   density: Big(0.8876),
-  state: CMDL.ChemStates.LIQUID,
+  state: TYPES.ChemStates.LIQUID,
   quantity: {
     name: PROPERTIES.VOLUME,
     value: Big("10"),
@@ -44,13 +44,13 @@ const NODE_C = "node_c";
 const NODE_D = "node_d";
 const NODE_E = "node_e";
 
-const nodeVolume: CMDL.BigQty = {
+const nodeVolume: TYPES.BigQty = {
   uncertainty: null,
   unit: "mcl",
   value: Big(500),
 };
 
-export const flowRate: CMDL.BigQty = {
+export const flowRate: TYPES.BigQty = {
   unit: "ml/min",
   value: Big(10),
   uncertainty: null,

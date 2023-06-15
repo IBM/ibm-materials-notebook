@@ -8,7 +8,7 @@ import {
 import { Property, Group } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
-import { CMDL } from "cmdl-types";
+import { TYPES } from "cmdl-types";
 import { typeManager } from "cmdl-types";
 import Big from "big.js";
 
@@ -178,7 +178,7 @@ export class NumericalProperty extends Property {
     `;
   }
 
-  public getValues(): CMDL.BigQty | CMDL.BigQtyUnitless {
+  public getValues(): TYPES.BigQty | TYPES.BigQtyUnitless {
     if (!this.value) {
       throw new Error(`${this.name} has no value!`);
     }

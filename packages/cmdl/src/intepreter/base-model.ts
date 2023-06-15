@@ -1,5 +1,5 @@
 import { ModelActivationRecord } from "./model-AR";
-import { PROPERTIES, GROUPS, ModelType, CMDL } from "cmdl-types";
+import { PROPERTIES, GROUPS, ModelType, TYPES } from "cmdl-types";
 import { PolymerContainer } from "cmdl-polymers";
 import Big from "big.js";
 
@@ -26,14 +26,14 @@ export abstract class BaseModel {
    * @param globalAR ModelActivationRecord
    */
   protected createChemicalConfigs(
-    chemicals: CMDL.ChemicalReference[],
+    chemicals: TYPES.ChemicalReference[],
     globalAR: ModelActivationRecord,
-    params?: { volume?: CMDL.BigQty; temperature?: CMDL.BigQty }
-  ): CMDL.ChemicalConfig[] {
-    let configs: CMDL.ChemicalConfig[] = [];
+    params?: { volume?: TYPES.BigQty; temperature?: TYPES.BigQty }
+  ): TYPES.ChemicalConfig[] {
+    let configs: TYPES.ChemicalConfig[] = [];
 
     for (const chemical of chemicals) {
-      let parentValues = globalAR.getValue<CMDL.Chemical | CMDL.Polymer>(
+      let parentValues = globalAR.getValue<TYPES.Chemical | TYPES.Polymer>(
         chemical.name
       );
 
@@ -48,7 +48,7 @@ export abstract class BaseModel {
           ? parentValues.density.value
           : null;
 
-      const chemicalConfig: CMDL.ChemicalConfig = {
+      const chemicalConfig: TYPES.ChemicalConfig = {
         name: chemical.name,
         mw: mwValue,
         smiles: parentValues.smiles,
@@ -62,7 +62,7 @@ export abstract class BaseModel {
       };
 
       if (
-        chemicalConfig.state === CMDL.ChemStates.LIQUID &&
+        chemicalConfig.state === TYPES.ChemStates.LIQUID &&
         !chemicalConfig.density &&
         chemicalConfig.quantity.name === PROPERTIES.VOLUME
       ) {
@@ -72,7 +72,7 @@ export abstract class BaseModel {
       }
 
       if (
-        chemicalConfig.state === CMDL.ChemStates.GAS &&
+        chemicalConfig.state === TYPES.ChemStates.GAS &&
         chemicalConfig.quantity.name !== PROPERTIES.PRESSURE
       ) {
         throw new Error(
@@ -93,7 +93,7 @@ export abstract class BaseModel {
    * @param chemical CMDLChemical | CMDLPolymer
    * @returns any
    */
-  private getMw(chemical: CMDL.Chemical | CMDL.Polymer): any {
+  private getMw(chemical: TYPES.Chemical | TYPES.Polymer): any {
     if (chemical.type === ModelType.CHEMICAL) {
       return chemical.molecular_weight.value;
     } else {
@@ -128,8 +128,8 @@ export abstract class BaseModel {
    * @param ref CMDLChemicalRefrerence
    * @returns NamedQuantity
    */
-  private extractQuantity(ref: CMDL.ChemicalReference): CMDL.NamedQty {
-    let name: CMDL.QuantityNames;
+  private extractQuantity(ref: TYPES.ChemicalReference): TYPES.NamedQty {
+    let name: TYPES.QuantityNames;
     if (ref?.mass) {
       return {
         name: PROPERTIES.MASS,
@@ -168,12 +168,12 @@ export abstract class BaseModel {
   }
 
   protected initializePolymer(
-    treeConfig: CMDL.PolymerContainer,
+    treeConfig: TYPES.PolymerContainer,
     record: ModelActivationRecord,
     polymer: PolymerContainer
   ): void {
-    const queue: CMDL.PolymerContainer[] = [treeConfig];
-    let curr: CMDL.PolymerContainer | undefined;
+    const queue: TYPES.PolymerContainer[] = [treeConfig];
+    let curr: TYPES.PolymerContainer | undefined;
 
     while (queue.length) {
       curr = queue.shift();
@@ -185,7 +185,7 @@ export abstract class BaseModel {
       const container = polymer.createPolymerContainer(curr.name);
 
       for (const node of curr.nodes) {
-        const fragment = record.getValue<CMDL.Fragment>(node.ref.slice(1));
+        const fragment = record.getValue<TYPES.Fragment>(node.ref.slice(1));
         const entity = polymer.createPolymerNode(node.ref.slice(1), fragment);
         container.add(entity);
       }

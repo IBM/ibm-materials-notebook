@@ -1,14 +1,14 @@
 import { ChemicalSet } from "cmdl-chemicals";
-import { CMDL } from "cmdl-types";
+import { TYPES } from "cmdl-types";
 
 /**
  * Class for managing a set of chemicals in a continous-flow reactor
  */
 export class ReactorChemicals {
   private solution = new ChemicalSet();
-  public flowRate: CMDL.BigQty;
+  public flowRate: TYPES.BigQty;
 
-  constructor(flowRate: CMDL.BigQty) {
+  constructor(flowRate: TYPES.BigQty) {
     this.flowRate = flowRate;
   }
 
@@ -16,20 +16,20 @@ export class ReactorChemicals {
    * Adds chemicals to the solution property
    * @param chemicals ChemicalConfig[]
    */
-  public setChemicals(chemicals: CMDL.ChemicalConfig[]): void {
+  public setChemicals(chemicals: TYPES.ChemicalConfig[]): void {
     this.solution.insertMany(chemicals);
   }
 
   /**
    * Returns chemical configs based on fraction of volume within a flow reactor
-   * @param totalFlowRate CMDL.BigQty - total flow rate within a reactor segment
-   * @param totalVolume CMDL.BigQty - total volume within a reactor segment
+   * @param totalFlowRate TYPES.BigQty - total flow rate within a reactor segment
+   * @param totalVolume TYPES.BigQty - total volume within a reactor segment
    * @returns ChemicalConfig[]
    */
   public getByVolume(
-    totalFlowRate: CMDL.BigQty,
-    totalVolume: CMDL.BigQty
-  ): CMDL.ChemicalConfig[] {
+    totalFlowRate: TYPES.BigQty,
+    totalVolume: TYPES.BigQty
+  ): TYPES.ChemicalConfig[] {
     const volumeFraction = this.flowRate.value
       .div(totalFlowRate.value)
       .times(totalVolume.value)
@@ -53,7 +53,7 @@ export class ReactorChemicals {
    * Computes stoichiometry for output the chemicals
    * @returns ChemicalOutput[]
    */
-  public computeValues(): CMDL.ChemicalOutput[] {
+  public computeValues(): TYPES.ChemicalOutput[] {
     return this.solution.computeChemicalValues();
   }
 }

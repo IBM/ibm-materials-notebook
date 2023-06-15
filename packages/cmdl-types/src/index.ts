@@ -1,7 +1,6 @@
-export { ModelType } from "./groups/group-types";
 export { typeManager } from "./type-mananger";
 export { UNITS } from "./units";
-export { GROUPS, GroupTypes, IGroup } from "./groups";
+export { GROUPS, GroupTypes, IGroup, ModelType } from "./groups";
 export {
   PROPERTIES,
   PropertyTypes,
@@ -10,4 +9,4 @@ export {
 } from "./properties";
 export { TAGS } from "./tags";
 
-export * as CMDL from "./types";
+export * as TYPES from "./types";

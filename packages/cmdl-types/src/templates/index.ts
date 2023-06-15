@@ -1,4 +1,2 @@
-import { allTemplates } from "./templates";
-import { ITemplates, TEMPLATES } from "./template-types";
-
-export { allTemplates, TEMPLATES, ITemplates };
+export { allTemplates } from "./templates";
+export { ITemplates, TEMPLATES } from "./template-types";

@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { ReactionRoles, PROPERTIES, typeManager, CMDL } from "cmdl-types";
+import { ReactionRoles, PROPERTIES, typeManager, TYPES } from "cmdl-types";
 import { BaseChemical } from "./base-chemical";
 
 /**
@@ -17,7 +17,7 @@ export default class Solid extends BaseChemical {
     this.mw = mw;
   }
 
-  public computeValues(qty: CMDL.NamedQty) {
+  public computeValues(qty: TYPES.NamedQty) {
     if (!this.mw) {
       throw new Error(`Missing or invalid mw for ${this.name}`);
     }
@@ -65,7 +65,7 @@ export default class Solid extends BaseChemical {
     this.computeValues({ name: PROPERTIES.MOLES, ...newMoles });
   }
 
-  public getMolesByVolume(volume: CMDL.BigQty): CMDL.ChemicalConfig {
+  public getMolesByVolume(volume: TYPES.BigQty): TYPES.ChemicalConfig {
     if (!this.mw) {
       throw new Error(`\n-Mw is invalid for ${this.name}`);
     }
@@ -88,12 +88,12 @@ export default class Solid extends BaseChemical {
         uncertainty: null,
       },
       roles: this.roles,
-      state: CMDL.ChemStates.SOLID,
+      state: TYPES.ChemStates.SOLID,
       limiting: this.limiting,
     };
   }
 
-  public export(): CMDL.ChemicalConfig {
+  public export(): TYPES.ChemicalConfig {
     if (!this.mw || !this.moles) {
       throw new Error(`Cannot export incomplete solid chemical ${this.name}`);
     }
@@ -110,7 +110,7 @@ export default class Solid extends BaseChemical {
         uncertainty: null,
       },
       roles: this.roles,
-      state: CMDL.ChemStates.SOLID,
+      state: TYPES.ChemStates.SOLID,
       limiting: this.limiting,
     };
   }

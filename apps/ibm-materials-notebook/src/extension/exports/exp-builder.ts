@@ -9,7 +9,7 @@
 //   CMDLRecordRefs,
 //   CMDLRecordSource,
 // } from "../cmdl-language/cmdl-symbols/symbol-types";
-import { TAGS, CMDL, ModelType } from "cmdl";
+import { TAGS, TYPES, ModelType } from "cmdl";
 import { BaseRecord, RecordBuilder, ExperimentMetadata } from "./base-builder";
 
 export interface Results {

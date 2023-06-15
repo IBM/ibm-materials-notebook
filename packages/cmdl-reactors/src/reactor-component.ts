@@ -1,9 +1,8 @@
 import { Unit, convertQty } from "cmdl-units";
-import Big from "big.js";
 import { ReactorNode, Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
 import { SerializedReactorComponent } from "./reactor-container";
-import { CMDL } from "cmdl-types";
+import { TYPES } from "cmdl-types";
 
 /**
  * Class representing an individual component in a continuous-flow reactor
@@ -12,10 +11,10 @@ export class ReactorComponent implements ReactorNode {
   input: ReactorChemicals | null = null;
   sources: ReactorComponent[] = [];
   next: ReactorComponent | null = null;
-  volume: CMDL.BigQty | null = null;
-  length?: CMDL.BigQty;
-  inner_diameter?: CMDL.BigQty;
-  outer_diameter?: CMDL.BigQty;
+  volume: TYPES.BigQty | null = null;
+  length?: TYPES.BigQty;
+  inner_diameter?: TYPES.BigQty;
+  outer_diameter?: TYPES.BigQty;
   description?: string;
   parent: ReactorNode | null = null;
 
@@ -39,9 +38,9 @@ export class ReactorComponent implements ReactorNode {
 
   /**
    * Sets the volume of the reactor component
-   * @param volume CMDL.BigQty
+   * @param volume TYPES.BigQty
    */
-  public setVolume(volume: CMDL.BigQty): void {
+  public setVolume(volume: TYPES.BigQty): void {
     this.volume = this.normalizeVolume(volume);
   }
 
@@ -104,9 +103,9 @@ export class ReactorComponent implements ReactorNode {
   /**
    * Normalizes component volume to ml for calculation purposes
    * @param vol CMDLUnit
-   * @returns CMDL.BigQty
+   * @returns TYPES.BigQty
    */
-  private normalizeVolume(vol: CMDL.BigQty): CMDL.BigQty {
+  private normalizeVolume(vol: TYPES.BigQty): TYPES.BigQty {
     if (!vol.unit) {
       throw new Error(`Missing unit for volume in reactor component!`);
     }

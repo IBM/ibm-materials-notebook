@@ -1,5 +1,5 @@
 import { logger } from "../../logger";
-import { ITemplates, TEMPLATES, CMDL, typeManager } from "cmdl";
+import { ITemplates, TEMPLATES, TYPES, typeManager } from "cmdl";
 import { RecordBuilder } from "./base-builder";
 import { ExpRecord, ExperimentBuilder } from "./exp-builder";
 import { FlowExperimentBuilder, FlowRecord } from "./flow-exp-builder";

@@ -9,7 +9,7 @@ import {
   SymbolType,
 } from "./cmdl-symbol-base";
 import { RecordNode } from "../cmdl-tree";
-import { CMDL } from "cmdl-types";
+import { TYPES } from "cmdl-types";
 
 /**
  * Interface for defining an AST visitor
@@ -102,7 +102,7 @@ export class SymbolTable {
    * @param record CMDLNodeTree
    * @param base string
    */
-  public copySymbolTree(record: CMDL.NodeTree, base?: string): void {
+  public copySymbolTree(record: TYPES.NodeTree, base?: string): void {
     if (!this.enclosingScope && base) {
       record[base] = {};
       const nestedScope = this.nestedScopes.find((el) => el.scope === base);
