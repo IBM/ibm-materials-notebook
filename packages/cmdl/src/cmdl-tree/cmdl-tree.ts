@@ -56,7 +56,6 @@ export class CmdlTree {
    * @param builder AstVisitor
    */
   public createSymbolTable(builder: AstVisitor): void {
-    logger.info("building symbol table...");
     for (const child of this.children) {
       builder.visit(child);
     }

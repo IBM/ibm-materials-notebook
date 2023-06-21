@@ -165,6 +165,9 @@ export class ModelVisitor implements AstVisitor {
     logger.verbose(`Starting model execution for import ${node.name}`);
     const nodeName = node.aliasToken ? node.aliasToken.image : node.name;
 
+    //! retrieve import node data from other namespace/source
+    //! copy into activation record
+
     const modelType = node.getImportType();
     const modelAR = new ModelActivationRecord(modelType, nodeName, this.uri);
 

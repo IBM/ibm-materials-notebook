@@ -80,10 +80,11 @@ export class MaterialsKernel {
       }
 
       //! parse executed cell => move to compiler
-      await experiment.insertOrUpdate(doc);
+      // await experiment.insertOrUpdate(doc);
 
       //! return errors or output from single command to compiler
-      const errors = experiment.getCellErrors(cellUri);
+      // const errors = experiment.getCellErrors(cellUri);
+      const errors: any[] = [];
 
       //if parse errors display
       if (errors.length) {
@@ -96,11 +97,12 @@ export class MaterialsKernel {
         execution.end(false, Date.now());
       }
 
-      experiment.executeCell(cellUri);
+      // experiment.executeCell(cellUri);
 
       //TODO: update notebook metadata?
 
-      const output = experiment.getCellOutput(cellUri);
+      // const output = experiment.getCellOutput(cellUri);
+      const output: any[] = [];
 
       const fullOutput = {
         structureTheme: this.theme,

@@ -1,0 +1,16 @@
+chemical THF {
+    smiles: "C1CCOC1";
+    state: "liquid";
+    molecular_weight: 72.11 g/mol;
+    density: 0.8876 g/ml;   
+}
+
+chemical potassium_tert-butoxide {
+    molecular_weight: 112.212 g/mol;
+    smiles: "[K+].CC(C)(C)[O-]";
+}
+
+chemical dimethyl-1-4-dioxane-2-5-dione {
+    molecular_weight: 144.12 g/mol;
+    smiles: "C[C@H]1C(=O)O[C@H](C(=O)O1)C";
+}

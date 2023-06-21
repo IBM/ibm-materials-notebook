@@ -16,7 +16,6 @@ class LanguageDiagnostic extends vscode.Diagnostic {
 
 /**
  * Manages validation for CMDL language
- * TODO: add diagnostics for plain cmdl files
  */
 export class Validation {
   private _disposables: vscode.Disposable[] = [];
@@ -35,30 +34,21 @@ export class Validation {
 
     this._disposables.push(
       vscode.workspace.onDidChangeTextDocument((doc) => {
-        logger.notice(">>vscode text change event received in validator");
-
         if (vscode.languages.match(LANGUAGE, doc.document)) {
           clearTimeout(handle);
-          handle = setTimeout(
-            async () => await this.validateChange(doc.document),
-            500
-          );
+          handle = setTimeout(() => this.validateChange(doc.document), 500);
         }
       })
     );
 
     this._disposables.push(
       repository.onDidInitializeNotebook((exp) => {
-        logger.notice(
-          ">> repository initialization event received in validator"
-        );
         this.validateNotebookDoc(exp);
       })
     );
 
     this._disposables.push(
       repository.onDidRemoveNotebook((exp) => {
-        logger.notice(">> repository remove event received in validator");
         this.clearDiagnostics(exp);
       })
     );
@@ -68,9 +58,7 @@ export class Validation {
    * Validates the CMDL text for a cell after a change event has been fired
    * @param document vscode.TextDocument
    */
-  async validateChange(document: vscode.TextDocument): Promise<void> {
-    logger.info(`validating document:\n -> ${document.fileName}`);
-
+  public validateChange(document: vscode.TextDocument): void {
     const exp = this.repository.find(document.uri);
 
     if (!exp) {
@@ -87,21 +75,22 @@ export class Validation {
       this._collections.set(expUri, collection);
     }
 
-    //! deprecated change to controller update
-    // await exp.insertOrUpdate(document);
-
-    //! deprecated proxy to controller
-    // exp.validateSymbols();
+    const doc = {
+      uri: document.uri.toString(),
+      fileName: this.repository.extractFileName(exp.uri),
+      version: document.version,
+      text: document.getText(),
+    };
 
     if ("notebookType" in exp) {
-      //! deprecated => retrieve notebook errors from compiler => add to diagnostic collection
-      // for (const { doc } of exp.all()) {
-      //   const diagnostics = this.createDiagnostics(exp, doc);
-      //   collection.set(doc.uri, diagnostics);
-      // }
+      this.repository._controller.updateNotebookCell(expUri, doc);
     } else {
-      //! retrieve text document errors => add to diagnostics collection
+      this.repository._controller.updateDocument(doc);
     }
+
+    const errors = this.repository._controller.getErrors(doc.uri, doc.fileName);
+    const diagnostics = this.createDiagnostics(errors, document);
+    collection.set(document.uri, diagnostics);
   }
 
   /**
@@ -115,23 +104,27 @@ export class Validation {
    * Validates all cells in a given notebook
    * @param exp vscode.NotebookDocument
    */
-  private validateNotebookDoc(exp: vscode.NotebookDocument): void {
-    const expUri = exp.uri.toString();
+  private validateNotebookDoc(notebook: vscode.NotebookDocument): void {
+    const notebookUri = notebook.uri.toString();
 
-    let collection = this._collections.get(expUri);
+    let collection = this._collections.get(notebookUri);
 
     if (!collection) {
       collection = vscode.languages.createDiagnosticCollection();
-      this._collections.set(expUri, collection);
+      this._collections.set(notebookUri, collection);
     }
 
-    //! proxy validation to cmdl compiler
-    // exp.validateSymbols();
-    //! retrived notebook errors from compiler and add to diagnostics collection
-    // for (const { doc } of exp.all()) {
-    //   const diagnostics = this.createDiagnostics(exp, doc);
-    //   collection.set(doc.uri, diagnostics);
-    // }
+    const cells = notebook.getCells();
+
+    for (const { document } of cells) {
+      const cellUri = document.uri.toString();
+      const errors = this.repository._controller.getErrors(
+        cellUri,
+        notebookUri
+      );
+      const diagnostics = this.createDiagnostics(errors, document);
+      collection.set(document.uri, diagnostics);
+    }
   }
 
   /**
@@ -160,8 +153,6 @@ export class Validation {
     doc: vscode.TextDocument
   ): vscode.Diagnostic[] {
     const diagnostics: vscode.Diagnostic[] = [];
-    //! deprecated, errors will come from compiler
-    // const errors = exp.getCellErrors(doc.uri.toString());
     for (const err of errors) {
       let start = doc.positionAt(err.start);
       let stop = doc.positionAt(err.stop);

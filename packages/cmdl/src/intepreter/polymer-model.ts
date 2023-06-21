@@ -20,21 +20,15 @@ export class Polymer extends BaseModel {
     const treeValues =
       this.modelAR.getOptionalValue<TYPES.PolymerTreeValue[]>("treeValues");
 
-    if ("ref" in treeRef) {
-      const polymerGraph = globalAR.getOptionalValue<TYPES.PolymerGraph>(
-        treeRef.ref
-      );
+    const polymerGraph = globalAR.getOptionalValue<TYPES.PolymerGraph>(
+      treeRef.ref
+    );
 
-      if (!polymerGraph) {
-        throw new Error(`Polymer graph for ${treeRef.ref} is undefined!`);
-      }
-
-      this.polymerContainer.initializeTreeFromJSON(polymerGraph.tree);
-    } else {
-      //! deprecated for import resolution
-      // this.polymerContainer.initializeTreeFromJSON(treeRef);
-      throw new Error(`Deprecated initialization from JSON`);
+    if (!polymerGraph) {
+      throw new Error(`Polymer graph for ${treeRef.ref} is undefined!`);
     }
+
+    this.polymerContainer.initializeTreeFromJSON(polymerGraph.tree);
 
     if (treeValues) {
       this.polymerContainer.addGraphValues(treeValues);

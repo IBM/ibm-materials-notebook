@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import * as path from "path";
+// import * as path from "path";
 import * as vscode from "vscode";
 import { NOTEBOOK } from "./languageProvider";
 import { logger } from "../logger";
@@ -9,7 +9,7 @@ import { CMDLController } from "cmdl";
  * Manages all cmdl documents (.cmdnb & .cmdl) in workspace
  */
 export class Repository {
-  private readonly _controller = new CMDLController.Controller();
+  readonly _controller = new CMDLController.Controller();
 
   private _onDidInitializeNotebook =
     new vscode.EventEmitter<vscode.NotebookDocument>();
@@ -39,6 +39,10 @@ export class Repository {
         }
 
         const notebookUri = notebookDoc.uri.toString();
+        if (notebookDoc.uri.fragment) {
+          logger.debug(`receiving ${notebookDoc.uri.scheme}`);
+          return;
+        }
 
         if (this._documents.has(notebookUri)) {
           throw new Error(`${notebookUri} already exists!`);
@@ -155,38 +159,26 @@ export class Repository {
     );
   }
 
-  private initialize() {
-    //get lib directory
-    const path = "";
+  public initialize() {
+    vscode.workspace.findFiles("**/*.cmdl").then(
+      (files) => {
+        for (const uri of files) {
+          logger.info(`found ${uri.toString()} during initialization`);
 
-    fs.readdir(path, async (err, files) => {
-      if (err) {
-        logger.error(
-          `Encountered an error during library initialization for path ${path}: ${err.message}`
-        );
-        vscode.window.showErrorMessage(
-          `Encountered an error during library initialization for path ${path}`
-        );
-      } else {
-        for (const file of files) {
-          try {
-            const readfile = await fs.promises.readFile(`${path}/${file}`, {
-              encoding: "utf8",
-            });
-            //! register with compiler
-            // const contents = JSON.parse(readfile);
-            // for (const item of contents) {
-            //   // storageService.setValue(item.name, item);
-            // }
-          } catch (error) {
-            logger.warn(`Unable to initialize library contents from ${file}`);
+          if (!this._documents.has(uri.toString())) {
+            logger.verbose(`file is not registered...registering file`);
+          } else {
+            logger.verbose(`...file is already registered`);
           }
         }
+      },
+      () => {
+        logger.info(`no files found during initialization`);
       }
-    });
+    );
   }
 
-  private formatNotebook(doc: vscode.NotebookDocument) {
+  public formatNotebook(doc: vscode.NotebookDocument) {
     const fileName = this.extractFileName(doc.uri);
     let cellArr = [];
 
@@ -204,7 +196,7 @@ export class Repository {
     };
   }
 
-  private formatTextDocument(doc: vscode.TextDocument) {
+  public formatTextDocument(doc: vscode.TextDocument) {
     const fileName = this.extractFileName(doc.uri);
     return {
       uri: doc.uri.toString(),
@@ -214,7 +206,7 @@ export class Repository {
     };
   }
 
-  private formatCell(cell: vscode.NotebookCell) {
+  public formatCell(cell: vscode.NotebookCell) {
     return {
       uri: cell.document.uri.toString(),
       text: cell.document.getText(),

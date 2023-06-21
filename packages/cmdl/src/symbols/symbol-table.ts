@@ -23,7 +23,6 @@ export interface AstVisitor {
  * Manages symbols for a particular scope
  */
 export class SymbolTable {
-  //! path?
   scope: string;
   enclosingScope: SymbolTable | null;
   nestedScopes: SymbolTable[] = [];
@@ -79,7 +78,7 @@ export class SymbolTable {
   }
 
   /**
-   * Helper method to recursively access a global scope symbole
+   * Helper method to recursively access a global scope symbol
    * @param id string
    * @returns SymbolTable | undefined
    */
@@ -253,7 +252,6 @@ export class SymbolTable {
 
   /**
    * Retrieves all variable symbols
-   * @todo - improve method description
    * @param value string
    * @returns PropertySymbol<any>
    */
@@ -372,7 +370,8 @@ export class SymbolTable {
 
   /**
    * Validates existence of all references in document and their properties
-   * @TODO validate variable properties and groups
+   * TODO: validate variable properties and groups
+   * TODO: validate import symbols and paths
    * @param errTable ErrorTable
    * @param globalTable SymbolTable
    */
@@ -487,7 +486,7 @@ export class SymbolTable {
   /**
    * Helper method to validate path on nested scopes of a found symbol. Method will check global scope if item is not found locally.
    * This behavior is primarly for polymer graphs, where fragments are declared globally.
-   * @TODO clean up logic for path validation, enable autocompletions
+   * TODO: clean up logic for path validation, enable autocompletions
    * @param symbol ReferenceSymbol
    * @param path string[]
    * @param globalTable SymbolTable

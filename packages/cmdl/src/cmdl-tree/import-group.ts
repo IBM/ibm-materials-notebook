@@ -1,5 +1,5 @@
 import { CmdlToken } from "../cmdl-ast";
-import { BaseError, FileError, RefError } from "../errors";
+import { BaseError, RefError } from "../errors";
 import { RecordNode } from "./base-components";
 import { parseStringImage } from "./utils";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
@@ -7,25 +7,27 @@ import { ModelVisitor } from "../intepreter";
 
 /**
  * Component AST node for handling import operations
- * @TODO improve handling of import types and Typescript type definitions
  */
 export class ImportOp implements RecordNode {
   name: string;
   nameToken: CmdlToken;
+  alias?: string;
   aliasToken?: CmdlToken;
   parent: RecordNode | null = null;
   type: string | null = null;
   errors: BaseError[] = [];
-  protected source: string;
-  protected sourceToken: CmdlToken;
-  protected sourceData?: Record<string, any>;
+  source: string;
+  sourceToken: CmdlToken;
 
   constructor(token: CmdlToken, sourceToken: CmdlToken, alias?: CmdlToken) {
     this.name = token.image;
     this.source = parseStringImage(sourceToken.image);
     this.sourceToken = sourceToken;
     this.nameToken = token;
-    this.aliasToken = alias;
+    if (alias) {
+      this.aliasToken = alias;
+      this.alias = parseStringImage(alias.image);
+    }
   }
 
   public setParent(arg: RecordNode): void {
@@ -37,32 +39,10 @@ export class ImportOp implements RecordNode {
     let msg: string;
     let err: BaseError;
 
-    if (this.source === "cmdl.lib" || this.source === "cmdl.global") {
-      // if (!library) {
-      //   throw new Error(`Library unavailable for importing values!`);
-      // }
-      //check library
-      // const ref = library.getItem(this.name);
-      let ref: any;
-
-      if (!ref) {
-        msg = `Unable to locate ${this.name} from library`;
-        err = new FileError(msg, this.sourceToken);
-        this.errors.push(err);
-        return this.errors;
-      }
-
-      this.sourceData = ref;
-      this.type = ref?.type ? ref.type : null;
-    } else {
-      throw new Error(`Invalid import source: ${this.source}!`);
-    }
-
-    if (!this.sourceData || !this.type) {
-      msg = `Unsuccessful in importing ${this.name}`;
-      err = new RefError(msg, this.nameToken);
+    if (!this.source || !this.name) {
+      let msg = `Invalid import operation, source or name is invalid`;
+      let err = new RefError(msg, this.nameToken);
       this.errors.push(err);
-      return this.errors;
     }
 
     return this.errors;
@@ -77,6 +57,7 @@ export class ImportOp implements RecordNode {
 
   /**
    * Gets type of entity imported
+   * @deprecated
    * @returns string
    */
   public getImportType(): string {
@@ -94,16 +75,10 @@ export class ImportOp implements RecordNode {
    * @returns Record<string, any>
    */
   public export(): Record<string, any> {
-    if (!this.sourceData || !this.type) {
-      throw new Error(
-        `Import ${this.name} does not have source data available`
-      );
-    }
-
     return {
       name: this.name,
       alias: this.aliasToken?.image || null,
-      ...this.sourceData,
+      source: this.source,
     };
   }
 

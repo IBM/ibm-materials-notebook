@@ -1,8 +1,6 @@
 import * as vscode from "vscode";
-import { logger } from "../logger";
 import { CmdlCompletions } from "./cmdl-completion";
 import { Repository } from "./respository";
-// import { Library } from "./library";
 import { Validation } from "./validator";
 
 export const LANGUAGE = "cmdl";
@@ -199,7 +197,6 @@ class HoverProvider implements vscode.HoverProvider {
     position: vscode.Position,
     token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.Hover> {
-    logger.notice(">> providing hover craft");
     const nodeGroup = this._completionProvider.provideHover(position, document);
     const range = document.getWordRangeAtPosition(position, /[@a-zA-Z0-9-_]+/);
     const word = document.getText(range);
@@ -210,7 +207,7 @@ class HoverProvider implements vscode.HoverProvider {
       const markdownText = new vscode.MarkdownString();
       markdownText.appendMarkdown(`**${word}** — *${nodeGroup.detail}*`);
       markdownText.appendMarkdown(`\n\n${nodeGroup.description}`);
-      return new vscode.Hover(markdownText, range); //create range for hovercraft
+      return new vscode.Hover(markdownText, range);
     }
   }
 }

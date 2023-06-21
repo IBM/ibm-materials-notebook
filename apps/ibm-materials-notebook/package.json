@@ -17,7 +17,13 @@
   ],
   "activationEvents": [
     "onNotebook:ibm-materials-notebook",
-    "onLanguage:cmdl"
+    "onLanguage:cmdl",
+    "workspaceContains:*.cmdnb",
+    "workspaceContains:*.cmdl",
+    "workspaceContains:*/*.cmdl",
+    "workspaceContains:*/*/*.cmdl",
+    "workspaceContains:*/*.cmdnb",
+    "workspaceContains:*/*/*.cmdnb"
   ],
   "main": "./dist/extension.js",
   "contributes": {

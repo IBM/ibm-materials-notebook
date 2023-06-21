@@ -13,6 +13,7 @@ import { registerCommands } from "./commandProvider";
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
   const repository = new Repository();
+  repository.initialize();
   logger.info("IBM Materials notebook extension is activated");
 
   // Use the console to output diagnostic information (console.log) and errors (console.error)

@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import { CMDLCompiler, CMDLTypes, CMDLAst, AstNodes } from "cmdl";
-import { logger } from "../logger";
 
 /**
  * Assists in providing completion items for CMDL language
@@ -234,9 +233,6 @@ export class CmdlCompletions {
     const otherNode = ast.findNodeByImage(word);
 
     if (!otherNode || !otherNode.parent) {
-      logger.debug(`unable to find cmdl node by image`, {
-        meta: otherNode?.print(),
-      });
       return [];
     }
 

@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import { TextDecoder, TextEncoder } from "util";
-import { logger } from "../logger";
 import { randomUUID } from "crypto";
 
 interface RawNotebookData {
@@ -103,7 +102,6 @@ export class CMDLNotebookSerializer implements vscode.NotebookSerializer {
       notebook.metadata.notebookId = randomUUID();
     }
 
-    logger.verbose("notebook deserialized...");
     return notebook;
   }
 
@@ -138,7 +136,6 @@ export class CMDLNotebookSerializer implements vscode.NotebookSerializer {
       cells: cellContents,
     };
 
-    logger.verbose("Notebook serialized....");
     return new TextEncoder().encode(JSON.stringify(content));
   }
 }

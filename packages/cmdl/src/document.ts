@@ -58,4 +58,28 @@ export class NotebookDocument implements Document {
       this.cells.set(cell.uri, cell);
     }
   }
+
+  public getCell(uri: string): CMDLCell {
+    const cell = this.cells.get(uri);
+    if (!cell) {
+      throw new Error(`Cell: ${uri} does not exist!`);
+    }
+
+    return cell;
+  }
+
+  public removeCell(uri: string): void {
+    this.cells.delete(uri);
+  }
+
+  public insertCell(cell: CMDLCell) {
+    this.cells.set(cell.uri, cell);
+  }
+
+  public updateCell(uri: string, cell: CMDLCell) {
+    if (!this.cells.has(uri)) {
+      throw new Error(`Cannot update non-existant cell: ${uri}`);
+    }
+    this.cells.set(uri, cell);
+  }
 }

@@ -12,6 +12,8 @@ import {
 import { Compiler } from "./compiler";
 import { CmdlTree } from "./cmdl-tree";
 import { SymbolTable, SymbolTableBuilder } from "./symbols";
+import { logger } from "./logger";
+import { BaseError } from "./errors";
 
 type FileUpdate = {
   uri: string;
@@ -31,11 +33,26 @@ export class Controller {
     TextDocument | NotebookDocument
   >();
 
-  public initialize() {
-    //register & execute lib documents into symbol table
+  private getNotebook(uri: string): NotebookDocument {
+    const doc = this._documents.get(uri);
+
+    if (!doc) {
+      throw new Error(`Document ${uri} does not exist!`);
+    }
+
+    if (!(doc instanceof NotebookDocument)) {
+      throw new Error(`Document ${uri} is not a notebook...`);
+    }
+
+    return doc;
   }
 
   public register(doc: Notebook | Text) {
+    if (doc.uri.split(":")[0] === "vscode-notebook-cell") {
+      return;
+    }
+
+    logger.notice(`Registering ${doc.fileName}\n\t-${doc.uri}`);
     const symbolTable = this._symbols.create(doc.fileName);
     const errTable = this._errors.create(doc.fileName);
     this._results.create(doc.fileName);
@@ -52,24 +69,57 @@ export class Controller {
   }
 
   public removeNotebookCell(cellUri: string, notebookUri: string) {
-    //find notebook document
-    //delete cell
-    //reparse document and dependencies
-    //update diagnostics
+    const doc = this.getNotebook(notebookUri);
+
+    doc.removeCell(cellUri);
+    const docSymbols = this._symbols.getTable(doc.fileName);
+    const docErrors = this._errors.get(notebookUri);
+    docSymbols.remove(cellUri);
+    docErrors.delete(cellUri);
+  }
+
+  public updateNotebookCell(notebookUri: string, cell: Cell) {
+    const doc = this.getNotebook(notebookUri);
+    const docSymbols = this._symbols.getTable(doc.fileName);
+    const docErrors = this._errors.get(notebookUri);
+
+    docSymbols.remove(cell.uri);
+    docErrors.delete(cell.uri);
+
+    const parsedCell = this.parseCell(
+      cell,
+      doc.fileName,
+      docSymbols,
+      docErrors
+    );
   }
 
   public addNotebookCell(notebookUri: string, cell: Cell) {
-    //find notebook document
-    //delete cell
-    //reparse document and dependencies
-    //update diagnostics
+    const doc = this.getNotebook(notebookUri);
+    const docSymbols = this._symbols.getTable(doc.fileName);
+    const docErrors = this._errors.get(notebookUri);
+
+    const parsedCell = this.parseCell(
+      cell,
+      doc.fileName,
+      docSymbols,
+      docErrors
+    );
+
+    doc.insertCell(parsedCell);
   }
 
   public unregister(uri: string) {
-    //remove document
-    //delete symbols
-    //re-parse dependencies
-    //notify successful removal
+    const doc = this._documents.get(uri);
+
+    if (!doc) {
+      throw new Error(
+        `Attempting to unregister non-existant document: ${uri}!`
+      );
+    }
+
+    this._symbols.remove(doc.fileName);
+    this._errors.delete(uri);
   }
 
   public renameFile(oldFile: FileUpdate, newFile: FileUpdate) {
@@ -85,30 +135,34 @@ export class Controller {
     let parsedCells: CMDLCell[] = [];
 
     for (const cell of doc.cells) {
-      const results = this._compiler.parse(cell.text);
-      const semanticErrors = results.recordTree.validate();
-
-      errs.add(cell.uri, results.parserErrors);
-      errs.add(cell.uri, semanticErrors);
-
-      const builder = new SymbolTableBuilder(
-        symbols,
-        errs,
-        doc.fileName,
-        cell.uri
-      );
-
-      results.recordTree.createSymbolTable(builder);
-
-      const parsedCell: CMDLCell = {
-        ...cell,
-        versionParsed: cell.version,
-        ast: results.recordTree,
-      };
+      const parsedCell = this.parseCell(cell, doc.fileName, symbols, errs);
       parsedCells.push(parsedCell);
     }
 
     return parsedCells;
+  }
+
+  private parseCell(
+    cell: Cell,
+    fileName: string,
+    symbols: SymbolTable,
+    errs: ErrorTable
+  ): CMDLCell {
+    const results = this._compiler.parse(cell.text);
+    const semanticErrors = results.recordTree.validate();
+
+    errs.add(cell.uri, results.parserErrors);
+    errs.add(cell.uri, semanticErrors);
+
+    const builder = new SymbolTableBuilder(symbols, errs, fileName, cell.uri);
+
+    results.recordTree.createSymbolTable(builder);
+
+    return {
+      ...cell,
+      versionParsed: cell.version,
+      ast: results.recordTree,
+    };
   }
 
   private parseDocument(
@@ -134,11 +188,16 @@ export class Controller {
     return results.recordTree;
   }
 
-  public update(uri: string) {
-    //find document => check versions
-    //parse new text => update document
-    //update symbol table and error table
-    //
+  public updateDocument(doc: Text) {
+    const symbolTable = this._symbols.getTable(doc.fileName);
+    symbolTable.clear();
+
+    const errTable = this._errors.get(doc.fileName);
+    errTable.delete(doc.uri);
+
+    const recordTree = this.parseDocument(doc, symbolTable, errTable);
+    const document = new TextDocument(doc, doc.version, recordTree);
+    this._documents.set(doc.uri, document);
   }
 
   public execute(docUri: string, uri?: string) {
@@ -165,8 +224,9 @@ export class Controller {
     //returns transpiled result
   }
 
-  public getNamespaceErrors(namespace: string): ErrorTable {
-    const errTable = this._errors.get(namespace);
-    return errTable;
+  public getErrors(uri: string, namespace: string): BaseError[] {
+    const notebookErrs = this._errors.get(namespace);
+    const cellErrors = notebookErrs.get(uri);
+    return cellErrors;
   }
 }

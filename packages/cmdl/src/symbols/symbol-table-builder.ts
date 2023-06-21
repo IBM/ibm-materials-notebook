@@ -9,9 +9,10 @@ import {
   SymbolType,
   AngleSymbol,
   GroupSymbol,
+  ImportSymbol,
 } from "./cmdl-symbol-base";
 import { BaseError, DuplicationError, RefError } from "../errors";
-import { typeManager, ModelType } from "cmdl-types";
+import { typeManager } from "cmdl-types";
 import {
   AngleProperty,
   NamedGroup,
@@ -27,15 +28,12 @@ import {
   Property,
 } from "../cmdl-tree";
 import { CmdlStack } from "../cmdl-stack";
-import { PolymerContainer } from "cmdl-polymers";
 import { CmdlToken } from "../cmdl-ast";
-import { ReactorContainer, SerializedReactor } from "cmdl-reactors";
 import { ErrorTable } from "../error-manager";
 import { TYPES } from "cmdl-types";
 
 /**
  * Visits record tree and constructs symbol table for entire document
- * TODO: enable namespacing for module resolution and imports
  */
 export class SymbolTableBuilder implements AstVisitor {
   private tableStack = new CmdlStack<SymbolTable>();
@@ -284,152 +282,158 @@ export class SymbolTableBuilder implements AstVisitor {
 
   /**
    * Creates a declaration symbol and adds to current scope
-   * TODO: refactor import op for module resolution
    * @param node ImportOp
    */
   public visitImportOp(node: ImportOp): void {
-    const symbolType = node.getImportType();
-    const model = typeManager.getModel(symbolType);
+    const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
+    const nodeName = node.alias ? node.alias : node.name;
 
-    if (model === ModelType.POLYMER_GRAPH) {
-      this.importPolymerGraphSymbol(node, model);
-    } else if (model === ModelType.REACTOR_GRAPH) {
-      this.importReactorGraphSymbol(node, model);
-    } else {
-      this.importGeneralSymbol(node, model);
-    }
+    const importSymbol = new ImportSymbol(
+      {
+        name: nodeName,
+        token: nameToken,
+        type: SymbolType.IMPORT,
+        def: this.uri,
+      },
+      node.name,
+      node.source,
+      node.alias
+    );
+
+    this.addSymbol(importSymbol);
   }
 
   /**
    * Method for handling importing a reactor graph to a CMDL notebook
-   * TODO: refactor import op for module resolution
+   * @deprecated
    * @param node ImportOp
    * @param model ModelType
    */
-  public importReactorGraphSymbol(node: ImportOp, model: ModelType): void {
-    const importData = node.export();
-    const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
-    const nodeName = importData.alias ? importData.alias : node.name;
-    if (
-      !importData?.nodes ||
-      !importData?.edges ||
-      !importData?.outputNode ||
-      !importData?.reactors
-    ) {
-      throw new Error(
-        `Incomplete reactor information on import for ${node.name}`
-      );
-    }
+  // public importReactorGraphSymbol(node: ImportOp, model: ModelType): void {
+  //   const importData = node.export();
+  //   const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
+  //   const nodeName = importData.alias ? importData.alias : node.name;
+  //   if (
+  //     !importData?.nodes ||
+  //     !importData?.edges ||
+  //     !importData?.outputNode ||
+  //     !importData?.reactors
+  //   ) {
+  //     throw new Error(
+  //       `Incomplete reactor information on import for ${node.name}`
+  //     );
+  //   }
 
-    const reactor = new ReactorContainer();
-    reactor.deserialize(importData as SerializedReactor);
-    const keyObj = reactor.getReactorNodeTree();
+  //   const reactor = new ReactorContainer();
+  //   reactor.deserialize(importData as SerializedReactor);
+  //   const keyObj = reactor.getReactorNodeTree();
 
-    const declSymbol = new DeclarationSymbol(
-      {
-        name: nodeName,
-        token: nameToken,
-        type: SymbolType.DECLARATION,
-        def: this.uri,
-      },
-      model,
-      importData.alias,
-      true
-    );
+  //   const declSymbol = new DeclarationSymbol(
+  //     {
+  //       name: nodeName,
+  //       token: nameToken,
+  //       type: SymbolType.DECLARATION,
+  //       def: this.uri,
+  //     },
+  //     model,
+  //     importData.alias,
+  //     true
+  //   );
 
-    this.addSymbol(declSymbol);
-    this.enterNewScope(nodeName);
+  //   this.addSymbol(declSymbol);
+  //   this.enterNewScope(nodeName);
 
-    this.createGraphSymbols(keyObj, nameToken);
+  //   this.createGraphSymbols(keyObj, nameToken);
 
-    this.exitCurrentScope();
-  }
+  //   this.exitCurrentScope();
+  // }
 
-  /**
-   * Method for handeling importing a polymer graph representation into a CMDL notebook
-   * TODO: refactor import op for module resolution
-   * @param node ImportOp
-   * @param model ModelType
-   */
-  public importPolymerGraphSymbol(node: ImportOp, model: ModelType): void {
-    const importData = node.export();
-    const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
-    const nodeName = importData.alias ? importData.alias : node.name;
-    if (!importData?.tree) {
-      throw new RefError(
-        `Unable to find tree data for polymer graph import ${node.name}`,
-        node.nameToken
-      );
-    }
+  // /**
+  //  * Method for handeling importing a polymer graph representation into a CMDL notebook
+  //  * @deprecated
+  //  * @param node ImportOp
+  //  * @param model ModelType
+  //  */
+  // public importPolymerGraphSymbol(node: ImportOp, model: ModelType): void {
+  //   const importData = node.export();
+  //   const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
+  //   const nodeName = importData.alias ? importData.alias : node.name;
+  //   if (!importData?.tree) {
+  //     throw new RefError(
+  //       `Unable to find tree data for polymer graph import ${node.name}`,
+  //       node.nameToken
+  //     );
+  //   }
 
-    const polymer = new PolymerContainer(importData.tree.name);
-    polymer.initializeTreeFromJSON(importData.tree);
-    const keyObj = polymer.getGraphNodes();
+  //   const polymer = new PolymerContainer(importData.tree.name);
+  //   polymer.initializeTreeFromJSON(importData.tree);
+  //   const keyObj = polymer.getGraphNodes();
 
-    const declSymbol = new DeclarationSymbol(
-      {
-        name: nodeName,
-        token: nameToken,
-        type: SymbolType.DECLARATION,
-        def: this.uri,
-      },
-      model,
-      importData.alias,
-      true
-    );
+  //   const declSymbol = new DeclarationSymbol(
+  //     {
+  //       name: nodeName,
+  //       token: nameToken,
+  //       type: SymbolType.DECLARATION,
+  //       def: this.uri,
+  //     },
+  //     model,
+  //     importData.alias,
+  //     true
+  //   );
 
-    this.addSymbol(declSymbol);
-    this.enterNewScope(nodeName);
+  //   this.addSymbol(declSymbol);
+  //   this.enterNewScope(nodeName);
 
-    this.createGraphSymbols(keyObj[importData.tree.name], nameToken);
+  //   this.createGraphSymbols(keyObj[importData.tree.name], nameToken);
 
-    this.exitCurrentScope();
-  }
+  //   this.exitCurrentScope();
+  // }
 
-  /**
-   * Method for handling general imports to a CMDL notebook
-   * TODO: refactor import op for module resolution
-   * @param node ImportOp
-   * @param model ModelType
-   */
-  public importGeneralSymbol(node: ImportOp, model: ModelType): void {
-    const importData = node.export();
-    const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
-    const nodeName = importData.alias ? importData.alias : node.name;
+  // /**
+  //  * Method for handling general imports to a CMDL notebook
+  //  * @deprecated
+  //  * @param node ImportOp
+  //  * @param model ModelType
+  //  */
+  // public importGeneralSymbol(node: ImportOp, model: ModelType): void {
+  //   const importData = node.export();
+  //   const nameToken = node.aliasToken ? node.aliasToken : node.nameToken;
+  //   const nodeName = importData.alias ? importData.alias : node.name;
 
-    const declSymbol = new DeclarationSymbol(
-      {
-        name: nodeName,
-        token: nameToken,
-        type: SymbolType.DECLARATION,
-        def: this.uri,
-      },
-      model,
-      importData.alias,
-      true
-    );
+  //   const declSymbol = new DeclarationSymbol(
+  //     {
+  //       name: nodeName,
+  //       token: nameToken,
+  //       type: SymbolType.DECLARATION,
+  //       def: this.uri,
+  //     },
+  //     model,
+  //     importData.alias,
+  //     true
+  //   );
 
-    this.addSymbol(declSymbol);
-    this.enterNewScope(nodeName);
+  //   this.addSymbol(declSymbol);
+  //   this.enterNewScope(nodeName);
 
-    for (const [key, value] of Object.entries(node.export())) {
-      const propSymbol = new PropertySymbol(
-        {
-          name: key,
-          token: nameToken,
-          type: SymbolType.PROPERTY,
-          def: this.uri,
-        },
-        value
-      );
-      this.addSymbol(propSymbol);
-    }
+  //   for (const [key, value] of Object.entries(node.export())) {
+  //     const propSymbol = new PropertySymbol(
+  //       {
+  //         name: key,
+  //         token: nameToken,
+  //         type: SymbolType.PROPERTY,
+  //         def: this.uri,
+  //       },
+  //       value
+  //     );
+  //     this.addSymbol(propSymbol);
+  //   }
 
-    this.exitCurrentScope();
-  }
+  //   this.exitCurrentScope();
+  // }
 
   /**
    * Helper method to create symbols for individual nodes within a reactor or polymer graph
+   * @deprecated
    * @param keyObj CMDLNodeTree
    * @param nameToken CMDLToken
    */

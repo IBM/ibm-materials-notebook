@@ -17,6 +17,7 @@ export interface SymbolConfig {
 export enum SymbolType {
   VARIABLE_DEC = "variable_declaration",
   DECLARATION = "declaration",
+  IMPORT = "import",
   REFERENCE = "reference",
   PROPERTY = "property",
   REF_PROXY = "ref_proxy",
@@ -50,6 +51,30 @@ export abstract class BaseSymbol {
   abstract print(): string;
 }
 
+export class ImportSymbol extends BaseSymbol {
+  alias: string | null;
+  source: string;
+  sourceName: string;
+
+  constructor(
+    config: SymbolConfig,
+    sourceName: string,
+    source: string,
+    alias: string | null = null
+  ) {
+    super(config);
+    this.sourceName = sourceName;
+    this.source = source;
+    this.alias = alias;
+  }
+
+  public print(): string {
+    return `${this.name}${this.alias ? ` alias: ${this.alias}` : ""}, source: ${
+      this.source
+    }`;
+  }
+}
+
 /**
  * Declaration symbols are assigned to declarations of new entities
  * Entities include chemicals, reactors, reactions, solutions, etc.
@@ -58,21 +83,8 @@ export class DeclarationSymbol extends BaseSymbol {
   aliasedName: string | null = null;
   imported: boolean = false;
 
-  constructor(
-    config: SymbolConfig,
-    public modelType: ModelType,
-    aliasedName?: string,
-    imported?: boolean
-  ) {
+  constructor(config: SymbolConfig, public modelType: ModelType) {
     super(config);
-
-    if (aliasedName) {
-      this.aliasedName = aliasedName;
-    }
-
-    if (imported) {
-      this.imported = true;
-    }
   }
 
   public print(): string {
