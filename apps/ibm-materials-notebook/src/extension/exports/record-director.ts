@@ -6,6 +6,7 @@ import { FlowExperimentBuilder, FlowRecord } from "./flow-exp-builder";
 
 /**
  * Manages building of record objects to write to JSON
+ * @deprecated move to CMDL library => transpiling
  */
 export class RecordDirector {
   private template?: CMDLTypes.ITemplates;

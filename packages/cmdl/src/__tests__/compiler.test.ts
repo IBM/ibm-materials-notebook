@@ -1,20 +1,21 @@
 import { DuplicationError, ErrorCode } from "../errors";
-import { Compiler } from "../cmdl-compiler";
+import { Compiler } from "../compiler";
 import { SymbolTable, SymbolTableBuilder } from "../symbols";
-import { BaseError } from "../errors";
+import { ErrorTable } from "../error-manager";
 
 const compiler = new Compiler();
 
-async function evalutateText(text: string) {
+function evalutateText(text: string) {
+  const namespace = "test";
   const uri = "test/uri";
-  const errors = new Map<string, BaseError[]>();
-  const globalTable = new SymbolTable("GLOBAL", null, errors);
-  const builder = new SymbolTableBuilder(globalTable, uri);
+  const errors = new ErrorTable();
+  const globalTable = new SymbolTable("GLOBAL");
+  const builder = new SymbolTableBuilder(globalTable, errors, namespace, uri);
 
   let { parserErrors, recordTree } = compiler.parse(text);
-  const semanticErrors = await recordTree.validate();
+  const semanticErrors = recordTree.validate();
   recordTree.createSymbolTable(builder);
-  globalTable.validate();
+  globalTable.validate(errors);
   const symbolErrors = builder.getErrors() || [];
 
   return {
@@ -27,7 +28,7 @@ async function evalutateText(text: string) {
 }
 
 describe("Tests for compilation and symbol table construction", () => {
-  it(`recognizes a declaration group and creates a symbol`, async () => {
+  it(`recognizes a declaration group and creates a symbol`, () => {
     const refGroup = `
       chemical THF {
         molecular_weight: 80.1 g/mol;
@@ -37,7 +38,7 @@ describe("Tests for compilation and symbol table construction", () => {
         inchi_key: "WYURNTSHIVDZCO-UHFFFAOYSA-N";
       }`;
     const { parserErrors, symbolErrors, semanticErrors, globalTable } =
-      await evalutateText(refGroup);
+      evalutateText(refGroup);
 
     console.log(JSON.stringify(semanticErrors, null, 2));
     expect(parserErrors.length).toBe(0);
@@ -46,7 +47,7 @@ describe("Tests for compilation and symbol table construction", () => {
     expect(globalTable.has("THF")).toBeTruthy();
   });
 
-  it(`recognizes a duplicate property`, async () => {
+  it(`recognizes a duplicate property`, () => {
     const dualPropGroup = `
       chemical THF {
         molecular_weight: 80.1 g/mol;
@@ -57,7 +58,7 @@ describe("Tests for compilation and symbol table construction", () => {
     `;
 
     const { parserErrors, symbolErrors, semanticErrors, globalTable } =
-      await evalutateText(dualPropGroup);
+      evalutateText(dualPropGroup);
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(1);
@@ -65,7 +66,7 @@ describe("Tests for compilation and symbol table construction", () => {
     expect(globalTable.has("THF")).toBeTruthy();
   });
 
-  it(`recognizes a duplicate declarations group and creates an error`, async () => {
+  it(`recognizes a duplicate declarations group and creates an error`, () => {
     const dupRefGroup = `
       chemical THF {
         molecular_weight: 80.1 g/mol;
@@ -80,7 +81,7 @@ describe("Tests for compilation and symbol table construction", () => {
       }
     `;
     const { parserErrors, symbolErrors, semanticErrors, globalTable } =
-      await evalutateText(dupRefGroup);
+      evalutateText(dupRefGroup);
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -90,7 +91,7 @@ describe("Tests for compilation and symbol table construction", () => {
     expect(globalTable.has("THF")).toBeTruthy();
   });
 
-  it(`creates a symbol for a reference group`, async () => {
+  it(`creates a symbol for a reference group`, () => {
     const referenceSymbol = `
 
     chemical THF {
@@ -109,7 +110,7 @@ describe("Tests for compilation and symbol table construction", () => {
     }`;
 
     const { parserErrors, symbolErrors, semanticErrors, globalTable } =
-      await evalutateText(referenceSymbol);
+      evalutateText(referenceSymbol);
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -118,7 +119,7 @@ describe("Tests for compilation and symbol table construction", () => {
     expect(globalTable.has("ABC")).toBeTruthy();
   });
 
-  it(`recognizes a missing declaration`, async () => {
+  it(`recognizes a missing declaration`, () => {
     const missingDecText = `
     reaction ABC {
         temperature: 100 degC;
@@ -130,7 +131,7 @@ describe("Tests for compilation and symbol table construction", () => {
     }`;
 
     const { parserErrors, symbolErrors, semanticErrors, globalTable } =
-      await evalutateText(missingDecText);
+      evalutateText(missingDecText);
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -140,7 +141,7 @@ describe("Tests for compilation and symbol table construction", () => {
 });
 
 describe("tests for compiler in parsing a reactor graph", () => {
-  it("parses a component node with a reference property", async () => {
+  it("parses a component node with a reference property", () => {
     const reactorNode = `
       component PolyReactor {
           description: "A polymerization reactor";
@@ -152,7 +153,7 @@ describe("tests for compiler in parsing a reactor graph", () => {
       }`;
 
     const { parserErrors, symbolErrors, semanticErrors, globalTable } =
-      await evalutateText(reactorNode);
+      evalutateText(reactorNode);
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -161,7 +162,7 @@ describe("tests for compiler in parsing a reactor graph", () => {
     expect(globalTable.has("MonomerTank")).toBeTruthy();
   });
 
-  it("recognizes a missing sub property on a reference", async () => {
+  it("recognizes a missing sub property on a reference", () => {
     const reactorNode = `
       component PolyReactor {
           description: "A polymerization reactor";
@@ -173,7 +174,7 @@ describe("tests for compiler in parsing a reactor graph", () => {
       }`;
 
     const { parserErrors, symbolErrors, semanticErrors, globalTable } =
-      await evalutateText(reactorNode);
+      evalutateText(reactorNode);
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -182,7 +183,7 @@ describe("tests for compiler in parsing a reactor graph", () => {
     expect(globalTable.has("MonomerTank")).toBeTruthy();
   });
 
-  it("parses a nested reactor node", async () => {
+  it("parses a nested reactor node", () => {
     const reactorNode = `
       reactor PolyReactor {
             component ReactorTube {
@@ -197,7 +198,7 @@ describe("tests for compiler in parsing a reactor graph", () => {
         }`;
 
     const { parserErrors, symbolErrors, semanticErrors, globalTable } =
-      await evalutateText(reactorNode);
+      evalutateText(reactorNode);
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -205,7 +206,7 @@ describe("tests for compiler in parsing a reactor graph", () => {
     expect(globalTable.has("PolyReactor")).toBeTruthy();
   });
 
-  it("parses a full reactor graph", async () => {
+  it("parses a full reactor graph", () => {
     const reactorA = `
       reactor_graph FlowTest {
 
@@ -238,7 +239,7 @@ describe("tests for compiler in parsing a reactor graph", () => {
     }`;
 
     const { parserErrors, symbolErrors, semanticErrors, globalTable } =
-      await evalutateText(reactorA);
+      evalutateText(reactorA);
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -248,7 +249,7 @@ describe("tests for compiler in parsing a reactor graph", () => {
 });
 
 describe("Tests for parsing cmdl polymer graphs", () => {
-  it("parses a simple polymer graph", async () => {
+  it("parses a simple polymer graph", () => {
     const graphText = `
       fragment egMeO {
           smiles: "CO[R:1]";
@@ -302,7 +303,7 @@ describe("Tests for parsing cmdl polymer graphs", () => {
       }`;
 
     const { parserErrors, symbolErrors, semanticErrors, globalTable } =
-      await evalutateText(graphText);
+      evalutateText(graphText);
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
@@ -314,7 +315,7 @@ describe("Tests for parsing cmdl polymer graphs", () => {
 });
 
 describe("Tests for compiling text with template variables", () => {
-  it(`recognizes a variable declaration group and variable properties`, async () => {
+  it(`recognizes a variable declaration group and variable properties`, () => {
     const refGroup = `
       chemical $solvent {
         molecular_weight: $solventMw;
@@ -322,7 +323,7 @@ describe("Tests for compiling text with template variables", () => {
         state: "liquid";
       }`;
     const { parserErrors, symbolErrors, semanticErrors, globalTable } =
-      await evalutateText(refGroup);
+      evalutateText(refGroup);
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);

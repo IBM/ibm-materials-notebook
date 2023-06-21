@@ -4,7 +4,6 @@ import { logger } from "../logger";
 
 /**
  * Assists in providing completion items for CMDL language
- * TODO: move to language server
  */
 export class CmdlCompletions {
   private readonly compiler = new CMDLCompiler.Compiler();

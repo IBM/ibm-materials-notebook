@@ -1,4 +1,4 @@
-import { Compiler } from "../cmdl-compiler";
+import { Compiler } from "../compiler";
 
 describe("Tests for cmdl-ast for completion providers", () => {
   const compiler = new Compiler();

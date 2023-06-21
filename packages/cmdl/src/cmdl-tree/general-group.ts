@@ -1,4 +1,4 @@
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 import { BaseError, InvalidGroupError, InvalidPropertyError } from "../errors";
 import { Group, Property, RecordNode } from "./base-components";
 import { IGroup, GroupTypes } from "cmdl-types";
@@ -83,10 +83,10 @@ export class GeneralGroup extends Group {
     }
   }
 
-  public async doValidation(): Promise<BaseError[]> {
+  public doValidation(): BaseError[] {
     this.setGroupProps();
     this.validateGroupName();
-    await this.validateChildren(this.validateGroupChild);
+    this.validateChildren(this.validateGroupChild);
     return this.errors;
   }
 

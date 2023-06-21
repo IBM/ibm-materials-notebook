@@ -16,7 +16,8 @@
     "Notebooks"
   ],
   "activationEvents": [
-    "onNotebook:ibm-materials-notebook"
+    "onNotebook:ibm-materials-notebook",
+    "onLanguage:cmdl"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -40,30 +41,6 @@
       {
         "command": "ibm-materials-notebook.parseGeneratedPolymers",
         "title": "CMDL: Create Notebooks From Generated Polymers"
-      },
-      {
-        "command": "ibm-materials-notebook.addToGlobalStorage",
-        "title": "CMDL: Add Repository to Global Extension Storage"
-      },
-      {
-        "command": "ibm-materials-notebook.addToWorkspaceStorage",
-        "title": "CMDL: Add Repository to Workspace Storage"
-      },
-      {
-        "command": "ibm-materials-notebook.exportEntities",
-        "title": "CMDL: Export Entities from Current Active Notebook"
-      },
-      {
-        "command": "ibm-materials-notebook.exportWorkspaceEntities",
-        "title": "CMDL: Export Entities from Current Workspace"
-      },
-      {
-        "command": "ibm-materials-notebook.clearGlobalStorage",
-        "title": "CMDL: Clear Global Extension Storage"
-      },
-      {
-        "command": "ibm-materials-notebook.clearWorkspaceStorage",
-        "title": "CMDL: Clear Workspace Extension Storage"
       }
     ],
     "configuration": {
@@ -112,8 +89,12 @@
     "languages": [
       {
         "id": "cmdl",
+        "extensions": [
+          ".cmdl"
+        ],
         "aliases": [
-          "Chemical Markdown Language"
+          "Chemical Markdown Language",
+          "CMDL"
         ]
       }
     ],

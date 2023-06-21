@@ -1,4 +1,4 @@
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 import {
   BaseError,
   InvalidPropertyError,
@@ -58,7 +58,7 @@ export class NumericalProperty extends Property {
     this.uncertaintyToken = token;
   }
 
-  public async doValidation(): Promise<BaseError[]> {
+  public doValidation(): BaseError[] {
     this.getPropertyType();
     this.validateProperty();
     this.validateUnit();

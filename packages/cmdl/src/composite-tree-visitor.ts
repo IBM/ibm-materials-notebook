@@ -1,5 +1,5 @@
 import { IToken } from "chevrotain";
-import { CmdlToken } from "./cmdl-parser-types";
+import { CmdlToken } from "./cmdl-ast";
 import { parserInstance } from "./parser";
 import {
   GroupCstChildren,

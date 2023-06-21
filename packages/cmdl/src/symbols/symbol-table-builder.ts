@@ -28,8 +28,9 @@ import {
 } from "../cmdl-tree";
 import { CmdlStack } from "../cmdl-stack";
 import { PolymerContainer } from "cmdl-polymers";
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 import { ReactorContainer, SerializedReactor } from "cmdl-reactors";
+import { ErrorTable } from "../error-manager";
 import { TYPES } from "cmdl-types";
 
 /**
@@ -37,13 +38,20 @@ import { TYPES } from "cmdl-types";
  * TODO: enable namespacing for module resolution and imports
  */
 export class SymbolTableBuilder implements AstVisitor {
-  //Add namespace/parent property
   private tableStack = new CmdlStack<SymbolTable>();
-  errors = new Map<string, BaseError[]>();
+  errors: ErrorTable;
+  namespace: string;
   uri: string;
 
-  constructor(global: SymbolTable, uri: string) {
+  constructor(
+    global: SymbolTable,
+    errors: ErrorTable,
+    namespace: string,
+    uri: string
+  ) {
+    this.namespace = namespace;
     this.uri = uri;
+    this.errors = errors;
     this.tableStack.push(global);
   }
 
@@ -123,7 +131,7 @@ export class SymbolTableBuilder implements AstVisitor {
    */
   private enterNewScope(name: string): void {
     const currentScope = this.tableStack.peek();
-    const nestedScope = new SymbolTable(name, currentScope, this.errors);
+    const nestedScope = new SymbolTable(name, currentScope);
     this.tableStack.push(nestedScope);
   }
 
@@ -154,7 +162,7 @@ export class SymbolTableBuilder implements AstVisitor {
     try {
       node.accept(this);
     } catch (error) {
-      this.errors.set(this.uri, [error] as BaseError[]);
+      this.errors.add(this.uri, [error] as BaseError[]);
       logger.warn(
         `Unable to visit node ${node.name}:\n-${(error as Error).message}`
       );

@@ -5,6 +5,7 @@ import { NOTEBOOK, LANGUAGE } from "./languageProvider";
 
 /**
  * Kernel for executiing CMDL in notebook applications
+ * TODO: rename to CMDLNotebookKernel
  */
 export class MaterialsKernel {
   readonly controllerId = "materials-notebook-kernel";
@@ -66,7 +67,8 @@ export class MaterialsKernel {
     logger.info("executing single cell");
 
     const doc = await vscode.workspace.openTextDocument(cell.document.uri);
-    const experiment = this.repository.findExperiment(doc.uri);
+    const experiment = this.repository.find(doc.uri);
+    //! Compiler will maintain uris of cells as strings
     const cellUri = doc.uri.toString();
     const execution = this._controller.createNotebookCellExecution(cell);
     execution.executionOrder = ++this._executionOrder;
@@ -77,9 +79,10 @@ export class MaterialsKernel {
         throw new Error(`unable to find experiment via ${doc.uri.toString()}`);
       }
 
-      //parse executed cell
+      //! parse executed cell => move to compiler
       await experiment.insertOrUpdate(doc);
 
+      //! return errors or output from single command to compiler
       const errors = experiment.getCellErrors(cellUri);
 
       //if parse errors display

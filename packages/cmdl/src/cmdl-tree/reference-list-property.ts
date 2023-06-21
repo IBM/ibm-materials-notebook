@@ -1,4 +1,4 @@
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 import { Property } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
@@ -80,7 +80,7 @@ export class RefListProperty extends Property {
     this.value.push(refValue);
   }
 
-  public async doValidation(): Promise<BaseError[]> {
+  public doValidation(): BaseError[] {
     this.getPropertyType();
     this.validateProperty();
 

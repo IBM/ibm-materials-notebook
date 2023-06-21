@@ -1,5 +1,5 @@
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 import { Property } from "./base-components";
 import { ModelVisitor } from "../intepreter";
 import { BaseError, InvalidPropertyError } from "../errors";
@@ -25,7 +25,7 @@ export class BoolProperty extends Property {
     this.valueToken = token;
   }
 
-  public async doValidation(): Promise<BaseError[]> {
+  public doValidation(): BaseError[] {
     this.getPropertyType();
     this.validateProperty();
 

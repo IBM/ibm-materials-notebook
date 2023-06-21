@@ -1,4 +1,4 @@
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 import { InvalidPropertyError } from "../errors";
 import { Property, Group } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
@@ -34,7 +34,7 @@ export class RefProperty extends Property implements SymbolReference {
     this.path = tokens;
   }
 
-  public async doValidation(): Promise<BaseError[]> {
+  public doValidation(): BaseError[] {
     this.getPropertyType();
     this.validateProperty();
     this.validateRef();

@@ -4,13 +4,9 @@ import * as path from "path";
 import { Repository } from "../respository";
 import { logger } from "../../logger";
 
-//TODO: add declared entities from notebook to workspace storage
-//TODO: add declared entities from repository to workspace storage
-//TODO: refresh global storage
-//TODO: refresh workspace storage
-
 /**
  * Exports current notebook entities to a single JSON file
+ * @deprecated
  * @param repo Repository
  */
 export async function exportCurrentNotebookEntities(repo: Repository) {
@@ -23,7 +19,7 @@ export async function exportCurrentNotebookEntities(repo: Repository) {
     return;
   }
 
-  const experiment = repo.findExperiment(activeNotebook.notebook.uri);
+  const experiment = repo.find(activeNotebook.notebook.uri);
   const workspaceFolder = vscode.workspace.getWorkspaceFolder(
     activeNotebook.notebook.uri
   );
@@ -38,13 +34,15 @@ export async function exportCurrentNotebookEntities(repo: Repository) {
     return;
   }
 
+  const fileName = repo.extractFileName(experiment.uri);
+
   const outputPath = path.join(
     workspaceFolder.uri.fsPath,
-    `/lib/${experiment.fileName}_entities.json`
+    `/lib/${fileName}_entities.json`
   );
 
-  const entities = experiment.exportEntities();
-  const content = JSON.stringify(entities, null, 2);
+  // const entities = experiment.exportEntities();
+  const content = JSON.stringify("", null, 2);
 
   fs.writeFile(outputPath, content, (err) => {
     if (err) {
@@ -60,6 +58,7 @@ export async function exportCurrentNotebookEntities(repo: Repository) {
 
 /**
  * Method to export declared entities in all repo notebook to JSON files
+ * @deprecated
  * @param repo Repository
  */
 export async function exportCurrentWorkspaceEntities(repo: Repository) {
@@ -80,7 +79,7 @@ export async function exportCurrentWorkspaceEntities(repo: Repository) {
 
   for (const docUri of documents) {
     const openedDoc = await vscode.workspace.openNotebookDocument(docUri);
-    const exp = repo.findExperiment(openedDoc.uri);
+    const exp = repo.find(openedDoc.uri);
 
     if (!exp) {
       vscode.window.showErrorMessage(
@@ -89,20 +88,23 @@ export async function exportCurrentWorkspaceEntities(repo: Repository) {
       continue;
     }
 
+    const fileName = repo.extractFileName(exp.uri);
+
     const outputPath = path.join(
       workspaceFolder.uri.fsPath,
-      `/lib/${exp.fileName}_entities.json`
+      `/lib/${fileName}_entities.json`
     );
 
-    await exp.executeAll();
-    const entities = exp.exportEntities();
-    const content = JSON.stringify(entities, null, 2);
+    // await exp.executeAll();
+    // const entities = exp.exportEntities();
+    //todo: pull cached results from controller
+    const content = JSON.stringify("", null, 2);
 
     fs.writeFile(outputPath, content, (err) => {
       if (err) {
         logger.error(`Error during writing to file: ${err?.message}`);
       } else {
-        logger.notice(`Success exporting ${exp.fileName}`);
+        logger.notice(`Success exporting ${fileName}`);
       }
     });
   }

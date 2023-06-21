@@ -1,4 +1,4 @@
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 import { BaseError, InvalidPropertyError } from "../errors";
 import { parseStringImage } from "./utils";
 import { Property } from "./base-components";
@@ -28,7 +28,7 @@ export class ListProperty extends Property {
     this.valueToken = token;
   }
 
-  public async doValidation(): Promise<BaseError[]> {
+  public doValidation(): BaseError[] {
     this.getPropertyType();
     this.validateProperty();
     this.validateList();

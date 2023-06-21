@@ -1,5 +1,5 @@
 import { ModelType } from "cmdl-types";
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 
 /**
  * Interface for CMDL symbol configuraton

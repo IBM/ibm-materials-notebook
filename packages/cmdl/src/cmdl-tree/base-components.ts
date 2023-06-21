@@ -1,5 +1,5 @@
 import { typeManager, IGroup, IProperty } from "cmdl-types";
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 import {
   BaseError,
   DuplicationError,
@@ -22,9 +22,8 @@ export interface RecordNode {
 
   /**
    * Perform validation logic on record node
-   * @param library Library
    */
-  doValidation(): Promise<BaseError[]>;
+  doValidation(): BaseError[];
   /**
    * Set parent node of current node
    * @param arg RecordNode | CMDLTree
@@ -86,13 +85,13 @@ export abstract class Group implements RecordNode {
    * Validates all current children of current node. Allows injection of custom validation logic.
    * @param injectValidation (child: RecordNode, props: Set<string>) => void
    */
-  protected async validateChildren(
+  protected validateChildren(
     injectValidation?: (child: RecordNode, props: Set<string>) => void
-  ): Promise<void> {
+  ): void {
     const properties = new Set<string>();
 
     for (const child of this.children) {
-      let childErrors = await child.doValidation();
+      let childErrors = child.doValidation();
       this.errors = this.errors.concat(childErrors);
 
       if (injectValidation) {
@@ -112,7 +111,7 @@ export abstract class Group implements RecordNode {
     this.errors.push(err);
   }
 
-  public async doValidation() {
+  public doValidation() {
     return this.errors;
   }
 
@@ -186,7 +185,7 @@ export abstract class Property implements RecordNode {
     }
   }
 
-  public async doValidation() {
+  public doValidation() {
     this.getPropertyType();
     this.validateProperty();
     return this.errors;

@@ -1,6 +1,14 @@
 import { parseStringImage } from "./cmdl-tree/utils";
-import { CmdlToken } from "./cmdl-parser-types";
 import { AstNodes } from "./cst-visitor";
+
+export type CmdlToken = {
+  image: string;
+  type: string;
+  startLine: number | undefined;
+  endLine: number | undefined;
+  startOffset: number | undefined;
+  endOffset: number | undefined;
+};
 
 type PrintNode = {
   name: string;

@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import { logger } from "../logger";
-import { Experiment } from "./experiment";
 import { Repository } from "./respository";
 
 export const LANGUAGE = "cmdl";
@@ -17,11 +16,13 @@ class LanguageDiagnostic extends vscode.Diagnostic {
 
 /**
  * Manages validation for CMDL language
+ * TODO: add diagnostics for plain cmdl files
  */
 export class Validation {
   private _disposables: vscode.Disposable[] = [];
+
   private readonly _collections = new Map<
-    Experiment,
+    string,
     vscode.DiagnosticCollection
   >();
 
@@ -39,7 +40,7 @@ export class Validation {
         if (vscode.languages.match(LANGUAGE, doc.document)) {
           clearTimeout(handle);
           handle = setTimeout(
-            async () => await this.validateCellChange(doc.document),
+            async () => await this.validateChange(doc.document),
             500
           );
         }
@@ -47,18 +48,18 @@ export class Validation {
     );
 
     this._disposables.push(
-      repository.onDidInitialize((exp) => {
+      repository.onDidInitializeNotebook((exp) => {
         logger.notice(
           ">> repository initialization event received in validator"
         );
-        this.validateFullExperiment(exp);
+        this.validateNotebookDoc(exp);
       })
     );
 
     this._disposables.push(
-      repository.onDidRemove((exp) => {
+      repository.onDidRemoveNotebook((exp) => {
         logger.notice(">> repository remove event received in validator");
-        this.clearExperiment(exp);
+        this.clearDiagnostics(exp);
       })
     );
   }
@@ -67,10 +68,10 @@ export class Validation {
    * Validates the CMDL text for a cell after a change event has been fired
    * @param document vscode.TextDocument
    */
-  async validateCellChange(document: vscode.TextDocument): Promise<void> {
-    logger.info(`validating cell:\n -> ${document.fileName}`);
+  async validateChange(document: vscode.TextDocument): Promise<void> {
+    logger.info(`validating document:\n -> ${document.fileName}`);
 
-    const exp = this.repository.findExperiment(document.uri);
+    const exp = this.repository.find(document.uri);
 
     if (!exp) {
       throw new Error(
@@ -78,23 +79,29 @@ export class Validation {
       );
     }
 
-    let collection = this._collections.get(exp);
+    const expUri = exp.uri.toString();
+    let collection = this._collections.get(expUri);
 
     if (!collection) {
-      logger.verbose("creating diagnostic collection for exp...");
       collection = vscode.languages.createDiagnosticCollection();
-      this._collections.set(exp, collection);
+      this._collections.set(expUri, collection);
     }
 
-    await exp.insertOrUpdate(document);
+    //! deprecated change to controller update
+    // await exp.insertOrUpdate(document);
 
-    exp.validateSymbols();
-    for (const { doc } of exp.all()) {
-      const diagnostics = this.createDiagnostics(exp, doc);
-      collection.set(doc.uri, diagnostics);
+    //! deprecated proxy to controller
+    // exp.validateSymbols();
+
+    if ("notebookType" in exp) {
+      //! deprecated => retrieve notebook errors from compiler => add to diagnostic collection
+      // for (const { doc } of exp.all()) {
+      //   const diagnostics = this.createDiagnostics(exp, doc);
+      //   collection.set(doc.uri, diagnostics);
+      // }
+    } else {
+      //! retrieve text document errors => add to diagnostics collection
     }
-
-    logger.info(`...finished cell validation for:\n -> ${document.fileName}`);
   }
 
   /**
@@ -105,53 +112,56 @@ export class Validation {
   }
 
   /**
-   * Validates all cells in a given experiment
-   * @param exp Experiment experiment document to be validated
+   * Validates all cells in a given notebook
+   * @param exp vscode.NotebookDocument
    */
-  private validateFullExperiment(exp: Experiment): void {
-    logger.info(`validating experiment:\n-> ${exp.uri}`);
-    let collection = this._collections.get(exp);
+  private validateNotebookDoc(exp: vscode.NotebookDocument): void {
+    const expUri = exp.uri.toString();
+
+    let collection = this._collections.get(expUri);
 
     if (!collection) {
-      logger.verbose(`creating diagnostics collection for: \n-> ${exp.uri}`);
       collection = vscode.languages.createDiagnosticCollection();
-      this._collections.set(exp, collection);
+      this._collections.set(expUri, collection);
     }
 
-    exp.validateSymbols();
-    for (const { doc } of exp.all()) {
-      const diagnostics = this.createDiagnostics(exp, doc);
-      collection.set(doc.uri, diagnostics);
-    }
-
-    logger.info(`...validation completed for \n-> ${exp.uri}`);
+    //! proxy validation to cmdl compiler
+    // exp.validateSymbols();
+    //! retrived notebook errors from compiler and add to diagnostics collection
+    // for (const { doc } of exp.all()) {
+    //   const diagnostics = this.createDiagnostics(exp, doc);
+    //   collection.set(doc.uri, diagnostics);
+    // }
   }
 
   /**
-   * Removes experiment from diagnostics collection
-   * @param exp Expriment Experiment to be removed from diagnostics collection
+   * Removes document diagnostics from diagnostics collection
+   * @param exp vscode.NotebookDocument | vscode.TextDocument
    */
-  private clearExperiment(exp: Experiment): void {
-    logger.verbose(`clearing diagnostics for: \n-> ${exp.uri}`);
-    let experiment = this._collections.get(exp);
-    if (experiment) {
-      experiment.dispose();
-      this._collections.delete(exp);
+  private clearDiagnostics(
+    exp: vscode.NotebookDocument | vscode.TextDocument
+  ): void {
+    const expUri = exp.uri.toString();
+    let diagnosticCollection = this._collections.get(expUri);
+    if (diagnosticCollection) {
+      diagnosticCollection.dispose();
+      this._collections.delete(expUri);
     }
   }
 
   /**
    * Creates array of VS Code diagnostics for CMDL
-   * @param exp Experiment Experiment document to retrieve errors from
+   * @param errors any[]
    * @param doc vscode.TextDocument vscode TextDocument to retrieve positions for diagnostics
    * @returns vscode.Diagnostic[] Array of diagnostics for a experiment
    */
   private createDiagnostics(
-    exp: Experiment,
+    errors: any[],
     doc: vscode.TextDocument
   ): vscode.Diagnostic[] {
     const diagnostics: vscode.Diagnostic[] = [];
-    const errors = exp.getCellErrors(doc.uri.toString());
+    //! deprecated, errors will come from compiler
+    // const errors = exp.getCellErrors(doc.uri.toString());
     for (const err of errors) {
       let start = doc.positionAt(err.start);
       let stop = doc.positionAt(err.stop);

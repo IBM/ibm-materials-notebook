@@ -1,4 +1,4 @@
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 import { BaseError, FileError, RefError } from "../errors";
 import { RecordNode } from "./base-components";
 import { parseStringImage } from "./utils";
@@ -33,7 +33,7 @@ export class ImportOp implements RecordNode {
   }
 
   // ? Set module reference -> have symbol compiler parse and resolve imports/export
-  public async doValidation(): Promise<BaseError[]> {
+  public doValidation(): BaseError[] {
     let msg: string;
     let err: BaseError;
 

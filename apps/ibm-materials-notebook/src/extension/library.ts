@@ -2,13 +2,15 @@ import * as fs from "fs";
 import * as path from "path";
 import * as vscode from "vscode";
 import { logger } from "../logger";
-import { ModelType } from "./cmdl-language/cmdl-types/groups/group-types";
+import { CMDLTypes } from "cmdl";
 
+//! Deprecated
 interface BaseReference {
   name: string;
-  type: ModelType;
+  type: CMDLTypes.ModelType;
 }
 
+//! Deprecated
 type ReferenceSource = [BaseReference, "lib" | "global"];
 
 /**
@@ -81,10 +83,14 @@ class LocalStorageService {
 /**
  * Manages entities which may be imported into CMDL notebook documents
  * Saves entities generated in experiments to workspaceStorage.
+ * @deprecated move import resolution to cmdl compiler
  */
 export class Library {
+  //! deprecated: local storage service not needed => moving to compiler
   private workspaceStorage: LocalStorageService;
+  //! deprecated: global storage service not needed => moving to compiler
   private globalStorage: LocalStorageService;
+  //! deprecated: lib is mandatory now
   private libPath: string;
 
   constructor(context: vscode.ExtensionContext, wsLibPath: string) {
@@ -98,7 +104,7 @@ export class Library {
   /**
    * Parses JSON files from lib folder of a workspace directory and saves them to
    * workspace storage. Defaults to current workspace if path is not supplied.
-   * @TODO ensure clearing of stale values
+   * @deprecated use cmdl compiler to process imports from lib folder
    */
   public async initializeWorkspaceStorage(libPath?: string): Promise<void> {
     let resolvedPath: string;
@@ -127,6 +133,7 @@ export class Library {
    * Expects entities to be encoded into JSON files
    * @param path string
    * @param storageService LocalStorageService
+   * @deprecated use cmdl compiler to process imports from lib folder
    */
   private async readLibDir(
     path: string,
@@ -163,6 +170,7 @@ export class Library {
    * Retrieves a item to import into a notebook document
    * @param key string
    * @returns BaseReference | undefined
+   * @deprecated use cmdl compiler to process imports from lib folder
    */
   public getItem(key: string): BaseReference | undefined {
     if (
@@ -197,6 +205,7 @@ export class Library {
    * Searches library based on string query
    * @param query string
    * @returns ReferenceSource[]
+   * @deprecated use cmdl compiler to process imports from lib folder
    */
   public search(query: string): ReferenceSource[] {
     const regex = new RegExp(query, "i");
@@ -223,6 +232,7 @@ export class Library {
 
   /**
    * Clears items from global storage
+   * @deprecated use cmdl compiler to process imports from lib folder
    */
   public clearGlobalStorage(): void {
     this.globalStorage.clear();
@@ -230,6 +240,7 @@ export class Library {
 
   /**
    * Clears items from global storage
+   * @deprecated use cmdl compiler to process imports from lib folder
    */
   public clearWorkspaceStorage(): void {
     this.workspaceStorage.clear();

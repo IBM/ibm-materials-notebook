@@ -1,18 +1,17 @@
 import {
   DuplicationError,
   ErrorCode,
-  // FileError,
   InvalidGroupError,
   InvalidPropertyError,
   RefError,
 } from "../../errors";
-import { Compiler } from "../../cmdl-compiler";
+import { Compiler } from "../../compiler";
 import { CmdlTree } from "../cmdl-tree";
 
 const compiler = new Compiler();
 
 describe("Tests for compiler validation errors", () => {
-  it(`compiles a valid record`, async () => {
+  it(`compiles a valid record`, () => {
     const validText = `
       reaction ABC {
           volume: 200 ml;
@@ -34,14 +33,14 @@ describe("Tests for compiler validation errors", () => {
       }`;
 
     let { parserErrors, recordTree } = compiler.parse(validText);
-    const errors = await recordTree.validate();
+    const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(0);
     expect(recordTree).toBeInstanceOf(CmdlTree);
   });
 
-  it(`identifies an invalid property`, async () => {
+  it(`identifies an invalid property`, () => {
     const text = `
       reaction ABC {
           temperature: 100 degC;
@@ -59,7 +58,7 @@ describe("Tests for compiler validation errors", () => {
       }`;
 
     const { recordTree, parserErrors } = compiler.parse(text);
-    const errors = await recordTree.validate();
+    const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);
@@ -67,7 +66,7 @@ describe("Tests for compiler validation errors", () => {
     expect(errors[0].code).toBe(ErrorCode.InvalidProperty);
   });
 
-  it(`identifies an duplicate property`, async () => {
+  it(`identifies an duplicate property`, () => {
     const duplicatePropText = `
     reaction ABC {
         temperature: 100 degC;
@@ -82,7 +81,7 @@ describe("Tests for compiler validation errors", () => {
     }`;
 
     const { recordTree, parserErrors } = compiler.parse(duplicatePropText);
-    const errors = await recordTree.validate();
+    const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);
@@ -90,7 +89,7 @@ describe("Tests for compiler validation errors", () => {
     expect(errors[0].code).toBe(ErrorCode.DuplicateItem);
   });
 
-  it(`recognizes invalid group nesting`, async () => {
+  it(`recognizes invalid group nesting`, () => {
     const invalidNestingText = `
       sample abc-I-123 {
         @THF {
@@ -103,7 +102,7 @@ describe("Tests for compiler validation errors", () => {
       }`;
 
     let { parserErrors, recordTree } = compiler.parse(invalidNestingText);
-    const errors = await recordTree.validate();
+    const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(3);
@@ -111,7 +110,7 @@ describe("Tests for compiler validation errors", () => {
     expect(errors[0].code).toBe(ErrorCode.InvalidGroup);
   });
 
-  it(`recognizes a list property with an improper value`, async () => {
+  it(`recognizes a list property with an improper value`, () => {
     const badListProp = `
       chemical THF {
         molecular_weight: 80.1 g/mol;
@@ -127,7 +126,7 @@ describe("Tests for compiler validation errors", () => {
       }
     `;
     let { parserErrors, recordTree } = compiler.parse(badListProp);
-    const errors = await recordTree.validate();
+    const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);
@@ -135,7 +134,7 @@ describe("Tests for compiler validation errors", () => {
     expect(errors[0].code).toBe(ErrorCode.InvalidProperty);
   });
 
-  it(`recognizes a reference group with a missing name and creates an error`, async () => {
+  it(`recognizes a reference group with a missing name and creates an error`, () => {
     const missingNameRef = `
       chemical {
         molecular_weight: 80.1 g/mol;
@@ -145,7 +144,7 @@ describe("Tests for compiler validation errors", () => {
     `;
 
     let { parserErrors, recordTree } = compiler.parse(missingNameRef);
-    const errors = await recordTree.validate();
+    const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);
@@ -153,7 +152,7 @@ describe("Tests for compiler validation errors", () => {
     expect(errors[0].code).toBe(ErrorCode.InvalidGroup);
   });
 
-  it.skip(`recognizes missing refs from import`, async () => {
+  it.skip(`recognizes missing refs from import`, () => {
     const refErrorTxt = `
     import TFA from "./__tests__/thf.json";
     reaction ABC {
@@ -165,7 +164,7 @@ describe("Tests for compiler validation errors", () => {
     }`;
 
     let { parserErrors, recordTree } = compiler.parse(refErrorTxt);
-    const errors = await recordTree.validate();
+    const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);

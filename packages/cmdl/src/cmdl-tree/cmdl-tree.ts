@@ -31,11 +31,11 @@ export class CmdlTree {
 
   /**
    * Method for validating CMDL tree, returns an array of errors
-   * @returns Promise<BaseError[]>
+   * @returns BaseError[]
    */
-  public async validate(): Promise<BaseError[]> {
+  public validate(): BaseError[] {
     for (const child of this.children) {
-      let childErrors = await child.doValidation();
+      let childErrors = child.doValidation();
       this.errors = this.errors.concat(childErrors);
     }
     return this.errors;

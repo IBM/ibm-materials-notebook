@@ -1,23 +1,24 @@
 import { ModelVisitor, ModelARManager } from "../intepreter";
-import { Compiler } from "../cmdl-compiler";
+import { Compiler } from "../compiler";
 import { SymbolTable, SymbolTableBuilder } from "../symbols";
 import { CmdlTree } from "../cmdl-tree";
 import { TYPES } from "cmdl-types";
-import { BaseError } from "../errors";
+import { ErrorTable } from "../error-manager";
 
 const compiler = new Compiler();
 
-async function evalutateText(text: string) {
+function evalutateText(text: string) {
+  const namespace = "test";
   const uri = "test/uri";
-  const errors = new Map<string, BaseError[]>();
-  const globalTable = new SymbolTable("GLOBAL", null, errors);
-  const builder = new SymbolTableBuilder(globalTable, uri);
+  const errors = new ErrorTable();
+  const globalTable = new SymbolTable("GLOBAL");
+  const builder = new SymbolTableBuilder(globalTable, errors, namespace, uri);
 
   let { parserErrors, recordTree } = compiler.parse(text);
-  const semanticErrors = await recordTree.validate();
+  const semanticErrors = recordTree.validate();
   recordTree.createSymbolTable(builder);
-  globalTable.validate();
-  const symbolErrors = globalTable.errors.get(uri) || [];
+  globalTable.validate(errors);
+  const symbolErrors = builder.getErrors() || [];
 
   return {
     parserErrors,
@@ -40,7 +41,7 @@ function evaluateModel(recordTree: CmdlTree) {
 }
 
 describe("Test model evaluation with compiler", () => {
-  it("evaluates a chemical model", async () => {
+  it("evaluates a chemical model", () => {
     const chemical = `
       chemical THF {
         molecular_weight: 80.1 g/mol;
@@ -54,7 +55,7 @@ describe("Test model evaluation with compiler", () => {
       recordTree,
       semanticErrors,
       globalTable,
-    } = await evalutateText(chemical);
+    } = evalutateText(chemical);
 
     const testAR = evaluateModel(recordTree);
     const THF = testAR.getValue("THF");
@@ -67,7 +68,7 @@ describe("Test model evaluation with compiler", () => {
     expect(THF).toHaveProperty("molecular_weight");
   });
 
-  it("evaluates a reaction model", async () => {
+  it("evaluates a reaction model", () => {
     const reaction = `
       chemical THF {
         molecular_weight: 80.1 g/mol;
@@ -111,7 +112,7 @@ describe("Test model evaluation with compiler", () => {
       recordTree,
       semanticErrors,
       globalTable,
-    } = await evalutateText(reaction);
+    } = evalutateText(reaction);
 
     const testAR = evaluateModel(recordTree);
     const testRxn = testAR.getOptionalValue<TYPES.Reaction>("TestReaction");
@@ -127,7 +128,7 @@ describe("Test model evaluation with compiler", () => {
     expect(testRxn?.reactants.length).toBe(3);
   });
 
-  it("evaluates a solution model", async () => {
+  it("evaluates a solution model", () => {
     const solution = `chemical THF {
         molecular_weight: 80.1 g/mol;
         density: 0.878 g/ml;
@@ -168,7 +169,7 @@ describe("Test model evaluation with compiler", () => {
       recordTree,
       semanticErrors,
       globalTable,
-    } = await evalutateText(solution);
+    } = evalutateText(solution);
     const testAR = evaluateModel(recordTree);
     const testRxn = testAR.getOptionalValue<TYPES.Solution>("TestSolution");
 
@@ -183,7 +184,7 @@ describe("Test model evaluation with compiler", () => {
     expect(testRxn?.components.length).toBe(3);
     expect(testRxn?.componentConfigs.length).toBe(3);
   });
-  it("evaluates a reactor graph model", async () => {
+  it("evaluates a reactor graph model", () => {
     const reactorA = `
       reactor_graph FlowTest {
 
@@ -221,7 +222,7 @@ describe("Test model evaluation with compiler", () => {
       recordTree,
       semanticErrors,
       globalTable,
-    } = await evalutateText(reactorA);
+    } = evalutateText(reactorA);
 
     const testAR = evaluateModel(recordTree);
     const testReactor = testAR.getOptionalValue("FlowTest");
@@ -231,7 +232,7 @@ describe("Test model evaluation with compiler", () => {
     expect(symbolErrors.length).toBe(0);
     expect(testReactor).toBeTruthy();
   });
-  it("evaluates a flow reaction model", async () => {
+  it("evaluates a flow reaction model", () => {
     const flowReaction = `
       chemical pMeBnOH {
         molecular_weight: 122.16 g/mol;
@@ -336,7 +337,7 @@ describe("Test model evaluation with compiler", () => {
       }`;
 
     const { parserErrors, symbolErrors, recordTree, semanticErrors } =
-      await evalutateText(flowReaction);
+      evalutateText(flowReaction);
 
     const testAR = evaluateModel(recordTree);
     const testRxn = testAR.getOptionalValue("RunA");
@@ -347,7 +348,7 @@ describe("Test model evaluation with compiler", () => {
     expect(testRxn).toBeTruthy();
   });
 
-  it("evaluates a result model", async () => {
+  it("evaluates a result model", () => {
     const result = `
     chemical lLactide {
           molecular_weight: 144.12 g/mol;
@@ -364,7 +365,7 @@ describe("Test model evaluation with compiler", () => {
     }`;
 
     const { parserErrors, symbolErrors, recordTree, semanticErrors } =
-      await evalutateText(result);
+      evalutateText(result);
 
     const testAR = evaluateModel(recordTree);
     const testSample = testAR.getOptionalValue("NHP-I-123");
@@ -375,7 +376,7 @@ describe("Test model evaluation with compiler", () => {
     expect(testSample).toBeTruthy();
   });
 
-  it("evaluates a polymer graph model", async () => {
+  it("evaluates a polymer graph model", () => {
     const polymerGraph = `
       fragment egMeO {
           smiles: "CO[R:1]";
@@ -435,7 +436,7 @@ describe("Test model evaluation with compiler", () => {
       recordTree,
       semanticErrors,
       globalTable,
-    } = await evalutateText(polymerGraph);
+    } = evalutateText(polymerGraph);
 
     const testAR = evaluateModel(recordTree);
     const testSample = testAR.getOptionalValue<TYPES.PolymerGraph>("egMeO_pVL");
@@ -449,7 +450,7 @@ describe("Test model evaluation with compiler", () => {
   });
 });
 
-it("evaluates a result model with a material reference", async () => {
+it("evaluates a result model with a material reference", () => {
   const result = `
       fragment egMeO {
           smiles: "CO[R:1]";
@@ -505,7 +506,7 @@ it("evaluates a result model with a material reference", async () => {
     }`;
 
   const { parserErrors, symbolErrors, recordTree, semanticErrors } =
-    await evalutateText(result);
+    evalutateText(result);
 
   const testAR = evaluateModel(recordTree);
   const testSample = testAR.getOptionalValue("NHP-I-123");
@@ -515,7 +516,7 @@ it("evaluates a result model with a material reference", async () => {
   expect(testSample).toBeTruthy();
 });
 
-it("evaluates a nested polymer graph model", async () => {
+it("evaluates a nested polymer graph model", () => {
   const polymerGraphGrafted = `
       fragment eg_PyreneBuOH {
         molecular_weight: 273.14 g/mol;
@@ -598,7 +599,7 @@ it("evaluates a nested polymer graph model", async () => {
       }`;
 
   const { parserErrors, symbolErrors, recordTree, semanticErrors } =
-    await evalutateText(polymerGraphGrafted);
+    evalutateText(polymerGraphGrafted);
 
   const testAR = evaluateModel(recordTree);
   const testSample = testAR.getOptionalValue<TYPES.PolymerGraph>("BASE");

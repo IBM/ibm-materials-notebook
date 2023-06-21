@@ -2,8 +2,8 @@ import * as vscode from "vscode";
 import { logger } from "../logger";
 import { CmdlCompletions } from "./cmdl-completion";
 import { Repository } from "./respository";
-import { Library } from "./library";
-import { Validation } from "./notebookValidator";
+// import { Library } from "./library";
+import { Validation } from "./validator";
 
 export const LANGUAGE = "cmdl";
 export const NOTEBOOK = "ibm-materials-notebook";
@@ -40,7 +40,7 @@ class CompletionItemProvider implements vscode.CompletionItemProvider {
 
 class ImportProvder implements vscode.CompletionItemProvider {
   readonly completionProvider = new CmdlCompletions();
-  constructor(readonly library: Library) {}
+  constructor() {}
 
   public provideCompletionItems(
     document: vscode.TextDocument,
@@ -66,13 +66,14 @@ class ImportProvder implements vscode.CompletionItemProvider {
       return;
     }
 
-    const matchingItems = this.library.search(wordArr[1].trim());
+    //TODO: resolve imports from controller/fs
+    const matchingItems: any[] = [];
 
     const completionItems: vscode.CompletionItem[] = matchingItems.map(
       (item) => {
         const textSnippet = new vscode.SnippetString();
         if (item[1] === "lib") {
-          textSnippet.appendText(`${item[0].name} from "cmdl.lib";`);
+          // textSnippet.appendText(`${item[0].name} from "cmdl.lib";`);
 
           return {
             label: item[0].name,
@@ -82,7 +83,7 @@ class ImportProvder implements vscode.CompletionItemProvider {
             detail: "entity detail",
           };
         } else {
-          textSnippet.appendText(`${item[0].name} from "cmdl.global";`);
+          // textSnippet.appendText(`${item[0].name} from "cmdl.global";`);
 
           return {
             label: item[0].name,
@@ -115,13 +116,14 @@ class SymbolProvider implements vscode.CompletionItemProvider {
       return;
     }
 
-    const exp = this.repository.findExperiment(document.uri);
+    const exp = this.repository.find(document.uri);
 
     if (!exp) {
       return;
     }
 
-    let symbols = exp.getSymbols();
+    //TODO: pull symbols from controller
+    const symbols: any[] = [];
 
     const results = symbols.map((el) => {
       return {
@@ -153,7 +155,7 @@ class SymbolMemberProvider implements vscode.CompletionItemProvider {
       return;
     }
 
-    const exp = this.repository.findExperiment(document.uri);
+    const exp = this.repository.find(document.uri);
 
     if (!exp) {
       return;
@@ -166,7 +168,10 @@ class SymbolMemberProvider implements vscode.CompletionItemProvider {
     const word = document.getText(range);
 
     const slicedWord = word.slice(1, -1);
-    let symbols = exp.getSymbolMembers(slicedWord);
+
+    //TODO: provide symbols from controller
+    // let symbols = exp.getSymbolMembers(slicedWord);
+    const symbols: any[] = [];
 
     if (!symbols) {
       return;
@@ -230,10 +235,7 @@ class SemanticTokenProvider implements vscode.DocumentSemanticTokensProvider {
   }
 }
 
-export function registerLanguageProvider(
-  repo: Repository,
-  lib: Library
-): vscode.Disposable {
+export function registerLanguageProvider(repo: Repository): vscode.Disposable {
   const disposables: vscode.Disposable[] = [];
   const symbolProvider = new SymbolProvider(repo);
   const memberProvider = new SymbolMemberProvider(repo);
@@ -275,7 +277,7 @@ export function registerLanguageProvider(
   disposables.push(
     vscode.languages.registerCompletionItemProvider(
       selector,
-      new ImportProvder(lib)
+      new ImportProvder()
     )
   );
 

@@ -1,4 +1,4 @@
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { Property } from "./base-components";
 import { BaseError } from "../errors";
@@ -23,7 +23,7 @@ export class VariableProperty extends Property {
     this.valueToken = token;
   }
 
-  public async doValidation(): Promise<BaseError[]> {
+  public doValidation(): BaseError[] {
     this.getPropertyType();
     this.validateProperty();
     return this.errors;

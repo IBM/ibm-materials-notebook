@@ -10,6 +10,7 @@ import {
 } from "./cmdl-symbol-base";
 import { RecordNode } from "../cmdl-tree";
 import { TYPES } from "cmdl-types";
+import { ErrorTable } from "../error-manager";
 
 /**
  * Interface for defining an AST visitor
@@ -22,20 +23,15 @@ export interface AstVisitor {
  * Manages symbols for a particular scope
  */
 export class SymbolTable {
+  //! path?
   scope: string;
   enclosingScope: SymbolTable | null;
   nestedScopes: SymbolTable[] = [];
   readonly _symbols = new Map<string, BaseSymbol>();
-  errors: Map<string, BaseError[]>;
 
-  constructor(
-    scope: string,
-    parentScope: SymbolTable | null = null,
-    errMap: Map<string, BaseError[]>
-  ) {
+  constructor(scope: string, parentScope: SymbolTable | null = null) {
     this.scope = scope;
     this.enclosingScope = parentScope;
-    this.errors = errMap;
     parentScope?.nestedScopes.push(this);
   }
 
@@ -380,13 +376,13 @@ export class SymbolTable {
    * @param errTable ErrorTable
    * @param globalTable SymbolTable
    */
-  public validate(globalTable: SymbolTable = this): void {
+  public validate(errTable: ErrorTable, globalTable: SymbolTable = this): void {
     for (const symbol of this._symbols.values()) {
       if (symbol instanceof ReferenceSymbol) {
         const referenceError = this.lookup(symbol, globalTable);
 
         if (referenceError) {
-          this.errors.set(symbol.def, [referenceError]);
+          errTable.add(symbol.def, [referenceError]);
         }
       } else if (
         symbol instanceof PropertySymbol &&
@@ -395,7 +391,7 @@ export class SymbolTable {
         const refPropError = this.lookup(symbol.value, globalTable);
 
         if (refPropError) {
-          this.errors.set(symbol.def, [refPropError]);
+          errTable.add(symbol.def, [refPropError]);
         }
       } else if (
         symbol instanceof PropertySymbol &&
@@ -403,16 +399,16 @@ export class SymbolTable {
         symbol.value[0] instanceof ReferenceSymbol
       ) {
         const refErrArr = this.validateRefArr(symbol.value, globalTable);
-        this.errors.set(symbol.def, refErrArr);
+        errTable.add(symbol.def, refErrArr);
       } else if (symbol instanceof AngleSymbol) {
-        this.validateAngleSymbol(symbol, globalTable);
+        this.validateAngleSymbol(symbol, errTable, globalTable);
       } else {
         continue;
       }
     }
 
     for (const nestedScope of this.nestedScopes) {
-      nestedScope.validate(globalTable);
+      nestedScope.validate(errTable, globalTable);
     }
   }
 
@@ -444,14 +440,15 @@ export class SymbolTable {
    */
   private validateAngleSymbol(
     symbol: AngleSymbol,
+    errTable: ErrorTable,
     globalTable: SymbolTable
   ): void {
     for (const conn of symbol.connections) {
       const sourcErrs = this.validateRefArr(conn.sources, globalTable);
       const targetErr = this.validateRefArr(conn.targets, globalTable);
 
-      this.errors.set(symbol.def, [...sourcErrs, ...targetErr]);
-      // this.errors.set(symbol.def, targetErr);
+      errTable.add(symbol.def, sourcErrs);
+      errTable.add(symbol.def, targetErr);
     }
   }
 

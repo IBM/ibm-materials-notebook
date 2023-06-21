@@ -1,4 +1,4 @@
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 import { BaseError, InvalidGroupError } from "../errors";
 import { Group, Property, RecordNode } from "./base-components";
 import { IGroup } from "cmdl-types";
@@ -116,9 +116,9 @@ export class ReferenceGroup extends Group implements SymbolReference {
    * Calls validation procedure for reference group
    * @returns BaseError[]
    */
-  public async doValidation(): Promise<BaseError[]> {
+  public doValidation(): BaseError[] {
     this.setParentGroupProps();
-    await this.validateChildren(this.checkNesting);
+    this.validateChildren(this.checkNesting);
     return this.errors;
   }
 }

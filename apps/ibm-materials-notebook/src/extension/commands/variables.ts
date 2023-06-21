@@ -5,8 +5,11 @@ import { logger } from "../../logger";
 import { Repository } from "../respository";
 import { VariableDict } from "./utils";
 
+//TODO: refactor template import/export
+
 /**
  * Exports active notebook document to CSV file with columns for each declared variable
+ * TODO: pull variables from controller
  * @param repo Repository
  */
 export async function exportToCsv(repo: Repository) {
@@ -19,7 +22,7 @@ export async function exportToCsv(repo: Repository) {
     return;
   }
 
-  const experiment = repo.findExperiment(activeNotebook.notebook.uri);
+  const experiment = repo.find(activeNotebook.notebook.uri);
   const rootUri = vscode.workspace.getWorkspaceFolder(
     activeNotebook.notebook.uri
   );
@@ -28,7 +31,7 @@ export async function exportToCsv(repo: Repository) {
     return;
   }
 
-  const csvString = experiment.toCSV();
+  const csvString = "experiment.toCSV()";
 
   fs.writeFile(
     path.join(rootUri.uri.fsPath, `exp/var_test.csv`),
@@ -86,11 +89,13 @@ export async function parseVariableCSV(repo: Repository) {
   const notebook = await vscode.workspace.openNotebookDocument(files[0]);
   const rootUri = vscode.workspace.getWorkspaceFolder(files[0]);
 
-  const experiment = repo.findExperiment(notebook.uri);
+  const experiment = repo.find(notebook.uri);
 
-  if (!experiment || experiment.id !== templateNotebookId || !rootUri) {
+  if (!experiment || !rootUri) {
     return;
   }
+
+  const fileName = repo.extractFileName(notebook.uri);
 
   const rows = csvText.slice(2);
   const formattedRows = [];
@@ -113,14 +118,14 @@ export async function parseVariableCSV(repo: Repository) {
 
   let count = 1;
   for (const row of formattedRows) {
-    const clonedNotebook = experiment.cloneTemplate(row);
+    // const clonedNotebook = experiment.cloneTemplate(row);
 
-    const content = new TextEncoder().encode(JSON.stringify(clonedNotebook));
+    const content = new TextEncoder().encode(JSON.stringify("clonedNotebook"));
 
-    const fileName = `${experiment.fileName}-clone-${count}`;
+    const outputFileName = `${fileName}-clone-${count}`;
 
     await fs.promises.writeFile(
-      `${rootUri.uri.fsPath}/${fileName}.cmdnb`,
+      `${rootUri.uri.fsPath}/${outputFileName}.cmdnb`,
       content
     );
 

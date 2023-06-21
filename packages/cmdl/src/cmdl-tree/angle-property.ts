@@ -1,4 +1,4 @@
-import { CmdlToken } from "../cmdl-parser-types";
+import { CmdlToken } from "../cmdl-ast";
 import { Property } from "./base-components";
 import { ReferenceValue } from "./reference-list-property";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
@@ -57,7 +57,7 @@ export class AngleProperty extends Property {
     }
   }
 
-  public async doValidation(): Promise<BaseError[]> {
+  public doValidation(): BaseError[] {
     this.getPropertyType();
     this.validateProperty();
 
