@@ -52,11 +52,6 @@
     "configuration": {
       "title": "IBM Materials Notebook",
       "properties": {
-        "ibm-materials-notebook.library": {
-          "title": "Output path for workspace",
-          "type": "string",
-          "default": "./lib"
-        },
         "ibm-materials-notebook.structure-theme": {
           "title": "Chemical Structure Theme",
           "default": "dark",

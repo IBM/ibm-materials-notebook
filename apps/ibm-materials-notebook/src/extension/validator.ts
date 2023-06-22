@@ -42,6 +42,12 @@ export class Validation {
     );
 
     this._disposables.push(
+      repository.onDidInitializeText((doc) => {
+        this.validateTextDocument(doc);
+      })
+    );
+
+    this._disposables.push(
       repository.onDidInitializeNotebook((exp) => {
         this.validateNotebookDoc(exp);
       })
@@ -59,6 +65,7 @@ export class Validation {
    * @param document vscode.TextDocument
    */
   public validateChange(document: vscode.TextDocument): void {
+    logger.info(`validating changed text document: ${document.uri.path}`);
     const exp = this.repository.find(document.uri);
 
     if (!exp) {
@@ -125,6 +132,21 @@ export class Validation {
       const diagnostics = this.createDiagnostics(errors, document);
       collection.set(document.uri, diagnostics);
     }
+  }
+
+  private validateTextDocument(document: vscode.TextDocument): void {
+    logger.info(`validating text document: ${document.uri.path}`);
+    const documentUri = document.uri.toString();
+    const fileName = this.repository.extractFileName(document.uri);
+    let collection = this._collections.get(documentUri);
+
+    if (!collection) {
+      collection = vscode.languages.createDiagnosticCollection();
+      this._collections.set(documentUri, collection);
+    }
+    const errors = this.repository._controller.getErrors(documentUri, fileName);
+    const diagnostics = this.createDiagnostics(errors, document);
+    collection.set(document.uri, diagnostics);
   }
 
   /**

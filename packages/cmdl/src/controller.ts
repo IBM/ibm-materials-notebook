@@ -52,6 +52,11 @@ export class Controller {
       return;
     }
 
+    if (this._documents.has(doc.uri)) {
+      logger.verbose(`${doc.fileName} already registered with controller`);
+      return;
+    }
+
     logger.notice(`Registering ${doc.fileName}\n\t-${doc.uri}`);
     const symbolTable = this._symbols.create(doc.fileName);
     const errTable = this._errors.create(doc.fileName);

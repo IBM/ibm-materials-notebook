@@ -1,5 +1,3 @@
-import * as fs from "fs";
-// import * as path from "path";
 import * as vscode from "vscode";
 import { NOTEBOOK } from "./languageProvider";
 import { logger } from "../logger";
@@ -45,12 +43,12 @@ export class Repository {
         }
 
         if (this._documents.has(notebookUri)) {
-          throw new Error(`${notebookUri} already exists!`);
+          logger.info(`notebook: ${notebookUri} is already registered`);
+          return;
         }
         const formattedDoc = this.formatNotebook(notebookDoc);
         this._controller.register(formattedDoc);
         this._documents.set(notebookUri, notebookDoc);
-
         this._onDidInitializeNotebook.fire(notebookDoc);
       })
     );
@@ -102,10 +100,12 @@ export class Repository {
         if (doc.languageId !== "cmdl") {
           return;
         }
+
         const docUri = doc.uri.toString();
 
         if (this._documents.has(docUri)) {
-          throw new Error(`${docUri} already exists!`);
+          logger.info(`${docUri} is already registered`);
+          return;
         }
         const textDoc = this.formatTextDocument(doc);
         this._controller.register(textDoc);
@@ -141,13 +141,6 @@ export class Repository {
     );
 
     this._disposables.push(
-      vscode.workspace.onDidCreateFiles((event) => {
-        //register with compiler
-        //create diagnostics
-      })
-    );
-
-    this._disposables.push(
       vscode.workspace.onDidDeleteFiles((event) => {
         for (const uri of event.files) {
           const fileUri = uri.toString();
@@ -163,17 +156,42 @@ export class Repository {
     vscode.workspace.findFiles("**/*.cmdl").then(
       (files) => {
         for (const uri of files) {
-          logger.info(`found ${uri.toString()} during initialization`);
-
-          if (!this._documents.has(uri.toString())) {
-            logger.verbose(`file is not registered...registering file`);
+          const fileUri = uri.toString();
+          if (!this._documents.has(fileUri)) {
+            vscode.workspace.openTextDocument(uri).then((doc) => {
+              const textDoc = this.formatTextDocument(doc);
+              this._controller.register(textDoc);
+              this._documents.set(fileUri, doc);
+              this._onDidInitializeText.fire(doc);
+            });
           } else {
-            logger.verbose(`...file is already registered`);
+            logger.verbose(`file: ${fileUri} is already registered`);
           }
         }
       },
       () => {
-        logger.info(`no files found during initialization`);
+        logger.info(`no cmdl files found during initialization`);
+      }
+    );
+
+    vscode.workspace.findFiles("**/*.cmdnb").then(
+      (files) => {
+        for (const uri of files) {
+          const fileUri = uri.toString();
+          if (!this._documents.has(fileUri)) {
+            vscode.workspace.openNotebookDocument(uri).then((doc) => {
+              const formattedDoc = this.formatNotebook(doc);
+              this._controller.register(formattedDoc);
+              this._documents.set(fileUri, doc);
+              this._onDidInitializeNotebook.fire(doc);
+            });
+          } else {
+            logger.verbose(`file: ${fileUri} is already registered`);
+          }
+        }
+      },
+      () => {
+        logger.info(`no cmdnb files found during initialization`);
       }
     );
   }
