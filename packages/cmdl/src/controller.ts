@@ -20,6 +20,11 @@ type FileUpdate = {
   fileName: string;
 };
 
+interface CompletionItem {
+  name: string;
+  module: string;
+}
+
 /**
  * Controls CMDL functions for a given workspace
  */
@@ -287,5 +292,25 @@ export class Controller {
       keys.push(key);
     }
     return keys.join("\n\t-");
+  }
+
+  public provideImportCompletions(namespaces: string[], query: string) {
+    let matchingItems: CompletionItem[] = [];
+    for (const namespace of namespaces) {
+      const symbolTable = this._symbols.getTable(namespace);
+      const matchingSymbols = symbolTable.find(query);
+
+      if (matchingSymbols.length) {
+        matchingSymbols.forEach((el) => {
+          const completionItem = {
+            name: el,
+            module: namespace,
+          };
+          matchingItems.push(completionItem);
+        });
+      }
+    }
+
+    return matchingItems;
   }
 }

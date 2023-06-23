@@ -38,7 +38,7 @@ class CompletionItemProvider implements vscode.CompletionItemProvider {
 
 class ImportProvder implements vscode.CompletionItemProvider {
   readonly completionProvider = new CmdlCompletions();
-  constructor() {}
+  constructor(readonly repository: Repository) {}
 
   public provideCompletionItems(
     document: vscode.TextDocument,
@@ -64,33 +64,32 @@ class ImportProvder implements vscode.CompletionItemProvider {
       return;
     }
 
-    //TODO: resolve imports from controller/fs
-    const matchingItems: any[] = [];
+    let modules: string[] = [];
+    const libRegex = new RegExp("/lib/");
+    for (const [key, value] of this.repository.getItems()) {
+      if (libRegex.test(key)) {
+        modules.push(this.repository.extractFileName(value.uri));
+      }
+    }
+
+    const matchingItems = this.repository._controller.provideImportCompletions(
+      modules,
+      wordArr[1]
+    );
 
     const completionItems: vscode.CompletionItem[] = matchingItems.map(
       (item) => {
         const textSnippet = new vscode.SnippetString();
-        if (item[1] === "lib") {
-          // textSnippet.appendText(`${item[0].name} from "cmdl.lib";`);
 
-          return {
-            label: item[0].name,
-            insertText: textSnippet,
-            kind: vscode.CompletionItemKind.Constant,
-            documentation: "entity documentation",
-            detail: "entity detail",
-          };
-        } else {
-          // textSnippet.appendText(`${item[0].name} from "cmdl.global";`);
+        textSnippet.appendText(`${item.name} from "./lib/${item.module}";`);
 
-          return {
-            label: item[0].name,
-            insertText: textSnippet,
-            kind: vscode.CompletionItemKind.Interface,
-            documentation: "entity documentation",
-            detail: "entity detail",
-          };
-        }
+        return {
+          label: item.name,
+          insertText: textSnippet,
+          kind: vscode.CompletionItemKind.Interface,
+          documentation: "entity documentation",
+          detail: "entity detail",
+        };
       }
     );
 
@@ -274,7 +273,7 @@ export function registerLanguageProvider(repo: Repository): vscode.Disposable {
   disposables.push(
     vscode.languages.registerCompletionItemProvider(
       selector,
-      new ImportProvder()
+      new ImportProvder(repo)
     )
   );
 

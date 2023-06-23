@@ -201,6 +201,10 @@ export class Repository {
     );
   }
 
+  public getItems() {
+    return this._documents.entries();
+  }
+
   public formatNotebook(doc: vscode.NotebookDocument) {
     const fileName = this.extractFileName(doc.uri);
     let cellArr = [];
