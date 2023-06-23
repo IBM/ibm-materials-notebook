@@ -107,6 +107,11 @@ export class Repository {
           logger.info(`${docUri} is already registered`);
           return;
         }
+
+        if (doc.uri.fragment.length) {
+          return;
+        }
+
         const textDoc = this.formatTextDocument(doc);
         this._controller.register(textDoc);
         this._documents.set(docUri, doc);
@@ -245,14 +250,15 @@ export class Repository {
   public find(
     uri: vscode.Uri
   ): vscode.NotebookDocument | vscode.TextDocument | undefined {
-    for (let [documentUri, document] of this._documents) {
-      if (documentUri === uri.toString()) {
+    const searchUri = uri.toString();
+    for (const [documentUri, document] of this._documents) {
+      if (documentUri === searchUri) {
         return document;
       }
 
       if ("notebookType" in document) {
-        for (let cells of document.getCells()) {
-          if (cells.document.uri.toString() === uri.toString()) {
+        for (const cell of document.getCells()) {
+          if (cell.document.uri.toString() === searchUri) {
             return document;
           }
         }

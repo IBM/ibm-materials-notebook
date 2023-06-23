@@ -153,7 +153,7 @@ class GlobalActivationRecord extends ModelActivationRecord {
 export class ModelARManager {
   private records = new Map<string, ModelActivationRecord>();
 
-  constructor(public uri: string) {}
+  constructor(public namespace: string) {}
 
   /**
    * Creates global AR proxy to ModelARManager. Used as global memory during model tabulation/execution.

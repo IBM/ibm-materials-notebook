@@ -1,4 +1,4 @@
-chemical THF {
+chemical tetrahydrofuran {
     smiles: "C1CCOC1";
     state: "liquid";
     molecular_weight: 72.11 g/mol;

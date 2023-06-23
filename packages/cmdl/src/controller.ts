@@ -28,6 +28,7 @@ export class Controller {
   private readonly _errors = new DiagnosticManager();
   private readonly _symbols = new SymbolTableManager();
   private readonly _results = new ActivationRecordManager();
+  private readonly _documentNamespaces = new Map<string, string>();
   private readonly _documents = new Map<
     string,
     TextDocument | NotebookDocument
@@ -45,6 +46,35 @@ export class Controller {
     }
 
     return doc;
+  }
+
+  public getDocument(uri: string): NotebookDocument | TextDocument {
+    const document = this._documents.get(uri);
+
+    if (!document) {
+      logger.debug(`registered documents:${this.printRegistered()}`);
+      throw new Error(`${uri} is not registered!`);
+    }
+
+    return document;
+  }
+
+  public getUriByNamespace(namespace: string): string {
+    const docUri = this._documentNamespaces.get(namespace);
+
+    if (!docUri) {
+      throw new Error(`${namespace} does not exist!`);
+    }
+
+    return docUri;
+  }
+
+  public getSymbolTable(namespace: string) {
+    return this._symbols.getTable(namespace);
+  }
+
+  public getNamespaceAR(namespace: string) {
+    return this._results.get(namespace);
   }
 
   public register(doc: Notebook | Text) {
@@ -66,10 +96,12 @@ export class Controller {
       const parsedCells = this.parseNotebook(doc, symbolTable, errTable);
       const notebook = new NotebookDocument(doc, parsedCells);
       this._documents.set(notebook.uri, notebook);
+      this._documentNamespaces.set(doc.fileName, notebook.uri);
     } else {
       const recordTree = this.parseDocument(doc, symbolTable, errTable);
       const document = new TextDocument(doc, doc.version, recordTree);
       this._documents.set(doc.uri, document);
+      this._documentNamespaces.set(doc.fileName, doc.uri);
     }
   }
 
@@ -86,7 +118,7 @@ export class Controller {
   public updateNotebookCell(notebookUri: string, cell: Cell) {
     const doc = this.getNotebook(notebookUri);
     const docSymbols = this._symbols.getTable(doc.fileName);
-    const docErrors = this._errors.get(notebookUri);
+    const docErrors = this._errors.get(doc.fileName);
 
     docSymbols.remove(cell.uri);
     docErrors.delete(cell.uri);
@@ -97,12 +129,13 @@ export class Controller {
       docSymbols,
       docErrors
     );
+    doc.updateCell(cell.uri, parsedCell);
   }
 
   public addNotebookCell(notebookUri: string, cell: Cell) {
     const doc = this.getNotebook(notebookUri);
     const docSymbols = this._symbols.getTable(doc.fileName);
-    const docErrors = this._errors.get(notebookUri);
+    const docErrors = this._errors.get(doc.fileName);
 
     const parsedCell = this.parseCell(
       cell,
@@ -125,6 +158,8 @@ export class Controller {
 
     this._symbols.remove(doc.fileName);
     this._errors.delete(uri);
+    this._documentNamespaces.delete(doc.fileName);
+    this._documents.delete(uri);
   }
 
   public renameFile(oldFile: FileUpdate, newFile: FileUpdate) {
@@ -206,21 +241,32 @@ export class Controller {
   }
 
   public execute(docUri: string, uri?: string) {
-    const document = this._documents.get(docUri);
-
-    if (!document) {
-      throw new Error(`${docUri} is not registered!`);
-    }
+    const document = this.getDocument(docUri);
 
     if (document instanceof TextDocument) {
-      const visitor = this._results.createModelVisitor(docUri);
-      document.ast.evaluate(visitor);
-      return this._results.getOutput(docUri, docUri);
+      return this.evaluateAst(document.fileName, document, docUri);
     } else {
-      //get cell
-      //create visitor
-      //return output
+      if (!uri) {
+        throw new Error(`cannot execute cell without uri`);
+      }
+      const cell = document.getCell(uri);
+      return this.evaluateAst(document.fileName, cell, uri);
     }
+  }
+
+  public executeNamespace(namespace: string, uri?: string) {
+    const docUri = this.getUriByNamespace(namespace);
+    return this.execute(docUri, uri);
+  }
+
+  private evaluateAst(
+    fileName: string,
+    doc: CMDLCell | TextDocument,
+    uri: string
+  ) {
+    const visitor = this._results.createModelVisitor(fileName, this, uri);
+    doc.ast.evaluate(visitor);
+    return this._results.getOutput(fileName, uri);
   }
 
   public transpile() {
@@ -233,5 +279,13 @@ export class Controller {
     const notebookErrs = this._errors.get(namespace);
     const cellErrors = notebookErrs.get(uri);
     return cellErrors;
+  }
+
+  private printRegistered() {
+    let keys: string[] = [];
+    for (const key of this._documents.keys()) {
+      keys.push(key);
+    }
+    return keys.join("\n\t-");
   }
 }

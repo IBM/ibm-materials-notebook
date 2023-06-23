@@ -9,23 +9,31 @@ import {
   Property,
   ImportOp,
 } from "../cmdl-tree";
+import path from "path";
 import { AstVisitor } from "../symbols";
 import { ModelFactory } from "./model-factory";
 import { ModelActivationRecord } from "./model-AR";
 import { CmdlStack } from "../cmdl-stack";
 import { logger } from "../logger";
 import { typeManager, ModelType } from "cmdl-types";
+import { Controller } from "../controller";
 
 /**
  * Visits record tree and executes different models on elements
  */
 export class ModelVisitor implements AstVisitor {
   uri: string;
+  private readonly controller: Controller;
   private modelStack = new CmdlStack<ModelActivationRecord>();
 
-  constructor(globalAR: ModelActivationRecord, uri: string) {
+  constructor(
+    globalAR: ModelActivationRecord,
+    uri: string,
+    controller: Controller
+  ) {
     this.modelStack.push(globalAR);
     this.uri = uri;
+    this.controller = controller;
   }
 
   /**
@@ -165,20 +173,23 @@ export class ModelVisitor implements AstVisitor {
     logger.verbose(`Starting model execution for import ${node.name}`);
     const nodeName = node.aliasToken ? node.aliasToken.image : node.name;
 
-    //! retrieve import node data from other namespace/source
-    //! copy into activation record
+    const sourceNamespace = path.basename(node.source);
+    const sourceSymbols = this.controller.getSymbolTable(sourceNamespace);
+    const sourceSymbol = sourceSymbols.get(node.name);
 
-    const modelType = node.getImportType();
-    const modelAR = new ModelActivationRecord(modelType, nodeName, this.uri);
-
-    const sourceData = node.export();
-
-    for (const [key, value] of Object.entries(sourceData)) {
-      modelAR.setValue(key, value);
+    if (!sourceSymbol) {
+      throw new Error(`Unable to import ${node.name} from ${node.source}`);
     }
 
-    const model = ModelFactory.createModel(nodeName, modelType, modelAR);
-    model.execute(this.modelStack.peek());
-    logger.verbose(`...finished group model execution for ${nodeName}`);
+    const namespaceManager = this.controller.getNamespaceAR(sourceNamespace);
+    let values = namespaceManager.getOptionalValue(node.name);
+
+    if (!values) {
+      this.controller.executeNamespace(sourceNamespace);
+      values = namespaceManager.getValue(node.name);
+    }
+
+    const globalAR = this.modelStack.peek();
+    globalAR.setValue(nodeName, values);
   }
 }

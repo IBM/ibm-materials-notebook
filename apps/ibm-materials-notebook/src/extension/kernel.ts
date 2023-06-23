@@ -67,26 +67,26 @@ export class MaterialsKernel {
     logger.info("executing single cell");
 
     const doc = await vscode.workspace.openTextDocument(cell.document.uri);
-    const experiment = this.repository.find(doc.uri);
-    //! Compiler will maintain uris of cells as strings
     const cellUri = doc.uri.toString();
+    const notebook = this.repository.find(doc.uri);
+
+    if (!notebook || !("notebookType" in notebook)) {
+      throw new Error(`unable to find notebook containing cell: ${cellUri}`);
+    }
+
     const execution = this._controller.createNotebookCellExecution(cell);
     execution.executionOrder = ++this._executionOrder;
     execution.start(Date.now());
 
     try {
-      if (!experiment) {
-        throw new Error(`unable to find experiment via ${doc.uri.toString()}`);
-      }
+      const cellOutput = this.repository._controller.execute(
+        notebook.uri.toString(),
+        cellUri
+      );
 
-      //! parse executed cell => move to compiler
-      // await experiment.insertOrUpdate(doc);
+      const fileName = this.repository.extractFileName(notebook.uri);
+      const errors = this.repository._controller.getErrors(cellUri, fileName);
 
-      //! return errors or output from single command to compiler
-      // const errors = experiment.getCellErrors(cellUri);
-      const errors: any[] = [];
-
-      //if parse errors display
       if (errors.length) {
         execution.replaceOutput([
           new vscode.NotebookCellOutput([
@@ -97,21 +97,14 @@ export class MaterialsKernel {
         execution.end(false, Date.now());
       }
 
-      // experiment.executeCell(cellUri);
-
-      //TODO: update notebook metadata?
-
-      // const output = experiment.getCellOutput(cellUri);
-      const output: any[] = [];
-
       const fullOutput = {
         structureTheme: this.theme,
-        output,
+        cellOutput,
       };
 
       execution.replaceOutput([
         new vscode.NotebookCellOutput([
-          vscode.NotebookCellOutputItem.json(output),
+          vscode.NotebookCellOutputItem.json(cellOutput),
           vscode.NotebookCellOutputItem.json(
             fullOutput,
             "x-application/ibm-materials-notebook"
