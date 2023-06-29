@@ -43,6 +43,17 @@ export interface NumericQtyUnitless extends Qty {
   uncertainty: number | null;
 }
 
+export interface MeasuredProperty extends BigQty {
+  technique: string;
+  source: string;
+}
+
+export interface MeasuredUnitlessProperty extends BigQtyUnitless {
+  technique: string;
+  path?: string[];
+  source: string;
+}
+
 export type QuantityNames =
   | PROPERTIES.MASS
   | PROPERTIES.VOLUME

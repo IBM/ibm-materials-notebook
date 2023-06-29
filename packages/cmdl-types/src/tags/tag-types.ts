@@ -5,6 +5,7 @@ export interface ITag {
   aliases: string[];
 }
 
+//TODO: remove underscore in tags
 export enum TAGS {
   H = "1H",
   C = "13C",
@@ -74,6 +75,7 @@ export enum TAGS {
   POLYLACTIDE = "polylactide",
   POLYVINYLPYRIDINE = "poly(vinylpyridine)",
 
+  //? deprecate polymerization
   POLYMERIZATION = "polymerization",
   BULK_POLYMERIZATION = "bulk_polymerization",
   ROP = "ring-opening_polymerization",
@@ -83,7 +85,7 @@ export enum TAGS {
   CHAIN_EXTENSION = "chain_extension",
   COMPLEXATION = "complexation",
 
-  //templates
+  //!templates => deprecated
   REFERENCE = "reference",
   BATCH_EXPERIMENT = "batch_experiment",
   FLOW_EXPERIMENT = "flow_experiment",

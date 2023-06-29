@@ -1,4 +1,3 @@
-import { logger } from "../logger";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { ModelType, TYPES } from "cmdl-types";
@@ -18,10 +17,8 @@ export class Solution extends BaseModel {
   public execute(globalAR: ModelActivationRecord): void {
     try {
       const chemicals =
-        this.modelAR.getValue<TYPES.ChemicalReference[]>("chemicals");
+        this.modelAR.getValue<TYPES.ChemicalReference[]>("references");
       let chemConfigs = this.createChemicalConfigs(chemicals, globalAR);
-      logger.debug(`chemicals for solution ${this.name}`, { meta: chemicals });
-
       this.solution.insertMany(chemConfigs);
 
       let output = this.solution.computeChemicalValues();

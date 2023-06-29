@@ -12,6 +12,8 @@ export class Complex extends BaseModel {
   }
 
   public execute(globalAR: ModelActivationRecord): void {
+    //! get references
+
     const properties: Record<string, any> = {
       name: this.name,
       type: this.type,

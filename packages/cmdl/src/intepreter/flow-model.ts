@@ -20,10 +20,12 @@ export class FlowReaction extends BaseModel {
 
   public execute(globalAR: ModelActivationRecord): void {
     const reactorRef = this.modelAR.getValue<TYPES.Reference>("reactor");
-    const solutions =
-      this.modelAR.getValue<TYPES.SolutionReference[]>("solutions");
-    const products =
-      this.modelAR.getValue<TYPES.ChemicalReference[]>("products");
+    const references =
+      this.modelAR.getValue<
+        (TYPES.SolutionReference | TYPES.ChemicalReference)[]
+      >("references");
+
+    const { solutions, products } = this.extract(references);
 
     const finalProducts: TYPES.Product[] = products.map(
       (el: TYPES.ChemicalReference) => {
@@ -40,6 +42,8 @@ export class FlowReaction extends BaseModel {
 
     const reactorConfig = globalAR.getValue<SerializedReactor>(reactorRef.ref);
 
+    //! pull reactor container from memory
+    //! deprecate deserialization
     this.reactorContainer.deserialize(reactorConfig);
 
     for (const solution of solutions) {
@@ -62,5 +66,19 @@ export class FlowReaction extends BaseModel {
       reactions: reactorOutput,
       products: finalProducts || [],
     });
+  }
+
+  private extract(arr: (TYPES.SolutionReference | TYPES.ChemicalReference)[]) {
+    let products: TYPES.ChemicalReference[] = [];
+    let solutions: TYPES.SolutionReference[] = [];
+
+    for (const item of arr) {
+      if ("roles" in item) {
+        products.push(item);
+      } else {
+        solutions.push(item);
+      }
+    }
+    return { solutions, products };
   }
 }

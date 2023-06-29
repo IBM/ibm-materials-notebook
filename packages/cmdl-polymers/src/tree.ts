@@ -199,6 +199,7 @@ export class PolymerTree {
 
   /**
    * Creates polymer tree from JSON representation
+   * @deprecated
    * @param element JSONPolymerGraph
    * @param parent Container
    */

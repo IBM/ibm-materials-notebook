@@ -47,6 +47,23 @@ describe("Tests for compilation and symbol table construction", () => {
     expect(globalTable.has("THF")).toBeTruthy();
   });
 
+  it(`recognizes a char_data group and creates a symbol`, () => {
+    const refGroup = `
+      char_data test-char-group {
+        technique: "nmr";
+        sample_id: "123-test";
+        time_point: 5 s;
+      }`;
+    const { parserErrors, symbolErrors, semanticErrors, globalTable } =
+      evalutateText(refGroup);
+
+    console.log(JSON.stringify(parserErrors, null, 2));
+    expect(parserErrors.length).toBe(0);
+    expect(semanticErrors.length).toBe(0);
+    expect(symbolErrors.length).toBe(0);
+    expect(globalTable.has("test-char-group")).toBeTruthy();
+  });
+
   it(`recognizes a duplicate property`, () => {
     const dualPropGroup = `
       chemical THF {

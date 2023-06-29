@@ -40,6 +40,7 @@ const polymer: IGroup = {
     PROPERTIES.MW_AVG,
     PROPERTIES.DISPERSITY,
     PROPERTIES.STATE,
+    //!?change to graph
     PROPERTIES.TREE,
   ],
 };

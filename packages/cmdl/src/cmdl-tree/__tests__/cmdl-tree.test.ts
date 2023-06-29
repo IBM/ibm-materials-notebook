@@ -7,6 +7,7 @@ import {
 } from "../../errors";
 import { Compiler } from "../../compiler";
 import { CmdlTree } from "../cmdl-tree";
+import { logger } from "../../logger";
 
 const compiler = new Compiler();
 
@@ -91,7 +92,10 @@ describe("Tests for compiler validation errors", () => {
 
   it(`recognizes invalid group nesting`, () => {
     const invalidNestingText = `
-      sample abc-I-123 {
+      char_data abc-I-123 {
+        technique: "nmr";
+        sample_id: "123-abc";
+
         @THF {
               conversion: 20 %;
 
@@ -105,7 +109,9 @@ describe("Tests for compiler validation errors", () => {
     const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
-    expect(errors.length).toBe(3);
+    logger.debug(JSON.stringify(errors, null, 2));
+    expect(errors.length).toBe(2);
+
     expect(errors[0]).toBeInstanceOf(InvalidGroupError);
     expect(errors[0].code).toBe(ErrorCode.InvalidGroup);
   });

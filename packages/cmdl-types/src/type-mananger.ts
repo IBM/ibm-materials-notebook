@@ -3,16 +3,20 @@ import { IProperty, allProperties } from "./properties";
 import { IGroup, allGroups } from "./groups";
 import { IAction, allActions } from "./actions";
 import { ITag, allTags } from "./tags";
-import { ITemplates, allTemplates } from "./templates";
+// import { ITemplates } from "./templates";
 import { UNITS } from "./units";
 
+/**
+ * Provides interface for all CMDL types
+ * TODO: convert to singleton with private constructor
+ */
 export class TypeManager {
   private UNITS = new Map<string, IUnit>();
   private PROPERTIES = new Map<string, IProperty>();
   private GROUPS = new Map<string, IGroup>();
   private TAGS = new Map<string, ITag>();
   private ACTIONS = new Map<string, IAction>();
-  private TEMPLATES = new Map<string, ITemplates>();
+  // private TEMPLATES = new Map<string, ITemplates>();
 
   private readonly volumeQtyUnitMap = new Map<string, string>([
     [UNITS.PL, UNITS.NG],
@@ -47,15 +51,15 @@ export class TypeManager {
     props: IProperty[],
     groups: IGroup[],
     tags: ITag[],
-    actions: IAction[],
-    templates: ITemplates[]
+    actions: IAction[]
+    // templates: ITemplates[]
   ) {
     this.initializeUnits(units);
     this.initializeProperties(props);
     this.initializeGroups(groups);
     this.initializeTags(tags);
     this.initializeActions(actions);
-    this.initializeTemplates(templates);
+    // this.initializeTemplates(templates);
   }
 
   private initializeUnits(arr: IUnit[]) {
@@ -73,9 +77,9 @@ export class TypeManager {
   private initializeActions(arr: IAction[]) {
     arr.forEach((prop) => this.ACTIONS.set(prop.name, prop));
   }
-  private initializeTemplates(arr: ITemplates[]) {
-    arr.forEach((prop) => this.TEMPLATES.set(prop.name, prop));
-  }
+  // private initializeTemplates(arr: ITemplates[]) {
+  //   arr.forEach((prop) => this.TEMPLATES.set(prop.name, prop));
+  // }
 
   /**
    * constructs a regular expression for all units
@@ -153,9 +157,9 @@ export class TypeManager {
     return group;
   }
 
-  public getTempate(key: string) {
-    return this.TEMPLATES.get(key);
-  }
+  // public getTempate(key: string) {
+  //   return this.TEMPLATES.get(key);
+  // }
 
   public getModel(key: string) {
     const group = this.GROUPS.get(key);
@@ -194,6 +198,6 @@ export const typeManager = new TypeManager(
   allProperties,
   allGroups,
   allTags,
-  allActions,
-  allTemplates
+  allActions
+  // allTemplates
 );

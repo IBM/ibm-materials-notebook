@@ -58,8 +58,16 @@ const citation: IProperty = {
 
 const expID: IProperty = {
   description: "Id for experiment",
-  detail: "sampleID",
+  detail: "experiment ID",
   name: PROPERTIES.EXP_ID,
+  type: PropertyTypes.TEXT,
+  aliases: [],
+};
+
+const sampleId: IProperty = {
+  description: "ID for material sample",
+  detail: "sample ID",
+  name: PROPERTIES.SAMPLE_ID,
   type: PropertyTypes.TEXT,
   aliases: [],
 };
@@ -154,4 +162,5 @@ export const textProperties = [
   limiting,
   refId,
   aliases,
+  sampleId,
 ];

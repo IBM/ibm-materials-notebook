@@ -4,6 +4,7 @@ import { ModelType, TYPES } from "cmdl-types";
 import { ReactorContainer } from "cmdl-reactors";
 
 export class Reactor extends BaseModel {
+  //! clone reactor container into modelAR
   private container = new ReactorContainer();
 
   constructor(
@@ -15,41 +16,28 @@ export class Reactor extends BaseModel {
   }
 
   public execute(globalAR: ModelActivationRecord): void {
-    //! update code for import resolution
-    const outputNode = this.modelAR.getOptionalValue("outputNode");
+    const nodes =
+      this.modelAR.getValue<(TYPES.ReactorNode | TYPES.Reactor)[]>(
+        "components"
+      );
 
-    if (outputNode) {
-      const properties: Record<string, any> = {
-        name: this.name,
-        type: this.type,
-      };
-
-      for (const [name, value] of this.modelAR.all()) {
-        properties[name] = value;
+    for (const node of nodes) {
+      if (node.type === "reactor") {
+        this.container.addReactor(node);
+      } else if (node.type === "component") {
+        this.container.addNode(node);
+      } else {
+        throw new Error(`Unrecognized node type for reactor graph`);
       }
-
-      globalAR.setValue(this.name, properties);
-    } else {
-      const nodes =
-        this.modelAR.getValue<(TYPES.ReactorNode | TYPES.Reactor)[]>("nodes");
-
-      for (const node of nodes) {
-        if (node.type === "reactor") {
-          this.container.addReactor(node);
-        } else if (node.type === "component") {
-          this.container.addNode(node);
-        } else {
-          throw new Error(`Unrecognized node type for reactor graph`);
-        }
-      }
-
-      this.container.linkNodeGraph();
-      const reactor = this.container.serialize();
-      globalAR.setValue(this.name, {
-        name: this.name,
-        type: this.type,
-        ...reactor,
-      });
     }
+
+    this.container.linkNodeGraph();
+    const reactor = this.container.serialize();
+
+    globalAR.setValue(this.name, {
+      name: this.name,
+      type: this.type,
+      ...reactor,
+    });
   }
 }

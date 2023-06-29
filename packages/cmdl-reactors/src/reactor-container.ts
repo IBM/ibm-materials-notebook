@@ -64,11 +64,13 @@ export class ReactorContainer {
     const reactor = new Reactor(component.name);
     reactor.parent = null;
 
-    if (!component?.nodes) {
-      throw new Error(`reactor ${component.name} does not define any nodes`);
+    if (!component?.components) {
+      throw new Error(
+        `reactor ${component.name} does not define any components`
+      );
     }
 
-    for (const item of component.nodes) {
+    for (const item of component.components) {
       const node = this.addNode(item);
       reactor.add(node);
     }

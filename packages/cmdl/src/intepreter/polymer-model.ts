@@ -4,6 +4,8 @@ import { PolymerContainer } from "cmdl-polymers";
 import { ModelType, TYPES } from "cmdl-types";
 import { PROPERTIES } from "cmdl-types";
 
+//build polymer model => implements model interface =>
+
 export class Polymer extends BaseModel {
   private polymerContainer: PolymerContainer;
   constructor(
@@ -18,9 +20,8 @@ export class Polymer extends BaseModel {
   public execute(globalAR: ModelActivationRecord): void {
     const treeRef = this.modelAR.getValue<TYPES.Reference>(PROPERTIES.TREE);
     const treeValues =
-      this.modelAR.getOptionalValue<TYPES.PolymerTreeValue[]>("treeValues");
-
-    const polymerGraph = globalAR.getOptionalValue<TYPES.PolymerGraph>(
+      this.modelAR.getOptionalValue<TYPES.PolymerTreeValue[]>("references");
+    const polymerGraph = globalAR.getOptionalValue<TYPES.PolymerContainer>(
       treeRef.ref
     );
 
@@ -28,7 +29,7 @@ export class Polymer extends BaseModel {
       throw new Error(`Polymer graph for ${treeRef.ref} is undefined!`);
     }
 
-    this.polymerContainer.initializeTreeFromJSON(polymerGraph.tree);
+    this.initializePolymer(polymerGraph, globalAR, this.polymerContainer);
 
     if (treeValues) {
       this.polymerContainer.addGraphValues(treeValues);

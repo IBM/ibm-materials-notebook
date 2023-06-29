@@ -1,5 +1,5 @@
 import { PROPERTIES } from "../properties";
-import { BigQty, StringQty } from "./quantities";
+import { BigQty } from "./quantities";
 import { ModelType } from "../groups/group-types";
 import { ReactionRoles } from "../properties";
 import { Reference } from "./reference";

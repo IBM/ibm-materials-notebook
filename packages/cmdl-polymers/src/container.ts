@@ -187,7 +187,7 @@ export class PolymerContainer {
    * in the polymer graph
    * @param values CMDLPolymerTreeValue[] | RefResult[]
    */
-  public addGraphValues(values: TYPES.PolymerTreeValue[] | TYPES.RefResult[]) {
+  public addGraphValues(values: TYPES.PolymerTreeValue[]) {
     const baseName = this.tree.getBaseName();
     for (const prop of values) {
       let path = `${baseName}.${prop.path.join(".")}`;
@@ -198,10 +198,11 @@ export class PolymerContainer {
           value: prop.degree_poly,
         });
       } else {
-        this.graph.setNodeProperty(path, {
-          name: "degree_poly",
-          value: prop.value,
-        });
+        // this.graph.setNodeProperty(path, {
+        //   name: "degree_poly",
+        //   value: prop.value,
+        // });
+        throw new Error(`Property is not embeddable`);
       }
     }
   }

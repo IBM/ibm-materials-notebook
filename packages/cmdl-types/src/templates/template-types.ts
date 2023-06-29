@@ -5,6 +5,7 @@ export interface ITemplates {
   groups: string[];
 }
 
+//! deprecated
 export enum TEMPLATES {
   REFERENCE = "reference",
   BATCH_EXPERIMENT = "batch_experiment",

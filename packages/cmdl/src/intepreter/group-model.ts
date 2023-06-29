@@ -9,7 +9,7 @@ export class GroupModel extends BaseModel {
   constructor(
     name: string,
     modelAR: ModelActivationRecord,
-    type: ModelType.GROUP
+    type: ModelType.GROUP | ModelType.CHEMICAL | ModelType.FRAGMENT
   ) {
     super(name, modelAR, type);
   }

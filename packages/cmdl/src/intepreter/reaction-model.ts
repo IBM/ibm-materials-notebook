@@ -20,7 +20,7 @@ export class ReactionModel extends BaseModel {
   public execute(globalAR: ModelActivationRecord): void {
     try {
       const chemicals =
-        this.modelAR.getValue<TYPES.ChemicalReference[]>("chemicals");
+        this.modelAR.getValue<TYPES.ChemicalReference[]>("references");
       const products: TYPES.Product[] = chemicals
         .filter(
           (el: TYPES.ChemicalReference) =>

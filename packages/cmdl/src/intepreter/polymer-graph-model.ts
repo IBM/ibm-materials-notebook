@@ -5,6 +5,7 @@ import { ModelType, TYPES } from "cmdl-types";
 
 /**
  * Model for creating polymer graph
+ * TODO: merge with aggregator
  */
 export class PolymerGraphModel extends BaseModel {
   private polymerContainer: PolymerContainer;
@@ -23,29 +24,32 @@ export class PolymerGraphModel extends BaseModel {
     const connections =
       this.modelAR.getOptionalValue<TYPES.PolymerConnection[]>("connections");
     const containers =
-      this.modelAR.getOptionalValue<TYPES.PolymerContainer[]>("containers");
+      this.modelAR.getOptionalValue<TYPES.PolymerContainer[]>("components");
 
-    const treeConfig = {
-      name: this.name,
-      type: "graph_root",
-      nodes: nodes ? nodes : [],
-      connections: connections ? connections : [],
-      containers: containers ? containers : [],
-    };
+    // const treeConfig = {
+    //   name: this.name,
+    //   type: "graph_root",
+    //   nodes: nodes ? nodes : [],
+    //   connections: connections ? connections : [],
+    //   containers: containers ? containers : [],
+    // };
 
-    this.initializePolymer(treeConfig, globalAR, this.polymerContainer);
-    this.polymerContainer.build();
+    //! deprecated => move to polymer definition
+    // this.initializePolymer(treeConfig, globalAR, this.polymerContainer);
+    // this.polymerContainer.build();
 
-    const graphOutput = {
-      graph: this.polymerContainer.graphToJSON(),
-      tree: this.polymerContainer.treeToJSON(),
-      str: this.polymerContainer.graphToString(),
-    };
+    // const graphOutput = {
+    //   graph: this.polymerContainer.graphToJSON(),
+    //   tree: this.polymerContainer.treeToJSON(),
+    //   str: this.polymerContainer.graphToString(),
+    // };
 
     globalAR.setValue(this.name, {
       name: this.name,
       type: this.type,
-      ...graphOutput,
+      nodes: nodes ? nodes : [],
+      connections: connections ? connections : [],
+      containers: containers ? containers : [],
     });
   }
 }

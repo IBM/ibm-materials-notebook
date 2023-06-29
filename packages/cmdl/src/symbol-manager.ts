@@ -20,11 +20,5 @@ export class SymbolTableManager {
 
   public remove(namespace: string) {
     this._tables.delete(namespace);
-    //? unlink imports
-  }
-
-  public resolve(symbolName: string, namespace: string) {
-    // -> find imported symbol
-    // -> create link
   }
 }

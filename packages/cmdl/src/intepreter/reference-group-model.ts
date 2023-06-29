@@ -17,7 +17,6 @@ export class ReferenceGroupModel extends BaseModel {
     this.path = path;
   }
 
-  //TODO: enable specific formating for result ouptuts
   public execute(globalAR: ModelActivationRecord): void {
     const properties: Record<string, any> = {
       name: this.name.slice(1),
@@ -27,25 +26,28 @@ export class ReferenceGroupModel extends BaseModel {
       properties[name] = value;
     }
 
-    if (
-      globalAR.type === ModelType.REACTION ||
-      globalAR.type === ModelType.SOLUTION
-    ) {
-      globalAR.mergeArrayValue("chemicals", properties);
-    } else if (globalAR.type === ModelType.FLOW_REACTION) {
-      if ("roles" in properties) {
-        globalAR.mergeArrayValue("products", properties);
-      } else {
-        globalAR.mergeArrayValue("solutions", properties);
-      }
-    } else if (globalAR.type === ModelType.CHAR_DATA) {
-      globalAR.mergeArrayValue("references", properties);
-    } else if (globalAR.type === ModelType.POLYMER) {
-      globalAR.mergeArrayValue("treeValues", properties);
-    } else if (globalAR.type === ModelType.COMPLEX) {
-      globalAR.mergeArrayValue("components", properties);
-    } else {
-      globalAR.setValue(this.name, properties);
-    }
+    globalAR.mergeArrayValue("references", properties);
+
+    //! replace with strategy pattern
+    //   if (
+    //     globalAR.type === ModelType.REACTION ||
+    //     globalAR.type === ModelType.SOLUTION
+    //   ) {
+    //     globalAR.mergeArrayValue("chemicals", properties);
+    //   } else if (globalAR.type === ModelType.FLOW_REACTION) {
+    //     if ("roles" in properties) {
+    //       globalAR.mergeArrayValue("products", properties);
+    //     } else {
+    //       globalAR.mergeArrayValue("solutions", properties);
+    //     }
+    //   } else if (globalAR.type === ModelType.CHAR_DATA) {
+    //     globalAR.mergeArrayValue("references", properties);
+    //   } else if (globalAR.type === ModelType.POLYMER) {
+    //     globalAR.mergeArrayValue("treeValues", properties);
+    //   } else if (globalAR.type === ModelType.COMPLEX) {
+    //     globalAR.mergeArrayValue("components", properties);
+    //   } else {
+    //     globalAR.setValue(this.name, properties);
+    //   }
   }
 }

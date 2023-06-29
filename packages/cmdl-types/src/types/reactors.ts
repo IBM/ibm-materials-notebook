@@ -17,7 +17,7 @@ export interface ReactorNode {
 export interface Reactor {
   name: string;
   type: "reactor";
-  [PROPERTIES.NODES]: ReactorNode[];
+  components: ReactorNode[];
 }
 
 export type FlowReactor = {

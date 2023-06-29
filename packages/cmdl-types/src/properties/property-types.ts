@@ -96,6 +96,7 @@ export enum PROPERTIES {
   DATE = "date",
   EXP_ID = "exp_id",
   RECORD_ID = "record_id",
+  SAMPLE_ID = "sample_id",
   SMILES = "smiles",
   BIG_SMILES = "big_smiles",
   TREE = "tree",

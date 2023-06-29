@@ -8,6 +8,7 @@ import { ModelVisitor } from "../intepreter";
 
 /**
  * Handles named groups in the CMDL record trees
+ * TODO: additional validation for char groups
  */
 export class NamedGroup extends Group {
   public identifier: string;
@@ -47,6 +48,7 @@ export class NamedGroup extends Group {
       const fullName = `${child.name}${pathStr}`;
 
       if (props.has(fullName)) {
+        //! move duplication errors to symbol table only
         this.createDuplicationErr(child);
       } else {
         props.add(fullName);

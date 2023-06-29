@@ -1,10 +1,12 @@
 import { ModelActivationRecord } from "./model-AR";
-import { PROPERTIES, GROUPS, ModelType, TYPES } from "cmdl-types";
+import { PROPERTIES, ModelType, TYPES, TAGS } from "cmdl-types";
 import { PolymerContainer } from "cmdl-polymers";
 import Big from "big.js";
 
 /**
  * Base class for interpreter models
+ * TODO: separate logic into different models
+ *
  */
 export abstract class BaseModel {
   constructor(
@@ -104,10 +106,10 @@ export abstract class BaseModel {
           return chemical.mn_avg[0].value;
         } else {
           let nmrMn = chemical.mn_avg.filter(
-            (el: any) => el.technique === GROUPS.NMR
+            (el: any) => el.technique === TAGS.NMR
           );
           let gpcMn = chemical.mn_avg.filter(
-            (el: any) => el.technique === GROUPS.GPC
+            (el: any) => el.technique === TAGS.GPC
           );
 
           if (nmrMn.length) {

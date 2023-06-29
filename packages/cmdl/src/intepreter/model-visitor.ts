@@ -167,6 +167,7 @@ export class ModelVisitor implements AstVisitor {
   /**
    * Visits a import operation node in the AST. Imports values for the given
    * entitiy in to the current AR
+   * @todo clone class in memory for model
    * @param node ImportOp
    */
   public visitImportOp(node: ImportOp): void {

@@ -1,49 +1,86 @@
 import { PROPERTIES } from "../properties";
 import { ModelType } from "../groups/group-types";
-import { ChemicalReference } from "./chemicals";
-import { BigQty } from "./quantities";
+import {
+  BigQty,
+  BigQtyUnitless,
+  MeasuredProperty,
+  MeasuredUnitlessProperty,
+} from "./quantities";
 
-export type CharData = {
-  name: string;
-  type: string;
-  references?: ChemicalReference[];
-  [key: string]: ChemicalReference[] | string | BigQty | undefined;
-};
-
-export type SampleResult = {
-  name: string;
-  type: ModelType;
-  [PROPERTIES.TIME_POINT]: BigQty | null;
-  sampleId: string;
-  [key: string]:
-    | BigQty
-    | string
-    | ModelType
-    | null
-    | any[]
-    | Record<string, any>;
-};
-
-export type SampleOutput = {
-  name: string;
-  type: ModelType.SAMPLE;
-  results: SampleResult[];
-  charData: CharOutput[];
-};
-
-export type RefResult = {
-  technique: string;
-  source: string;
-  property: string;
-  value: any;
+export type CharReference = {
   name: string;
   path: string[];
+  [PROPERTIES.CMC]?: BigQty;
+  [PROPERTIES.LOADING_CAPACITY]: BigQty;
+  [PROPERTIES.LAMBDA_MAX_ABS]?: BigQty;
+  [PROPERTIES.LAMBDA_MAX_EMS]?: BigQty;
+  [PROPERTIES.DH]?: BigQty;
+  [PROPERTIES.DH_PDI]?: BigQtyUnitless;
+  [PROPERTIES.ZETA_POTENTIAL]?: BigQty;
+  [PROPERTIES.MIC]?: BigQty;
+  [PROPERTIES.HC50]?: BigQty;
+  [PROPERTIES.DISPERSITY]?: BigQtyUnitless;
+  [PROPERTIES.MN_AVG]?: BigQty;
+  [PROPERTIES.MW_AVG]?: BigQty;
+  [PROPERTIES.CONVERSION]?: BigQty;
+  [PROPERTIES.YIELD]?: BigQty;
+  [PROPERTIES.DEGREE_POLY]?: BigQtyUnitless;
+  [PROPERTIES.TEMP_CRYSTAL]?: BigQty;
+  [PROPERTIES.TEMP_GLASS]?: BigQty;
+  [PROPERTIES.TEMP_MELT]?: BigQty;
 };
 
-export type CharOutput = {
-  name: string;
-  technique: string;
-  sampleId: string;
-  references: string[];
-  [key: string]: string | string[] | undefined | ChemicalReference[] | BigQty;
+export type CharResult = CharReference & {
+  [PROPERTIES.TIME_POINT]: BigQty | null;
+  [PROPERTIES.SAMPLE_ID]: string;
+  [PROPERTIES.TECHNIQUE]: string;
 };
+
+export type MeasuredData = {
+  [PROPERTIES.CMC]: MeasuredProperty;
+  [PROPERTIES.LOADING_CAPACITY]: MeasuredProperty;
+  [PROPERTIES.LAMBDA_MAX_ABS]: MeasuredProperty;
+  [PROPERTIES.LAMBDA_MAX_EMS]: MeasuredProperty;
+  [PROPERTIES.DH]: MeasuredProperty;
+  [PROPERTIES.DH_PDI]: MeasuredUnitlessProperty;
+  [PROPERTIES.ZETA_POTENTIAL]: MeasuredProperty;
+  [PROPERTIES.MIC]: MeasuredProperty;
+  [PROPERTIES.HC50]: MeasuredProperty;
+  [PROPERTIES.DISPERSITY]: MeasuredUnitlessProperty;
+  [PROPERTIES.MN_AVG]: MeasuredProperty;
+  [PROPERTIES.MW_AVG]: MeasuredProperty;
+  [PROPERTIES.CONVERSION]: MeasuredProperty;
+  [PROPERTIES.YIELD]: MeasuredProperty;
+  [PROPERTIES.DEGREE_POLY]: MeasuredUnitlessProperty;
+  [PROPERTIES.TEMP_CRYSTAL]: MeasuredProperty;
+  [PROPERTIES.TEMP_GLASS]: MeasuredProperty;
+  [PROPERTIES.TEMP_MELT]: MeasuredProperty;
+};
+
+export type MeasuredDataArray = {
+  [Property in keyof MeasuredData]: MeasuredData[Property][];
+};
+
+export type Result = Partial<MeasuredDataArray> & {
+  name: string;
+  [PROPERTIES.TIME_POINT]: BigQty | null;
+  [PROPERTIES.SAMPLE_ID]: string;
+};
+
+export type CharDataOutput = {
+  name: string;
+  type: ModelType.CHAR_DATA;
+  [PROPERTIES.TIME_POINT]: BigQty | null;
+  [PROPERTIES.SAMPLE_ID]: string;
+  [PROPERTIES.TECHNIQUE]: string;
+  [PROPERTIES.FILE]: string | null;
+};
+
+// export type RefResult = {
+//   technique: string;
+//   source: string;
+//   property: string;
+//   value: any;
+//   name: string;
+//   path: string[];
+// };

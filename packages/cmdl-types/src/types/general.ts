@@ -1,11 +1,11 @@
 import { PROPERTIES } from "../properties";
 import { GROUPS } from "../groups";
 import { TAGS } from "../tags";
-import { Chemical, Fragment, Complex } from "./chemicals";
-import { Polymer, PolymerGraph } from "./polymer";
-import { FlowReactor } from "./reactors";
-import { FlowRxn, Reaction, Solution } from "./reactions";
-import { SampleOutput } from "./characterization";
+// import { Chemical, Fragment, Complex } from "./chemicals";
+// import { Polymer, PolymerGraph } from "./polymer";
+// import { FlowReactor } from "./reactors";
+// import { FlowRxn, Reaction, Solution } from "./reactions";
+// import { SampleOutput } from "./characterization";
 
 export interface RecordSource {
   [PROPERTIES.TITLE]?: string;
@@ -28,17 +28,17 @@ export interface MetaData {
   notebookId?: string; //assigned by extension automatically
 }
 
-export type RecordRefs =
-  | Chemical
-  | Fragment
-  | Polymer
-  | Complex
-  | FlowReactor
-  | FlowRxn
-  | Reaction
-  | SampleOutput
-  | PolymerGraph
-  | Solution
-  | FlowReactor;
+// export type RecordRefs =
+//   | Chemical
+//   | Fragment
+//   | Polymer
+//   | Complex
+//   | FlowReactor
+//   | FlowRxn
+//   | Reaction
+//   | SampleOutput
+//   | PolymerGraph
+//   | Solution
+//   | FlowReactor;
 
-export type RecordTypes = MetaData | RecordRefs;
+// export type RecordTypes = MetaData | RecordRefs;
