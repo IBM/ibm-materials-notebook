@@ -4,6 +4,7 @@ import { Container } from "./tree-container";
 import { PolymerNode } from "./node";
 import { PolymerEdge } from "./edge";
 import { JSONPolymerGraph } from "./container";
+import { logger } from "./logger";
 
 /**
  * Class for handling polymer graph representation
@@ -84,6 +85,7 @@ export class PolymerGraph {
    * @param property any
    */
   public setNodeProperty(nodePath: string, property: any): void {
+    logger.debug(`-${[...this.nodes.keys()].join("\n-")}`);
     let node = this.nodes.get(nodePath);
 
     if (!node) {

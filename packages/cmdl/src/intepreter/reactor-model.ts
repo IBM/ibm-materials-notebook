@@ -1,12 +1,8 @@
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel } from "./base-model";
+import { BaseModel, ReactorModel } from "./base-model";
 import { ModelType, TYPES } from "cmdl-types";
-import { ReactorContainer } from "cmdl-reactors";
 
 export class Reactor extends BaseModel {
-  //! clone reactor container into modelAR
-  private container = new ReactorContainer();
-
   constructor(
     name: string,
     modelAR: ModelActivationRecord,
@@ -21,23 +17,9 @@ export class Reactor extends BaseModel {
         "components"
       );
 
-    for (const node of nodes) {
-      if (node.type === "reactor") {
-        this.container.addReactor(node);
-      } else if (node.type === "component") {
-        this.container.addNode(node);
-      } else {
-        throw new Error(`Unrecognized node type for reactor graph`);
-      }
-    }
+    const reactorModel = new ReactorModel(this.name, this.type);
+    reactorModel.initializeReactor(nodes);
 
-    this.container.linkNodeGraph();
-    const reactor = this.container.serialize();
-
-    globalAR.setValue(this.name, {
-      name: this.name,
-      type: this.type,
-      ...reactor,
-    });
+    globalAR.setValue(this.name, reactorModel);
   }
 }

@@ -1,5 +1,5 @@
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel } from "./base-model";
+import { BaseModel, SolutionModel } from "./base-model";
 import { ModelType, TYPES } from "cmdl-types";
 import { ChemicalSet } from "cmdl-chemicals";
 
@@ -18,20 +18,22 @@ export class Solution extends BaseModel {
     try {
       const chemicals =
         this.modelAR.getValue<TYPES.ChemicalReference[]>("references");
-      let chemConfigs = this.createChemicalConfigs(chemicals, globalAR);
-      this.solution.insertMany(chemConfigs);
+      const solutionModel = new SolutionModel(this.name, this.type);
+      solutionModel.insertChemicals(chemicals, globalAR);
+      // let chemConfigs = this.createChemicalConfigs(chemicals, globalAR);
+      // this.solution.insertMany(chemConfigs);
 
-      let output = this.solution.computeChemicalValues();
-      let configs = this.solution.exportSet();
+      // let output = this.solution.computeChemicalValues();
+      // let configs = this.solution.exportSet();
 
-      const solutionOutput: TYPES.Solution = {
-        name: this.name,
-        type: ModelType.SOLUTION,
-        components: output,
-        componentConfigs: configs,
-      };
+      // const solutionOutput: TYPES.Solution = {
+      //   name: this.name,
+      //   type: ModelType.SOLUTION,
+      //   components: output,
+      //   componentConfigs: configs,
+      // };
 
-      globalAR.setValue(this.name, solutionOutput);
+      globalAR.setValue(this.name, solutionModel);
     } catch (error) {
       throw new Error(
         `An error occured during executing solution model ${this.name}: ${error}`

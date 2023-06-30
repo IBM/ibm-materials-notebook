@@ -1,27 +1,24 @@
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel } from "./base-model";
-import { PolymerContainer } from "cmdl-polymers";
+import { BaseModel, PolymerGraphModel } from "./base-model";
 import { ModelType, TYPES } from "cmdl-types";
 import { PROPERTIES } from "cmdl-types";
-
-//build polymer model => implements model interface =>
+import { PolymerModel } from "./base-model";
+import { logger } from "../logger";
 
 export class Polymer extends BaseModel {
-  private polymerContainer: PolymerContainer;
   constructor(
     name: string,
     modelAR: ModelActivationRecord,
     type: ModelType.POLYMER
   ) {
     super(name, modelAR, type);
-    this.polymerContainer = new PolymerContainer(name);
   }
 
   public execute(globalAR: ModelActivationRecord): void {
     const treeRef = this.modelAR.getValue<TYPES.Reference>(PROPERTIES.TREE);
     const treeValues =
       this.modelAR.getOptionalValue<TYPES.PolymerTreeValue[]>("references");
-    const polymerGraph = globalAR.getOptionalValue<TYPES.PolymerContainer>(
+    const polymerGraph = globalAR.getOptionalValue<PolymerGraphModel>(
       treeRef.ref
     );
 
@@ -29,31 +26,27 @@ export class Polymer extends BaseModel {
       throw new Error(`Polymer graph for ${treeRef.ref} is undefined!`);
     }
 
-    this.initializePolymer(polymerGraph, globalAR, this.polymerContainer);
+    const polymerModel = new PolymerModel(this.name, this.type);
+    polymerModel.addGraph(polymerGraph);
+
+    logger.silly(
+      `Polymer graph model: ${polymerGraph.name}\n\t${polymerGraph.printTree()}`
+    );
 
     if (treeValues) {
-      this.polymerContainer.addGraphValues(treeValues);
-      this.polymerContainer.computePolymerWeights();
+      polymerModel.embedNodeValues(treeValues);
     }
 
-    const polymerSmiles = this.polymerContainer.getSmilesStr();
     const state = this.modelAR.getValue<TYPES.ChemStates>("state");
-
-    const properties: TYPES.Polymer = {
-      name: this.name,
-      type: ModelType.POLYMER,
-      smiles: polymerSmiles,
-      state: state,
-    };
+    polymerModel.add("state" as keyof TYPES.Polymer, state);
 
     for (const [name, value] of this.modelAR.all()) {
-      if (name === PROPERTIES.TREE) {
-        properties[name] = this.polymerContainer.treeToJSON();
-      } else {
-        properties[name as keyof TYPES.Polymer] = value;
-      }
+      polymerModel.add(
+        name as keyof TYPES.Polymer,
+        value as TYPES.Polymer[keyof TYPES.Polymer]
+      );
     }
 
-    globalAR.setValue(this.name, properties);
+    globalAR.setValue(this.name, polymerModel);
   }
 }

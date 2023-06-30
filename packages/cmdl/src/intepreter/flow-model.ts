@@ -1,15 +1,14 @@
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel } from "./base-model";
-import { ModelType, TYPES } from "cmdl-types";
 import {
-  SerializedReactor,
-  ReactorChemicals,
-  ReactorContainer,
-} from "cmdl-reactors";
+  BaseModel,
+  FlowRxnModel,
+  ReactorModel,
+  SolutionModel,
+} from "./base-model";
+import { ModelType, TYPES } from "cmdl-types";
+import { ReactorChemicals } from "cmdl-reactors";
 
 export class FlowReaction extends BaseModel {
-  private reactorContainer = new ReactorContainer();
-
   constructor(
     name: string,
     modelAR: ModelActivationRecord,
@@ -40,32 +39,25 @@ export class FlowReaction extends BaseModel {
       }
     );
 
-    const reactorConfig = globalAR.getValue<SerializedReactor>(reactorRef.ref);
-
-    //! pull reactor container from memory
-    //! deprecate deserialization
-    this.reactorContainer.deserialize(reactorConfig);
+    const reactorModel = globalAR.getValue<ReactorModel>(reactorRef.ref);
+    const flowModel = new FlowRxnModel(this.name, this.type);
+    flowModel.addReactor(reactorModel);
+    flowModel.add("products", finalProducts);
 
     for (const solution of solutions) {
-      let solutionOutput = globalAR.getValue<TYPES.Solution>(solution.name);
+      const solutionModel = globalAR.getValue<SolutionModel>(solution.name);
 
       const solutionChemicals = new ReactorChemicals(solution.flow_rate);
-      solutionChemicals.setChemicals(solutionOutput.componentConfigs);
+      solutionChemicals.setChemicals(solutionModel.getChemicalConfigs());
       solutionChemicals.computeInitialValues();
 
       const inputId = solution.input.path[solution.input.path.length - 1];
-      this.reactorContainer.setNodeInput(inputId, solutionChemicals);
+      reactorModel.setInput(inputId, solutionChemicals);
     }
 
-    this.reactorContainer.processReactor();
-    const reactorOutput = this.reactorContainer.getOutputs();
+    flowModel.processFlowRxn();
 
-    globalAR.setValue(this.name, {
-      name: this.name,
-      type: this.type,
-      reactions: reactorOutput,
-      products: finalProducts || [],
-    });
+    globalAR.setValue(this.name, flowModel);
   }
 
   private extract(arr: (TYPES.SolutionReference | TYPES.ChemicalReference)[]) {

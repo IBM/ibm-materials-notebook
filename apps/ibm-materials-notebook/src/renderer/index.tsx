@@ -91,9 +91,8 @@ export const activate: ActivationFunction = (context) => {
   return {
     renderOutputItem(data, element) {
       const output = data.json();
-      console.log(output);
       render(
-        <App data={output.output} theme={output.structureTheme} />,
+        <App data={output.cellOutput} theme={output.structureTheme} />,
         element
       );
     },

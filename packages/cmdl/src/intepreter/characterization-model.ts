@@ -1,62 +1,12 @@
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel } from "./base-model";
-import { ModelType, TYPES } from "cmdl-types";
-
-class Result {
-  name: string;
-  sample_id: string;
-  time_point: TYPES.BigQty | null = null;
-  private readonly properties = new Map<
-    keyof TYPES.MeasuredData,
-    TYPES.MeasuredDataArray[keyof TYPES.MeasuredDataArray]
-  >();
-  constructor(name: string, sample_id: string, time_point?: TYPES.BigQty) {
-    this.name = name;
-    this.sample_id = sample_id;
-
-    if (time_point) {
-      this.time_point = time_point;
-    }
-  }
-
-  get resultName() {
-    return `${this.name}-${this.sample_id}`;
-  }
-
-  public add(
-    key: keyof TYPES.MeasuredData,
-    value: TYPES.MeasuredProperty | TYPES.MeasuredUnitlessProperty
-  ): void {
-    const currentValues = this.properties.get(key);
-    if (currentValues && currentValues.length) {
-      if (this.isUnitless(currentValues)) {
-        this.properties.set(key, [
-          ...currentValues,
-          value as TYPES.MeasuredUnitlessProperty,
-        ]);
-      } else {
-        this.properties.set(key, [
-          ...currentValues,
-          value as TYPES.MeasuredProperty,
-        ]);
-      }
-    } else {
-      this.properties.set(key, [value as any]);
-    }
-  }
-
-  private isUnitless(
-    arr: TYPES.MeasuredProperty[] | TYPES.MeasuredUnitlessProperty[]
-  ): arr is TYPES.MeasuredUnitlessProperty[] {
-    return !arr[0].unit;
-  }
-}
+import { BaseModel, ResultModel, CharDataModel } from "./base-model";
+import { ModelType, PROPERTIES, TYPES } from "cmdl-types";
 
 /**
  * Output model for characterization samples
  * Creates result items for chemicals and products of the experiment
  */
-export class CharDataModel extends BaseModel {
+export class CharData extends BaseModel {
   constructor(
     name: string,
     modelAR: ModelActivationRecord,
@@ -67,39 +17,37 @@ export class CharDataModel extends BaseModel {
 
   public execute(globalAR: ModelActivationRecord): void {
     try {
-      const technique = this.modelAR.getValue<string>("technique");
-      const sampleId = this.modelAR.getValue<string>("sample_id");
-      const timePoint =
-        this.modelAR.getOptionalValue<TYPES.BigQty>("timePoint");
+      const technique = this.modelAR.getValue<string>(PROPERTIES.TECHNIQUE);
+      const sampleId = this.modelAR.getValue<string>(PROPERTIES.SAMPLE_ID);
+      const timePoint = this.modelAR.getOptionalValue<TYPES.BigQty>(
+        PROPERTIES.TIME_POINT
+      );
       const references =
         this.modelAR.getOptionalValue<TYPES.CharReference[]>("references");
       const file = this.modelAR.getOptionalValue<TYPES.Reference>("file");
 
-      const charOutput: TYPES.CharDataOutput = {
-        name: this.name,
-        type: ModelType.CHAR_DATA,
-        time_point: timePoint || null,
-        technique: technique,
-        sample_id: sampleId,
-        file: file?.ref || null,
-      };
+      const charModel = new CharDataModel(this.name, this.type);
+      charModel.add(PROPERTIES.TIME_POINT, timePoint || null);
+      charModel.add(PROPERTIES.TECHNIQUE, technique);
+      charModel.add(PROPERTIES.SAMPLE_ID, sampleId);
+      charModel.add(PROPERTIES.FILE, file?.ref || null);
 
       //TODO: embed values in polymer graph?
       if (references) {
         for (const ref of references) {
-          let result = globalAR.getOptionalValue<Result>(
+          let result = globalAR.getOptionalValue<ResultModel>(
             `${ref.name}-${sampleId}`
           );
 
           if (!result) {
-            result = new Result(ref.name, sampleId, timePoint);
+            result = new ResultModel(ref.name, "result");
+            result.add(PROPERTIES.TIME_POINT, timePoint || null);
+            result.add(PROPERTIES.SAMPLE_ID, sampleId);
           }
 
           for (const [key, value] of Object.entries(ref)) {
             if (key !== "name" && key !== "path") {
-              const measuredValue:
-                | TYPES.MeasuredUnitlessProperty
-                | TYPES.MeasuredProperty = {
+              const measuredValue: TYPES.MeasuredProperty = {
                 ...(value as TYPES.BigQty | TYPES.BigQtyUnitless),
                 technique,
                 source: sampleId,
@@ -108,7 +56,10 @@ export class CharDataModel extends BaseModel {
               if (measuredValue.unit === null) {
                 measuredValue.path = ref.path;
               }
-              result.add(key as keyof TYPES.MeasuredData, measuredValue);
+              result.addMeasuredProperty(
+                key as keyof TYPES.MeasuredData,
+                measuredValue
+              );
             }
           }
 
@@ -116,7 +67,7 @@ export class CharDataModel extends BaseModel {
         }
       }
 
-      globalAR.setValue(this.name, charOutput);
+      globalAR.setValue(this.name, charModel);
     } catch (error) {
       throw new Error(
         `error during execution of model for sample ${this.name}: ${

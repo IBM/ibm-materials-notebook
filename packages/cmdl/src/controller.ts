@@ -271,7 +271,10 @@ export class Controller {
   ) {
     const visitor = this._results.createModelVisitor(fileName, this, uri);
     doc.ast.evaluate(visitor);
-    return this._results.getOutput(fileName, uri);
+    const results = this._results
+      .getOutput(fileName, uri)
+      .map((el) => el.export());
+    return results;
   }
 
   public transpile() {

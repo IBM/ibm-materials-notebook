@@ -4,6 +4,7 @@ import { ModelType } from "../groups/group-types";
 import { ReactionRoles } from "../properties";
 import { Reference } from "./reference";
 import { ChemicalOutput, ChemicalConfig } from "./chemicals";
+import { ReactorGroupOutput } from "./reactors";
 
 type ComplexComponents = {
   name: string;
@@ -20,18 +21,18 @@ export type Product = {
 export type FlowRxn = {
   name: string;
   type: ModelType.FLOW_REACTION;
-  //   reactions: ReactorGroupOutput[];
+  reactions: ReactorGroupOutput[];
   products: Product[];
 };
 
 export interface Reaction {
   name: string;
   type: ModelType.REACTION;
+  reactants: ChemicalOutput[];
+  products: Product[];
   [PROPERTIES.TEMPERATURE]: BigQty | null;
   [PROPERTIES.VOLUME]: BigQty | null;
   [PROPERTIES.REACTION_TIME]?: BigQty;
-  reactants: ChemicalOutput[];
-  products: Product[];
 }
 
 export type SolutionReference = {
@@ -41,6 +42,9 @@ export type SolutionReference = {
   [PROPERTIES.INPUT]: Reference;
 };
 
+/**
+ * @deprecated
+ */
 export type Solution = {
   name: string;
   type: ModelType.SOLUTION;

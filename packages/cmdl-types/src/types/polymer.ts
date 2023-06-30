@@ -15,7 +15,7 @@ export type Polymer = {
   [PROPERTIES.MW_AVG]?: BigQty;
   [PROPERTIES.DISPERSITY]?: StringQtyUnitless;
   [PROPERTIES.STATE]: ChemStates;
-  [PROPERTIES.TREE]?: any; //polymer graph representation reference
+  [PROPERTIES.TREE]?: Reference; //polymer graph representation reference
 };
 
 /**
@@ -27,14 +27,10 @@ export type PolymerTreeValue = {
   [PROPERTIES.DEGREE_POLY]: StringQtyUnitless;
 };
 
-/**
- * Polymer graph representation written to Model AR
- */
 export type PolymerGraph = {
   name: string;
   type: ModelType.POLYMER_GRAPH;
-  graph: any;
-  tree: any;
+  smiles: string;
   str: string;
 };
 

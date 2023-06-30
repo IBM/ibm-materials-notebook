@@ -1,11 +1,6 @@
 import { PROPERTIES } from "../properties";
 import { ModelType } from "../groups/group-types";
-import {
-  BigQty,
-  BigQtyUnitless,
-  MeasuredProperty,
-  MeasuredUnitlessProperty,
-} from "./quantities";
+import { BigQty, BigQtyUnitless, MeasuredProperty } from "./quantities";
 
 export type CharReference = {
   name: string;
@@ -42,16 +37,16 @@ export type MeasuredData = {
   [PROPERTIES.LAMBDA_MAX_ABS]: MeasuredProperty;
   [PROPERTIES.LAMBDA_MAX_EMS]: MeasuredProperty;
   [PROPERTIES.DH]: MeasuredProperty;
-  [PROPERTIES.DH_PDI]: MeasuredUnitlessProperty;
+  [PROPERTIES.DH_PDI]: MeasuredProperty;
   [PROPERTIES.ZETA_POTENTIAL]: MeasuredProperty;
   [PROPERTIES.MIC]: MeasuredProperty;
   [PROPERTIES.HC50]: MeasuredProperty;
-  [PROPERTIES.DISPERSITY]: MeasuredUnitlessProperty;
+  [PROPERTIES.DISPERSITY]: MeasuredProperty;
   [PROPERTIES.MN_AVG]: MeasuredProperty;
   [PROPERTIES.MW_AVG]: MeasuredProperty;
   [PROPERTIES.CONVERSION]: MeasuredProperty;
   [PROPERTIES.YIELD]: MeasuredProperty;
-  [PROPERTIES.DEGREE_POLY]: MeasuredUnitlessProperty;
+  [PROPERTIES.DEGREE_POLY]: MeasuredProperty;
   [PROPERTIES.TEMP_CRYSTAL]: MeasuredProperty;
   [PROPERTIES.TEMP_GLASS]: MeasuredProperty;
   [PROPERTIES.TEMP_MELT]: MeasuredProperty;
@@ -75,12 +70,3 @@ export type CharDataOutput = {
   [PROPERTIES.TECHNIQUE]: string;
   [PROPERTIES.FILE]: string | null;
 };
-
-// export type RefResult = {
-//   technique: string;
-//   source: string;
-//   property: string;
-//   value: any;
-//   name: string;
-//   path: string[];
-// };

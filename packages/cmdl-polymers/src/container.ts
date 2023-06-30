@@ -4,6 +4,7 @@ import { PolymerWeight } from "./weights";
 import { PolymerNode } from "./node";
 import { Container } from "./tree-container";
 import { ModelType, TYPES } from "cmdl-types";
+import Big from "big.js";
 
 export interface JSONPolymerGraph {
   nodes: JSONPolymerNode[];
@@ -65,15 +66,12 @@ export class PolymerContainer {
     return new Container(name);
   }
 
-  public createPolymerNode(
-    name: string,
-    fragment: TYPES.Fragment
-  ): PolymerNode {
-    return new PolymerNode({
-      fragment: name,
-      mw: fragment.molecular_weight.value,
-      smiles: fragment.smiles,
-    });
+  public createPolymerNode(fragmentConfig: {
+    fragment: string;
+    mw: Big;
+    smiles: string;
+  }): PolymerNode {
+    return new PolymerNode(fragmentConfig);
   }
 
   public createPolymerEdges(
@@ -198,10 +196,6 @@ export class PolymerContainer {
           value: prop.degree_poly,
         });
       } else {
-        // this.graph.setNodeProperty(path, {
-        //   name: "degree_poly",
-        //   value: prop.value,
-        // });
         throw new Error(`Property is not embeddable`);
       }
     }

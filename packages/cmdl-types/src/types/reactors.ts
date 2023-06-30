@@ -1,7 +1,8 @@
-import { BigQty } from "./quantities";
+import { BigQty, NumericQty } from "./quantities";
 import { PROPERTIES } from "../properties";
 import { Reference } from "./reference";
 import { ModelType } from "../groups/group-types";
+import { ChemicalOutput } from "./chemicals";
 
 export interface ReactorNode {
   name: string;
@@ -24,3 +25,11 @@ export type FlowReactor = {
   name: string;
   type: ModelType.REACTOR_GRAPH;
 };
+
+export interface ReactorGroupOutput {
+  name: string;
+  flowRate: NumericQty;
+  residenceTime: NumericQty;
+  volume: NumericQty;
+  reactants: ChemicalOutput[];
+}

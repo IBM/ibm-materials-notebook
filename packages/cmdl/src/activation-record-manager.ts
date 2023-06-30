@@ -1,7 +1,7 @@
 import { Controller } from "./controller";
 import { ModelVisitor, ModelARManager } from "./intepreter";
-import { logger } from "./logger";
-
+import { Exportable } from "./intepreter";
+import { Model } from "./intepreter/base-model";
 /**
  * Caches execution results for each namespace
  */
@@ -36,9 +36,16 @@ export class ActivationRecordManager {
     return manager;
   }
 
-  public getOutput(namespace: string, uri: string) {
+  public getOutput(namespace: string, uri: string): Exportable<unknown>[] {
     const manager = this.get(namespace);
-    const output = manager.getRecord(uri);
-    return [...output.values()];
+    const arValues = manager.getRecord(uri);
+    const finalOutput: Exportable<unknown>[] = [];
+
+    for (const value of arValues.values()) {
+      if (value instanceof Model) {
+        finalOutput.push(value);
+      }
+    }
+    return finalOutput;
   }
 }

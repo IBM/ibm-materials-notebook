@@ -17,6 +17,7 @@ import { CmdlStack } from "../cmdl-stack";
 import { logger } from "../logger";
 import { typeManager, ModelType } from "cmdl-types";
 import { Controller } from "../controller";
+import { Clonable } from "./base-model";
 
 /**
  * Visits record tree and executes different models on elements
@@ -183,14 +184,14 @@ export class ModelVisitor implements AstVisitor {
     }
 
     const namespaceManager = this.controller.getNamespaceAR(sourceNamespace);
-    let values = namespaceManager.getOptionalValue(node.name);
+    let values = namespaceManager.getOptionalValue<Clonable>(node.name);
 
     if (!values) {
       this.controller.executeNamespace(sourceNamespace);
-      values = namespaceManager.getValue(node.name);
+      values = namespaceManager.getValue<Clonable>(node.name);
     }
 
     const globalAR = this.modelStack.peek();
-    globalAR.setValue(nodeName, values);
+    globalAR.setValue(nodeName, values.clone());
   }
 }

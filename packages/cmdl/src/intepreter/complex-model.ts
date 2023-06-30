@@ -1,6 +1,6 @@
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel } from "./base-model";
-import { ModelType, PROPERTIES, TYPES } from "cmdl-types";
+import { BaseModel, ComplexModel } from "./base-model";
+import { ModelType, TYPES } from "cmdl-types";
 
 export class Complex extends BaseModel {
   constructor(
@@ -12,31 +12,15 @@ export class Complex extends BaseModel {
   }
 
   public execute(globalAR: ModelActivationRecord): void {
-    //! get references
-
-    const properties: Record<string, any> = {
-      name: this.name,
-      type: this.type,
-    };
+    const complexModel = new ComplexModel(this.name, this.type);
     for (const [name, value] of this.modelAR.all()) {
-      if (name === PROPERTIES.COMPONENTS) {
-        let updatedComponents = (value as TYPES.ComplexReference[]).map(
-          (item: TYPES.ComplexReference) => {
-            let compRef = globalAR.getValue<TYPES.Chemical | TYPES.Polymer>(
-              item.name
-            );
-            return {
-              ...compRef,
-              ratio: item.ratio,
-            };
-          }
-        );
-        properties[name] = updatedComponents;
-      } else {
-        properties[name] = value;
-      }
+      //!TODO: embed references to component models?
+      complexModel.add(
+        name as keyof TYPES.Complex,
+        value as TYPES.Complex[keyof TYPES.Complex]
+      );
     }
 
-    globalAR.setValue(this.name, properties);
+    globalAR.setValue(this.name, complexModel);
   }
 }

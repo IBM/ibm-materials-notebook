@@ -2,11 +2,12 @@ import { ChemicalSet } from "cmdl-chemicals";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { PROPERTIES, TAGS, ModelType, TYPES } from "cmdl-types";
+import { ReactionModel } from "./base-model";
 
 /**
  * Interpreter model to compute reaction stoichiometry for an experiment
  */
-export class ReactionModel extends BaseModel {
+export class Reaction extends BaseModel {
   private reaction = new ChemicalSet();
 
   constructor(
@@ -64,25 +65,28 @@ export class ReactionModel extends BaseModel {
         PROPERTIES.TEMPERATURE
       );
 
-      const chemConfigs = this.createChemicalConfigs(reactants, globalAR, {
-        volume,
-        temperature,
-      });
+      const reactionModel = new ReactionModel(this.name, this.type);
+      reactionModel.insertChemicals(reactants, globalAR);
 
-      this.reaction.insertMany(chemConfigs);
+      // const chemConfigs = this.createChemicalConfigs(reactants, globalAR, {
+      //   volume,
+      //   temperature,
+      // });
 
-      const output = this.reaction.computeChemicalValues();
+      // this.reaction.insertMany(chemConfigs);
 
-      const reactionOutput: TYPES.Reaction = {
-        name: this.name,
-        type: ModelType.REACTION,
-        volume: volume || null,
-        temperature: temperature || null,
-        products: products || [],
-        reactants: output,
-      };
+      // const output = this.reaction.computeChemicalValues();
 
-      globalAR.setValue(this.name, reactionOutput);
+      // const reactionOutput: TYPES.Reaction = {
+      //   name: this.name,
+      //   type: ModelType.REACTION,
+      //   volume: volume || null,
+      //   temperature: temperature || null,
+      //   products: products || [],
+      //   reactants: output,
+      // };
+
+      globalAR.setValue(this.name, reactionModel);
     } catch (error) {
       throw new Error(
         `An error occured during executing reaction model ${this.name}: ${error}`

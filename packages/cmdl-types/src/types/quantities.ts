@@ -43,12 +43,10 @@ export interface NumericQtyUnitless extends Qty {
   uncertainty: number | null;
 }
 
-export interface MeasuredProperty extends BigQty {
-  technique: string;
-  source: string;
-}
-
-export interface MeasuredUnitlessProperty extends BigQtyUnitless {
+export interface MeasuredProperty {
+  value: Big;
+  uncertainty: Big | null;
+  unit: string | null;
   technique: string;
   path?: string[];
   source: string;
