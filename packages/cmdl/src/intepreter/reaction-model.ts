@@ -3,6 +3,7 @@ import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { PROPERTIES, TAGS, ModelType, TYPES } from "cmdl-types";
 import { ReactionModel } from "./base-model";
+import { logger } from "../logger";
 
 /**
  * Interpreter model to compute reaction stoichiometry for an experiment
@@ -39,7 +40,7 @@ export class Reaction extends BaseModel {
               components: [
                 ...product.components.map(
                   (comp: TYPES.ComplexPolymer | TYPES.ComplexChemical) => {
-                    return { name: comp.name, smiles: comp.smiles };
+                    return { name: comp.name };
                   }
                 ),
               ],
@@ -48,7 +49,6 @@ export class Reaction extends BaseModel {
             return {
               name: el.name,
               roles: el.roles,
-              smiles: product?.smiles ? product.smiles : null,
             };
           }
         });
@@ -64,27 +64,16 @@ export class Reaction extends BaseModel {
       const temperature = this.modelAR.getOptionalValue<TYPES.BigQty>(
         PROPERTIES.TEMPERATURE
       );
+      const reaction_time = this.modelAR.getOptionalValue<TYPES.BigQty>(
+        PROPERTIES.REACTION_TIME
+      );
 
       const reactionModel = new ReactionModel(this.name, this.type);
+      reactionModel.add(PROPERTIES.TEMPERATURE, temperature);
+      reactionModel.add(PROPERTIES.VOLUME, volume);
+      reactionModel.add(PROPERTIES.REACTION_TIME, reaction_time);
+      reactionModel.add("products", products);
       reactionModel.insertChemicals(reactants, globalAR);
-
-      // const chemConfigs = this.createChemicalConfigs(reactants, globalAR, {
-      //   volume,
-      //   temperature,
-      // });
-
-      // this.reaction.insertMany(chemConfigs);
-
-      // const output = this.reaction.computeChemicalValues();
-
-      // const reactionOutput: TYPES.Reaction = {
-      //   name: this.name,
-      //   type: ModelType.REACTION,
-      //   volume: volume || null,
-      //   temperature: temperature || null,
-      //   products: products || [],
-      //   reactants: output,
-      // };
 
       globalAR.setValue(this.name, reactionModel);
     } catch (error) {

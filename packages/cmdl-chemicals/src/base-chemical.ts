@@ -20,7 +20,6 @@ export abstract class BaseChemical {
   name: string;
   mw: Big | null = null;
   density: Big | null = null;
-  smiles?: string;
   roles: ReactionRoles[];
   ratio: Big | null = null;
   mass: TYPES.BigQty | null = null;
@@ -33,16 +32,10 @@ export abstract class BaseChemical {
   solidVol: TYPES.BigQty | null = null;
   limiting: boolean = false;
 
-  constructor(
-    name: string,
-    roles: ReactionRoles[],
-    limiting: boolean,
-    smiles?: string
-  ) {
+  constructor(name: string, roles: ReactionRoles[], limiting: boolean) {
     this.name = name;
     this.roles = roles;
     this.limiting = limiting;
-    this.smiles = smiles;
   }
 
   /**
@@ -211,7 +204,6 @@ export abstract class BaseChemical {
       name: this.name,
       mw: this.mw ? this.mw.toNumber() : null,
       density: this.density ? this.density.toNumber() : null,
-      smiles: this.smiles ? this.smiles : null,
       mass: handleRounding(this.mass, true),
       volume: this.volume ? handleRounding(this.volume, true) : this.volume,
       moles: handleRounding(this.moles, true),

@@ -252,7 +252,17 @@ export class Controller {
       return this.evaluateAst(document.fileName, document, docUri);
     } else {
       if (!uri) {
-        throw new Error(`cannot execute cell without uri`);
+        logger.warn(`no cell uri provided...executing entire notebook...`);
+        let notebookResults: unknown[] = [];
+        for (const cell of document.cells.values()) {
+          const cellResults = this.evaluateAst(
+            document.fileName,
+            cell,
+            cell.uri
+          );
+          notebookResults = notebookResults.concat(cellResults);
+        }
+        return notebookResults;
       }
       const cell = document.getCell(uri);
       return this.evaluateAst(document.fileName, cell, uri);

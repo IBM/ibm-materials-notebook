@@ -56,7 +56,6 @@ export interface ChemicalOutput {
   name: string;
   mw: number | null;
   density: number | null;
-  smiles: string | null;
   mass: NumericQty;
   volume: NumericQty | null;
   moles: NumericQty;
@@ -72,7 +71,6 @@ export interface ChemicalOutput {
 export interface ChemicalConfig {
   name: string;
   mw: Big;
-  smiles?: string;
   density: Big | null;
   state: ChemStates;
   roles: ReactionRoles[];

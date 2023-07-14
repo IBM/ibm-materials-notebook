@@ -7,10 +7,12 @@ chemical tetrahydrofuran {
 
 chemical potassium_tert-butoxide {
     molecular_weight: 112.212 g/mol;
+    state: "solid";
     smiles: "[K+].CC(C)(C)[O-]";
 }
 
 chemical dimethyl-1-4-dioxane-2-5-dione {
     molecular_weight: 144.12 g/mol;
+    state: "solid";
     smiles: "C[C@H]1C(=O)O[C@H](C(=O)O1)C";
 }

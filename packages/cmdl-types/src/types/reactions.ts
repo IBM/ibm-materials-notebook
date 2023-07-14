@@ -8,12 +8,10 @@ import { ReactorGroupOutput } from "./reactors";
 
 type ComplexComponents = {
   name: string;
-  [PROPERTIES.SMILES]: string;
 };
 
 export type Product = {
   name: string;
-  [PROPERTIES.SMILES]?: string | null;
   [PROPERTIES.ROLES]: ReactionRoles[];
   components?: ComplexComponents[];
 };
@@ -30,8 +28,8 @@ export interface Reaction {
   type: ModelType.REACTION;
   reactants: ChemicalOutput[];
   products: Product[];
-  [PROPERTIES.TEMPERATURE]: BigQty | null;
-  [PROPERTIES.VOLUME]: BigQty | null;
+  [PROPERTIES.TEMPERATURE]?: BigQty;
+  [PROPERTIES.VOLUME]?: BigQty;
   [PROPERTIES.REACTION_TIME]?: BigQty;
 }
 

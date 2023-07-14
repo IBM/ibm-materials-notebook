@@ -176,19 +176,26 @@ export class ModelVisitor implements AstVisitor {
     const nodeName = node.aliasToken ? node.aliasToken.image : node.name;
 
     const sourceNamespace = path.basename(node.source);
+    const namespaceManager = this.controller.getNamespaceAR(sourceNamespace);
     const sourceSymbols = this.controller.getSymbolTable(sourceNamespace);
-    const sourceSymbol = sourceSymbols.get(node.name);
 
-    if (!sourceSymbol) {
-      throw new Error(`Unable to import ${node.name} from ${node.source}`);
+    try {
+      sourceSymbols.get(node.name);
+    } catch (error) {
+      logger.warn(`No symbol found for ${node.name}, searching for results...`);
     }
 
-    const namespaceManager = this.controller.getNamespaceAR(sourceNamespace);
     let values = namespaceManager.getOptionalValue<Clonable>(node.name);
 
     if (!values) {
-      this.controller.executeNamespace(sourceNamespace);
-      values = namespaceManager.getValue<Clonable>(node.name);
+      try {
+        this.controller.executeNamespace(sourceNamespace);
+        logger.debug(`namespace:\n${namespaceManager.print()}`);
+        values = namespaceManager.getValue<Clonable>(node.name);
+      } catch (error) {
+        logger.error(`Encountered error during import operation: ${error}`);
+        throw new Error(`Unable to import ${node.name} from ${node.source}`);
+      }
     }
 
     const globalAR = this.modelStack.peek();

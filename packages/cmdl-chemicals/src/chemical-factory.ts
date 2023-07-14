@@ -29,8 +29,7 @@ export default class ChemicalFactory {
       config.name,
       config.roles,
       config.mw,
-      config.limiting,
-      config.smiles
+      config.limiting
     );
     solid.computeValues(config.quantity);
     return solid;
@@ -48,13 +47,7 @@ export default class ChemicalFactory {
       );
     }
 
-    const gas = new Gas(
-      config.name,
-      config.roles,
-      config.mw,
-      config.limiting,
-      config.smiles
-    );
+    const gas = new Gas(config.name, config.roles, config.mw, config.limiting);
     gas.initializeValues(config.volume, config.quantity);
     gas.computeValues(config.temperature);
     return gas;
@@ -75,8 +68,7 @@ export default class ChemicalFactory {
       config.roles,
       config.mw,
       config.density,
-      config.limiting,
-      config.smiles
+      config.limiting
     );
 
     liquid.computeValues(config.quantity);

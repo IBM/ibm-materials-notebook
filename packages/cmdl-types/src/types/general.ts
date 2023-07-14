@@ -27,18 +27,3 @@ export interface MetaData {
   [GROUPS.SOURCE]?: RecordSource;
   notebookId?: string; //assigned by extension automatically
 }
-
-// export type RecordRefs =
-//   | Chemical
-//   | Fragment
-//   | Polymer
-//   | Complex
-//   | FlowReactor
-//   | FlowRxn
-//   | Reaction
-//   | SampleOutput
-//   | PolymerGraph
-//   | Solution
-//   | FlowReactor;
-
-// export type RecordTypes = MetaData | RecordRefs;
