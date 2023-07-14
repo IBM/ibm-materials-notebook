@@ -7,7 +7,11 @@ import { CMDLController } from "cmdl";
  * Manages all cmdl documents (.cmdnb & .cmdl) in workspace
  */
 export class Repository {
-  readonly _controller = new CMDLController.Controller();
+  readonly _controller = new CMDLController.Controller(
+    vscode.workspace.workspaceFolders
+      ? vscode.workspace.workspaceFolders[0].uri.fsPath
+      : ""
+  );
 
   private _onDidInitializeNotebook =
     new vscode.EventEmitter<vscode.NotebookDocument>();

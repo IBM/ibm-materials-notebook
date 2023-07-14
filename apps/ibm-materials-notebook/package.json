@@ -117,8 +117,7 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "precommit": "npm run lint",
     "test": "jest",
-    "lint": "eslint src --ext ts",
-    "generate-types": "npx ts-node ./src/extension/cmdl-language/language-type-generator.ts"
+    "lint": "eslint src --ext ts"
   },
   "devDependencies": {
     "@types/big.js": "^6.1.5",

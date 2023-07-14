@@ -1,11 +1,12 @@
 import { ModelActivationRecord } from "./model-AR";
+import { BaseModel } from "./base-model";
 import {
-  BaseModel,
   ResultModel,
   CharDataModel,
   PolymerModel,
   ChemicalModel,
-} from "./base-model";
+  CharFileReader,
+} from "./models";
 import { ModelType, PROPERTIES, TYPES } from "cmdl-types";
 import { logger } from "../logger";
 
@@ -32,12 +33,21 @@ export class CharData extends BaseModel {
       const references =
         this.modelAR.getOptionalValue<TYPES.CharReference[]>("references");
       const file = this.modelAR.getOptionalValue<TYPES.Reference>("file");
-
       const charModel = new CharDataModel(this.name, this.type);
+
+      if (file?.ref) {
+        const fileModel = globalAR.getValue<CharFileReader>(file.ref);
+        charModel.add(PROPERTIES.FILE, {
+          name: file.ref,
+          ...fileModel.export(),
+        });
+      } else {
+        charModel.add(PROPERTIES.FILE, null);
+      }
+
       charModel.add(PROPERTIES.TIME_POINT, timePoint || null);
       charModel.add(PROPERTIES.TECHNIQUE, technique);
       charModel.add(PROPERTIES.SAMPLE_ID, sampleId);
-      charModel.add(PROPERTIES.FILE, file?.ref || null);
 
       logger.debug(`references: ${references?.length}`);
       if (references) {

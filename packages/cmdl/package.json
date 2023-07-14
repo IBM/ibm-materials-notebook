@@ -29,7 +29,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "lint": "eslint src --ext ts",
-    "test": "jest"
+    "test": "jest",
+    "generate-types": "npx ts-node ./src/parser/language-type-generator.ts"
   },
   "repository": {
     "type": "git",

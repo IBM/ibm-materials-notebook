@@ -15,6 +15,7 @@ export interface StatementCstNode extends CstNode {
 }
 
 export type StatementCstChildren = {
+  importFileStatement?: ImportFileStatementCstNode[];
   importStatement?: ImportStatementCstNode[];
   groupDeclaration?: GroupDeclarationCstNode[];
 };
@@ -28,6 +29,21 @@ export type ImportStatementCstChildren = {
   Import: IToken[];
   Identifier: IToken[];
   alias?: AliasClauseCstNode[];
+  From: IToken[];
+  StringLiteral: IToken[];
+  Semicolon: IToken[];
+};
+
+export interface ImportFileStatementCstNode extends CstNode {
+  name: "importFileStatement";
+  children: ImportFileStatementCstChildren;
+}
+
+export type ImportFileStatementCstChildren = {
+  Import: IToken[];
+  Star: IToken[];
+  As: IToken[];
+  Identifier: IToken[];
   From: IToken[];
   StringLiteral: IToken[];
   Semicolon: IToken[];
@@ -131,7 +147,7 @@ export interface ReferencePipeCstNode extends CstNode {
 }
 
 export type ReferencePipeCstChildren = {
-  referenceDeclaration: ReferenceDeclarationCstNode[];
+  referenceDeclaration: (ReferenceDeclarationCstNode)[];
   Pipe?: IToken[];
 };
 
@@ -169,7 +185,7 @@ export interface ListCstNode extends CstNode {
 
 export type ListCstChildren = {
   LSquare: IToken[];
-  StringLiteral: IToken[];
+  StringLiteral: (IToken)[];
   Comma?: IToken[];
   RSquare: IToken[];
 };
@@ -211,14 +227,12 @@ export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   record(children: RecordCstChildren, param?: IN): OUT;
   statement(children: StatementCstChildren, param?: IN): OUT;
   importStatement(children: ImportStatementCstChildren, param?: IN): OUT;
+  importFileStatement(children: ImportFileStatementCstChildren, param?: IN): OUT;
   aliasClause(children: AliasClauseCstChildren, param?: IN): OUT;
   groupDeclaration(children: GroupDeclarationCstChildren, param?: IN): OUT;
   namedGroup(children: NamedGroupCstChildren, param?: IN): OUT;
   variableGroup(children: VariableGroupCstChildren, param?: IN): OUT;
-  referenceDeclaration(
-    children: ReferenceDeclarationCstChildren,
-    param?: IN
-  ): OUT;
+  referenceDeclaration(children: ReferenceDeclarationCstChildren, param?: IN): OUT;
   group(children: GroupCstChildren, param?: IN): OUT;
   groupItem(children: GroupItemCstChildren, param?: IN): OUT;
   arrowProperty(children: ArrowPropertyCstChildren, param?: IN): OUT;
@@ -228,8 +242,5 @@ export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   list(children: ListCstChildren, param?: IN): OUT;
   refList(children: RefListCstChildren, param?: IN): OUT;
   numericalValue(children: NumericalValueCstChildren, param?: IN): OUT;
-  uncertaintyExpression(
-    children: UncertaintyExpressionCstChildren,
-    param?: IN
-  ): OUT;
+  uncertaintyExpression(children: UncertaintyExpressionCstChildren, param?: IN): OUT;
 }

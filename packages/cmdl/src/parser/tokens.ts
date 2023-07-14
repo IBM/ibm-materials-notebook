@@ -11,6 +11,7 @@ const UNC_REGEX = /±|\+-/;
 
 const True = createToken({ name: "True", pattern: /true/ });
 const False = createToken({ name: "False", pattern: /false/ });
+const Star = createToken({ name: "Star", pattern: /\*/ });
 const LCurly = createToken({ name: "LCurly", pattern: /{/ });
 const LSquare = createToken({ name: "LSquare", pattern: /\[/ });
 const LAngle = createToken({ name: "LAngle", pattern: /</ });
@@ -47,12 +48,6 @@ const Import = createToken({
   longer_alt: Identifier,
 });
 
-const Export = createToken({
-  name: "Export",
-  pattern: /export/,
-  longer_alt: Identifier,
-});
-
 const As = createToken({
   name: "As",
   pattern: /as/,
@@ -79,7 +74,7 @@ const allTokens = [
   WhiteSpace,
   NumberLiteral,
   Import,
-  Export,
+  Star,
   As,
   From,
   True,
@@ -119,7 +114,7 @@ export {
   Identifier,
   UncertaintyOperator,
   Import,
-  Export,
+  Star,
   From,
   RCurly,
   LCurly,

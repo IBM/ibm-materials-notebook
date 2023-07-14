@@ -12,6 +12,13 @@ import { registerCommands } from "./commandProvider";
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  logger.info(
+    `workspace path: ${
+      vscode.workspace.workspaceFolders
+        ? vscode.workspace.workspaceFolders[0].uri.fsPath
+        : ""
+    }`
+  );
   const repository = new Repository();
   repository.initialize();
   logger.info("IBM Materials notebook extension is activated");

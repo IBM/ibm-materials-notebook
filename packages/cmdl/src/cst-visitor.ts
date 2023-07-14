@@ -20,6 +20,7 @@ import {
   ReferencePipeCstChildren,
   VariableGroupCstChildren,
   AliasClauseCstChildren,
+  ImportFileStatementCstChildren,
 } from "./parser-types";
 
 export enum AstNodes {
@@ -52,6 +53,7 @@ export enum AstNodes {
   IMPORT_STATEMENT = "IMPORT_STATEMENT",
   REF_VALUE = "REF_VALUE",
   STRING_VALUE = "STRING_VALUE",
+  STAR = "STAR",
   BOOL_VALUE = "BOOL_VALUE",
   VALUE = "VALUE",
   UNIT = "UNIT",
@@ -88,7 +90,12 @@ export class CstVisitor extends BaseVisitor {
 
   //Push any errors to AST class
   statement(ctx: StatementCstChildren, parent: CmdlNode) {
-    if (ctx?.importStatement) {
+    if (ctx?.importFileStatement) {
+      const importFileNode = new CmdlNode(AstNodes.IMPORT_STATEMENT);
+      importFileNode.parent = parent;
+      parent.add(importFileNode);
+      this.visit(ctx.importFileStatement, importFileNode);
+    } else if (ctx?.importStatement) {
       const importNode = new CmdlNode(AstNodes.IMPORT_STATEMENT);
       importNode.parent = parent;
       parent.add(importNode);
@@ -98,6 +105,38 @@ export class CstVisitor extends BaseVisitor {
     } else {
       //? push errors to AST class?
       // throw new Error('Unhandled statement type');
+    }
+  }
+
+  importFileStatement(ctx: ImportFileStatementCstChildren, parent: CmdlNode) {
+    if (ctx?.Import && ctx.Import.length) {
+      const importToken = this.extractToken(ctx.Import[0]);
+      this.createAstNode(AstNodes.IMPORT, parent, importToken);
+    }
+
+    if (ctx?.Star && ctx.Star.length) {
+      const starToken = this.extractToken(ctx.Star[0]);
+      this.createAstNode(AstNodes.IMPORT, parent, starToken);
+    }
+
+    if (ctx.As.length) {
+      const asToken = this.extractToken(ctx.As[0]);
+      this.createAstNode(AstNodes.AS, parent, asToken);
+    }
+
+    if (ctx?.Identifier && ctx.Identifier.length) {
+      const idToken = this.extractToken(ctx.Identifier[0]);
+      this.createAstNode(AstNodes.IMPORT_ID, parent, idToken);
+    }
+
+    if (ctx?.From && ctx.From.length) {
+      const fromToken = this.extractToken(ctx.From[0]);
+      this.createAstNode(AstNodes.FROM, parent, fromToken);
+    }
+
+    if (ctx?.StringLiteral && ctx.StringLiteral.length) {
+      const locationToken = this.extractToken(ctx.StringLiteral[0]);
+      this.createAstNode(AstNodes.LOCATION_ID, parent, locationToken);
     }
   }
 

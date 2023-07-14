@@ -1,6 +1,7 @@
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel, ReactorModel } from "./base-model";
+import { BaseModel } from "./base-model";
 import { ModelType, TYPES } from "cmdl-types";
+import { ReactorModel } from "./models";
 
 export class Reactor extends BaseModel {
   constructor(

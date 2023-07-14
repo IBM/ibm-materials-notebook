@@ -1,8 +1,7 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { ModelType, TYPES } from "cmdl-types";
-import { PolymerGraphModel } from "./base-model";
-import { logger } from "../logger";
+import { PolymerGraphModel } from "./models";
 
 /**
  * Model for creating polymer graph

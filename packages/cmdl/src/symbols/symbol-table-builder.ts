@@ -26,6 +26,7 @@ import {
   ReferenceValue,
   Group,
   Property,
+  ImportFileOp,
 } from "../cmdl-tree";
 import { CmdlStack } from "../cmdl-stack";
 import { CmdlToken } from "../cmdl-ast";
@@ -298,6 +299,21 @@ export class SymbolTableBuilder implements AstVisitor {
       node.name,
       node.source,
       node.alias
+    );
+
+    this.addSymbol(importSymbol);
+  }
+
+  public visitImportFileOp(node: ImportFileOp): void {
+    const importSymbol = new ImportSymbol(
+      {
+        name: node.name,
+        token: node.nameToken,
+        type: SymbolType.IMPORT,
+        def: this.uri,
+      },
+      node.name,
+      node.source
     );
 
     this.addSymbol(importSymbol);

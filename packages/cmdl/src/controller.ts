@@ -39,6 +39,10 @@ export class Controller {
     TextDocument | NotebookDocument
   >();
 
+  constructor(cwd: string) {
+    process.chdir(cwd);
+  }
+
   private getNotebook(uri: string): NotebookDocument {
     const doc = this._documents.get(uri);
 

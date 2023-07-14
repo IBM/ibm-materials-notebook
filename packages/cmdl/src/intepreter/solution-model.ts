@@ -1,11 +1,9 @@
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel, SolutionModel } from "./base-model";
+import { BaseModel } from "./base-model";
 import { ModelType, TYPES } from "cmdl-types";
-import { ChemicalSet } from "cmdl-chemicals";
+import { SolutionModel } from "./models";
 
 export class Solution extends BaseModel {
-  private solution = new ChemicalSet();
-
   constructor(
     name: string,
     modelAR: ModelActivationRecord,
@@ -20,18 +18,6 @@ export class Solution extends BaseModel {
         this.modelAR.getValue<TYPES.ChemicalReference[]>("references");
       const solutionModel = new SolutionModel(this.name, this.type);
       solutionModel.insertChemicals(chemicals, globalAR);
-      // let chemConfigs = this.createChemicalConfigs(chemicals, globalAR);
-      // this.solution.insertMany(chemConfigs);
-
-      // let output = this.solution.computeChemicalValues();
-      // let configs = this.solution.exportSet();
-
-      // const solutionOutput: TYPES.Solution = {
-      //   name: this.name,
-      //   type: ModelType.SOLUTION,
-      //   components: output,
-      //   componentConfigs: configs,
-      // };
 
       globalAR.setValue(this.name, solutionModel);
     } catch (error) {

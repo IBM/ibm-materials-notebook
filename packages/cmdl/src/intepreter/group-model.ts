@@ -1,12 +1,12 @@
 import { ModelActivationRecord } from "./model-AR";
 import { ModelType, TYPES } from "cmdl-types";
-import { BaseModel, ChemicalModel, FramgentModel } from "./base-model";
-import { Model } from "./base-model";
+import { BaseModel } from "./base-model";
+import { Model, ChemicalModel, FramgentModel } from "./models";
 
 /**
  * Model for reference groups. Tablulates child properties and merges into parent AR.
  */
-export class GroupModel<T> extends BaseModel {
+export class GroupModel extends BaseModel {
   constructor(
     name: string,
     modelAR: ModelActivationRecord,

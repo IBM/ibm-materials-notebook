@@ -14,7 +14,6 @@ export class ImportOp implements RecordNode {
   alias?: string;
   aliasToken?: CmdlToken;
   parent: RecordNode | null = null;
-  type: string | null = null;
   errors: BaseError[] = [];
   source: string;
   sourceToken: CmdlToken;
@@ -56,21 +55,6 @@ export class ImportOp implements RecordNode {
   }
 
   /**
-   * Gets type of entity imported
-   * @deprecated
-   * @returns string
-   */
-  public getImportType(): string {
-    if (!this.type) {
-      throw new Error(
-        `No type or template information available for ${this.name}`
-      );
-    }
-
-    return this.type;
-  }
-
-  /**
    * Exports data of imported entity
    * @returns Record<string, any>
    */
@@ -87,6 +71,65 @@ export class ImportOp implements RecordNode {
       visitor.visitImportOp(this);
     } else if (visitor instanceof ModelVisitor) {
       visitor.visitImportOp(this);
+    }
+  }
+}
+
+export class ImportFileOp implements RecordNode {
+  name: string;
+  nameToken: CmdlToken;
+  parent: RecordNode | null = null;
+  errors: BaseError[] = [];
+  source: string;
+  sourceToken: CmdlToken;
+
+  constructor(token: CmdlToken, sourceToken: CmdlToken) {
+    this.name = token.image;
+    this.source = parseStringImage(sourceToken.image);
+    this.sourceToken = sourceToken;
+    this.nameToken = token;
+  }
+
+  public setParent(arg: RecordNode): void {
+    this.parent = arg;
+  }
+
+  public doValidation(): BaseError[] {
+    let msg: string;
+    let err: BaseError;
+
+    if (!this.source || !this.name) {
+      let msg = `Invalid import operation, source or name is invalid`;
+      let err = new RefError(msg, this.nameToken);
+      this.errors.push(err);
+    }
+
+    return this.errors;
+  }
+
+  public print(): string {
+    return `
+      name: ${this.name},
+      source: ${this.source},
+    `;
+  }
+
+  /**
+   * Exports data of imported entity
+   * @returns Record<string, any>
+   */
+  public export(): Record<string, any> {
+    return {
+      name: this.name,
+      source: this.source,
+    };
+  }
+
+  public accept(visitor: AstVisitor): void {
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitImportFileOp(this);
+    } else if (visitor instanceof ModelVisitor) {
+      visitor.visitImportFileOp(this);
     }
   }
 }

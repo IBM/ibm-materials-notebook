@@ -1,10 +1,6 @@
 import { ModelActivationRecord } from "./model-AR";
-import {
-  BaseModel,
-  FlowRxnModel,
-  ReactorModel,
-  SolutionModel,
-} from "./base-model";
+import { BaseModel } from "./base-model";
+import { FlowRxnModel, ReactorModel, SolutionModel } from "./models";
 import { ModelType, TYPES } from "cmdl-types";
 import { ReactorChemicals } from "cmdl-reactors";
 

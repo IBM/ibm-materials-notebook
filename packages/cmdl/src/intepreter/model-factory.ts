@@ -37,9 +37,9 @@ export class ModelFactory {
         return new ReferenceGroupModel(name, modelAR, type, path);
       case ModelType.GROUP:
       case ModelType.FRAGMENT:
-        return new GroupModel<TYPES.Fragment>(name, modelAR, type);
+        return new GroupModel(name, modelAR, type);
       case ModelType.CHEMICAL:
-        return new GroupModel<TYPES.Chemical>(name, modelAR, type);
+        return new GroupModel(name, modelAR, type);
       case ModelType.POLYMER:
         return new Polymer(name, modelAR, type);
       case ModelType.REACTION:

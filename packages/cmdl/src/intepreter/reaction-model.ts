@@ -2,8 +2,7 @@ import { ChemicalSet } from "cmdl-chemicals";
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { PROPERTIES, TAGS, ModelType, TYPES } from "cmdl-types";
-import { ReactionModel } from "./base-model";
-import { logger } from "../logger";
+import { ReactionModel } from "./models";
 
 /**
  * Interpreter model to compute reaction stoichiometry for an experiment

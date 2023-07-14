@@ -14,7 +14,7 @@ import {
   Identifier,
   Link,
   Import,
-  Export,
+  Star,
   From,
   LSquare,
   RSquare,
@@ -45,6 +45,7 @@ class Parser extends CstParser {
 
   private statement = this.RULE("statement", () => {
     this.OR([
+      { ALT: () => this.SUBRULE(this.importFileStatement) },
       { ALT: () => this.SUBRULE(this.importStatement) },
       { ALT: () => this.SUBRULE(this.groupDeclaration) },
     ]);
@@ -56,6 +57,16 @@ class Parser extends CstParser {
     this.OPTION(() => {
       this.SUBRULE(this.aliasClause, { LABEL: "alias" });
     });
+    this.CONSUME(From);
+    this.CONSUME(StringLiteral);
+    this.CONSUME(SemiColon);
+  });
+
+  private importFileStatement = this.RULE("importFileStatement", () => {
+    this.CONSUME(Import);
+    this.CONSUME(Star);
+    this.CONSUME(As);
+    this.CONSUME(Identifier);
     this.CONSUME(From);
     this.CONSUME(StringLiteral);
     this.CONSUME(SemiColon);

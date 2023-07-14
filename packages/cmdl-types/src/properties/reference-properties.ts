@@ -1,13 +1,5 @@
 import { IProperty, PROPERTIES, PropertyTypes } from "./property-types";
 
-// const targets: IProperty = {
-//   description: "Targets for current node in a graph",
-//   detail: "Node targets",
-//   name: PROPERTIES.TARGETS,
-//   type: PropertyTypes.REF_MULTI,
-//   aliases: [],
-// };
-
 const reactor: IProperty = {
   description: "Reactor used for the flow experiment",
   detail: "Reactor reference",
@@ -15,14 +7,6 @@ const reactor: IProperty = {
   type: PropertyTypes.REF_SINGLE,
   aliases: [],
 };
-
-// const polymerGraph: IProperty = {
-//   description: "Graph representation of a polymer",
-//   detail: "Graph representation of a polymer",
-//   name: PROPERTIES.GRAPH,
-//   type: PropertyTypes.REF_SINGLE,
-//   aliases: [],
-// };
 
 const input: IProperty = {
   description: "Reactor input node for a stock solution",
@@ -89,7 +73,6 @@ const file: IProperty = {
 };
 
 export const referenceProperties = [
-  // targets,
   sources,
   component,
   target,
@@ -99,5 +82,4 @@ export const referenceProperties = [
   file,
   reactor,
   input,
-  // polymerGraph,
 ];

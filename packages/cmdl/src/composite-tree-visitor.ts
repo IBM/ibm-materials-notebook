@@ -20,6 +20,7 @@ import {
   ReferencePipeCstChildren,
   VariableGroupCstChildren,
   AliasClauseCstChildren,
+  ImportFileStatementCstChildren,
 } from "./parser-types";
 import {
   ImportOp,
@@ -37,6 +38,7 @@ import {
   StringProperty,
   VariableProperty,
   AngleProperty,
+  ImportFileOp,
 } from "./cmdl-tree";
 
 const BaseVisitor = parserInstance.getBaseCstVisitorConstructor();
@@ -75,13 +77,36 @@ export class CstRecordVisitor extends BaseVisitor {
    * @param parent Group
    */
   public statement(ctx: StatementCstChildren, parent: Group): void {
-    if (ctx?.importStatement) {
+    if (ctx?.importFileStatement) {
+      this.visit(ctx.importFileStatement, parent);
+    } else if (ctx?.importStatement) {
       this.visit(ctx.importStatement, parent);
     } else if (ctx?.groupDeclaration) {
       this.visit(ctx.groupDeclaration, parent);
     } else {
       //? push errors to AST class?
       // throw new Error('Unhandled statement type');
+    }
+  }
+
+  public importFileStatement(
+    ctx: ImportFileStatementCstChildren,
+    parent: CmdlTree
+  ): void {
+    let idToken: CmdlToken | undefined;
+    let locationToken: CmdlToken | undefined;
+
+    if (ctx.Identifier && ctx.Identifier.length) {
+      idToken = this.extractToken(ctx.Identifier[0]);
+    }
+
+    if (ctx.StringLiteral && ctx.StringLiteral.length) {
+      locationToken = this.extractToken(ctx.StringLiteral[0]);
+    }
+
+    if (idToken && locationToken) {
+      const fileReference = new ImportFileOp(idToken, locationToken);
+      parent.add(fileReference);
     }
   }
 

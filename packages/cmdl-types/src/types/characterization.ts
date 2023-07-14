@@ -62,11 +62,17 @@ export type Result = Partial<MeasuredDataArray> & {
   [PROPERTIES.SAMPLE_ID]: string;
 };
 
+export type CharFile = {
+  name: string;
+  fileName: string;
+  data: string[][];
+};
+
 export type CharDataOutput = {
   name: string;
   type: ModelType.CHAR_DATA;
   [PROPERTIES.TIME_POINT]: BigQty | null;
   [PROPERTIES.SAMPLE_ID]: string;
   [PROPERTIES.TECHNIQUE]: string;
-  [PROPERTIES.FILE]: string | null;
+  [PROPERTIES.FILE]: CharFile | null;
 };

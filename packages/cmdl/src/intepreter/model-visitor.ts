@@ -8,6 +8,7 @@ import {
   RefProperty,
   Property,
   ImportOp,
+  ImportFileOp,
 } from "../cmdl-tree";
 import path from "path";
 import { AstVisitor } from "../symbols";
@@ -17,7 +18,7 @@ import { CmdlStack } from "../cmdl-stack";
 import { logger } from "../logger";
 import { typeManager, ModelType } from "cmdl-types";
 import { Controller } from "../controller";
-import { Clonable } from "./base-model";
+import { Clonable, CharFileReader } from "./models";
 
 /**
  * Visits record tree and executes different models on elements
@@ -190,7 +191,6 @@ export class ModelVisitor implements AstVisitor {
     if (!values) {
       try {
         this.controller.executeNamespace(sourceNamespace);
-        logger.debug(`namespace:\n${namespaceManager.print()}`);
         values = namespaceManager.getValue<Clonable>(node.name);
       } catch (error) {
         logger.error(`Encountered error during import operation: ${error}`);
@@ -200,5 +200,15 @@ export class ModelVisitor implements AstVisitor {
 
     const globalAR = this.modelStack.peek();
     globalAR.setValue(nodeName, values.clone());
+  }
+
+  public visitImportFileOp(node: ImportFileOp): void {
+    const fileModel = new CharFileReader(node.source);
+    fileModel.processFileData();
+
+    logger.verbose(`processed file data`, { meta: fileModel.data });
+
+    const globalAR = this.modelStack.peek();
+    globalAR.setValue(node.name, fileModel);
   }
 }

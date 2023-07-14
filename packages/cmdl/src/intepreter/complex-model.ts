@@ -1,5 +1,6 @@
 import { ModelActivationRecord } from "./model-AR";
-import { BaseModel, ComplexModel } from "./base-model";
+import { BaseModel } from "./base-model";
+import { ComplexModel } from "./models";
 import { ModelType, TYPES } from "cmdl-types";
 
 export class Complex extends BaseModel {

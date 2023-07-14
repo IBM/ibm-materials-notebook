@@ -9,6 +9,16 @@ describe("Test parser on simple fragment", () => {
     expect(parserInstance.errors.length).toBe(0);
   });
 
+  it("parses an import file statement", () => {
+    const importFileStatment = `import * as nmrFile1 from "./nmrFile1.fid";`;
+    const lexingResult = lexerInstance.tokenize(importFileStatment);
+    parserInstance.input = lexingResult.tokens;
+    const cst = parserInstance.parseRecord();
+    // console.log(JSON.stringify(cst, null, 2));
+    // console.log(JSON.stringify(parserInstance.errors, null, 2));
+    expect(parserInstance.errors.length).toBe(0);
+  });
+
   it(`parses a group declaration`, () => {
     const groupStatement = `
     reaction ABC {
@@ -17,7 +27,7 @@ describe("Test parser on simple fragment", () => {
     const lexingResult = lexerInstance.tokenize(groupStatement);
     parserInstance.input = lexingResult.tokens;
     const cst = parserInstance.parseRecord();
-    // console.log(JSON.stringify(cst, null, 2));
+
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -45,7 +55,7 @@ describe("Test parser on simple fragment", () => {
 
   it("parses a group with property reference", () => {
     const groupWithPropRef = `
-    nmr {
+    char_data Test-123 {
       file: @fileRef;
     }`;
     const lexingResult = lexerInstance.tokenize(groupWithPropRef);
@@ -69,18 +79,6 @@ describe("Test parser on simple fragment", () => {
     const lexingResult = lexerInstance.tokenize(reactionText);
     parserInstance.input = lexingResult.tokens;
     const cst = parserInstance.parseRecord();
-    expect(parserInstance.errors.length).toBe(0);
-  });
-
-  it("it parses a simple nmr annotation", () => {
-    const nmrValue = `
-    nmr {
-      conversion: 20 %;
-    }`;
-    const lexingResult = lexerInstance.tokenize(nmrValue);
-    parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
-    // console.log(JSON.stringify(cst, null, 2));
     expect(parserInstance.errors.length).toBe(0);
   });
 
