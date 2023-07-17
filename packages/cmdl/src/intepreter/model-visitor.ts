@@ -9,6 +9,7 @@ import {
   Property,
   ImportOp,
   ImportFileOp,
+  ProtocolGroup,
 } from "../cmdl-tree";
 import path from "path";
 import { AstVisitor } from "../symbols";
@@ -18,7 +19,7 @@ import { CmdlStack } from "../cmdl-stack";
 import { logger } from "../logger";
 import { typeManager, ModelType } from "cmdl-types";
 import { Controller } from "../controller";
-import { Clonable, CharFileReader } from "./models";
+import { Clonable, CharFileReader, ProtocolModel } from "./models";
 
 /**
  * Visits record tree and executes different models on elements
@@ -210,5 +211,14 @@ export class ModelVisitor implements AstVisitor {
 
     const globalAR = this.modelStack.peek();
     globalAR.setValue(node.name, fileModel);
+  }
+
+  public visitProtocolGroup(group: ProtocolGroup): void {
+    const protocolModel = new ProtocolModel(group.identifier, "protocol");
+    const { protocol, references } = group.export();
+    protocolModel.initializeProtocol(protocol, references);
+
+    const globalAR = this.modelStack.peek();
+    globalAR.setValue(group.identifier, protocolModel);
   }
 }

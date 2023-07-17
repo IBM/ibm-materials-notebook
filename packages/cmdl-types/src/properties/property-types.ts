@@ -103,6 +103,7 @@ export enum PROPERTIES {
   INCHI = "inchi",
   INCHI_KEY = "inchi_key",
   DESCRIPTION = "description",
+  PROTOCOL = "protocol",
 
   //thermal
   TEMPERATURE = "temperature",

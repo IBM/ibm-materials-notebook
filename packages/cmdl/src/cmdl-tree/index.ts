@@ -13,3 +13,4 @@ export { VariableProperty } from "./variable-property";
 export { NumericalProperty } from "./numerical-property";
 export { ListProperty } from "./list-property";
 export { VariableGroup } from "./variable-groups";
+export { ProtocolGroup } from "./protocol-group";

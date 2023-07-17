@@ -31,6 +31,7 @@ export interface Reaction {
   [PROPERTIES.TEMPERATURE]?: BigQty;
   [PROPERTIES.VOLUME]?: BigQty;
   [PROPERTIES.REACTION_TIME]?: BigQty;
+  [PROPERTIES.PROTOCOL]?: string;
 }
 
 export type SolutionReference = {

@@ -23,8 +23,8 @@ export class ReactionModel extends Model<TYPES.Reaction> {
     this.chemicals.insertMany(chemConfigs);
   }
 
-  public computeValues() {
-    this.chemicals.computeChemicalValues();
+  public getReactionValues(): TYPES.ChemicalOutput[] {
+    return this.chemicals.computeChemicalValues();
   }
 
   public export(): TYPES.Reaction {

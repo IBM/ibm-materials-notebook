@@ -1,13 +1,21 @@
-import { Lexer, createToken, TokenType } from "chevrotain";
+import {
+  Lexer,
+  createToken,
+  TokenType,
+  IMultiModeLexerDefinition,
+} from "chevrotain";
 
 const tokenVocabulary: Record<string, TokenType> = {};
 
 const IDENT_REGEX = /[_a-zA-Z0-9-\/%]+/;
 const LINK = /@[_a-zA-Z0-9-]+/;
+const ProtocolRef = /\[\[@[_a-zA-Z0-9-]+\]\]/;
 const VARIABLE = /\$[_a-zA-Z0-9-]+/;
 const STRING_LITERAL = /"(?:[^\"]|\\(?:[bfnrtv"\/]|u[0-9a-fA-F]{4}))+"/;
 const NUM_REGEX = /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/;
 const UNC_REGEX = /±|\+-/;
+const MultiLineText = /[_a-zA-Z0-9-'\/%\.\s\\n\\r\\t]+/;
+const MultiLineFormaters = /\\(?:[bfnrtv"\/])/;
 
 const True = createToken({ name: "True", pattern: /true/ });
 const False = createToken({ name: "False", pattern: /false/ });
@@ -26,6 +34,30 @@ const Colon = createToken({ name: "Colon", pattern: /:/ });
 const SemiColon = createToken({ name: "Semicolon", pattern: /;/ });
 const Link = createToken({ name: "Link", pattern: LINK });
 const Variable = createToken({ name: "Variable", pattern: VARIABLE });
+const BackTicOpen = createToken({
+  name: "BackTic",
+  pattern: /`/,
+  push_mode: "protocol_mode",
+});
+const BackTicClose = createToken({
+  name: "BackTic",
+  pattern: /`/,
+  pop_mode: true,
+});
+const Protocol = createToken({
+  name: "ProtocolText",
+  pattern: Lexer.NA,
+});
+const ProtoReference = createToken({
+  name: "ProtocolRef",
+  pattern: ProtocolRef,
+  categories: [Protocol],
+});
+const MultiLineStr = createToken({
+  name: "MultiLineStr",
+  pattern: MultiLineText,
+  categories: [Protocol],
+});
 
 const Identifier = createToken({
   name: "Identifier",
@@ -70,6 +102,41 @@ const WhiteSpace = createToken({
 });
 
 // The order of tokens is important
+const multiModeLexer: IMultiModeLexerDefinition = {
+  modes: {
+    protocol_mode: [WhiteSpace, ProtoReference, MultiLineStr, BackTicClose],
+    cmdl_mode: [
+      WhiteSpace,
+      NumberLiteral,
+      Import,
+      Star,
+      As,
+      From,
+      True,
+      False,
+      Link,
+      BackTicOpen,
+      Variable,
+      Identifier,
+      UncertaintyOperator,
+      Dot,
+      Arrow,
+      Pipe,
+      RCurly,
+      LCurly,
+      LSquare,
+      RSquare,
+      RAngle,
+      LAngle,
+      Colon,
+      SemiColon,
+      Comma,
+      StringLiteral,
+    ],
+  },
+  defaultMode: "cmdl_mode",
+};
+
 const allTokens = [
   WhiteSpace,
   NumberLiteral,
@@ -80,6 +147,7 @@ const allTokens = [
   True,
   False,
   Link,
+  BackTicOpen,
   Variable,
   Identifier,
   UncertaintyOperator,
@@ -95,6 +163,7 @@ const allTokens = [
   Colon,
   SemiColon,
   Comma,
+  Protocol,
   StringLiteral,
 ];
 
@@ -102,7 +171,7 @@ allTokens.forEach((tokenType) => {
   tokenVocabulary[tokenType.name] = tokenType;
 });
 
-const lexerInstance = new Lexer(allTokens);
+const lexerInstance = new Lexer(multiModeLexer);
 
 export {
   lexerInstance,
@@ -133,4 +202,9 @@ export {
   RAngle,
   LAngle,
   As,
+  BackTicOpen,
+  BackTicClose,
+  ProtoReference,
+  Protocol,
+  MultiLineStr,
 };

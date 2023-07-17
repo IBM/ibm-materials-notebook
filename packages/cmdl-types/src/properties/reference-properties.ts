@@ -72,6 +72,14 @@ const file: IProperty = {
   aliases: [],
 };
 
+const protocol: IProperty = {
+  description: "references a protocol",
+  detail: "protocol",
+  name: PROPERTIES.PROTOCOL,
+  type: PropertyTypes.REF_SINGLE,
+  aliases: ["proceedure"],
+};
+
 export const referenceProperties = [
   sources,
   component,
@@ -82,4 +90,5 @@ export const referenceProperties = [
   file,
   reactor,
   input,
+  protocol,
 ];

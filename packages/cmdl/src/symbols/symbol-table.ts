@@ -187,9 +187,7 @@ export class SymbolTable {
    */
   public getDeclaredEntities(): BaseSymbol[] {
     return [...this._symbols.values()].filter(
-      (el) =>
-        el.type === SymbolType.DECLARATION &&
-        !(el as DeclarationSymbol).imported
+      (el) => el.type === SymbolType.DECLARATION
     );
   }
 

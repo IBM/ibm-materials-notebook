@@ -49,7 +49,6 @@ export class CharData extends BaseModel {
       charModel.add(PROPERTIES.TECHNIQUE, technique);
       charModel.add(PROPERTIES.SAMPLE_ID, sampleId);
 
-      logger.debug(`references: ${references?.length}`);
       if (references) {
         for (const ref of references) {
           let result = globalAR.getOptionalValue<ResultModel>(

@@ -21,6 +21,7 @@ export const reaction: IGroup = {
     PROPERTIES.TEMPERATURE,
     PROPERTIES.VOLUME,
     PROPERTIES.REACTION_TIME,
+    PROPERTIES.PROTOCOL,
   ],
 };
 

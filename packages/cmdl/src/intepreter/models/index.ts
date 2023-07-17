@@ -9,3 +9,4 @@ export {
 } from "./reaction";
 export { Model, Exportable, Clonable } from "./model";
 export { CharFileReader } from "./files";
+export { ProtocolModel } from "./protocol";

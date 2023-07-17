@@ -80,9 +80,6 @@ export class ImportSymbol extends BaseSymbol {
  * Entities include chemicals, reactors, reactions, solutions, etc.
  */
 export class DeclarationSymbol extends BaseSymbol {
-  aliasedName: string | null = null;
-  imported: boolean = false;
-
   constructor(config: SymbolConfig, public modelType: ModelType) {
     super(config);
   }

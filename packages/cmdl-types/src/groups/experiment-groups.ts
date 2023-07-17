@@ -1,4 +1,4 @@
-import { IGroup, GROUPS, GroupTypes } from "./group-types";
+import { IGroup, GROUPS, GroupTypes, ModelType } from "./group-types";
 import { PROPERTIES } from "../properties";
 
 //TODO: Convert to named group
@@ -41,4 +41,17 @@ const source: IGroup = {
   ],
 };
 
-export const exprimentGroups = [experiment, source];
+const protocol: IGroup = {
+  name: GROUPS.PROTOCOL,
+  type: GroupTypes.NAMED,
+  modelType: ModelType.PROTOCOL,
+  description:
+    "Protocol template for an experiment or characterization measurement",
+  detail: "Protocol",
+  aliases: [],
+  referenceProps: [],
+  subGroups: [],
+  properties: [],
+};
+
+export const exprimentGroups = [experiment, source, protocol];

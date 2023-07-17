@@ -110,6 +110,7 @@ export interface GroupCstNode extends CstNode {
 
 export type GroupCstChildren = {
   LCurly: IToken[];
+  protocolItem?: ProtocolItemCstNode[];
   groupItem?: GroupItemCstNode[];
   Semicolon?: IToken[];
   RCurly: IToken[];
@@ -124,6 +125,16 @@ export type GroupItemCstChildren = {
   arrowProperty?: ArrowPropertyCstNode[];
   propertyItem?: PropertyItemCstNode[];
   groupDeclaration?: GroupDeclarationCstNode[];
+};
+
+export interface ProtocolItemCstNode extends CstNode {
+  name: "protocolItem";
+  children: ProtocolItemCstChildren;
+}
+
+export type ProtocolItemCstChildren = {
+  BackTic: (IToken)[];
+  ProtocolText?: IToken[];
 };
 
 export interface ArrowPropertyCstNode extends CstNode {
@@ -235,6 +246,7 @@ export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   referenceDeclaration(children: ReferenceDeclarationCstChildren, param?: IN): OUT;
   group(children: GroupCstChildren, param?: IN): OUT;
   groupItem(children: GroupItemCstChildren, param?: IN): OUT;
+  protocolItem(children: ProtocolItemCstChildren, param?: IN): OUT;
   arrowProperty(children: ArrowPropertyCstChildren, param?: IN): OUT;
   referencePipe(children: ReferencePipeCstChildren, param?: IN): OUT;
   propertyItem(children: PropertyItemCstChildren, param?: IN): OUT;

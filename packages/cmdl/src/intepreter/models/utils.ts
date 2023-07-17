@@ -1,7 +1,6 @@
 import { TYPES, PROPERTIES } from "cmdl-types";
 import { ModelActivationRecord } from "../model-AR";
 import { ChemicalEntity } from "./model";
-import Big from "big.js";
 
 export class ChemicalTranslator {
   /**
@@ -15,34 +14,30 @@ export class ChemicalTranslator {
     if (ref?.mass) {
       return {
         name: PROPERTIES.MASS,
-        value: Big(ref.mass.value),
+        value: ref.mass.value,
         unit: ref.mass.unit,
-        uncertainty: ref.mass?.uncertainty ? Big(ref.mass.uncertainty) : null,
+        uncertainty: ref.mass.uncertainty,
       };
     } else if (ref?.volume) {
       return {
         name: PROPERTIES.VOLUME,
-        value: Big(ref.volume.value),
+        value: ref.volume.value,
         unit: ref.volume.unit,
-        uncertainty: ref.volume?.uncertainty
-          ? Big(ref.volume.uncertainty)
-          : null,
+        uncertainty: ref.volume.uncertainty,
       };
     } else if (ref?.moles) {
       return {
         name: PROPERTIES.MOLES,
-        value: Big(ref.moles.value),
+        value: ref.moles.value,
         unit: ref.moles.unit,
-        uncertainty: ref.moles?.uncertainty ? Big(ref.moles.uncertainty) : null,
+        uncertainty: ref.moles.uncertainty,
       };
     } else if (ref?.pressure) {
       return {
         name: PROPERTIES.PRESSURE,
-        value: Big(ref.pressure.value),
+        value: ref.pressure.value,
         unit: ref.pressure.unit,
-        uncertainty: ref.pressure?.uncertainty
-          ? Big(ref.pressure.uncertainty)
-          : null,
+        uncertainty: ref.pressure.uncertainty,
       };
     } else {
       throw new Error(`Quantity is unavailable for ${ref.name}!`);

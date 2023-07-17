@@ -13,10 +13,10 @@ export enum ModelType {
   FLOW_REACTION = "flow_reaction",
   POLYMER = "polymer",
   POLYMER_GRAPH = "polymer_graph",
+  PROTOCOL = "protocol",
   REACTION = "reaction",
   REACTOR_GRAPH = "reactor_graph",
   REACTOR = "reactor",
-  // SAMPLE = "sample",
   SOLUTION = "solution",
   REFERENCE_GROUP = "reference_group",
   GROUP = "group",
@@ -39,28 +39,6 @@ export enum GROUPS {
   META = "metadata",
   SOURCE = "source",
 
-  //!deprecated characterization techniques
-  // DSC = "dsc",
-  // NMR = "nmr",
-  // GC = "gc",
-  // IR = "ir",
-  // RAMAN = "raman",
-  // UV_VIS = "uv_vis",
-  // GPC = "gpc",
-  // MCPLATE = "microplate_reader",
-  // FLUOR = "fluorescence",
-  // DLS = "dls",
-  // HPLC = "hplc",
-  // ANALYTICAL_BAL = "analytical_balance",
-  // MALDI = "maldi",
-
-  //properties
-  // PHYS_PROP = "physical_properties",
-  // BOIL_POINT = "boiling_point",
-
-  //chemicals
-  // REACTANT = "reactant",
-
   //structure
   STRUCTURE = "structure",
   POLYMER_GRAPH = "polymer_graph",
@@ -78,11 +56,11 @@ export enum GROUPS {
   REACTION = "reaction",
   FLOW_REACTION = "flow_reaction",
   ASSAY = "assay",
-  // SAMPLE = "sample",
   CHEMICAL = "chemical",
   POLYMER = "polymer",
   COMPLEX = "complex",
   ORGANISM = "organism",
   REFERENCE = "reference",
   POINT = "point",
+  PROTOCOL = "protocol",
 }

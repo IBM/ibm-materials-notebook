@@ -21,6 +21,7 @@ import {
   VariableGroupCstChildren,
   AliasClauseCstChildren,
   ImportFileStatementCstChildren,
+  ProtocolItemCstChildren,
 } from "./parser-types";
 
 export enum AstNodes {
@@ -42,6 +43,10 @@ export enum AstNodes {
   GROUP_ID = "GROUP_ID",
   GROUP_LCURL = "GROUP_LCURL",
   GROUP_RCURL = "GROUP_RCURL",
+  BACKTIC_OPEN = "BACKTIC_OPEN",
+  BACKTIC_CLOSED = "BACKTIC_CLOSED",
+  PROTOCOL_STR = "PROTOCOL_STR",
+  PROTOCOL_REF = "PROTOCOL_REF",
   PROP_LSQUARE = "PROP_LSQUARE",
   PROP_RSQUARE = "PROP_RSQUARE",
   PROP_LANGLE = "PROP_LANGLE",
@@ -273,6 +278,10 @@ export class CstVisitor extends BaseVisitor {
       this.createAstNode(AstNodes.GROUP_LCURL, parent, lCurl);
     }
 
+    if (ctx?.protocolItem && ctx.protocolItem.length) {
+      this.visit(ctx.protocolItem[0], parent);
+    }
+
     if (ctx?.groupItem && ctx.groupItem.length) {
       ctx.groupItem.forEach((item) => {
         this.visit(item, parent);
@@ -282,6 +291,28 @@ export class CstVisitor extends BaseVisitor {
     if (ctx.RCurly && ctx.RCurly.length) {
       let rCurl = this.extractToken(ctx.RCurly[0]);
       this.createAstNode(AstNodes.GROUP_RCURL, parent, rCurl);
+    }
+  }
+
+  protocolItem(ctx: ProtocolItemCstChildren, parent: CmdlNode) {
+    if (ctx.BackTic && ctx.BackTic[0]) {
+      const backTicOpen = this.extractToken(ctx.BackTic[0]);
+      this.createAstNode(AstNodes.BACKTIC_OPEN, parent, backTicOpen);
+    }
+
+    if (ctx.ProtocolText && ctx.ProtocolText.length) {
+      for (const str of ctx.ProtocolText) {
+        const strToken = this.extractToken(str);
+        if (strToken.type === "ProtocolRef") {
+          this.createAstNode(AstNodes.PROTOCOL_REF, parent, strToken);
+        } else {
+          this.createAstNode(AstNodes.PROTOCOL_STR, parent, strToken);
+        }
+      }
+    }
+    if (ctx.BackTic && ctx.BackTic[1]) {
+      const backTicClosed = this.extractToken(ctx.BackTic[1]);
+      this.createAstNode(AstNodes.BACKTIC_CLOSED, parent, backTicClosed);
     }
   }
 
