@@ -138,7 +138,7 @@ export class PolymerEdge {
 
     return `${source}.${this.sourcePoint} -> ${target || this.targetName}.${
       this.targetPoint
-    }`;
+    }${this.weight ? `:${this.weight}` : ""}`;
   }
 
   /**

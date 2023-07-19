@@ -33,10 +33,6 @@
         "title": "CMDL: New Materials Notebook"
       },
       {
-        "command": "ibm-materials-notebook.exportWorkspace",
-        "title": "CMDL: Export Current Workspace"
-      },
-      {
         "command": "ibm-materials-notebook.toCSV",
         "title": "CMDL: Export Notebook Variables to CSV"
       },
@@ -47,6 +43,18 @@
       {
         "command": "ibm-materials-notebook.parseGeneratedPolymers",
         "title": "CMDL: Create Notebooks From Generated Polymers"
+      },
+      {
+        "command": "ibm-materials-notebook.exportRecord",
+        "title": "CMDL: Export Current Notebook"
+      },
+      {
+        "command": "ibm-materials-notebook.exportWorkspace",
+        "title": "CMDL: Export Current Workspace"
+      },
+      {
+        "command": "ibm-materials-notebook.exportRecordProtocol",
+        "title": "CMDL: Export Current Record Protocol"
       }
     ],
     "configuration": {

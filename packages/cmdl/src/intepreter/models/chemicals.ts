@@ -15,6 +15,10 @@ export class ChemicalModel
   extends Model<TYPES.Chemical>
   implements ChemicalEntity
 {
+  public getSMILES() {
+    return this.properties.smiles;
+  }
+
   public getConfigValues(): EntityConfigValues {
     if (!this.properties.molecular_weight || !this.properties.state) {
       throw new Error(`No molecular weight or state defined for ${this.name}`);

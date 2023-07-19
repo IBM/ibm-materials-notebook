@@ -1,5 +1,4 @@
 import { TAGS, TYPES } from "cmdl-types";
-import { logger } from "../../logger";
 import { Model } from "./model";
 
 export class ProtocolModel extends Model<any> {
@@ -21,6 +20,15 @@ export class ProtocolModel extends Model<any> {
       this.references[ref.image] = { name: ref.name, value: "" };
       this.refMap[ref.name] = ref.image;
     }
+  }
+
+  public export() {
+    return {
+      protocol: [...this.protocol],
+      references: Object.values(this.references),
+      name: this.name,
+      type: this.type,
+    };
   }
 
   public serializeProtocol(): string {

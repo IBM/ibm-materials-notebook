@@ -46,11 +46,10 @@ export type ComplexChemical = Chemical & {
   [PROPERTIES.RATIO]: number;
 };
 
-export type Complex = {
-  name: string;
+export interface Complex extends BaseModel {
   type: ModelType.COMPLEX;
   components: (ComplexChemical | ComplexPolymer)[];
-};
+}
 
 export interface ChemicalOutput {
   name: string;

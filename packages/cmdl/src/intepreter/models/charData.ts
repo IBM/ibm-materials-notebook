@@ -1,11 +1,13 @@
 import { Model, ChemicalEntity, EntityConfigValues } from "./model";
 import { PolymerModel } from "./polymer";
 import { ChemicalModel } from "./chemicals";
-import { TYPES, TAGS } from "cmdl-types";
+import { TYPES, TAGS, PROPERTIES } from "cmdl-types";
 import Big from "big.js";
+import { CharFileReader } from "./files";
 
 export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
   private chemicalEntity: PolymerModel | ChemicalModel;
+  private files: CharFileReader[] = [];
 
   constructor(
     name: string,
@@ -49,6 +51,10 @@ export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
     return { ...polymerValues, mw: measuredMn };
   }
 
+  public addFile(file: CharFileReader): void {
+    this.files.push(file);
+  }
+
   private selectPolymerMn(): Big {
     if (!this.properties.mn_avg) {
       throw new Error(`No Mn defined for ${this.resultName}!`);
@@ -72,6 +78,32 @@ export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
     } else {
       throw new Error(`unable to find valid Mn for ${this.resultName}`);
     }
+  }
+
+  public protocolExport() {
+    if (
+      this.chemicalEntity instanceof PolymerModel &&
+      this.properties.degree_poly
+    ) {
+      const values = this.properties.degree_poly.map((el) => ({
+        name: this.name,
+        path: el?.path || [],
+        [PROPERTIES.DEGREE_POLY]: {
+          unit: null,
+          value: String(el.value),
+          uncertainty: el.uncertainty ? String(el.uncertainty) : null,
+        },
+      }));
+      this.chemicalEntity.embedNodeValues(values);
+    }
+    return {
+      name: this.name,
+      charData: this.files.length ? this.files[0].export() : null,
+      structure:
+        this.chemicalEntity instanceof PolymerModel
+          ? this.chemicalEntity.getGraphString()
+          : this.chemicalEntity.getSMILES(),
+    };
   }
 }
 

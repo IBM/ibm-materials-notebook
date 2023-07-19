@@ -36,4 +36,12 @@ export class Model<T> implements Clonable, Exportable<T> {
   public export(): T {
     return { ...this.properties, name: this.name, type: this.type };
   }
+
+  protected convertToNumeric(qty: TYPES.BigQty): TYPES.NumericQty {
+    return {
+      ...qty,
+      value: qty.value.toNumber(),
+      uncertainty: qty.uncertainty ? qty.uncertainty.toNumber() : null,
+    };
+  }
 }

@@ -68,6 +68,10 @@ export class PolymerGraphModel extends Model<TYPES.PolymerGraph> {
     return this.graph.getSmilesStr();
   }
 
+  public getGraphStr() {
+    return this.graph.graphToString();
+  }
+
   public export() {
     return {
       smiles: this.graph.getSmilesStr(),
@@ -104,6 +108,13 @@ export class PolymerModel
       throw Error(`polymer graph is undefined on ${this.name}`);
     }
     this.graph.insertNodeProperties(values);
+  }
+
+  public getGraphString(): string {
+    if (!this.graph) {
+      throw new Error(`polymer graph is undefined on ${this.name}`);
+    }
+    return this.graph.getGraphStr();
   }
 
   public getConfigValues(): EntityConfigValues {

@@ -87,7 +87,8 @@ export class PolymerNode implements PolymerComponent {
    */
   public toCompressedString(mask: string): string {
     const smiles = this.sanitizeSmiles();
-    return `${mask};${smiles}`;
+    let nodeDP = this.properties.get("degree_poly");
+    return `${mask};${smiles}${nodeDP ? `;${nodeDP.value}` : ""}`;
   }
 
   /**

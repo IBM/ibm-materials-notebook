@@ -1,4 +1,4 @@
-import { Reference, ChemStates } from "./reference";
+import { Reference, ChemStates, BaseModel } from "./reference";
 import { PROPERTIES } from "../properties";
 import { BigQty, StringQtyUnitless } from "./quantities";
 import { ModelType } from "../groups/group-types";
@@ -6,8 +6,7 @@ import { ModelType } from "../groups/group-types";
 /**
  * Polymer representation parsed from CMDL
  */
-export type Polymer = {
-  name: string;
+export interface Polymer extends BaseModel {
   type: ModelType.POLYMER;
   [PROPERTIES.MN_AVG]?: BigQty;
   [PROPERTIES.BIG_SMILES]?: string;
@@ -16,7 +15,7 @@ export type Polymer = {
   [PROPERTIES.DISPERSITY]?: StringQtyUnitless;
   [PROPERTIES.STATE]: ChemStates;
   [PROPERTIES.TREE]?: Reference; //polymer graph representation reference
-};
+}
 
 /**
  * Values assigned to nodes in polymer graph

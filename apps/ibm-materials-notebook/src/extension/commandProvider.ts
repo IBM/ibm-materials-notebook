@@ -1,16 +1,11 @@
 import * as vscode from "vscode";
 import {
   newCmdlNotebook,
-  exportCurrentWorkspce,
   exportToCsv,
   parseVariableCSV,
   parseGeneratedPolymers,
-  // addToGlobalStorage,
-  // exportCurrentNotebookEntities,
-  // exportCurrentWorkspaceEntities,
-  // clearGlobalStorage,
-  // clearWorkspaceStorage,
-  // addToWorkspaceStorage,
+  exportCurrentNotebook,
+  exportCurrentWorkspace,
 } from "./commands";
 import { Repository } from "./respository";
 
@@ -28,13 +23,6 @@ export function registerCommands(repo: Repository): vscode.Disposable {
     vscode.commands.registerCommand(
       "ibm-materials-notebook.new",
       newCmdlNotebook
-    )
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(
-      "ibm-materials-notebook.exportWorkspace",
-      () => exportCurrentWorkspce(repo)
     )
   );
 
@@ -57,47 +45,25 @@ export function registerCommands(repo: Repository): vscode.Disposable {
     )
   );
 
-  // subscriptions.push(
-  //   vscode.commands.registerCommand(
-  //     "ibm-materials-notebook.addToGlobalStorage",
-  //     () => addToGlobalStorage()
-  //   )
-  // );
+  subscriptions.push(
+    vscode.commands.registerCommand("ibm-materials-notebook.exportRecord", () =>
+      exportCurrentNotebook(repo)
+    )
+  );
 
-  // subscriptions.push(
-  //   vscode.commands.registerCommand(
-  //     "ibm-materials-notebook.addToWorkspaceStorage",
-  //     () => addToWorkspaceStorage()
-  //   )
-  // );
+  subscriptions.push(
+    vscode.commands.registerCommand(
+      "ibm-materials-notebook.exportRecordProtocol",
+      () => exportCurrentNotebook(repo, "protocol")
+    )
+  );
 
-  // subscriptions.push(
-  //   vscode.commands.registerCommand(
-  //     "ibm-materials-notebook.exportEntities",
-  //     () => exportCurrentNotebookEntities(repo)
-  //   )
-  // );
-
-  // subscriptions.push(
-  //   vscode.commands.registerCommand(
-  //     "ibm-materials-notebook.exportWorkspaceEntities",
-  //     () => exportCurrentWorkspaceEntities(repo)
-  //   )
-  // );
-
-  // subscriptions.push(
-  //   vscode.commands.registerCommand(
-  //     "ibm-materials-notebook.clearGlobalStorage",
-  //     () => clearGlobalStorage(lib)
-  //   )
-  // );
-
-  // subscriptions.push(
-  //   vscode.commands.registerCommand(
-  //     "ibm-materials-notebook.clearWorkspaceStorage",
-  //     () => clearWorkspaceStorage(lib)
-  //   )
-  // );
+  subscriptions.push(
+    vscode.commands.registerCommand(
+      "ibm-materials-notebook.exportWorkspace",
+      () => exportCurrentWorkspace(repo)
+    )
+  );
 
   return vscode.Disposable.from(...subscriptions);
 }

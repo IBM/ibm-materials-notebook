@@ -19,3 +19,5 @@ export enum ChemStates {
   LIQUID = "liquid",
   GAS = "gas",
 }
+
+export type StripType<T> = Omit<T, "type">;

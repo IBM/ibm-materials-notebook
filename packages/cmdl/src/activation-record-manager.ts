@@ -1,6 +1,5 @@
 import { Controller } from "./controller";
-import { ModelVisitor, ModelARManager, Model } from "./intepreter";
-import { Exportable } from "./intepreter";
+import { ModelVisitor, ModelARManager, Model, Exportable } from "./intepreter";
 /**
  * Caches execution results for each namespace
  */

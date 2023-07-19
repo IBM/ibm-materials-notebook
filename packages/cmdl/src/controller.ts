@@ -14,6 +14,9 @@ import { CmdlTree } from "./cmdl-tree";
 import { SymbolTable, SymbolTableBuilder } from "./symbols";
 import { logger } from "./logger";
 import { BaseError } from "./errors";
+import { CMDLExporter, ProtocolProductStrategy } from "./export";
+import { DefaultExport } from "./export/default-strategy";
+import { Model } from "./intepreter";
 
 type FileUpdate = {
   uri: string;
@@ -291,12 +294,6 @@ export class Controller {
     return results;
   }
 
-  public transpile() {
-    //converts execution results to new modality
-    //caches result
-    //returns transpiled result
-  }
-
   public getErrors(uri: string, namespace: string): BaseError[] {
     const notebookErrs = this._errors.get(namespace);
     const cellErrors = notebookErrs.get(uri);
@@ -329,5 +326,57 @@ export class Controller {
     }
 
     return matchingItems;
+  }
+
+  private createExport(
+    document: TextDocument | NotebookDocument,
+    uri: string,
+    strategy: "default" | "protocol" = "default"
+  ) {
+    if (document instanceof TextDocument) {
+      const recordOutput = this._results.getOutput(document.fileName, uri);
+      const exporter = new CMDLExporter(
+        strategy === "default"
+          ? new DefaultExport()
+          : new ProtocolProductStrategy()
+      );
+      const record = exporter.exportRecord(recordOutput as Model<unknown>[]);
+      return record;
+    } else {
+      let notebookResults: unknown[] = [];
+      for (const cell of document.cells.values()) {
+        const cellResults = this._results.getOutput(
+          document.fileName,
+          cell.uri
+        );
+        notebookResults = notebookResults.concat(cellResults);
+      }
+      const exporter = new CMDLExporter(
+        strategy === "default"
+          ? new DefaultExport()
+          : new ProtocolProductStrategy()
+      );
+      const record = exporter.exportRecord(notebookResults as Model<unknown>[]);
+      return record;
+    }
+  }
+
+  public exportProtocolProd(uri: string) {
+    const document = this.getDocument(uri);
+    return this.createExport(document, uri, "protocol");
+  }
+
+  public exportRecord(uri: string) {
+    const document = this.getDocument(uri);
+    return this.createExport(document, uri);
+  }
+
+  public exportRepository(uris: string[]) {
+    const recordExports: any[] = [];
+    for (const documentUri of uris) {
+      const record = this.exportRecord(documentUri);
+      recordExports.push(record);
+    }
+    return recordExports;
   }
 }

@@ -1,8 +1,8 @@
 import { PROPERTIES } from "../properties";
-import { BigQty } from "./quantities";
+import { BigQty, Export } from "./quantities";
 import { ModelType } from "../groups/group-types";
 import { ReactionRoles } from "../properties";
-import { Reference } from "./reference";
+import { BaseModel, Reference, StripType } from "./reference";
 import { ChemicalOutput, ChemicalConfig } from "./chemicals";
 import { ReactorGroupOutput } from "./reactors";
 
@@ -16,15 +16,13 @@ export type Product = {
   components?: ComplexComponents[];
 };
 
-export type FlowRxn = {
-  name: string;
+export interface FlowRxn extends BaseModel {
   type: ModelType.FLOW_REACTION;
   reactions: ReactorGroupOutput[];
   products: Product[];
-};
+}
 
-export interface Reaction {
-  name: string;
+export interface Reaction extends BaseModel {
   type: ModelType.REACTION;
   reactants: ChemicalOutput[];
   products: Product[];
@@ -34,6 +32,8 @@ export interface Reaction {
   [PROPERTIES.PROTOCOL]?: string;
 }
 
+export type ReactionExport = StripType<Export<Reaction>>;
+
 export type SolutionReference = {
   name: string;
   path: string[];
@@ -41,12 +41,8 @@ export type SolutionReference = {
   [PROPERTIES.INPUT]: Reference;
 };
 
-/**
- * @deprecated
- */
-export type Solution = {
-  name: string;
+export interface Solution extends BaseModel {
   type: ModelType.SOLUTION;
   components: ChemicalOutput[];
   componentConfigs: ChemicalConfig[];
-};
+}

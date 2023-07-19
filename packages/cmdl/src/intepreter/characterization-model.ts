@@ -35,8 +35,9 @@ export class CharData extends BaseModel {
       const file = this.modelAR.getOptionalValue<TYPES.Reference>("file");
       const charModel = new CharDataModel(this.name, this.type);
 
+      let fileModel;
       if (file?.ref) {
-        const fileModel = globalAR.getValue<CharFileReader>(file.ref);
+        fileModel = globalAR.getValue<CharFileReader>(file.ref);
         charModel.add(PROPERTIES.FILE, {
           name: file.ref,
           ...fileModel.export(),
@@ -81,6 +82,11 @@ export class CharData extends BaseModel {
               );
             }
           }
+
+          if (fileModel) {
+            result.addFile(fileModel);
+          }
+
           logger.debug(`setting result: ${result.resultName}`);
           globalAR.setValue(result.resultName, result);
         }

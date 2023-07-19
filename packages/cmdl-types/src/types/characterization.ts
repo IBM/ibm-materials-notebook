@@ -1,6 +1,7 @@
 import { PROPERTIES } from "../properties";
 import { ModelType } from "../groups/group-types";
 import { BigQty, BigQtyUnitless, MeasuredProperty } from "./quantities";
+import { BaseModel } from "./reference";
 
 export type CharReference = {
   name: string;
@@ -68,11 +69,10 @@ export type CharFile = {
   data: string[][];
 };
 
-export type CharDataOutput = {
-  name: string;
+export interface CharDataOutput extends BaseModel {
   type: ModelType.CHAR_DATA;
   [PROPERTIES.TIME_POINT]: BigQty | null;
   [PROPERTIES.SAMPLE_ID]: string;
   [PROPERTIES.TECHNIQUE]: string;
   [PROPERTIES.FILE]: CharFile | null;
-};
+}

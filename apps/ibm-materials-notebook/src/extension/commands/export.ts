@@ -6,10 +6,12 @@ import { logger } from "../../logger";
 
 /**
  * Exports current notebook entities to a single JSON file
- * @deprecated
  * @param repo Repository
  */
-export async function exportCurrentNotebookEntities(repo: Repository) {
+export async function exportCurrentNotebook(
+  repo: Repository,
+  strategy: "default" | "protocol" = "default"
+) {
   const activeNotebook = vscode.window.activeNotebookEditor;
 
   if (
@@ -38,11 +40,18 @@ export async function exportCurrentNotebookEntities(repo: Repository) {
 
   const outputPath = path.join(
     workspaceFolder.uri.fsPath,
-    `/lib/${fileName}_entities.json`
+    `/lib/${fileName}_export.json`
   );
 
-  // const entities = experiment.exportEntities();
-  const content = JSON.stringify("", null, 2);
+  let recordExport;
+  if (strategy === "default") {
+    recordExport = repo._controller.exportRecord(experiment.uri.toString());
+  } else {
+    recordExport = repo._controller.exportProtocolProd(
+      experiment.uri.toString()
+    );
+  }
+  const content = JSON.stringify(recordExport, null, 2);
 
   fs.writeFile(outputPath, content, (err) => {
     if (err) {
@@ -57,11 +66,10 @@ export async function exportCurrentNotebookEntities(repo: Repository) {
 }
 
 /**
- * Method to export declared entities in all repo notebook to JSON files
- * @deprecated
+ * Method to export repo notebooks to a JSONL file
  * @param repo Repository
  */
-export async function exportCurrentWorkspaceEntities(repo: Repository) {
+export async function exportCurrentWorkspace(repo: Repository) {
   const documents = await vscode.workspace.findFiles("*.cmdnb");
 
   if (!documents.length) {
@@ -77,37 +85,24 @@ export async function exportCurrentWorkspaceEntities(repo: Repository) {
     return;
   }
 
-  for (const docUri of documents) {
-    const openedDoc = await vscode.workspace.openNotebookDocument(docUri);
-    const exp = repo.find(openedDoc.uri);
+  const outputPath = path.join(
+    workspaceFolder.uri.fsPath,
+    `/lib/${workspaceFolder.name}_export.jsonl`
+  );
 
-    if (!exp) {
-      vscode.window.showErrorMessage(
-        `Errors during exporting ${openedDoc.uri.fsPath}...`
-      );
-      continue;
+  const documentUris = documents.map((el) => el.toString());
+
+  const repoOutput = repo._controller.exportRepository(documentUris);
+
+  const content = repoOutput.map((el) => JSON.stringify(el)).join("\n");
+
+  fs.writeFile(outputPath, content, (err) => {
+    if (err) {
+      logger.error(`Error during writing to file: ${err?.message}`);
+    } else {
+      logger.notice(`Success exporting ${workspaceFolder.name}`);
     }
-
-    const fileName = repo.extractFileName(exp.uri);
-
-    const outputPath = path.join(
-      workspaceFolder.uri.fsPath,
-      `/lib/${fileName}_entities.json`
-    );
-
-    // await exp.executeAll();
-    // const entities = exp.exportEntities();
-    //todo: pull cached results from controller
-    const content = JSON.stringify("", null, 2);
-
-    fs.writeFile(outputPath, content, (err) => {
-      if (err) {
-        logger.error(`Error during writing to file: ${err?.message}`);
-      } else {
-        logger.notice(`Success exporting ${fileName}`);
-      }
-    });
-  }
+  });
 
   vscode.window.showInformationMessage(
     "Completed entity export from workspace"

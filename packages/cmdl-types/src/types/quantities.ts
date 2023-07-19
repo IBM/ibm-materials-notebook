@@ -65,3 +65,9 @@ export interface NamedQty extends BigQty {
     | PROPERTIES.MOLES
     | PROPERTIES.PRESSURE;
 }
+
+type ConvertToNumeric<T> = T extends BigQty ? NumericQty : T;
+
+export type Export<T> = {
+  [Property in keyof T]: ConvertToNumeric<T[Property]>;
+};
