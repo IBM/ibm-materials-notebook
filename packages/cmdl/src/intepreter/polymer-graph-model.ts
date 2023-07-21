@@ -28,7 +28,11 @@ export class PolymerGraph extends BaseModel {
       let fragmentMap: Record<string, string> = {};
 
       if (fragmentModel) {
-        fragmentMap = { ...fragmentMap, ...fragmentModel.getFragmentMap() };
+        logger.debug(`fragment model`, { meta: fragmentModel });
+        console.log(fragmentModel);
+        const modelMap = fragmentModel.getFragmentMap();
+
+        fragmentMap = { ...fragmentMap, ...modelMap };
       }
 
       if (localFragments?.length) {

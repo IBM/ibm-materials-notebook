@@ -18,7 +18,7 @@ import { ModelFactory } from "./model-factory";
 import { ModelActivationRecord } from "./model-AR";
 import { CmdlStack } from "../cmdl-stack";
 import { logger } from "../logger";
-import { typeManager, ModelType } from "cmdl-types";
+import { typeManager, ModelType, GROUPS } from "cmdl-types";
 import { Controller } from "../controller";
 import { Clonable, CharFileReader, ProtocolModel } from "./models";
 
@@ -147,17 +147,14 @@ export class ModelVisitor implements AstVisitor {
    * @param node GeneralGroup
    */
   public visitGeneralGroup(node: GeneralGroup): void {
-    logger.verbose(`Starting model execution for group ${node.name}`);
-
-    const modelAR = new ModelActivationRecord(
-      ModelType.GROUP,
-      node.name,
-      this.uri
-    );
+    logger.verbose(`Starting model execution for general group ${node.name}`);
+    const groupModel =
+      node.name === GROUPS.FRAGMENTS ? ModelType.FRAGMENTS : ModelType.GROUP;
+    const modelAR = new ModelActivationRecord(groupModel, node.name, this.uri);
 
     this.modelStack.push(modelAR);
 
-    const model = ModelFactory.createModel(node.name, ModelType.GROUP, modelAR);
+    const model = ModelFactory.createModel(node.name, groupModel, modelAR);
 
     for (const child of node.children) {
       this.visit(child);
