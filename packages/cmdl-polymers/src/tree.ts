@@ -1,15 +1,9 @@
-import Big from "big.js";
 import { PolymerEdge } from "./edge";
 import { Container } from "./tree-container";
 import { PolymerNode } from "./node";
 import { PolymerTreeVisitor } from "./polymer-visitors";
 import { TYPES } from "cmdl-types";
 import { PolymerComponent } from "./types";
-import {
-  JSONPolymerContainer,
-  JSONPolymerNode,
-  JSONPolymerTree,
-} from "./container";
 
 /**
  * Tree representation of polymer structure. The tree representation enables facile conversion to a graph representation.
@@ -184,9 +178,7 @@ export class PolymerTree {
       }
 
       if (curr instanceof PolymerNode) {
-        smiles = smiles.length
-          ? `${smiles}.${curr.getSmiles()}`
-          : curr.getSmiles();
+        smiles = smiles.length ? `${smiles}.${curr.smiles}` : curr.smiles;
       }
 
       if (curr instanceof Container) {
@@ -195,62 +187,6 @@ export class PolymerTree {
     }
 
     return smiles;
-  }
-
-  /**
-   * Creates polymer tree from JSON representation
-   * @deprecated
-   * @param element JSONPolymerGraph
-   * @param parent Container
-   */
-  public fromJSON(
-    element: JSONPolymerTree<null | string> | JSONPolymerNode,
-    parent?: Container
-  ): void {
-    if ("connections" in element) {
-      const newContainer = new Container(element.name);
-
-      for (const connection of element.connections) {
-        let conn = new PolymerEdge({
-          sourcePath: connection.source.split("."),
-          targetPath: connection.target.split("."),
-          weight: connection.weight,
-          quantity: parseInt(connection.quantity),
-        });
-        newContainer.connections.push(conn);
-      }
-
-      if (!parent && !this.root) {
-        this.root = newContainer;
-      } else if (parent) {
-        parent.add(newContainer);
-      } else {
-        throw new Error(`Invalid parent for container: ${element.name}`);
-      }
-
-      if (element.children.length) {
-        for (const child of element.children) {
-          this.fromJSON(child, newContainer);
-        }
-      }
-    } else {
-      const namePath = element.name.split(".");
-      const fragment = namePath[namePath.length - 1];
-      const newNode = new PolymerNode({
-        fragment,
-        mw: Big(element.mw),
-        smiles: element.smiles,
-      });
-
-      if (element.degree_poly) {
-        newNode.properties.set("degree_poly", element.degree_poly);
-      }
-
-      if (!parent) {
-        throw new Error(`Invalid parent for node: ${namePath}`);
-      }
-      parent.add(newNode);
-    }
   }
 
   /**
@@ -284,31 +220,6 @@ export class PolymerTree {
     }
 
     return containerMap;
-  }
-
-  /**
-   * Serializes tree to an object
-   * @returns Object
-   */
-  public toJSON(): JSONPolymerContainer {
-    if (!this.root) {
-      return {} as JSONPolymerContainer;
-    }
-
-    return this.root.toJSON();
-  }
-
-  /**
-   * Method to convert the polymer tree to the BigSMILES string
-   * @deprecated
-   * @returns string
-   */
-  public toBigSMILES(): string {
-    if (!this.root) {
-      throw new Error(`polymer tree is not initialized!`);
-    }
-
-    return this.root.exportToBigSMILES();
   }
 
   /**

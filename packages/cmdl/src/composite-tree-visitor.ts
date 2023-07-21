@@ -22,6 +22,7 @@ import {
   AliasClauseCstChildren,
   ImportFileStatementCstChildren,
   ProtocolItemCstChildren,
+  AssignmentPropertyCstChildren,
 } from "./parser-types";
 import {
   ImportOp,
@@ -41,6 +42,7 @@ import {
   AngleProperty,
   ImportFileOp,
   ProtocolGroup,
+  AssignmentProperty,
 } from "./cmdl-tree";
 
 const BaseVisitor = parserInstance.getBaseCstVisitorConstructor();
@@ -231,6 +233,8 @@ export class CstRecordVisitor extends BaseVisitor {
       this.visit(ctx.propertyItem, parent);
     } else if (ctx?.arrowProperty) {
       this.visit(ctx.arrowProperty, parent);
+    } else if (ctx?.assignmentProperty) {
+      this.visit(ctx.assignmentProperty, parent);
     } else {
       // create error => bad group item
     }
@@ -242,6 +246,15 @@ export class CstRecordVisitor extends BaseVisitor {
         const protocolToken = this.extractToken(textToken);
         parent.addToken(protocolToken);
       }
+    }
+  }
+
+  assignmentProperty(ctx: AssignmentPropertyCstChildren, parent: Group) {
+    if (ctx.Identifier && ctx.StringLiteral) {
+      const identifier = this.extractToken(ctx.Identifier[0]);
+      const value = this.extractToken(ctx.StringLiteral[0]);
+      const assignmentProp = new AssignmentProperty(identifier, value);
+      parent.add(assignmentProp);
     }
   }
 

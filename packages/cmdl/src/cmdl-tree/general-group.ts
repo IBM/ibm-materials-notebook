@@ -1,10 +1,10 @@
 import { CmdlToken } from "../cmdl-ast";
 import { BaseError, InvalidGroupError, InvalidPropertyError } from "../errors";
 import { Group, Property, RecordNode } from "./base-components";
-import { IGroup, GroupTypes } from "cmdl-types";
-import { ReferenceGroup } from "./reference-group";
+import { GroupTypes, PROPERTIES } from "cmdl-types";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
+import { AssignmentProperty } from "./assignment-property";
 
 /**
  * Handles general, unnamed groups in CMDL record trees
@@ -37,7 +37,7 @@ export class GeneralGroup extends Group {
    * @param props Set<string>
    * @returns void
    */
-  protected validateGroupChild(child: RecordNode, props: Set<string>): void {
+  protected validateGroupChild(child: RecordNode): void {
     if (!this.groupProps) {
       return;
     }
@@ -45,23 +45,15 @@ export class GeneralGroup extends Group {
     let msg: string;
     let err: BaseError;
 
-    if (
-      (child instanceof GeneralGroup || child instanceof Property) &&
-      props.has(child.name)
-    ) {
-      this.createDuplicationErr(child);
-    } else if (child instanceof ReferenceGroup) {
-      const path = child.getPath().join(".");
-      const pathStr = path.length ? `.${path}` : "";
-      const fullName = `${child.name}${pathStr}`;
-
-      if (props.has(fullName)) {
-        this.createDuplicationErr(child);
+    if (child instanceof AssignmentProperty) {
+      if (!this.groupProps.properties.includes(PROPERTIES.FRAGMENT)) {
+        msg = `${child.name} is not a valid sub-group of ${this.name}`;
+        err = new InvalidGroupError(msg, child.nameToken);
+        this.errors.push(err);
+        return;
       } else {
-        props.add(fullName);
+        return;
       }
-    } else {
-      props.add(child.name);
     }
 
     if (

@@ -5,11 +5,6 @@ export interface Serializable {
    * Converts to string for logging purposes
    */
   print(): string;
-
-  /**
-   * Converts to object for export
-   */
-  toJSON(): any;
 }
 
 /**
@@ -53,9 +48,4 @@ export interface PolymerComponent extends Serializable {
    * @param visitor TreeVisitor
    */
   accept(visitor: PolymerTreeVisitor): void;
-
-  /**
-   * Method to serialize the polymer tree into a BigSMILES line notation
-   */
-  exportToBigSMILES(): string;
 }

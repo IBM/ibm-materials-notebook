@@ -1,7 +1,8 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { ModelType, TYPES } from "cmdl-types";
-import { PolymerGraphModel } from "./models";
+import { FragmentModel, PolymerGraphModel } from "./models";
+import { logger } from "../logger";
 
 /**
  * Model for creating polymer graph
@@ -17,6 +18,25 @@ export class PolymerGraph extends BaseModel {
 
   public execute(globalAR: ModelActivationRecord): void {
     try {
+      logger.debug(`graph global AR: ${globalAR.print()}`);
+      logger.debug(`model ar: ${this.modelAR.print()}`);
+      const fragmentModel =
+        globalAR.getOptionalValue<FragmentModel>("fragments");
+      const localFragments =
+        this.modelAR.getOptionalValue<TYPES.Fragment[]>("fragments");
+
+      let fragmentMap: Record<string, string> = {};
+
+      if (fragmentModel) {
+        fragmentMap = { ...fragmentMap, ...fragmentModel.getFragmentMap() };
+      }
+
+      if (localFragments?.length) {
+        for (const fragment of localFragments) {
+          fragmentMap[fragment.name] = fragment.value;
+        }
+      }
+
       const nodes = this.modelAR.getValue<TYPES.Reference[]>("nodes");
       const connections =
         this.modelAR.getOptionalValue<TYPES.PolymerConnection[]>("connections");
@@ -33,7 +53,7 @@ export class PolymerGraph extends BaseModel {
         containers: containers ? containers : [],
       };
 
-      polymerGraph.initializePolymerGraph(treeConfig, globalAR);
+      polymerGraph.initializePolymerGraph(treeConfig, fragmentMap);
 
       globalAR.setValue(this.name, polymerGraph);
     } catch (error) {

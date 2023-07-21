@@ -2,15 +2,15 @@ import { IGroup, GROUPS, GroupTypes, ModelType } from "./group-types";
 import { PROPERTIES } from "../properties";
 
 const polymerFragment: IGroup = {
-  name: GROUPS.FRAGMENT,
-  type: GroupTypes.NAMED,
-  modelType: ModelType.FRAGMENT,
-  description: "polymer graph fragment",
-  detail: "polymer graph fragment",
+  name: GROUPS.FRAGMENTS,
+  type: GroupTypes.UNAMED,
+  modelType: ModelType.FRAGMENTS,
+  description: "SMILES fragments for polymer graph",
+  detail: "Polymer graph fragments",
   aliases: [],
   referenceProps: [],
-  subGroups: [GROUPS.POINT],
-  properties: [PROPERTIES.SMILES, PROPERTIES.MOL_WEIGHT],
+  subGroups: [],
+  properties: [PROPERTIES.FRAGMENT],
 };
 
 const polymerContainer: IGroup = {
@@ -29,25 +29,17 @@ const polymerGraph: IGroup = {
   name: GROUPS.POLYMER_GRAPH,
   type: GroupTypes.NAMED,
   modelType: ModelType.POLYMER_GRAPH,
-  description: "Polymer graph",
-  detail: "Polymer graph",
+  description: "Contains base structural information for a given polymer type",
+  detail: "Polymer structure group",
   aliases: [],
   referenceProps: [],
   subGroups: [GROUPS.CONTAINER],
-  properties: [PROPERTIES.NODES, PROPERTIES.CONNECTIONS],
-};
-
-//TODO: deprecate in favor of SMILES parser
-const connectionPoint: IGroup = {
-  name: GROUPS.POINT,
-  type: GroupTypes.NAMED,
-  modelType: ModelType.COMPONENT,
-  description: "Polymer graph",
-  detail: "Polymer graph",
-  aliases: [],
-  referenceProps: [],
-  subGroups: [],
-  properties: [PROPERTIES.QUANTITY],
+  properties: [
+    PROPERTIES.BIG_SMILES,
+    PROPERTIES.NODES,
+    PROPERTIES.CONNECTIONS,
+    PROPERTIES.FRAGMENT,
+  ],
 };
 
 const reactorGraph: IGroup = {
@@ -81,5 +73,5 @@ export const structureGroups = [
   polymerContainer,
   polymerFragment,
   polymerGraph,
-  connectionPoint,
+  // connectionPoint,
 ];

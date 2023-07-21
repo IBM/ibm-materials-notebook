@@ -3,48 +3,8 @@ import { PolymerTree } from "./tree";
 import { PolymerWeight } from "./weights";
 import { PolymerNode } from "./node";
 import { Container } from "./tree-container";
-import { ModelType, TYPES } from "cmdl-types";
+import { TYPES } from "cmdl-types";
 import Big from "big.js";
-
-export interface JSONPolymerGraph {
-  nodes: JSONPolymerNode[];
-  edges: JSONPolymerConnection[];
-}
-
-export interface JSONPolymerContainer {
-  name: string;
-  parent: string | null;
-  connections: JSONPolymerConnection[];
-  children: (JSONPolymerContainer | JSONPolymerNode)[];
-}
-
-export interface JSONPolymerConnection {
-  source: string;
-  target: string;
-  weight: number;
-  quantity: string;
-}
-
-export interface JSONPolymerNode {
-  name: string;
-  mw: number;
-  smiles: string;
-  parent: string | null;
-  degree_poly?: string;
-}
-
-export interface JSONPolymerTree<T extends string | null> {
-  name: string;
-  connections: JSONPolymerConnection[];
-  parent: T;
-  children: (JSONPolymerTree<string> | JSONPolymerNode)[];
-}
-
-export interface JSONPolymerGraphStructure {
-  name: string;
-  type: ModelType.POLYMER_GRAPH;
-  tree: JSONPolymerTree<null>;
-}
 
 /**
  * Top level class for managing polymer tree and graph representations
@@ -66,12 +26,8 @@ export class PolymerContainer {
     return new Container(name);
   }
 
-  public createPolymerNode(fragmentConfig: {
-    fragment: string;
-    mw: Big;
-    smiles: string;
-  }): PolymerNode {
-    return new PolymerNode(fragmentConfig);
+  public createPolymerNode(fragment: string, smiles: string): PolymerNode {
+    return new PolymerNode(fragment, smiles);
   }
 
   public createPolymerEdges(
@@ -88,18 +44,6 @@ export class PolymerContainer {
     this.tree.root?.setName();
     this.tree.root?.setPath();
     this.tree.root?.updateConnectionPaths();
-    this.buildGraph();
-  }
-
-  /**
-   * Initializes polymer tree data structure from imported JSON representation
-   * @param tree JSONPolymerTree<null>
-   *
-   */
-  initializeTreeFromJSON(tree: JSONPolymerTree<null>): void {
-    this.tree.fromJSON(tree);
-    this.tree.root?.setName();
-    this.tree.root?.setPath();
     this.buildGraph();
   }
 
@@ -130,14 +74,6 @@ export class PolymerContainer {
    */
   public graphToString(): string {
     return this.graph.toString();
-  }
-
-  /**
-   * Method to convert polymer graph to an JSON object
-   * @returns object
-   */
-  public graphToJSON(): JSONPolymerGraph {
-    return this.graph.toJSON();
   }
 
   /**
@@ -199,23 +135,5 @@ export class PolymerContainer {
         throw new Error(`Property is not embeddable`);
       }
     }
-  }
-
-  /**
-   * Method to convert polymer tree to an Object
-   * @returns object
-   */
-  public treeToJSON() {
-    return this.tree.toJSON();
-  }
-
-  /**
-   * Method to convert polymer graph into BigSmiles
-   * @TODO improve scope of BigSMILES conversion
-   * @deprecated
-   * @returns string
-   */
-  public treeToBigSmiles() {
-    return this.tree.toBigSMILES();
   }
 }

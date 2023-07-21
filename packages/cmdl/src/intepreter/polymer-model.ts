@@ -15,7 +15,9 @@ export class Polymer extends BaseModel {
   }
 
   public execute(globalAR: ModelActivationRecord): void {
-    const treeRef = this.modelAR.getValue<TYPES.Reference>(PROPERTIES.TREE);
+    const treeRef = this.modelAR.getValue<TYPES.Reference>(
+      PROPERTIES.STRUCTURE
+    );
     const treeValues =
       this.modelAR.getOptionalValue<TYPES.PolymerTreeValue[]>("references");
     const polymerGraph = globalAR.getOptionalValue<PolymerGraphModel>(

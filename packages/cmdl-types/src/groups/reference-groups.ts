@@ -35,13 +35,12 @@ const polymer: IGroup = {
   referenceProps: [PROPERTIES.DEGREE_POLY],
   subGroups: [],
   properties: [
-    PROPERTIES.BIG_SMILES,
     PROPERTIES.MN_AVG,
     PROPERTIES.MW_AVG,
     PROPERTIES.DISPERSITY,
     PROPERTIES.STATE,
     //!?change to graph
-    PROPERTIES.TREE,
+    PROPERTIES.STRUCTURE,
   ],
 };
 

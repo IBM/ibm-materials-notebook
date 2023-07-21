@@ -1,8 +1,6 @@
 import { Model, ChemicalEntity, EntityConfigValues } from "./model";
-import { FramgentModel } from "./chemicals";
 import { TYPES, ModelType } from "cmdl-types";
 import { PolymerContainer } from "cmdl-polymers";
-import { ModelActivationRecord } from "../model-AR";
 import Big from "big.js";
 import { logger } from "../../logger";
 
@@ -17,7 +15,7 @@ export class PolymerGraphModel extends Model<TYPES.PolymerGraph> {
 
   public initializePolymerGraph(
     treeConfig: TYPES.PolymerContainer,
-    record: ModelActivationRecord
+    fragmentMap: Record<string, string>
   ): void {
     const queue: TYPES.PolymerContainer[] = [treeConfig];
     let curr: TYPES.PolymerContainer | undefined;
@@ -32,8 +30,12 @@ export class PolymerGraphModel extends Model<TYPES.PolymerGraph> {
       const container = this.graph.createPolymerContainer(curr.name);
 
       for (const node of curr.nodes) {
-        const fragment = record.getValue<FramgentModel>(node.ref.slice(1));
-        const entity = this.graph.createPolymerNode(fragment.getNodeValues());
+        const fragmentName = node.ref.slice(1);
+        const fragmentSmiles = fragmentMap[fragmentName];
+        const entity = this.graph.createPolymerNode(
+          fragmentName,
+          fragmentSmiles
+        );
         container.add(entity);
       }
 
@@ -133,10 +135,9 @@ export class PolymerModel
   }
 
   public export(): TYPES.Polymer {
-    const graphExport = this.graph?.export();
+    // const graphExport = this.graph?.export();
     return {
       ...this.properties,
-      smiles: graphExport?.smiles || "",
       name: this.name,
       type: this.type as ModelType.POLYMER,
     };

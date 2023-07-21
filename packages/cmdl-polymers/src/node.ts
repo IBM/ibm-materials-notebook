@@ -1,12 +1,9 @@
-import Big from "big.js";
 import { PolymerComponent } from "./types";
 import { Container } from "./tree-container";
 import { PolymerTreeVisitor } from "./polymer-visitors";
-import { JSONPolymerNode } from "./container";
 
 export interface EntityConfig {
   fragment: string;
-  mw: Big;
   smiles: string;
 }
 
@@ -18,14 +15,12 @@ export class PolymerNode implements PolymerComponent {
   name: string = "";
   group: string = "";
   fragment: string;
-  mw: Big;
   smiles: string;
   properties = new Map<string, any>(); //dp, mol_fraction, etc.
   parent: Container | null = null;
 
-  constructor({ fragment, mw, smiles }: EntityConfig) {
+  constructor(fragment: string, smiles: string) {
     this.fragment = fragment;
-    this.mw = mw;
     this.smiles = smiles || "-";
   }
 
@@ -35,23 +30,6 @@ export class PolymerNode implements PolymerComponent {
 
   public setParent(arg: Container): void {
     this.parent = arg;
-  }
-
-  public toJSON(): JSONPolymerNode {
-    const entityRecord: JSONPolymerNode = {
-      name: this.name,
-      mw: this.mw.toNumber(),
-      smiles: this.smiles,
-      parent: this.parent?.name || null,
-    };
-
-    for (const [key, value] of this.properties.entries()) {
-      if (key === "degree_poly") {
-        entityRecord[key] = value;
-      }
-    }
-
-    return entityRecord;
   }
 
   /**
@@ -86,21 +64,13 @@ export class PolymerNode implements PolymerComponent {
    * @returns string
    */
   public toCompressedString(mask: string): string {
-    const smiles = this.sanitizeSmiles();
     let nodeDP = this.properties.get("degree_poly");
-    return `${mask};${smiles}${nodeDP ? `;${nodeDP.value}` : ""}`;
-  }
-
-  /**
-   * Retrieves sanitized SMILES string
-   * @returns string
-   */
-  public getSmiles() {
-    return this.sanitizeSmiles();
+    return `${mask};${this.smiles}${nodeDP ? `;${nodeDP.value}` : ""}`;
   }
 
   /**
    * Removes extraneous numbers in smiles fragments
+   * @deprecated
    * @returns string
    */
   private sanitizeSmiles() {
@@ -154,9 +124,7 @@ export class PolymerNode implements PolymerComponent {
    * @returns string
    */
   public print(): string {
-    return `entity: ${this.name}, mw: ${this.mw.toNumber()}, smiles: ${
-      this.smiles
-    };\n`;
+    return `name: ${this.name}, smiles: ${this.smiles};\n`;
   }
 
   /**

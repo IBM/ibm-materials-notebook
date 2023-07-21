@@ -1,5 +1,5 @@
 export { ResultModel, CharDataModel } from "./charData";
-export { ChemicalModel, FramgentModel } from "./chemicals";
+export { ChemicalModel, FragmentModel } from "./chemicals";
 export { PolymerGraphModel, PolymerModel, ComplexModel } from "./polymer";
 export {
   ReactionModel,

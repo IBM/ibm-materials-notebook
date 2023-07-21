@@ -22,9 +22,12 @@ import {
   AliasClauseCstChildren,
   ImportFileStatementCstChildren,
   ProtocolItemCstChildren,
+  AssignmentPropertyCstChildren,
 } from "./parser-types";
 
 export enum AstNodes {
+  ASSIGNMENT = "ASSIGNMENT",
+  ASSIGNMENT_PROP = "ASSIGNMENT_PROP",
   RECORD = "RECORD",
   IMPORT = "IMPORT",
   IMPORT_ID = "IMPORT_ID",
@@ -45,6 +48,7 @@ export enum AstNodes {
   GROUP_RCURL = "GROUP_RCURL",
   BACKTIC_OPEN = "BACKTIC_OPEN",
   BACKTIC_CLOSED = "BACKTIC_CLOSED",
+  VAR_ID = "VAR_ID",
   PROTOCOL_STR = "PROTOCOL_STR",
   PROTOCOL_REF = "PROTOCOL_REF",
   PROP_LSQUARE = "PROP_LSQUARE",
@@ -323,8 +327,24 @@ export class CstVisitor extends BaseVisitor {
       this.visit(ctx.propertyItem, parent);
     } else if (ctx.arrowProperty) {
       this.visit(ctx.arrowProperty, parent);
+    } else if (ctx.assignmentProperty) {
+      this.visit(ctx.assignmentProperty, parent);
     } else {
       // create error => bad group item
+    }
+  }
+
+  assignmentProperty(ctx: AssignmentPropertyCstChildren, parent: CmdlNode) {
+    const assignmentProp = this.createAstNode(AstNodes.ASSIGNMENT_PROP, parent);
+    if (ctx.Identifier && ctx.Assignment && ctx.StringLiteral) {
+      const identifier = this.extractToken(ctx.Identifier[0]);
+      this.createAstNode(AstNodes.VAR_ID, assignmentProp, identifier);
+
+      const assignment = this.extractToken(ctx.Assignment[0]);
+      this.createAstNode(AstNodes.ASSIGNMENT, assignmentProp, assignment);
+
+      const value = this.extractToken(ctx.StringLiteral[0]);
+      this.createAstNode(AstNodes.VAR_VALUE, assignmentProp, value);
     }
   }
 

@@ -7,8 +7,6 @@ import {
   StrategyVisitor,
   EdgeMultiplier,
 } from "./polymer-visitors";
-import { JSONPolymerContainer } from "./container";
-import { PolymerNode } from "./node";
 
 /**
  * Class for managing groups of nodes, other containers, and connections between them.
@@ -97,21 +95,6 @@ export class Container implements PolymerComponent {
   }
 
   /**
-   * Serializes container to object for exporting.
-   * @returns Object
-   */
-  public toJSON(): JSONPolymerContainer {
-    const containerRecord = {
-      name: this.name,
-      connections: this.connections.map((el) => el.toJSON()),
-      parent: this.parent ? this.parent.name : null,
-      children: this.children.map((el) => el.toJSON()),
-    };
-
-    return containerRecord;
-  }
-
-  /**
    * Accepts a polymer tree visitor for polymer weights computations
    * @param visitor PolymerTreeVisitor
    */
@@ -124,46 +107,6 @@ export class Container implements PolymerComponent {
       visitor.visitContainer(this);
     } else if (visitor instanceof SideChainVisitor) {
       visitor.visitContainer(this);
-    }
-  }
-
-  /**
-   * Exports polymer container to BigSMILES format.
-   * This method not viable for all polymer types
-   * @deprecated
-   * @returns string
-   */
-  public exportToBigSMILES(): string {
-    const childBigSmiles = [];
-    let leftEndgroup: PolymerNode | undefined,
-      rightEndGroup: PolymerNode | undefined;
-    for (const child of this.children) {
-      if (child instanceof PolymerNode) {
-        if (this.isRepeatUnit(child.name)) {
-          let repeatUnitSmiles = child.exportToBigSMILES();
-          childBigSmiles.push(repeatUnitSmiles);
-        } else {
-          if (this.isLeftEndGroup(child.name)) {
-            leftEndgroup = child;
-          } else {
-            rightEndGroup = child;
-          }
-        }
-      } else {
-        let containerSmiles = child.exportToBigSMILES();
-        childBigSmiles.push(containerSmiles);
-      }
-    }
-
-    if (!leftEndgroup && !rightEndGroup && !this.parent) {
-      return `{[]${childBigSmiles.join(", ")}[]}`;
-    }
-    if (leftEndgroup && rightEndGroup) {
-      const left = leftEndgroup.exportToBigSMILES();
-      const right = rightEndGroup.exportToBigSMILES();
-      return `${left}{[>]${childBigSmiles.join(", ")}[<]}${right}`;
-    } else {
-      return `{${childBigSmiles.join(", ")}}`;
     }
   }
 

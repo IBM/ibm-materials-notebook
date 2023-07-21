@@ -12,7 +12,7 @@ import {
   ImportSymbol,
 } from "./cmdl-symbol-base";
 import { BaseError, DuplicationError, RefError } from "../errors";
-import { typeManager } from "cmdl-types";
+import { ModelType, typeManager } from "cmdl-types";
 import {
   AngleProperty,
   NamedGroup,
@@ -28,6 +28,7 @@ import {
   Property,
   ImportFileOp,
   ProtocolGroup,
+  AssignmentProperty,
 } from "../cmdl-tree";
 import { CmdlStack } from "../cmdl-stack";
 import { CmdlToken } from "../cmdl-ast";
@@ -436,6 +437,20 @@ export class SymbolTableBuilder implements AstVisitor {
       valueSymbolList
     );
     this.addSymbol(propSymbol);
+  }
+
+  public visitAssignmentProp(assignmentProp: AssignmentProperty) {
+    const assignmentSymbol = new DeclarationSymbol(
+      {
+        name: assignmentProp.name,
+        token: assignmentProp.nameToken,
+        type: SymbolType.DECLARATION,
+        def: this.uri,
+      },
+      ModelType.FRAGMENTS
+    );
+
+    this.addSymbol(assignmentSymbol);
   }
 
   /**

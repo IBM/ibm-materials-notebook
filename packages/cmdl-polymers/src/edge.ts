@@ -1,4 +1,3 @@
-import { JSONPolymerConnection } from "./container";
 import {
   PolymerTreeVisitor,
   EdgeWeightor,
@@ -103,26 +102,6 @@ export class PolymerEdge {
 
   /**
    * Serializes to more concise representation with masked paths
-   * @TODO remove pipe separator
-   * @param maskMap Map<string, string>
-   * @returns string
-   */
-  public toMaskedString(maskMap: Map<string, string>): string {
-    let target = maskMap.get(this.targetName);
-
-    if (!target) {
-      // logger.warn(
-      //   `unable to find target node: ${this.targetName} in mask map!`
-      // );
-    }
-
-    return `<edge>${this.sourcePoint} -> ${target || this.targetName}.${
-      this.targetPoint
-    }|${this.weight}|${this.quantity}`;
-  }
-
-  /**
-   * Serializes to more concise representation with masked paths
    * @param maskMap Map<string, string>
    * @returns string
    */
@@ -139,29 +118,6 @@ export class PolymerEdge {
     return `${source}.${this.sourcePoint} -> ${target || this.targetName}.${
       this.targetPoint
     }${this.weight ? `:${this.weight}` : ""}`;
-  }
-
-  /**
-   * Serializes to a string for exporting
-   * @TODO remove pipe separator
-   * @returns string
-   */
-  public toString(): string {
-    return `<edge>${this.sourcePoint} -> ${this.targetName}.${this.targetPoint}|${this.weight}|${this.quantity}`;
-  }
-
-  /**
-   * Converts to Object for export
-   * @TODO fix unnecessary type conversion
-   * @returns Object
-   */
-  public toJSON(): JSONPolymerConnection {
-    return {
-      source: this.sourcePath.join("."),
-      target: this.targetPath.join("."),
-      weight: this.weight,
-      quantity: String(this.quantity),
-    };
   }
 
   /**

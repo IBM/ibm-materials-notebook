@@ -1,7 +1,7 @@
 import { ModelActivationRecord } from "./model-AR";
 import { ModelType, TYPES } from "cmdl-types";
 import { BaseModel } from "./base-model";
-import { Model, ChemicalModel, FramgentModel } from "./models";
+import { Model, ChemicalModel, FragmentModel } from "./models";
 
 /**
  * Model for reference groups. Tablulates child properties and merges into parent AR.
@@ -10,7 +10,7 @@ export class GroupModel extends BaseModel {
   constructor(
     name: string,
     modelAR: ModelActivationRecord,
-    type: ModelType.GROUP | ModelType.CHEMICAL | ModelType.FRAGMENT
+    type: ModelType.GROUP | ModelType.CHEMICAL | ModelType.FRAGMENTS
   ) {
     super(name, modelAR, type);
   }
@@ -24,9 +24,11 @@ export class GroupModel extends BaseModel {
       const chemModel = new ChemicalModel(this.name, this.type);
       this.copyProperties<TYPES.Chemical>(chemModel, this.modelAR);
       globalAR.setValue(this.name, chemModel);
-    } else if (this.type === ModelType.FRAGMENT) {
-      const fragmentModel = new FramgentModel(this.name, this.type);
-      this.copyProperties<TYPES.Fragment>(fragmentModel, this.modelAR);
+    } else if (this.type === ModelType.FRAGMENTS) {
+      const fragmentModel = new FragmentModel(this.name, this.type);
+      const fragments =
+        this.modelAR.getOptionalValue<TYPES.Fragment[]>("fragments");
+      fragmentModel.add("fragments", fragments || []);
       globalAR.setValue(this.name, fragmentModel);
     } else {
       throw new Error(`Invalid group model for ${this.type}`);

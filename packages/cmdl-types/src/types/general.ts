@@ -1,9 +1,6 @@
 import { PROPERTIES } from "../properties";
 import { GROUPS } from "../groups";
 import { TAGS } from "../tags";
-import { Polymer, PolymerGraph } from "./polymer";
-import { Chemical, Fragment } from "./chemicals";
-import { Reactor } from "./reactors";
 
 export interface RecordSource {
   [PROPERTIES.TITLE]?: string;

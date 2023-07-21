@@ -34,6 +34,7 @@ const Colon = createToken({ name: "Colon", pattern: /:/ });
 const SemiColon = createToken({ name: "Semicolon", pattern: /;/ });
 const Link = createToken({ name: "Link", pattern: LINK });
 const Variable = createToken({ name: "Variable", pattern: VARIABLE });
+const Assignment = createToken({ name: "Assignment", pattern: /=:/ });
 const BackTicOpen = createToken({
   name: "BackTic",
   pattern: /`/,
@@ -128,6 +129,7 @@ const multiModeLexer: IMultiModeLexerDefinition = {
       RSquare,
       RAngle,
       LAngle,
+      Assignment,
       Colon,
       SemiColon,
       Comma,
@@ -164,6 +166,7 @@ const allTokens = [
   SemiColon,
   Comma,
   Protocol,
+  Assignment,
   StringLiteral,
 ];
 
@@ -207,4 +210,5 @@ export {
   ProtoReference,
   Protocol,
   MultiLineStr,
+  Assignment,
 };

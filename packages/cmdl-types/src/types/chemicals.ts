@@ -26,12 +26,6 @@ export type ChemicalReference = {
   [PROPERTIES.LIMITING]?: boolean;
 };
 
-export interface Fragment extends BaseModel {
-  type: ModelType.FRAGMENT;
-  [PROPERTIES.SMILES]: string;
-  [PROPERTIES.MOL_WEIGHT]: BigQty;
-}
-
 export type ComplexReference = {
   name: string;
   path: string[];
@@ -49,6 +43,16 @@ export type ComplexChemical = Chemical & {
 export interface Complex extends BaseModel {
   type: ModelType.COMPLEX;
   components: (ComplexChemical | ComplexPolymer)[];
+}
+
+export type Fragment = {
+  name: string;
+  value: string;
+};
+
+export interface Fragments {
+  type: ModelType.FRAGMENTS;
+  fragments: Fragment[];
 }
 
 export interface ChemicalOutput {

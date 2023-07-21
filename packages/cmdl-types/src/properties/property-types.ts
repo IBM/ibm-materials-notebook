@@ -99,7 +99,7 @@ export enum PROPERTIES {
   SAMPLE_ID = "sample_id",
   SMILES = "smiles",
   BIG_SMILES = "big_smiles",
-  TREE = "tree",
+  STRUCTURE = "structure",
   INCHI = "inchi",
   INCHI_KEY = "inchi_key",
   DESCRIPTION = "description",
@@ -124,6 +124,7 @@ export enum PROPERTIES {
   //reference
   TARGETS = "targets",
   TARGET = "target",
+  FRAGMENT = "fragment",
   SOURCES = "sources",
   COMPONENT = "component",
   COMPONENTS = "components",

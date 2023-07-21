@@ -128,14 +128,6 @@ const refId: IProperty = {
   aliases: [],
 };
 
-const tree: IProperty = {
-  description: "Polymer tree",
-  detail: "Polymer tree",
-  name: PROPERTIES.TREE,
-  type: PropertyTypes.TEXT,
-  aliases: [],
-};
-
 const limiting: IProperty = {
   description: "Sets the limiting reagent in a reaction",
   detail: "limiting reagent",
@@ -157,7 +149,6 @@ export const textProperties = [
   title,
   owner,
   description,
-  tree,
   recordId,
   limiting,
   refId,

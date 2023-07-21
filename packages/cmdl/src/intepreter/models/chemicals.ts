@@ -1,13 +1,15 @@
 import { Model, EntityConfigValues, ChemicalEntity } from "./model";
 import { TYPES } from "cmdl-types";
 
-export class FramgentModel extends Model<TYPES.Fragment> {
-  public getNodeValues() {
-    return {
-      smiles: this.properties.smiles,
-      mw: this.properties.molecular_weight.value,
-      fragment: this.name,
-    };
+export class FragmentModel extends Model<TYPES.Fragments> {
+  public getFragmentMap() {
+    const fragmentMap: Record<string, string> = {};
+
+    for (const fragment of this.properties.fragments) {
+      fragmentMap[fragment.name] = fragment.value;
+    }
+
+    return fragmentMap;
   }
 }
 

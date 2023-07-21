@@ -3,7 +3,6 @@ import { IProperty, allProperties } from "./properties";
 import { IGroup, allGroups } from "./groups";
 import { IAction, allActions } from "./actions";
 import { ITag, allTags } from "./tags";
-// import { ITemplates } from "./templates";
 import { UNITS } from "./units";
 
 /**
@@ -16,7 +15,6 @@ export class TypeManager {
   private GROUPS = new Map<string, IGroup>();
   private TAGS = new Map<string, ITag>();
   private ACTIONS = new Map<string, IAction>();
-  // private TEMPLATES = new Map<string, ITemplates>();
 
   private readonly volumeQtyUnitMap = new Map<string, string>([
     [UNITS.PL, UNITS.NG],
@@ -52,14 +50,12 @@ export class TypeManager {
     groups: IGroup[],
     tags: ITag[],
     actions: IAction[]
-    // templates: ITemplates[]
   ) {
     this.initializeUnits(units);
     this.initializeProperties(props);
     this.initializeGroups(groups);
     this.initializeTags(tags);
     this.initializeActions(actions);
-    // this.initializeTemplates(templates);
   }
 
   private initializeUnits(arr: IUnit[]) {
@@ -77,9 +73,6 @@ export class TypeManager {
   private initializeActions(arr: IAction[]) {
     arr.forEach((prop) => this.ACTIONS.set(prop.name, prop));
   }
-  // private initializeTemplates(arr: ITemplates[]) {
-  //   arr.forEach((prop) => this.TEMPLATES.set(prop.name, prop));
-  // }
 
   /**
    * constructs a regular expression for all units
@@ -157,15 +150,11 @@ export class TypeManager {
     return group;
   }
 
-  // public getTempate(key: string) {
-  //   return this.TEMPLATES.get(key);
-  // }
-
   public getModel(key: string) {
     const group = this.GROUPS.get(key);
 
     if (!group) {
-      throw new Error(`${key} is not a recognized group`);
+      throw new Error(`${key} is not a recognized group with a model`);
     }
 
     if (!group?.modelType) {

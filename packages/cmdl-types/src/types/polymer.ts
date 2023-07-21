@@ -9,12 +9,10 @@ import { ModelType } from "../groups/group-types";
 export interface Polymer extends BaseModel {
   type: ModelType.POLYMER;
   [PROPERTIES.MN_AVG]?: BigQty;
-  [PROPERTIES.BIG_SMILES]?: string;
-  [PROPERTIES.SMILES]: string;
   [PROPERTIES.MW_AVG]?: BigQty;
   [PROPERTIES.DISPERSITY]?: StringQtyUnitless;
   [PROPERTIES.STATE]: ChemStates;
-  [PROPERTIES.TREE]?: Reference; //polymer graph representation reference
+  [PROPERTIES.STRUCTURE]?: Reference; //polymer graph representation reference
 }
 
 /**

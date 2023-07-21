@@ -73,7 +73,7 @@ export abstract class Group implements RecordNode {
     const groupProps = typeManager.getGroup(this.name);
 
     if (!groupProps) {
-      let msg = `${this.name} is not a recognized group`;
+      let msg = `${this.name} is not a recognized group.`;
       let err = new InvalidGroupError(msg, this.nameToken);
       this.errors.push(err);
     } else {
@@ -86,16 +86,14 @@ export abstract class Group implements RecordNode {
    * @param injectValidation (child: RecordNode, props: Set<string>) => void
    */
   protected validateChildren(
-    injectValidation?: (child: RecordNode, props: Set<string>) => void
+    injectValidation?: (child: RecordNode) => void
   ): void {
-    const properties = new Set<string>();
-
     for (const child of this.children) {
       let childErrors = child.doValidation();
       this.errors = this.errors.concat(childErrors);
 
       if (injectValidation) {
-        injectValidation(child, properties);
+        injectValidation(child);
       }
     }
   }

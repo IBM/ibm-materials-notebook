@@ -6,7 +6,7 @@ export enum GroupTypes {
 export enum ModelType {
   CHAR_DATA = "char_data",
   CHEMICAL = "chemical",
-  FRAGMENT = "fragment",
+  FRAGMENTS = "fragments",
   COMPONENT = "component",
   COMPLEX = "complex",
   CONTAINER = "container",
@@ -42,13 +42,13 @@ export enum GROUPS {
   //structure
   STRUCTURE = "structure",
   POLYMER_GRAPH = "polymer_graph",
-  CONTAINER = "container", //named
-  FRAGMENT = "fragment", //named
+  CONTAINER = "container",
+  FRAGMENTS = "fragments",
 
   //flow reactors
   REACTOR_GRAPH = "reactor_graph",
-  REACTOR = "reactor", //named
-  COMPONENT = "component", //named
+  REACTOR = "reactor",
+  COMPONENT = "component",
 
   //named groups
   CHAR_DATA = "char_data",

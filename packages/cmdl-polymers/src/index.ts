@@ -1,1 +1,1 @@
-export { PolymerContainer, JSONPolymerContainer } from "./container";
+export { PolymerContainer } from "./container";

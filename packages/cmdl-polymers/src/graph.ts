@@ -3,7 +3,6 @@ import { PolymerComponent } from "./types";
 import { Container } from "./tree-container";
 import { PolymerNode } from "./node";
 import { PolymerEdge } from "./edge";
-import { JSONPolymerGraph } from "./container";
 import { logger } from "./logger";
 
 /**
@@ -118,16 +117,6 @@ export class PolymerGraph {
     //create a new graph
     //add additional nodes/edges for quantities > 1
     throw new Error(`Expand method is not implemented`);
-  }
-
-  /**
-   * Serializes graph to Object
-   * @returns Object
-   */
-  public toJSON(): JSONPolymerGraph {
-    const nodes = [...this.nodes.values()].map((el) => el.toJSON());
-    const edges = this.edges.map((el) => el.toJSON());
-    return { nodes, edges };
   }
 
   /**

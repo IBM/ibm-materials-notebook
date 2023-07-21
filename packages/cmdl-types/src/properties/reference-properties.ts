@@ -64,6 +64,14 @@ const connection: IProperty = {
   aliases: [],
 };
 
+const fragment: IProperty = {
+  description: "Create fragment elements for polymer graph",
+  detail: "Fragment for polymer graph",
+  name: PROPERTIES.CONNECTIONS,
+  type: PropertyTypes.REF_MULTI,
+  aliases: [],
+};
+
 const file: IProperty = {
   description: "references an external file",
   detail: "file",
@@ -80,6 +88,14 @@ const protocol: IProperty = {
   aliases: ["proceedure"],
 };
 
+const structure: IProperty = {
+  description: "Structure of a polymeric material",
+  detail: "structure",
+  name: PROPERTIES.STRUCTURE,
+  type: PropertyTypes.REF_SINGLE,
+  aliases: [],
+};
+
 export const referenceProperties = [
   sources,
   component,
@@ -91,4 +107,5 @@ export const referenceProperties = [
   reactor,
   input,
   protocol,
+  structure,
 ];

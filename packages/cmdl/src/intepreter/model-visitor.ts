@@ -10,6 +10,7 @@ import {
   ImportOp,
   ImportFileOp,
   ProtocolGroup,
+  AssignmentProperty,
 } from "../cmdl-tree";
 import path from "path";
 import { AstVisitor } from "../symbols";
@@ -211,6 +212,14 @@ export class ModelVisitor implements AstVisitor {
 
     const globalAR = this.modelStack.peek();
     globalAR.setValue(node.name, fileModel);
+  }
+
+  public visitAssignmentProp(prop: AssignmentProperty) {
+    const currentAR = this.modelStack.peek();
+    currentAR.mergeArrayValue("fragments", {
+      name: prop.name,
+      value: prop.getValues(),
+    });
   }
 
   public visitProtocolGroup(group: ProtocolGroup): void {

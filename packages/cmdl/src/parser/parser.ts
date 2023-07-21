@@ -28,6 +28,7 @@ import {
   BackTicClose,
   BackTicOpen,
   Protocol,
+  Assignment,
 } from "./tokens";
 
 /**
@@ -128,6 +129,7 @@ class Parser extends CstParser {
   private groupItem = this.RULE("groupItem", () => {
     this.OR([
       { ALT: () => this.SUBRULE(this.arrowProperty) },
+      { ALT: () => this.SUBRULE(this.assignmentProperty) },
       { ALT: () => this.SUBRULE(this.propertyItem) },
       { ALT: () => this.SUBRULE(this.groupDeclaration) },
     ]);
@@ -151,6 +153,12 @@ class Parser extends CstParser {
       this.CONSUME(Colon);
       this.CONSUME(NumberLiteral);
     });
+  });
+
+  private assignmentProperty = this.RULE("assignmentProperty", () => {
+    this.CONSUME(Identifier);
+    this.CONSUME(Assignment);
+    this.CONSUME(StringLiteral);
   });
 
   private referencePipe = this.RULE("referencePipe", () => {

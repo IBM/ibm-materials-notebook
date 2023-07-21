@@ -2,9 +2,12 @@ import { CmdlToken } from "../cmdl-ast";
 import { BaseError, InvalidGroupError, InvalidPropertyError } from "../errors";
 import { Group, Property, RecordNode } from "./base-components";
 import { GeneralGroup } from "./general-group";
-import { ReferenceGroup } from "./reference-group";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
+import { AngleProperty } from "./angle-property";
+import { AssignmentProperty } from "./assignment-property";
+import { logger } from "../logger";
+import { PROPERTIES } from "cmdl-types";
 
 /**
  * Handles named groups in the CMDL record trees
@@ -27,7 +30,7 @@ export class NamedGroup extends Group {
    * @param props Set<string>
    * @returns void
    */
-  protected validateGroupChild(child: RecordNode, props: Set<string>): void {
+  protected validateGroupChild(child: RecordNode): void {
     if (!this.groupProps) {
       return;
     }
@@ -35,26 +38,26 @@ export class NamedGroup extends Group {
     let msg: string;
     let err: BaseError;
 
-    if (
-      (child instanceof GeneralGroup || child instanceof Property) &&
-      props.has(child.name)
-    ) {
-      if (child.name !== "connections") {
-        this.createDuplicationErr(child);
-      }
-    } else if (child instanceof ReferenceGroup) {
-      const path = child.getPath().join(".");
-      const pathStr = path.length ? `.${path}` : "";
-      const fullName = `${child.name}${pathStr}`;
-
-      if (props.has(fullName)) {
-        //! move duplication errors to symbol table only
-        this.createDuplicationErr(child);
+    if (child instanceof AngleProperty)
+      if (!this.groupProps.properties.includes(PROPERTIES.CONNECTIONS)) {
+        msg = `${child.name} is not a valid sub-group of ${this.name} ${this.identifier}`;
+        err = new InvalidGroupError(msg, child.nameToken);
+        this.errors.push(err);
+        return;
       } else {
-        props.add(fullName);
+        return;
       }
-    } else {
-      props.add(child.name);
+
+    if (child instanceof AssignmentProperty) {
+      if (!this.groupProps.properties.includes(PROPERTIES.FRAGMENT)) {
+        logger.silly(`child group: ${this.groupProps.properties.join(", ")}`);
+        msg = `${child.name} is not a valid sub-group of ${this.name}`;
+        err = new InvalidGroupError(msg, child.nameToken);
+        this.errors.push(err);
+        return;
+      } else {
+        return;
+      }
     }
 
     if (
@@ -64,6 +67,7 @@ export class NamedGroup extends Group {
       msg = `${child.name} is not a valid sub-group of ${this.name} ${this.identifier}`;
       err = new InvalidGroupError(msg, child.nameToken);
       this.errors.push(err);
+      return;
     }
 
     if (
@@ -73,6 +77,7 @@ export class NamedGroup extends Group {
       msg = `${child.name} is not a valid property on ${this.name} ${this.identifier}`;
       err = new InvalidPropertyError(msg, child.nameToken);
       this.errors.push(err);
+      return;
     }
   }
 
