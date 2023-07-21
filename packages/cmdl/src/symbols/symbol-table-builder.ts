@@ -31,9 +31,9 @@ import {
   AssignmentProperty,
 } from "../cmdl-tree";
 import { CmdlStack } from "../cmdl-stack";
-import { CmdlToken } from "../cmdl-ast";
+// import { CmdlToken } from "../cmdl-ast";
 import { ErrorTable } from "../error-manager";
-import { TYPES } from "cmdl-types";
+// import { TYPES } from "cmdl-types";
 
 /**
  * Visits record tree and constructs symbol table for entire document
@@ -97,7 +97,6 @@ export class SymbolTableBuilder implements AstVisitor {
 
   /**
    * Method to compare reference symbols if their paths are identical
-   * @TODO This approach is not the best as the new reference symbol is never added => rework using proxy symbols?
    * @param symbol BaseSymbol
    * @param table SymbolTable
    */
@@ -132,7 +131,11 @@ export class SymbolTableBuilder implements AstVisitor {
    */
   private enterNewScope(name: string): void {
     const currentScope = this.tableStack.peek();
-    const nestedScope = new SymbolTable(name, currentScope);
+    const nestedScope = new SymbolTable(
+      name,
+      currentScope.manager,
+      currentScope
+    );
     this.tableStack.push(nestedScope);
   }
 
@@ -321,36 +324,36 @@ export class SymbolTableBuilder implements AstVisitor {
     this.addSymbol(importSymbol);
   }
 
-  /**
-   * Helper method to create symbols for individual nodes within a reactor or polymer graph
-   * @deprecated
-   * @param keyObj CMDLNodeTree
-   * @param nameToken CMDLToken
-   */
-  public createGraphSymbols(
-    keyObj: TYPES.NodeTree,
-    nameToken: CmdlToken
-  ): void {
-    for (const key of Object.keys(keyObj)) {
-      const propSymbol = new ReferenceSymbol(
-        {
-          name: key,
-          token: nameToken,
-          type: SymbolType.REF_PROXY,
-          def: this.uri,
-        },
-        key
-      );
+  // /**
+  //  * Helper method to create symbols for individual nodes within a reactor or polymer graph
+  //  * @deprecated
+  //  * @param keyObj CMDLNodeTree
+  //  * @param nameToken CMDLToken
+  //  */
+  // public createGraphSymbols(
+  //   keyObj: TYPES.NodeTree,
+  //   nameToken: CmdlToken
+  // ): void {
+  //   for (const key of Object.keys(keyObj)) {
+  //     const propSymbol = new ReferenceSymbol(
+  //       {
+  //         name: key,
+  //         token: nameToken,
+  //         type: SymbolType.REF_PROXY,
+  //         def: this.uri,
+  //       },
+  //       key
+  //     );
 
-      this.addSymbol(propSymbol);
+  //     this.addSymbol(propSymbol);
 
-      if (Object.keys(keyObj[key]).length) {
-        this.enterNewScope(key);
-        this.createGraphSymbols(keyObj[key], nameToken);
-        this.exitCurrentScope();
-      }
-    }
-  }
+  //     if (Object.keys(keyObj[key]).length) {
+  //       this.enterNewScope(key);
+  //       this.createGraphSymbols(keyObj[key], nameToken);
+  //       this.exitCurrentScope();
+  //     }
+  //   }
+  // }
 
   /**
    * Creates a reference symbol and enters a new scope
@@ -408,15 +411,15 @@ export class SymbolTableBuilder implements AstVisitor {
 
     this.addSymbol(propSymbol);
 
-    if (refProp.name === "tree") {
-      const parentTable = this.tableStack.peek();
-      const refSymName = refSymbol.name.slice(1);
-      const ref = parentTable.getGlobalScopeSym(refSymName);
-      const keyObj: TYPES.NodeTree = {};
+    // if (refProp.name === "tree") {
+    //   const parentTable = this.tableStack.peek();
+    //   const refSymName = refSymbol.name.slice(1);
+    //   const ref = parentTable.getGlobalScopeSym(refSymName);
+    //   const keyObj: TYPES.NodeTree = {};
 
-      ref?.copySymbolTree(keyObj, refSymName);
-      this.createGraphSymbols(keyObj[refSymName], refProp.nameToken);
-    }
+    //   ref?.copySymbolTree(keyObj, refSymName);
+    //   this.createGraphSymbols(keyObj[refSymName], refProp.nameToken);
+    // }
   }
 
   /**
@@ -479,7 +482,7 @@ export class SymbolTableBuilder implements AstVisitor {
   }
 
   /**
-   * Helper method for creating a reference symbol array from a reference value array.
+   * Converts a reference symbol array from a reference value array.
    * Used during ConnectionSymbol and RefListSymbol generation.
    * @param refValueArr ReferenceValue[]
    * @returns ReferenceSymbol[]

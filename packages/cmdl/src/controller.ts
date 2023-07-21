@@ -202,13 +202,12 @@ export class Controller {
   ): CMDLCell {
     const results = this._compiler.parse(cell.text);
     const semanticErrors = results.recordTree.validate();
+    const builder = new SymbolTableBuilder(symbols, errs, fileName, cell.uri);
+    results.recordTree.createSymbolTable(builder);
 
+    symbols.validate(errs);
     errs.add(cell.uri, results.parserErrors);
     errs.add(cell.uri, semanticErrors);
-
-    const builder = new SymbolTableBuilder(symbols, errs, fileName, cell.uri);
-
-    results.recordTree.createSymbolTable(builder);
 
     return {
       ...cell,
@@ -224,10 +223,6 @@ export class Controller {
   ): CmdlTree {
     const results = this._compiler.parse(doc.text);
     const semanticErrors = results.recordTree.validate();
-
-    errs.add(doc.uri, results.parserErrors);
-    errs.add(doc.uri, semanticErrors);
-
     const builder = new SymbolTableBuilder(
       symbols,
       errs,
@@ -236,6 +231,10 @@ export class Controller {
     );
 
     results.recordTree.createSymbolTable(builder);
+
+    symbols.validate(errs);
+    errs.add(doc.uri, results.parserErrors);
+    errs.add(doc.uri, semanticErrors);
 
     return results.recordTree;
   }
@@ -248,6 +247,7 @@ export class Controller {
     errTable.delete(doc.uri);
 
     const recordTree = this.parseDocument(doc, symbolTable, errTable);
+    logger.verbose(`current symbolTable:\n${symbolTable.print()}`);
     const document = new TextDocument(doc, doc.version, recordTree);
     this._documents.set(doc.uri, document);
   }
@@ -378,5 +378,13 @@ export class Controller {
       recordExports.push(record);
     }
     return recordExports;
+  }
+
+  public getNamespaceSymbolMembers(namespace: string, query: string) {
+    return this._symbols.lookupMembers(namespace, query.split("."));
+  }
+
+  public getNamespaceDeclarations(namespace: string) {
+    return this._symbols.lookupDeclarations(namespace);
   }
 }

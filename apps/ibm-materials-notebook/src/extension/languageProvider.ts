@@ -113,14 +113,9 @@ class SymbolProvider implements vscode.CompletionItemProvider {
       return;
     }
 
-    const exp = this.repository.find(document.uri);
-
-    if (!exp) {
-      return;
-    }
-
-    //TODO: pull symbols from controller
-    const symbols: any[] = [];
+    const namespace = this.repository.extractFileName(document.uri);
+    const symbols =
+      this.repository._controller.getNamespaceDeclarations(namespace);
 
     const results = symbols.map((el) => {
       return {
@@ -152,12 +147,6 @@ class SymbolMemberProvider implements vscode.CompletionItemProvider {
       return;
     }
 
-    const exp = this.repository.find(document.uri);
-
-    if (!exp) {
-      return;
-    }
-
     const range = document.getWordRangeAtPosition(
       position,
       /[@a-zA-Z0-9-_\.]+/
@@ -166,9 +155,11 @@ class SymbolMemberProvider implements vscode.CompletionItemProvider {
 
     const slicedWord = word.slice(1, -1);
 
-    //TODO: provide symbols from controller
-    // let symbols = exp.getSymbolMembers(slicedWord);
-    const symbols: any[] = [];
+    const namespace = this.repository.extractFileName(document.uri);
+    const symbols = this.repository._controller.getNamespaceSymbolMembers(
+      namespace,
+      slicedWord
+    );
 
     if (!symbols) {
       return;

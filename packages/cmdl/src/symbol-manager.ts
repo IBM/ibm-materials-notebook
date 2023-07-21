@@ -1,5 +1,6 @@
 import { SymbolTable } from "./symbols";
 
+//!TODO enable cross-namespace lookups for symbol refs
 export class SymbolTableManager {
   private readonly _tables = new Map<string, SymbolTable>();
 
@@ -12,8 +13,18 @@ export class SymbolTableManager {
     return table;
   }
 
+  public lookupMembers(namespace: string, path: string[]) {
+    const sourceTable = this.getTable(namespace);
+    return sourceTable.getSymbolMembers(path);
+  }
+
+  public lookupDeclarations(namespace: string) {
+    const sourceTable = this.getTable(namespace);
+    return sourceTable.getDeclaredEntities();
+  }
+
   public create(namespace: string) {
-    const newTable = new SymbolTable(namespace);
+    const newTable = new SymbolTable(namespace, this);
     this._tables.set(namespace, newTable);
     return newTable;
   }

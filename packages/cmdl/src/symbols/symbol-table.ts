@@ -1,4 +1,4 @@
-import { RefError, BaseError } from "../errors";
+import { RefError } from "../errors";
 import { logger } from "../logger";
 import {
   AngleSymbol,
@@ -9,8 +9,9 @@ import {
   SymbolType,
 } from "./cmdl-symbol-base";
 import { RecordNode } from "../cmdl-tree";
-import { TYPES } from "cmdl-types";
+// import { TYPES } from "cmdl-types";
 import { ErrorTable } from "../error-manager";
+import { SymbolTableManager } from "../symbol-manager";
 
 /**
  * Interface for defining an AST visitor
@@ -23,14 +24,20 @@ export interface AstVisitor {
  * Manages symbols for a particular scope
  */
 export class SymbolTable {
+  manager: SymbolTableManager;
   scope: string;
   enclosingScope: SymbolTable | null;
   nestedScopes: SymbolTable[] = [];
   readonly _symbols = new Map<string, BaseSymbol>();
 
-  constructor(scope: string, parentScope: SymbolTable | null = null) {
+  constructor(
+    scope: string,
+    manager: SymbolTableManager,
+    parentScope: SymbolTable | null = null
+  ) {
     this.scope = scope;
     this.enclosingScope = parentScope;
+    this.manager = manager;
     parentScope?.nestedScopes.push(this);
   }
 
@@ -97,29 +104,29 @@ export class SymbolTable {
    * @param record CMDLNodeTree
    * @param base string
    */
-  public copySymbolTree(record: TYPES.NodeTree, base?: string): void {
-    if (!this.enclosingScope && base) {
-      record[base] = {};
-      const nestedScope = this.nestedScopes.find((el) => el.scope === base);
+  // public copySymbolTree(record: TYPES.NodeTree, base?: string): void {
+  //   if (!this.enclosingScope && base) {
+  //     record[base] = {};
+  //     const nestedScope = this.nestedScopes.find((el) => el.scope === base);
 
-      if (!nestedScope) {
-        return;
-      }
+  //     if (!nestedScope) {
+  //       return;
+  //     }
 
-      nestedScope.copySymbolTree(record[base]);
-    } else {
-      for (const currSymbol of this._symbols.keys()) {
-        record[currSymbol] = {};
-        const nestedScope = this.nestedScopes.find(
-          (el) => el.scope === currSymbol
-        );
+  //     nestedScope.copySymbolTree(record[base]);
+  //   } else {
+  //     for (const currSymbol of this._symbols.keys()) {
+  //       record[currSymbol] = {};
+  //       const nestedScope = this.nestedScopes.find(
+  //         (el) => el.scope === currSymbol
+  //       );
 
-        if (nestedScope) {
-          nestedScope.copySymbolTree(record[currSymbol]);
-        }
-      }
-    }
-  }
+  //       if (nestedScope) {
+  //         nestedScope.copySymbolTree(record[currSymbol]);
+  //       }
+  //     }
+  //   }
+  // }
 
   /**
    * Retrieves a nested scope by string value, throws an error if not found
@@ -193,7 +200,6 @@ export class SymbolTable {
 
   /**
    * Retrieves array of symbol members of nested symbol table
-   * @todo - improve description
    * @param path string[]
    * @returns BaseSymbol[]
    */
@@ -215,14 +221,11 @@ export class SymbolTable {
       return scope.getSymbolMembers(newPath);
     }
 
-    return [...scope._symbols.values()].filter(
-      (el) => el.type === SymbolType.REF_PROXY
-    );
+    return [...scope._symbols.values()];
   }
 
   /**
    * Returns a list of symbol names based on a query. Used for completion providers.
-   * @TODO Update method to examine nested scopes for symbols and properties
    * @param query string
    * @returns string[]
    */
@@ -452,6 +455,7 @@ export class SymbolTable {
   /**
    * Helper method to recursively traverse symbol table to find referenced symbol
    * if symbol is found, passes the symbol path to the validate path method
+   * TODO: enable lookups of imported symbol
    * @param symbol ReferenceSymbol
    * @param globalTable SymbolTable
    * @returns RefError | undefined
@@ -460,31 +464,48 @@ export class SymbolTable {
     symbol: ReferenceSymbol,
     globalTable: SymbolTable
   ): RefError | undefined {
-    let referenceBase = this._symbols.get(symbol.base);
+    //check current scope
+    const referenceBase = this._symbols.get(symbol.base);
 
-    if (referenceBase) {
-      if (referenceBase && symbol.path.length) {
-        return this.validatePath(
-          symbol,
-          [symbol.base, ...symbol.path],
-          globalTable
-        );
-      } else {
-        return;
-      }
+    //Found symbol
+    if (referenceBase && !symbol.path.length) {
+      return;
     }
 
-    if (!this.enclosingScope) {
-      return new RefError(`${symbol.base} is not defined`, symbol.token);
-    } else {
-      return this.enclosingScope.lookup(symbol, globalTable);
+    if (referenceBase && symbol.path.length) {
+      return this.validatePath(
+        symbol,
+        [symbol.base, ...symbol.path],
+        globalTable
+      );
+    }
+
+    //not found
+    if (!referenceBase) {
+      if (this.enclosingScope) {
+        return this.enclosingScope.lookup(symbol, globalTable);
+      } else if (this._symbols.has("fragments")) {
+        const fragmentTable = this.nestedScopes.find(
+          (el) => el.scope === "fragments"
+        );
+        if (fragmentTable && fragmentTable.has(symbol.base)) {
+          logger.silly(
+            `Found ${symbol.base}, ${symbol.path.join("->")} on fragment table`
+          );
+          //!TODO => check if referenced declaration is fragment => check if Q,R,Z,X exists on SMILES
+          return;
+        } else {
+          return new RefError(`${symbol.base} is not defined`, symbol.token);
+        }
+      } else {
+        return new RefError(`${symbol.base} is not defined`, symbol.token);
+      }
     }
   }
 
   /**
    * Helper method to validate path on nested scopes of a found symbol. Method will check global scope if item is not found locally.
    * This behavior is primarly for polymer graphs, where fragments are declared globally.
-   * TODO: clean up logic for path validation, enable autocompletions
    * @param symbol ReferenceSymbol
    * @param path string[]
    * @param globalTable SymbolTable
@@ -506,10 +527,21 @@ export class SymbolTable {
 
     if (!pathItem || !nextScope) {
       //if path item does not exist on current scope, it checks global scope
-      let globalItem = globalTable._symbols.get(path[0]);
-      let globalItemScope = globalTable.nestedScopes.find(
+      const globalItem = globalTable._symbols.get(path[0]);
+      const globalItemScope = globalTable.nestedScopes.find(
         (el) => el.scope === path[0]
       );
+      const fragmentTable = globalTable.nestedScopes.find(
+        (el) => el.scope === "fragments"
+      );
+
+      if (!globalItem && fragmentTable?.has(path[0])) {
+        logger.silly(
+          `Found ${path[0]} on fragment table while validating path`
+        );
+        //!TODO => check if referenced declaration is fragment => check if Q,R,Z,X exists on SMILES
+        return;
+      }
 
       if (!globalItem || !globalItemScope) {
         logger.silly(`creating path error for ${newPath[0]} on ${symbol.name}`);
