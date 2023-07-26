@@ -112,11 +112,14 @@ export class Validation {
    * @param exp vscode.NotebookDocument
    */
   private validateNotebookDoc(notebook: vscode.NotebookDocument): void {
+    logger.info(`validating notebook: ${notebook.uri.path}`);
     const notebookUri = notebook.uri.toString();
+    const notebookFileName = this.repository.extractFileName(notebook.uri);
 
     let collection = this._collections.get(notebookUri);
 
     if (!collection) {
+      const notebookUri = notebook.uri.toString();
       collection = vscode.languages.createDiagnosticCollection();
       this._collections.set(notebookUri, collection);
     }
@@ -127,7 +130,7 @@ export class Validation {
       const cellUri = document.uri.toString();
       const errors = this.repository._controller.getErrors(
         cellUri,
-        notebookUri
+        notebookFileName
       );
       const diagnostics = this.createDiagnostics(errors, document);
       collection.set(document.uri, diagnostics);

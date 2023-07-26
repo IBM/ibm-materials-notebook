@@ -48,4 +48,6 @@ export interface PolymerComponent extends Serializable {
    * @param visitor TreeVisitor
    */
   accept(visitor: PolymerTreeVisitor): void;
+
+  clone(): PolymerComponent;
 }

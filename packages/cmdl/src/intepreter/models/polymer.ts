@@ -7,9 +7,9 @@ import { logger } from "../../logger";
 export class PolymerGraphModel extends Model<TYPES.PolymerGraph> {
   private graph = new PolymerContainer(this.name);
 
-  public clone(): this {
-    const clone = Object.create(this);
-    clone.graph = Object.create(this.graph);
+  public clone(): PolymerGraphModel {
+    const clone = new PolymerGraphModel(this.name, this.type);
+    clone.graph = this.graph.clone();
     return clone;
   }
 
@@ -92,8 +92,8 @@ export class PolymerModel
 {
   private graph?: PolymerGraphModel;
 
-  public clone(): this {
-    const clone = Object.create(this);
+  public clone() {
+    const clone = new PolymerModel(this.name, this.type);
     if (this.graph) {
       const cloneGraph = this.graph.clone();
       clone.addGraph(cloneGraph);

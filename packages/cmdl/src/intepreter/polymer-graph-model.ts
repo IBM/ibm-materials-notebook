@@ -18,8 +18,6 @@ export class PolymerGraph extends BaseModel {
 
   public execute(globalAR: ModelActivationRecord): void {
     try {
-      logger.debug(`graph global AR: ${globalAR.print()}`);
-      logger.debug(`model ar: ${this.modelAR.print()}`);
       const fragmentModel =
         globalAR.getOptionalValue<FragmentModel>("fragments");
       const localFragments =
@@ -28,8 +26,6 @@ export class PolymerGraph extends BaseModel {
       let fragmentMap: Record<string, string> = {};
 
       if (fragmentModel) {
-        logger.debug(`fragment model`, { meta: fragmentModel });
-        console.log(fragmentModel);
         const modelMap = fragmentModel.getFragmentMap();
 
         fragmentMap = { ...fragmentMap, ...modelMap };
@@ -56,6 +52,7 @@ export class PolymerGraph extends BaseModel {
         connections: connections ? connections : [],
         containers: containers ? containers : [],
       };
+      // logger.debug(`tree config`, { meta: treeConfig });
 
       polymerGraph.initializePolymerGraph(treeConfig, fragmentMap);
 

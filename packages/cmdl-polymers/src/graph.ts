@@ -17,11 +17,6 @@ export class PolymerGraph {
    * Map of node id (node path) and polymer nodes in the graph
    */
   nodes = new Map<string, PolymerNode>();
-  /**
-   * Array of polymer edges, used temporarily for building adjacencyList
-   * @todo remove need for this property in function
-   */
-  edges: PolymerEdge[] = [];
 
   /**
    * Initializes polymer graph from polymer tree. Traverses tree to extract nodes & edges.
@@ -30,12 +25,13 @@ export class PolymerGraph {
    */
   public initialize(tree: PolymerTree): void {
     if (!tree || !tree.root) {
-      // logger.warn(`cannot initialize polymer graph from empty tree`);
+      logger.warn(`cannot initialize polymer graph from empty tree`);
       return;
     }
 
     let queue: PolymerComponent[] = [tree.root];
     let curr: PolymerComponent | undefined;
+    let edges: PolymerEdge[] = [];
 
     while (queue.length) {
       curr = queue.shift();
@@ -48,7 +44,7 @@ export class PolymerGraph {
         this.nodes.set(curr.name, curr as PolymerNode);
         this.adjacencyList.set(curr.name, []);
       } else {
-        this.edges = this.edges.concat(curr.connections);
+        edges = edges.concat(curr.connections);
         if (curr.children.length) {
           curr.children.forEach((el) => {
             queue.push(el);
@@ -57,7 +53,15 @@ export class PolymerGraph {
       }
     }
 
-    this.linkGraph();
+    for (const edge of edges) {
+      let list = this.adjacencyList.get(edge.sourceName);
+
+      if (!list) {
+        throw new Error(`node ${edge.sourceName} does not exist`);
+      }
+
+      list.push(edge);
+    }
   }
 
   /**
@@ -92,21 +96,6 @@ export class PolymerGraph {
     }
 
     node.properties.set(property.name, property.value);
-  }
-
-  /**
-   * Populates the adjacency list once the insertion of all edges and nodes is complete
-   */
-  private linkGraph(): void {
-    for (const edge of this.edges) {
-      let list = this.adjacencyList.get(edge.sourceName);
-
-      if (!list) {
-        throw new Error(`node ${edge.sourceName} does not exist`);
-      }
-
-      list.push(edge);
-    }
   }
 
   /**

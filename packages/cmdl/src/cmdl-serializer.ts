@@ -19,7 +19,6 @@ export class CMDLSerializer {
     rowNumber: number
   ) {
     try {
-      logger.silly(`serializing row ${rowNumber}...`);
       const cellText = this.serializeGeneratedPolymer(rowItem, rowNumber);
       logger.info(`completed serialization for row ${rowNumber}`);
       return { language: "cmdl", kind: 2, value: cellText };
@@ -197,7 +196,6 @@ export class CMDLSerializer {
         splitGroups.length - 1
       ].slice(0, -1);
 
-      logger.silly(`split groups`, { meta: splitGroups });
       const nodeGroups = splitGroups.map((group) => {
         return group.split(";");
       });

@@ -4,7 +4,6 @@ import { PolymerWeight } from "./weights";
 import { PolymerNode } from "./node";
 import { Container } from "./tree-container";
 import { TYPES } from "cmdl-types";
-import Big from "big.js";
 
 /**
  * Top level class for managing polymer tree and graph representations
@@ -77,37 +76,6 @@ export class PolymerContainer {
   }
 
   /**
-   * Creates a node tree to enable embedding of
-   * nodes within the symbol table
-   * @returns CMDLNodeTree
-   */
-  public getGraphNodes(): TYPES.NodeTree {
-    const keys = this.graph.getNodeKeys();
-
-    const keyTree: TYPES.NodeTree = {};
-
-    for (const key of keys) {
-      let keyPath = key.split(".");
-      traverseKeys(keyPath, keyTree);
-    }
-
-    function traverseKeys(path: string[], keyTree: TYPES.NodeTree): void {
-      if (!path.length) {
-        return;
-      }
-
-      if (keyTree[path[0]]) {
-        return traverseKeys(path.slice(1), keyTree[path[0]]);
-      } else {
-        keyTree[path[0]] = {};
-        return traverseKeys(path.slice(1), keyTree[path[0]]);
-      }
-    }
-
-    return keyTree;
-  }
-
-  /**
    * Compiles a SMILES string for the polymer where each node
    * element is separated by a "." character in the string
    * @returns string
@@ -135,5 +103,13 @@ export class PolymerContainer {
         throw new Error(`Property is not embeddable`);
       }
     }
+  }
+
+  public clone(): PolymerContainer {
+    const polymer = new PolymerContainer(this.name);
+    const tree = this.tree.clone();
+    polymer.tree = tree;
+    polymer.graph.initialize(tree);
+    return polymer;
   }
 }

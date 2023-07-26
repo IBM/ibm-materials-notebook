@@ -12,7 +12,7 @@ import {
  * Class for managing groups of nodes, other containers, and connections between them.
  */
 export class Container implements PolymerComponent {
-  properties = new Map<string, any>();
+  properties = new Map<string, any>(); //deprecate
   connections: PolymerEdge[] = [];
   parent: Container | null = null;
   children: PolymerComponent[] = [];
@@ -110,34 +110,22 @@ export class Container implements PolymerComponent {
     }
   }
 
-  /**
-   * Determines if node is a repeat unit
-   * @param nodeId string name of the node
-   * @returns boolean
-   */
-  private isRepeatUnit(nodeId: string): boolean {
-    for (const edge of this.connections) {
-      if (edge.sourceName === edge.targetName && edge.sourceName === nodeId) {
-        return true;
-      }
+  public clone() {
+    const container = new Container(this.name);
+    const connections = this.connections.map((el) => el.clone());
+    const children = this.children.map((el) => el.clone());
+
+    for (const child of children) {
+      container.add(child);
     }
 
-    return false;
-  }
+    container.connections = connections;
 
-  /**
-   * Determines the type of end group
-   * @param nodeId string name of the polymer node
-   * @returns boolean
-   */
-  private isLeftEndGroup(nodeId: string): boolean {
-    for (const edge of this.connections) {
-      if (edge.sourceName === nodeId) {
-        return true;
-      }
+    if (this.path) {
+      container.path = this.path;
     }
 
-    return false;
+    return container;
   }
 
   /**

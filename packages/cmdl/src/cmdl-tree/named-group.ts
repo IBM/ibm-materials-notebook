@@ -50,7 +50,6 @@ export class NamedGroup extends Group {
 
     if (child instanceof AssignmentProperty) {
       if (!this.groupProps.properties.includes(PROPERTIES.FRAGMENT)) {
-        logger.silly(`child group: ${this.groupProps.properties.join(", ")}`);
         msg = `${child.name} is not a valid sub-group of ${this.name}`;
         err = new InvalidGroupError(msg, child.nameToken);
         this.errors.push(err);

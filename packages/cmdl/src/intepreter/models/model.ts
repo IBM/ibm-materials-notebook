@@ -28,7 +28,7 @@ export class Model<T> implements Clonable, Exportable<T> {
     this.properties[key] = value;
   }
 
-  public clone(): this {
+  public clone() {
     const clone = Object.create(this);
     return clone;
   }

@@ -248,4 +248,14 @@ export class PolymerTree {
 
     return body;
   }
+
+  public clone(): PolymerTree {
+    const tree = new PolymerTree();
+    if (!this.root) {
+      return tree;
+    }
+    const clonedTree = this.root.clone();
+    tree.root = clonedTree;
+    return tree;
+  }
 }

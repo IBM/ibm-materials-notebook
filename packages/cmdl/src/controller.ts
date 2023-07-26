@@ -99,7 +99,7 @@ export class Controller {
       return;
     }
 
-    logger.notice(`Registering ${doc.fileName}\n\t-${doc.uri}`);
+    logger.notice(`Registering ${doc.fileName}`);
     const symbolTable = this._symbols.create(doc.fileName);
     const errTable = this._errors.create(doc.fileName);
     this._results.create(doc.fileName);
@@ -115,6 +115,8 @@ export class Controller {
       this._documents.set(doc.uri, document);
       this._documentNamespaces.set(doc.fileName, doc.uri);
     }
+
+    logger.notice(`Registration complete for ${doc.fileName}`);
   }
 
   public removeNotebookCell(cellUri: string, notebookUri: string) {
@@ -295,9 +297,16 @@ export class Controller {
   }
 
   public getErrors(uri: string, namespace: string): BaseError[] {
-    const notebookErrs = this._errors.get(namespace);
-    const cellErrors = notebookErrs.get(uri);
-    return cellErrors;
+    try {
+      const notebookErrs = this._errors.get(namespace);
+      const cellErrors = notebookErrs.get(uri);
+      return cellErrors;
+    } catch (error) {
+      logger.error(
+        `unable to retrieve errors for ${uri}, in namespace: ${namespace}:\n${error}`
+      );
+      return [];
+    }
   }
 
   private printRegistered() {

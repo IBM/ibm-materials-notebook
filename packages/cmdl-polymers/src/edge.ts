@@ -148,4 +148,13 @@ export class PolymerEdge {
       visitor.visitEdge(this);
     }
   }
+
+  public clone(): PolymerEdge {
+    return new PolymerEdge({
+      sourcePath: this.sourcePath,
+      targetPath: this.targetPath,
+      weight: this.weight,
+      quantity: this.quantity,
+    });
+  }
 }

@@ -31,10 +31,6 @@ export class Polymer extends BaseModel {
     const polymerModel = new PolymerModel(this.name, this.type);
     polymerModel.addGraph(polymerGraph);
 
-    logger.silly(
-      `Polymer graph model: ${polymerGraph.name}\n\t${polymerGraph.printTree()}`
-    );
-
     if (treeValues) {
       polymerModel.embedNodeValues(treeValues);
     }

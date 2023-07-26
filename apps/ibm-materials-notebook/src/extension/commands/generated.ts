@@ -55,7 +55,6 @@ export async function parseGeneratedPolymers() {
     let stop = 51;
     let testArr;
     while (start <= data.length) {
-      logger.silly(`start: ${start}, stop: ${stop}`);
       if (stop > data.length) {
         testArr = data.slice(start);
       } else {

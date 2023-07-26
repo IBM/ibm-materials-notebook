@@ -489,9 +489,6 @@ export class SymbolTable {
           (el) => el.scope === "fragments"
         );
         if (fragmentTable && fragmentTable.has(symbol.base)) {
-          logger.silly(
-            `Found ${symbol.base}, ${symbol.path.join("->")} on fragment table`
-          );
           //!TODO => check if referenced declaration is fragment => check if Q,R,Z,X exists on SMILES
           return;
         } else {
@@ -536,15 +533,11 @@ export class SymbolTable {
       );
 
       if (!globalItem && fragmentTable?.has(path[0])) {
-        logger.silly(
-          `Found ${path[0]} on fragment table while validating path`
-        );
         //!TODO => check if referenced declaration is fragment => check if Q,R,Z,X exists on SMILES
         return;
       }
 
       if (!globalItem || !globalItemScope) {
-        logger.silly(`creating path error for ${newPath[0]} on ${symbol.name}`);
         return new RefError(
           `Property ${path[0]} is not defined on ${this.scope}`,
           symbol.token
