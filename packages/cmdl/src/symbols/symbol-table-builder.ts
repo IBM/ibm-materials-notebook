@@ -324,37 +324,6 @@ export class SymbolTableBuilder implements AstVisitor {
     this.addSymbol(importSymbol);
   }
 
-  // /**
-  //  * Helper method to create symbols for individual nodes within a reactor or polymer graph
-  //  * @deprecated
-  //  * @param keyObj CMDLNodeTree
-  //  * @param nameToken CMDLToken
-  //  */
-  // public createGraphSymbols(
-  //   keyObj: TYPES.NodeTree,
-  //   nameToken: CmdlToken
-  // ): void {
-  //   for (const key of Object.keys(keyObj)) {
-  //     const propSymbol = new ReferenceSymbol(
-  //       {
-  //         name: key,
-  //         token: nameToken,
-  //         type: SymbolType.REF_PROXY,
-  //         def: this.uri,
-  //       },
-  //       key
-  //     );
-
-  //     this.addSymbol(propSymbol);
-
-  //     if (Object.keys(keyObj[key]).length) {
-  //       this.enterNewScope(key);
-  //       this.createGraphSymbols(keyObj[key], nameToken);
-  //       this.exitCurrentScope();
-  //     }
-  //   }
-  // }
-
   /**
    * Creates a reference symbol and enters a new scope
    * @param refGroup ReferenceGroup
@@ -409,17 +378,19 @@ export class SymbolTableBuilder implements AstVisitor {
       refSymbol
     );
 
+    const proxySymbol = new ReferenceSymbol(
+      {
+        name: refSymbol.name.slice(1),
+        token: refSymbol.token,
+        type: SymbolType.REF_PROXY,
+        def: this.uri,
+      },
+      refSymbol.name.slice(1),
+      refSymbol.path
+    );
+
+    this.addSymbol(proxySymbol);
     this.addSymbol(propSymbol);
-
-    // if (refProp.name === "tree") {
-    //   const parentTable = this.tableStack.peek();
-    //   const refSymName = refSymbol.name.slice(1);
-    //   const ref = parentTable.getGlobalScopeSym(refSymName);
-    //   const keyObj: TYPES.NodeTree = {};
-
-    //   ref?.copySymbolTree(keyObj, refSymName);
-    //   this.createGraphSymbols(keyObj[refSymName], refProp.nameToken);
-    // }
   }
 
   /**
@@ -434,11 +405,24 @@ export class SymbolTableBuilder implements AstVisitor {
       {
         name: refList.name,
         token: refList.nameToken,
-        type: SymbolType.REF_PROPERTY,
+        type: SymbolType.REF_LIST_PROP,
         def: this.uri,
       },
       valueSymbolList
     );
+    for (const ref of valueSymbolList) {
+      const newProxy = new ReferenceSymbol(
+        {
+          name: ref.name.slice(1),
+          token: ref.token,
+          type: SymbolType.REF_PROXY,
+          def: this.uri,
+        },
+        ref.name.slice(1),
+        ref.path
+      );
+      this.addSymbol(newProxy);
+    }
     this.addSymbol(propSymbol);
   }
 

@@ -161,6 +161,7 @@ export class Repository {
     );
   }
 
+  //TODO: order initialization...
   public initialize() {
     vscode.workspace.findFiles("**/*.cmdl").then(
       (files) => {

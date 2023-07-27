@@ -7,9 +7,9 @@ import {
   PropertySymbol,
   ReferenceSymbol,
   SymbolType,
+  ImportSymbol,
 } from "./cmdl-symbol-base";
 import { RecordNode } from "../cmdl-tree";
-// import { TYPES } from "cmdl-types";
 import { ErrorTable } from "../error-manager";
 import { SymbolTableManager } from "../symbol-manager";
 
@@ -100,35 +100,6 @@ export class SymbolTable {
   }
 
   /**
-   * Copies symbol tree for assiting in building nodes for graph objects (polymers, reactor graphs)
-   * @param record CMDLNodeTree
-   * @param base string
-   */
-  // public copySymbolTree(record: TYPES.NodeTree, base?: string): void {
-  //   if (!this.enclosingScope && base) {
-  //     record[base] = {};
-  //     const nestedScope = this.nestedScopes.find((el) => el.scope === base);
-
-  //     if (!nestedScope) {
-  //       return;
-  //     }
-
-  //     nestedScope.copySymbolTree(record[base]);
-  //   } else {
-  //     for (const currSymbol of this._symbols.keys()) {
-  //       record[currSymbol] = {};
-  //       const nestedScope = this.nestedScopes.find(
-  //         (el) => el.scope === currSymbol
-  //       );
-
-  //       if (nestedScope) {
-  //         nestedScope.copySymbolTree(record[currSymbol]);
-  //       }
-  //     }
-  //   }
-  // }
-
-  /**
    * Retrieves a nested scope by string value, throws an error if not found
    * @param scope string
    * @returns SymbolTable
@@ -194,7 +165,8 @@ export class SymbolTable {
    */
   public getDeclaredEntities(): BaseSymbol[] {
     return [...this._symbols.values()].filter(
-      (el) => el.type === SymbolType.DECLARATION
+      (el) =>
+        el.type === SymbolType.DECLARATION || el.type === SymbolType.IMPORT
     );
   }
 
@@ -211,7 +183,27 @@ export class SymbolTable {
       return;
     }
 
+    const symbol = this._symbols.get(currentScope);
+
+    if (!symbol) {
+      return;
+    }
+
+    if (symbol.type === SymbolType.IMPORT) {
+      const sourcePath = (symbol as ImportSymbol).source.split("/");
+      const namespace = sourcePath[sourcePath.length - 1];
+      return this.manager.lookupMembers(namespace, path);
+    }
+
     const scope = this.nestedScopes.find((el) => el.scope === currentScope);
+
+    if (!scope && symbol.type === SymbolType.REF_PROXY) {
+      logger.debug(`Attempting to get members for proxy ${symbol.name}...`);
+      if (this.enclosingScope) {
+        return this.enclosingScope.getSymbolMembers(path);
+      }
+      return;
+    }
 
     if (!scope) {
       return;
@@ -221,7 +213,10 @@ export class SymbolTable {
       return scope.getSymbolMembers(newPath);
     }
 
-    return [...scope._symbols.values()];
+    return [...scope._symbols.values()].filter(
+      (el) =>
+        el.type === SymbolType.REF_PROXY || el.type === SymbolType.DECLARATION
+    );
   }
 
   /**
@@ -372,7 +367,6 @@ export class SymbolTable {
   /**
    * Validates existence of all references in document and their properties
    * TODO: validate variable properties and groups
-   * TODO: validate import symbols and paths
    * @param errTable ErrorTable
    * @param globalTable SymbolTable
    */
@@ -455,16 +449,15 @@ export class SymbolTable {
   /**
    * Helper method to recursively traverse symbol table to find referenced symbol
    * if symbol is found, passes the symbol path to the validate path method
-   * TODO: enable lookups of imported symbol
    * @param symbol ReferenceSymbol
    * @param globalTable SymbolTable
    * @returns RefError | undefined
    */
-  private lookup(
+  public lookup(
     symbol: ReferenceSymbol,
     globalTable: SymbolTable
   ): RefError | undefined {
-    //check current scope
+    //check current scope => should check current scope for nodes
     const referenceBase = this._symbols.get(symbol.base);
 
     //Found symbol
@@ -492,7 +485,10 @@ export class SymbolTable {
           //!TODO => check if referenced declaration is fragment => check if Q,R,Z,X exists on SMILES
           return;
         } else {
-          return new RefError(`${symbol.base} is not defined`, symbol.token);
+          return new RefError(
+            `${symbol.base} is not defined on ${this.scope}`,
+            symbol.token
+          );
         }
       } else {
         return new RefError(`${symbol.base} is not defined`, symbol.token);
@@ -537,15 +533,35 @@ export class SymbolTable {
         return;
       }
 
+      if (globalItem && !globalItemScope) {
+        const sourcePath = (globalItem as ImportSymbol).source.split("/");
+        const namespace = sourcePath[sourcePath.length - 1];
+
+        const newRef = new ReferenceSymbol(
+          {
+            name: globalItem.name,
+            token: globalItem.token,
+            type: SymbolType.REFERENCE,
+            def: "import ref",
+          },
+          globalItem.name,
+          newPath
+        );
+        return this.manager.lookupReference(namespace, newRef);
+      }
+
       if (!globalItem || !globalItemScope) {
         return new RefError(
-          `Property ${path[0]} is not defined on ${this.scope}`,
+          `Property ${path[0]} is not defined on scope ${this.scope}`,
           symbol.token
         );
       }
 
       if (newPath.length) {
         //re-initiates path search if item found on global scope
+        logger.debug(
+          `Re-initializing path validation for ${symbol.name} on ${globalItemScope.scope}`
+        );
         return globalItemScope.validatePath(symbol, newPath, globalTable);
       } else {
         return;
