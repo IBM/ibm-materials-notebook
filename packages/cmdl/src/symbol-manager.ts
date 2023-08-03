@@ -1,3 +1,4 @@
+import { RefError } from "./errors";
 import { logger } from "./logger";
 import { ReferenceSymbol, SymbolTable } from "./symbols";
 
@@ -25,8 +26,15 @@ export class SymbolTableManager {
   }
 
   public lookupReference(namespace: string, symbol: ReferenceSymbol) {
-    const sourceTable = this.getTable(namespace);
-    return sourceTable.lookup(symbol, sourceTable);
+    try {
+      const sourceTable = this.getTable(namespace);
+      return sourceTable.lookup(symbol, sourceTable);
+    } catch (error) {
+      logger.error(
+        `Error looking up reference ${symbol.name} in ${namespace}:\n${error}`
+      );
+      return new RefError(`Compiler error in finding ${symbol.name}`);
+    }
   }
 
   public create(namespace: string) {
