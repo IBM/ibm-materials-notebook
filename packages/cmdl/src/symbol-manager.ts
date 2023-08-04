@@ -33,7 +33,10 @@ export class SymbolTableManager {
       logger.error(
         `Error looking up reference ${symbol.name} in ${namespace}:\n${error}`
       );
-      return new RefError(`Compiler error in finding ${symbol.name}`);
+      return new RefError(
+        `Compiler error in finding ${symbol.name}`,
+        symbol.token
+      );
     }
   }
 

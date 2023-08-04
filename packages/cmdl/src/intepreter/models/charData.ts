@@ -4,6 +4,7 @@ import { ChemicalModel } from "./chemicals";
 import { TYPES, TAGS, PROPERTIES } from "cmdl-types";
 import Big from "big.js";
 import { CharFileReader } from "./files";
+import { logger } from "../../logger";
 
 export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
   private chemicalEntity: PolymerModel | ChemicalModel;

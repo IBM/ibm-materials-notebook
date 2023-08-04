@@ -1,9 +1,10 @@
 import { ChemicalSet } from "cmdl-chemicals";
 import { Model } from "./model";
-import { TYPES } from "cmdl-types";
+import { ModelType, TYPES } from "cmdl-types";
 import { ReactorChemicals, ReactorContainer } from "cmdl-reactors";
 import { ModelActivationRecord } from "../model-AR";
 import { ChemicalTranslator } from "./utils";
+import { logger } from "../../logger";
 
 export class ReactionModel extends Model<TYPES.Reaction> {
   private chemicals = new ChemicalSet();
@@ -20,6 +21,9 @@ export class ReactionModel extends Model<TYPES.Reaction> {
         temperature: this.properties.temperature,
       }
     );
+    logger.debug(
+      `Reactants: \n\t-${chemConfigs.map((el) => el.name).join("\n\t-")}`
+    );
     this.chemicals.insertMany(chemConfigs);
   }
 
@@ -31,6 +35,8 @@ export class ReactionModel extends Model<TYPES.Reaction> {
     this.chemicals.computeChemicalValues();
     return {
       ...this.properties,
+      name: this.name,
+      type: ModelType.REACTION,
       reactants: this.chemicals.chemicalValues,
     };
   }

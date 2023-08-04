@@ -15,6 +15,11 @@ export interface Polymer extends BaseModel {
   [PROPERTIES.STRUCTURE]?: Reference; //polymer graph representation reference
 }
 
+export interface PolymerExport extends Polymer {
+  [PROPERTIES.SMILES]?: string;
+  graph_string?: string;
+}
+
 /**
  * Values assigned to nodes in polymer graph
  */

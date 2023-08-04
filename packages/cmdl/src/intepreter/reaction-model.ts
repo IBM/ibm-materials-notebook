@@ -3,6 +3,7 @@ import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { PROPERTIES, TAGS, ModelType, TYPES } from "cmdl-types";
 import { ProtocolModel, ReactionModel } from "./models";
+import { logger } from "../logger";
 
 /**
  * Interpreter model to compute reaction stoichiometry for an experiment
@@ -55,6 +56,10 @@ export class Reaction extends BaseModel {
       const reactants = chemicals.filter(
         (el: TYPES.ChemicalReference) =>
           el?.roles && !el.roles.includes(TAGS.PRODUCT)
+      );
+
+      logger.debug(
+        `Reactants: \n\t-${reactants.map((el) => el.name).join("\n\t-")}`
       );
 
       const volume = this.modelAR.getOptionalValue<TYPES.BigQty>(

@@ -13,8 +13,6 @@ export class Repository {
       : ""
   );
 
-  private initialized = false;
-
   private _onDidInitializeNotebook =
     new vscode.EventEmitter<vscode.NotebookDocument>();
   readonly onDidInitializeNotebook = this._onDidInitializeNotebook.event;
@@ -38,15 +36,12 @@ export class Repository {
   constructor() {
     this._disposables.push(
       vscode.workspace.onDidOpenNotebookDocument((notebookDoc) => {
-        if (!this.initialized) {
-          return;
-        }
-
         if (notebookDoc.notebookType !== NOTEBOOK) {
           return;
         }
 
         const notebookUri = notebookDoc.uri.toString();
+        logger.silly(`Opening ${notebookUri}....`);
         if (notebookDoc.uri.fragment) {
           logger.debug(`receiving ${notebookDoc.uri.scheme}`);
           return;
@@ -107,10 +102,6 @@ export class Repository {
 
     this._disposables.push(
       vscode.workspace.onDidOpenTextDocument((doc) => {
-        if (!this.initialized) {
-          return;
-        }
-
         if (doc.languageId !== "cmdl") {
           return;
         }
@@ -195,9 +186,6 @@ export class Repository {
         for (const uri of value) {
           vscode.workspace.openNotebookDocument(uri);
         }
-      })
-      .then(() => {
-        this.initialized = true;
       });
   }
 

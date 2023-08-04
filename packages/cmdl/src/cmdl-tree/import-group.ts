@@ -4,6 +4,7 @@ import { RecordNode } from "./base-components";
 import { parseStringImage } from "./utils";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
+import { logger } from "../logger";
 
 /**
  * Component AST node for handling import operations
@@ -25,7 +26,7 @@ export class ImportOp implements RecordNode {
     this.nameToken = token;
     if (alias) {
       this.aliasToken = alias;
-      this.alias = parseStringImage(alias.image);
+      this.alias = alias.image;
     }
   }
 

@@ -206,6 +206,7 @@ export class Controller {
     const semanticErrors = results.recordTree.validate();
     const builder = new SymbolTableBuilder(symbols, errs, fileName, cell.uri);
     results.recordTree.createSymbolTable(builder);
+    // logger.verbose(`current symbolTable:\n${symbols.print()}`);
 
     symbols.validate(errs);
     errs.add(cell.uri, results.parserErrors);
@@ -249,7 +250,6 @@ export class Controller {
     errTable.delete(doc.uri);
 
     const recordTree = this.parseDocument(doc, symbolTable, errTable);
-    logger.verbose(`current symbolTable:\n${symbolTable.print()}`);
     const document = new TextDocument(doc, doc.version, recordTree);
     this._documents.set(doc.uri, document);
   }

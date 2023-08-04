@@ -98,6 +98,11 @@ export class PolymerModel
       const cloneGraph = this.graph.clone();
       clone.addGraph(cloneGraph);
     }
+
+    for (const [key, value] of Object.entries(this.properties)) {
+      clone.add(key as keyof TYPES.Polymer, value);
+    }
+
     return clone;
   }
 
@@ -124,7 +129,7 @@ export class PolymerModel
       throw new Error(`Mn or state is undefined on ${this.name}`);
     }
 
-    if (!!this.properties.mn_avg) {
+    if (!this.properties.mn_avg) {
       logger.warn(`Mn is not defined for ${this.name}...returning value of 1`);
     }
 
@@ -134,12 +139,20 @@ export class PolymerModel
     };
   }
 
-  public export(): TYPES.Polymer {
-    // const graphExport = this.graph?.export();
-    return {
+  public export(): TYPES.PolymerExport {
+    const polymerExport: TYPES.PolymerExport = {
       ...this.properties,
       name: this.name,
       type: this.type as ModelType.POLYMER,
     };
+
+    const graphExport = this.graph?.export();
+
+    if (graphExport) {
+      polymerExport.smiles = graphExport.smiles;
+      polymerExport.graph_string = graphExport.str;
+    }
+
+    return polymerExport;
   }
 }

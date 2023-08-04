@@ -1,6 +1,7 @@
 import { h, FunctionComponent } from "preact";
 import { ChemicalStructure } from "./chemicals";
 import { StructureTheme } from ".";
+import { TYPES } from "cmdl-types";
 
 function formatName(name: string) {
   return name.split(".").slice(1).join(".");
@@ -235,12 +236,16 @@ const ComplexResult: FunctionComponent<{ result: any }> = ({ result }) => {
   );
 };
 
-export const Sample: FunctionComponent<{ sample: any }> = ({ sample }) => {
+export const CharData: FunctionComponent<{
+  charData: TYPES.CharDataOutput;
+}> = ({ charData }) => {
   return (
     <div>
-      <h3>{sample.name}</h3>
+      <h3>{charData.name}</h3>
+      <p>Technique: {charData.technique}</p>
+      <p>Sample Id: {charData.sample_id}</p>
       <ul>
-        {sample.results.length
+        {/* {sample.results.length
           ? sample.results.map((el: any, index: number) => {
               if (el.type === "polymer") {
                 return (
@@ -267,7 +272,7 @@ export const Sample: FunctionComponent<{ sample: any }> = ({ sample }) => {
                 return null;
               }
             })
-          : null}
+          : null} */}
       </ul>
     </div>
   );

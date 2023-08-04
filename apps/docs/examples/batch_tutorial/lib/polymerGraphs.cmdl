@@ -1,50 +1,21 @@
-fragment eg_MeO {
-   molecular_weight: 31.02 g/mol;
-   smiles: "CO[R]";
-
-   point R {
-      quantity: 1;
-   };
+fragments {
+   MeO =: "CO[R]";
+   PEO =: "[Q]OCC[R]";
+   Llac =: "O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C";
 }
 
-fragment p_PEO {
-   molecular_weight: 44.05 g/mol;
-   smiles: "[Q]OCC[R]";
-
-   point R {
-      quantity: 1;
-   };
-
-   point Q {
-      quantity: 1;
-   };
-}
-
-fragment p_Llac {
-   molecular_weight: 144.04 g/mol;
-   smiles: "O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C";
-
-   point R {
-      quantity: 1;
-   };
-
-   point Q {
-      quantity: 1;
-   };
-}
-
-polymer_graph PEG_PLLA_Base {
-   nodes: [ @eg_MeO ];
-   <@eg_MeO.R => @PEG_Block.p_PEO.R>;
-   <@PEG_Block.p_PEO.Q => @Lactide_Block.p_Llac.R>;
+polymer_graph PEG_PLLA {
+   nodes: [ @MeO ];
+   <@MeO.R => @PEG_Block.PEO.R>;
+   <@PEG_Block.PEO.Q => @Lactide_Block.Llac.R>;
 
    container PEG_Block {
-      nodes: [ @p_PEO ];
-      <@p_PEO.Q => @p_PEO.R>;
+      nodes: [ @PEO ];
+      <@PEO.Q => @PEO.R>;
    };
 
    container Lactide_Block {
-     nodes: [ @p_Llac ];
-     <@p_Llac.Q => @p_Llac.R>; 
+     nodes: [ @Llac ];
+     <@Llac.Q => @Llac.R>; 
    };
 }
