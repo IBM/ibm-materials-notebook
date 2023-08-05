@@ -1,7 +1,9 @@
 import { h, FunctionComponent } from "preact";
+import { useEffect } from "preact/hooks";
 import { ChemicalStructure } from "./chemicals";
 import { StructureTheme } from ".";
 import { TYPES } from "cmdl-types";
+import LineChart from "./lineChart";
 
 function formatName(name: string) {
   return name.split(".").slice(1).join(".");
@@ -239,41 +241,28 @@ const ComplexResult: FunctionComponent<{ result: any }> = ({ result }) => {
 export const CharData: FunctionComponent<{
   charData: TYPES.CharDataOutput;
 }> = ({ charData }) => {
+  const graphId = `${charData.name}-${charData.sample_id}-trace`;
+
+  useEffect(() => {
+    try {
+      if (charData.file) {
+        const graph = new LineChart(graphId);
+        graph.values = charData.file.data;
+
+        console.log(graph.values);
+        graph.plot();
+      }
+    } catch (error) {
+      console.warn(`Unable to plot graph: ${error}`);
+    }
+  }, [charData.file]);
+
   return (
     <div>
       <h3>{charData.name}</h3>
       <p>Technique: {charData.technique}</p>
       <p>Sample Id: {charData.sample_id}</p>
-      <ul>
-        {/* {sample.results.length
-          ? sample.results.map((el: any, index: number) => {
-              if (el.type === "polymer") {
-                return (
-                  <PolymerResult
-                    key={`result-${sample.name}-${index}`}
-                    result={el}
-                  />
-                );
-              } else if (el.type === "chemical") {
-                return (
-                  <ChemicalResult
-                    key={`result-${sample.name}-${index}`}
-                    result={el}
-                  />
-                );
-              } else if (el.type === "complex") {
-                return (
-                  <ComplexResult
-                    key={`result-${sample.name}-${index}`}
-                    result={el}
-                  />
-                );
-              } else {
-                return null;
-              }
-            })
-          : null} */}
-      </ul>
+      <div id={graphId} />
     </div>
   );
 };

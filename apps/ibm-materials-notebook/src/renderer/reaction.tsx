@@ -185,12 +185,18 @@ export const ReactionTable: FunctionComponent<{
 //   );
 // };
 
-export const BatchReactionTableHeader: FunctionComponent<{ reaction: any }> = ({
-  reaction,
-}) => {
+export const BatchReactionTableHeader: FunctionComponent<{
+  reaction: TYPES.Reaction;
+}> = ({ reaction }) => {
   return (
     <div>
       <h3>{reaction.name}</h3>
+      {reaction?.reaction_time ? (
+        <p>
+          Time:{" "}
+          {`${reaction.reaction_time.value} ${reaction.reaction_time.unit}`}
+        </p>
+      ) : null}
       {reaction?.temperature ? (
         <p>
           Temperature:{" "}
@@ -214,6 +220,7 @@ export const Reaction: FunctionComponent<{ reaction: TYPES.Reaction }> = ({
     <div>
       <BatchReactionTableHeader reaction={reaction} />
       <ReactionTable reaction={reaction} rxnName={reaction.name} />
+      {reaction.protocol ? <p>{reaction.protocol}</p> : null}
     </div>
   );
 };
