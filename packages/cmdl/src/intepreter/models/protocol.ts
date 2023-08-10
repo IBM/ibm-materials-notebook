@@ -31,6 +31,12 @@ export class ProtocolModel extends Model<any> {
     };
   }
 
+  /**
+   * Serializes protocol template to string given
+   * refrence values
+   * TODO: allow checking if next item after a reference insertion is not punctuation, add space if not...
+   * @returns string
+   */
   public serializeProtocol(): string {
     return this.protocol
       .map((item) => {

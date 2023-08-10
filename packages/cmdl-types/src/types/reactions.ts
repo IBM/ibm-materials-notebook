@@ -44,5 +44,4 @@ export type SolutionReference = {
 export interface Solution extends BaseModel {
   type: ModelType.SOLUTION;
   components: ChemicalOutput[];
-  componentConfigs: ChemicalConfig[];
 }

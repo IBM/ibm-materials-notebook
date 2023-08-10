@@ -60,6 +60,15 @@ export class SolutionModel extends Model<TYPES.Solution> {
   public getChemicalConfigs(): TYPES.ChemicalConfig[] {
     return this.chemicals.exportSet();
   }
+
+  public export(): TYPES.Solution {
+    return {
+      ...this.properties,
+      name: this.name,
+      type: ModelType.SOLUTION,
+      components: this.chemicals.chemicalValues,
+    };
+  }
 }
 
 export class ReactorModel extends Model<TYPES.Reactor> {
@@ -83,8 +92,8 @@ export class ReactorModel extends Model<TYPES.Reactor> {
     this.reactor.setNodeInput(id, chemicals);
   }
 
-  public processReactor() {
-    this.processReactor();
+  public processFlowReactor() {
+    this.reactor.processReactor();
     return this.reactor.getOutputs();
   }
 }
@@ -108,7 +117,7 @@ export class FlowRxnModel extends Model<TYPES.FlowRxn> {
     if (!this.reactorModel) {
       throw new Error(`No reactor model is set!`);
     }
-    const output = this.reactorModel.processReactor();
+    const output = this.reactorModel.processFlowReactor();
     this.properties.reactions = output;
   }
 }

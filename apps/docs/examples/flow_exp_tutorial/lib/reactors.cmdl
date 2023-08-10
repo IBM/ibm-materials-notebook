@@ -1,0 +1,45 @@
+reactor_graph BL1109 {
+    component Monomer_Syringe {
+        volume: 5 ml;
+        description: "NormJect Syringe (5 mL)";
+        target: @Monomer_Pump;
+    };
+
+    component Catalyst_Syringe {
+        volume: 5 ml;
+        description: "NormJect Syringe (5 mL)";
+        target: @Catalyst_Pump;
+    };
+
+    component Monomer_Pump {
+        volume: 5 ml;
+        description: "PhD Ultra Havard Syringe Pump";
+        target: @BL1109.Polymerization_Reactor.T-Mixer;
+    };
+
+    component Catalyst_Pump {
+        volume: 5 ml;
+        description: "PhD Ultra Havard Syringe Pump";
+        target: @BL1109.Polymerization_Reactor.T-Mixer;
+    };
+
+    reactor Polymerization_Reactor {
+        component T-Mixer {
+            inner_diameter: 0.1 cm;
+            description: "PEEK T-Mixer (0.1 cm ID)";
+            target: @Reactor_Tubing;
+        };
+
+        component Reactor_Tubing {
+            inner_diameter: 0.1 cm;
+            description: "PFA Reactor Tubing (24.6 cm, 0.1 cm ID)";
+            volume: 0.193 ml;
+            target: @BL1109.Collection;
+        };
+    };
+
+    component Collection {
+        volume: 20 ml;
+        description: "Scintillation Vial (20 mL)";
+    };
+}

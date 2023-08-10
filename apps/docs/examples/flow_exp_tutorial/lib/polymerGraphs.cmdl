@@ -1,0 +1,32 @@
+fragments {
+   MeO =: "CO[R]";
+   PEO =: "[Q]OCC[R]";
+   Llac =: "O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C";
+   TMCBn =: "CC(CO[Q:2])(C(OCC1=CC=CC=C1)=O)COC([R:1])=O";
+}
+
+polymer_graph PEG_PLLA {
+   nodes: [ @MeO ];
+   <@MeO.R => @PEG_Block.PEO.R>;
+   <@PEG_Block.PEO.Q => @Lactide_Block.Llac.R>;
+
+   container PEG_Block {
+      nodes: [ @PEO ];
+      <@PEO.Q => @PEO.R>;
+   };
+
+   container Lactide_Block {
+     nodes: [ @Llac ];
+     <@Llac.Q => @Llac.R>; 
+   };
+}
+
+polymer_graph MeO-TMCBn {
+   nodes: [ @MeO ];
+   <@MeO.R => @Carbonate_Block.TMCBn.R>;
+   
+   container Carbonate_Block {
+      nodes: [ @TMCBn ];
+      <@TMCBn.Q => @TMCBn.R>;
+   };
+}

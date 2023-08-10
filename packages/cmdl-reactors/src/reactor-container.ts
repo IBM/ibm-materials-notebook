@@ -2,40 +2,12 @@ import { Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
 import { ReactorComponent } from "./reactor-component";
 import { logger } from "./logger";
-import { TYPES, PROPERTIES } from "cmdl-types";
-// import Big from "big.js";
+import { TYPES } from "cmdl-types";
 
 export interface ReactorEdge {
   id: string;
   target: string | null;
 }
-
-// export interface SerializedReactorComponent {
-//   name: string;
-//   type: "component";
-//   [PROPERTIES.DESCRIPTION]?: string;
-//   [PROPERTIES.INNER_DIAMETER]?: TYPES.NumericQty;
-//   [PROPERTIES.OUTER_DIAMETER]?: TYPES.NumericQty;
-//   [PROPERTIES.VOLUME]?: TYPES.NumericQty;
-//   [PROPERTIES.LENGTH]?: TYPES.NumericQty;
-//   sources: string[];
-//   next: string | null;
-//   parent: string | null;
-// }
-
-// export interface SerializedReactorGroup {
-//   name: string;
-//   type: string;
-//   parent: string | null;
-//   children: string[];
-// }
-
-// export interface SerializedReactor {
-//   nodes: SerializedReactorComponent[];
-//   edges: ReactorEdge[];
-//   outputNode: string | null;
-//   reactors: SerializedReactorGroup[];
-// }
 
 export interface ReactorGroupOutput {
   name: string;
@@ -174,29 +146,6 @@ export class ReactorContainer {
   }
 
   /**
-   * Method to traverse reactor graph and create an outline of the node tree
-   * @returns CMDLNodeTree
-   */
-  public getReactorNodeTree(): TYPES.NodeTree {
-    const nodeTree: TYPES.NodeTree = {};
-
-    for (const node of this.nodeMap.values()) {
-      if (!node.parent) {
-        nodeTree[node.name] = {};
-      } else {
-        if (nodeTree[node.parent.name]) {
-          nodeTree[node.parent.name][node.name] = {};
-        } else {
-          nodeTree[node.parent.name] = {};
-          nodeTree[node.parent.name][node.name] = {};
-        }
-      }
-    }
-
-    return nodeTree;
-  }
-
-  /**
    * Processes all reactor groups and computes stoichiometry for reactions
    */
   public processReactor(): void {
@@ -211,66 +160,4 @@ export class ReactorContainer {
 
     this.outputNode.getInputs();
   }
-
-  /**
-   * Serializes reactor to object
-   * @deprecated
-   * @returns SerializedReactor
-   */
-  // public serialize(): SerializedReactor {
-  //   const edges = [...this.edgeMap.values()];
-  //   const nodes = [...this.nodeMap.values()].map((el) => el.serialize());
-  //   const outputNode = this.outputNode ? this.outputNode.name : null;
-  //   const reactors = [...this.reactorMap.values()].map((el) => el.serialize());
-
-  //   return {
-  //     nodes,
-  //     edges,
-  //     outputNode,
-  //     reactors,
-  //   };
-  // }
-
-  /**
-   * De-serializes reactor into correct continuous-flow reactor graph
-   * @deprecated
-   * @param arg SerializedReactor
-   */
-  // public deserialize(arg: SerializedReactor): void {
-  //   arg.edges.forEach((el: ReactorEdge) => {
-  //     this.edgeMap.set(el.id, el);
-  //   });
-
-  //   for (const reactor of arg.reactors) {
-  //     let newReactor = new Reactor(reactor.name);
-
-  //     this.reactorMap.set(reactor.name, newReactor);
-  //   }
-
-  //   for (const node of arg.nodes) {
-  //     let newNode = new ReactorComponent(node.name);
-
-  //     if (node.volume) {
-  //       newNode.setVolume({
-  //         ...node.volume,
-  //         value: Big(node.volume.value),
-  //         uncertainty: null,
-  //       });
-  //     }
-
-  //     if (node.parent) {
-  //       let parent = this.reactorMap.get(node.parent);
-
-  //       if (!parent) {
-  //         throw new Error(`reactor ${parent} is not set for node ${node.name}`);
-  //       } else {
-  //         parent.add(newNode);
-  //       }
-  //     }
-
-  //     this.nodeMap.set(node.name, newNode);
-  //   }
-
-  //   this.linkNodeGraph();
-  // }
 }

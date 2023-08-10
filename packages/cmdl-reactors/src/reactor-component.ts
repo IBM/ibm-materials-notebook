@@ -1,7 +1,6 @@
-import { Unit, convertQty } from "cmdl-units";
+import { Unit } from "cmdl-units";
 import { ReactorNode, Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
-import { SerializedReactorComponent } from "./reactor-container";
 import { TYPES } from "cmdl-types";
 
 /**
@@ -117,28 +116,5 @@ export class ReactorComponent implements ReactorNode {
     } else {
       return vol;
     }
-  }
-
-  /**
-   * Serializes reactor componet to object.
-   * @returns SerializedReactorComponent
-   */
-  public serialize(): SerializedReactorComponent {
-    return {
-      name: this.name,
-      type: "component",
-      sources: this.sources.map((el) => el.name),
-      next: this.next ? this.next.name : null,
-      inner_diameter: this.inner_diameter
-        ? convertQty(this.inner_diameter)
-        : undefined,
-      outer_diameter: this.outer_diameter
-        ? convertQty(this.outer_diameter)
-        : undefined,
-      description: this.description,
-      length: this.length ? convertQty(this.length) : undefined,
-      volume: this.volume ? convertQty(this.volume) : undefined,
-      parent: this.parent ? this.parent.name : null,
-    };
   }
 }

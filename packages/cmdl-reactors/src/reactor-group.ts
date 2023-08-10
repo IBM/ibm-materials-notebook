@@ -3,10 +3,7 @@ import { convertQty } from "cmdl-units";
 import { TYPES } from "cmdl-types";
 import { ReactorComponent } from "./reactor-component";
 import { ReactorChemicals } from "./reactor-chemicals";
-import {
-  ReactorGroupOutput,
-  SerializedReactorGroup,
-} from "./reactor-container";
+import { ReactorGroupOutput } from "./reactor-container";
 
 /**
  * Interface for node in a reactor graph
@@ -193,19 +190,6 @@ export class Reactor implements ReactorNode {
       residenceTime: convertQty(this.residenceTime),
       volume: convertQty(this.volume),
       reactants: [...this.reactorOutput],
-    };
-  }
-
-  /**
-   * Serializes reactor into an object
-   * @returns SerializedReactorGroup
-   */
-  public serialize(): SerializedReactorGroup {
-    return {
-      name: this.name,
-      type: "reactor",
-      parent: this.parent ? this.parent.name : null,
-      children: this.children.map((el) => el.name),
     };
   }
 }

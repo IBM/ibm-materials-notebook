@@ -3,6 +3,7 @@ import { BaseModel } from "./base-model";
 import { FlowRxnModel, ReactorModel, SolutionModel } from "./models";
 import { ModelType, TYPES } from "cmdl-types";
 import { ReactorChemicals } from "cmdl-reactors";
+import { logger } from "../logger";
 
 export class FlowReaction extends BaseModel {
   constructor(
@@ -24,12 +25,8 @@ export class FlowReaction extends BaseModel {
 
     const finalProducts: TYPES.Product[] = products.map(
       (el: TYPES.ChemicalReference) => {
-        const product = globalAR.getValue<TYPES.Chemical | TYPES.Polymer>(
-          el.name
-        );
         return {
           name: el.name,
-          smiles: product?.smiles ? product.smiles : null,
           roles: el.roles,
         };
       }

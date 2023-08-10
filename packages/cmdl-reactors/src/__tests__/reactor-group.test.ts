@@ -3,7 +3,7 @@ import { Reactor } from "../reactor-group";
 import { ReactorComponent } from "../reactor-component";
 import { testChemicals } from "./reactor-chem.test";
 import { ReactorChemicals } from "../reactor-chemicals";
-import { PROPERTIES, TAGS, CMDL } from "cmdl-types";
+import { PROPERTIES, TAGS, TYPES } from "cmdl-types";
 
 const kOtbu: TYPES.ChemicalConfig = {
   name: "l-lactide",

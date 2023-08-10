@@ -1,0 +1,43 @@
+chemical tetrahydrofuran {
+    smiles: "C1CCOC1";
+    state: "liquid";
+    molecular_weight: 72.11 g/mol;
+    density: 0.8876 g/ml;   
+}
+
+chemical potassium_tert-butoxide {
+    molecular_weight: 112.212 g/mol;
+    state: "solid";
+    smiles: "[K+].CC(C)(C)[O-]";
+}
+
+chemical potassium_methoxide {
+    smiles: "C[O-].[K+]";
+    state: "solid";
+    molecular_weight: 69.98 g/mol;
+}
+
+chemical dimethyl-1-4-dioxane-2-5-dione {
+    molecular_weight: 144.12 g/mol;
+    state: "solid";
+    smiles: "C[C@H]1C(=O)O[C@H](C(=O)O1)C";
+}
+
+chemical benzoic_acid {
+    smiles: "O=C(O)C1=CC=CC=C1";
+    molecular_weight: 122.12 g/mol;
+    state: "solid";
+    inchi_key: "WPYMKLBDIGXBTP-UHFFFAOYSA-N";
+}
+
+chemical bis-3-5-bistrifluoromethylphenylurea {
+    smiles: "O=C(NC1=CC(C(F)(F)F)=CC(C(F)(F)F)=C1)NC2=CC(C(F)(F)F)=CC(C(F)(F)F)=C2";
+    molecular_weight: 484.04 g/mol;
+    state: "solid";
+}
+
+chemical benzyl_5-methyl-2-oxo-1_3-dioxane-5-carboxylate {
+    smiles: "O=C(C1(C)COC(OC1)=O)OCC2=CC=CC=C2";
+    molecular_weight: 250.08 g/mol;
+    state: "solid";
+}
