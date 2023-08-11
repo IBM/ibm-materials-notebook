@@ -135,32 +135,13 @@ In the followin examples, we'll define two simple polymer graph representations 
 Before defining the polymer graph structure itself, we need to create references to `fragments` of the polymer structure. These `fragments` will contain information such as the molecular weight of a particular end group or repeat unit as well as their SMILES strings. First lets create fragments for the methoxy-terminated poly(ethylene glycol) macro-initiator (`mPEG-OH`). In a new CMDL cell in the `batch_experiment` notebook add the following:
 
 ```cmdl
-fragment eg_MeO {
-   molecular_weight: 31.02 g/mol;
-   smiles: "CO[R]";
-
-   point R {
-      quantity: 1;
-   };
-}
-
-fragment p_PEO {
-   molecular_weight: 44.05 g/mol;
-   smiles: "[Q]OCC[R]";
-
-   point R {
-      quantity: 1;
-   };
-
-   point Q {
-      quantity: 1;
-   };
+fragments {
+   MeO =: "CO[R]";
+   PEO =: "[Q]OCC[R]";
 }
 ```
 
-Here, we break `mPEG-OH` into two distinct fragments, one for its methoxy end group `eg_MeO` and one for its repeat unit `p_PEO`. The nested `point` groups provide a handle to reference when defining edges in the polymer graph. The `quantity` property in these groups define the number of identical points in the SMILES string with that label.
-
-Fragments can be used in more than one context within a single polymer graph structure definition. For instance, a methoxy group, `eg_MeO` may appear in distinct parts of polymer structure, such as an end group of grafted side chain and the end group of the main chain. For this reason, `fragments` are defined separately from the polymer graph.
+Here, we break `mPEG-OH` into two distinct fragments, one for its methoxy end group `MeO` and one for its repeat unit `PEO`. Fragments can be used in more than one context within a single polymer graph structure definition. For instance, a methoxy group, `MeO` may appear in distinct parts of polymer structure, such as an end group of grafted side chain and the end group of the main chain. For this reason, `fragments` can be defined separately from the polymer graph or can be defined directly on the top-level of the `polymer_graph` group.
 
 ### Polymer Graph Definition
 
@@ -174,50 +155,43 @@ polymer_graph PEG_BASE {
 }
 ```
 
-This group represents the full structure or the root container in the polymer composite tree of `mPEG-OH`. The root container of the composite tree for mPEG-OH should contain a reference to `eg_MeO` and a nested container for the `p_PEO` repeat unit. Repeat units are by convention placed in separate nested containers, which is especially important for dealing with polymers that are grafted or have blocks with statistical microstructures. See the polymer graphs section for examples. Adding these to the graph definition affords the following.
+This group represents the full structure or the root container in the polymer composite tree of `mPEG-OH`. The root container of the composite tree for mPEG-OH should contain a reference to `MeO` and a nested container for the `PEO` repeat unit. Repeat units are by convention placed in separate nested containers, which is especially important for dealing with polymers that are grafted or have blocks with statistical microstructures. See the polymer graphs section for examples. Adding these to the graph definition affords the following.
 
 ```cmdl
 polymer_graph PEG_BASE {
-   nodes: [ @eg_MeO ];
+   nodes: [ @MeO ];
 
    container PEG_Block {
-      nodes: [ @p_PEO ]
+      nodes: [ @PEO ]
    };
 }
 ```
 
-Now that the nodes are in place, we can add edges. Edges are defined within containers and only specify connections between the containers child nodes. Thus, an edge from a nested node will _not_ specify a connection to a node in a parent container. In this example we have two edges, one between the `eg_MeO` and `p_PEO` nodes and one between `p_PEO` and itself. Edges are denoted with a special notation within CMDL and appear as follows:
+Now that the nodes are in place, we can add edges. Edges are defined within containers and only specify connections between the containers child nodes. Thus, an edge from a nested node will _not_ specify a connection to a node in a parent container. In this example we have two edges, one between the `MeO` and `PEO` nodes and one between `PEO` and itself. Edges are denoted with a special notation within CMDL and appear as follows:
 
 ```cmdl{3,7}
 polymer_graph PEG_BASE {
-   nodes: [ @eg_MeO ];
-   <@eg_MeO.R => @PEG_Block.p_PEO.R>;
+   nodes: [ @MeO ];
+   <@MeO.R => @PEG_Block.PEO.R>;
 
    container PEG_Block {
-      nodes: [ @p_PEO ];
-      <@p_PEO.Q => @p_PEO.R>;
+      nodes: [ @PEO ];
+      <@PEO.Q => @PEO.R>;
    };
 }
 ```
 
-Note that the prefix `PEG_Block` is needed to specify the which container the edge originating from the `eg_MeO` is pointing towards (line 3). Edges originating and terminating within the same container (line 7), do not need any additional prefixes. The direction of the edge is by convention originating with a _nucleophilic_ point and terminating with the _electrophilic_ point. This works in many cases, however, there are instances where it becomes more ambiguous and the edge direction can be set at the users discretion. Future versions will aim at providing more rigorous solutions to these cases. Now that we have the `mPEG-OH` structure defined, we can move on to the `mPEG-PLLA` product.
+Note that the prefix `PEG_Block` is needed to specify the which container the edge originating from the `MeO` is pointing towards (line 3). Edges originating and terminating within the same container (line 7), do not need any additional prefixes. The direction of the edge is by convention originating with a _nucleophilic_ point and terminating with the _electrophilic_ point. This works in many cases, however, there are instances where it becomes more ambiguous and the edge direction can be set at the users discretion. Future versions will aim at providing more rigorous solutions to these cases. Now that we have the `mPEG-OH` structure defined, we can move on to the `mPEG-PLLA` product.
 
 #### Polylactide Product
 
-In a new cell, we can create a fragment definintion `p_Llac` for the lactide repeat unit and run the cell:
+In a new cell, we can create a fragment definintion `Llac` for the lactide repeat unit on the original fragments group and re-run the cell:
 
-```cmdl
-fragment p_Llac {
-   molecular_weight: 144.04 g/mol;
-   smiles: "O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C";
-
-   point R {
-      quantity: 1;
-   };
-
-   point Q {
-      quantity: 1;
-   };
+```cmdl{4}
+fragments {
+   MeO =: "CO[R]";
+   PEO =: "[Q]OCC[R]";
+   Llac =: "O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C";
 }
 ```
 
@@ -225,12 +199,12 @@ In a second new cell, we can define a new polymer graph for the `mPEG-PLLA` prod
 
 ```cmdl
 polymer_graph PEG_PLLA_Base {
-   nodes: [ @eg_MeO ];
-   <@eg_MeO.R => @PEG_Block.p_PEO.R>;
+   nodes: [ @MeO ];
+   <@MeO.R => @PEG_Block.PEO.R>;
 
    container PEG_Block {
-      nodes: [ @p_PEO ];
-      <@p_PEO.Q => @p_PEO.R>;
+      nodes: [ @PEO ];
+      <@PEO.Q => @PEO.R>;
    };
 }
 ```
@@ -239,33 +213,33 @@ We can add the lactide block, the lactide repeat unit edge, and the edge between
 
 ```cmdl
 polymer_graph PEG_PLLA_Base {
-   nodes: [ @eg_MeO ];
-   <@eg_MeO.R => @PEG_Block.p_PEO.R>;
-   <@PEG_Block.p_PEO.Q => @Lactide_Block.p_Llac.R>;
+   nodes: [ @MeO ];
+   <@MeO.R => @PEG_Block.PEO.R>;
+   <@PEG_Block.PEO.Q => @Lactide_Block.Llac.R>;
 
    container PEG_Block {
-      nodes: [ @p_PEO ];
-      <@p_PEO.Q => @p_PEO.R>;
+      nodes: [ @PEO ];
+      <@PEO.Q => @PEO.R>;
    };
 
    container Lactide_Block {
-     nodes: [ @p_Llac ];
-     <@p_Llac.Q => @p_Llac.R>;
+     nodes: [ @Llac ];
+     <@Llac.Q => @Llac.R>;
    };
 }
 ```
 
 ### Polymer Reference Definition
 
-With both polymer graphs for the macroinitiator and the polymer product defined we can now define the polymer references. In a new cell, lets define both the reference to the `mPEG-OH` initiator and the `mPEG-PLLA` product. The polymer graphs created above can be referenced as a by the `tree` property on the `polymer` group.
+With both polymer graphs for the macroinitiator and the polymer product defined we can now define the polymer references. In a new cell, lets define both the reference to the `mPEG-OH` initiator and the `mPEG-PLLA` product. The polymer graphs created above can be referenced as a by the `structure` property on the `polymer` group.
 
 ```cmdl{3,6}
 polymer mPEG-OH {
-   tree: @PEG_BASE;
+   structure: @PEG_BASE;
 }
 
 polymer mPEG-PLLA {
-   tree: @PEG_PLLA_Base;
+   structure: @PEG_PLLA_Base;
 }
 ```
 
@@ -273,22 +247,22 @@ Since we'll be using `mPEG-OH` as an initiator in the batch polymerization react
 
 ```cmdl{3}
 polymer mPEG-OH {
-   tree: @PEG_BASE;
+   structure: @PEG_BASE;
    mn_avg: 5000 g/mol;
    state: "solid";
 }
 
 polymer mPEG-PLLA {
-   tree: @PEG_PLLA_Base;
+   structure: @PEG_PLLA_Base;
    state: "solid";
 }
 ```
 
-We can also define DP<sub>n</sub> on the `p_PEO` node repeat unit both in the `mPEG-OH` initiator and the `mPEG-PLLA` product as well, as we can expect this not to change during the polymerization reaction. The full path is needed to assign the DP<sub>n</sub> value of `112.8` to the `p_PEO`node.
+We can also define DP<sub>n</sub> on the `PEO` node repeat unit both in the `mPEG-OH` initiator and the `mPEG-PLLA` product as well, as we can expect this not to change during the polymerization reaction. The full path is needed to assign the DP<sub>n</sub> value of `112.8` to the `PEO`node.
 
 ```cmdl{5-7,13-15}
 polymer mPEG-OH {
-   tree: @PEG_BASE;
+   structure: @PEG_BASE;
    mn_avg: 5000 g/mol;
    state: "solid";
 
@@ -298,7 +272,7 @@ polymer mPEG-OH {
 }
 
 polymer mPEG-PLLA {
-   tree: @PEG_PLLA_Base;
+   structure: @PEG_PLLA_Base;
    state: "solid";
 
    @PEG_PLLA_Base.PEG_Block.p_PEO {
@@ -415,64 +389,56 @@ With all of the values properly defined on `BatchRxn` we can now run the reactio
 
 The exact values for the stoichiometry may differ based on the quantity values entered for each reagent.
 
-## Experiment Results and Samples
+## Experiment Results and Characteriaztion Data
 
 During any synthetic organic chemistry or polymer chemistry reaction experiment, samples may be removed from the crude reaction mixture itself and analyzed by various characterization techniques to measure values such as `conversion` or `yield` of the reaction product(s). For a polymerization experiment, this amounts to measuring values of a _new_ polymer for each time point sampled, given that the statistical values of the polymer will evolve during the course of the reaction.
 
 Additionally, purified samples may be analyzed or re-analyzed at any point in time following the completion of a reaction.
 
-### Defining a Sample Output
+### Defining a Characterization Data Group
 
-To accomodate for all of these measurements possibilities, we can create a `sample` group:
-
-```cmdl
-sample Test-I-123A {
-
-}
-```
-
-Assuming we collected this sample at ~5 s of reaction time we can a `time_point` property on the sample group:
-
-```cmdl{2}
-sample Test-I-123A {
-   time_point: 5 s;
-
-}
-```
-
-Within a sample group we can define different characterization technique groups such as `nmr`, `gpc`, or `dsc`. For a full list of currently supported characterization techniques, see the CMDL guide.
-
-To the sample group, let's add two new groups for an `nmr` and `gpc` measurements performed on the `sample`:
+To accomodate for all of these measurements possibilities, we can create a `char_data` group:
 
 ```cmdl
-sample Test-I-123A {
-   time_point: 5 s;
+char_data Test-I-123A {
 
-   nmr Test-I-123A-nmr {
-
-   };
-
-   gpc Test-I-123A-gpc {
-
-   };
 }
 ```
 
-As multiple `nmr` or `gpc` or other measurements may be performed on a single sample. Characterization groups are given their own name, such as `Test-I-123A-nmr` to differentiate them. With the characterization groups defined, we can add additional properties describing them, such as `nmr_nuclei`.
+We can assign this a `sample_id`, such that other characterization analysis using the same sample id will be grouped together by the interpreter. Assuming we collected this sample at ~5 s of reaction time we can a `time_point` property on the sample group:
 
-```cmdl{4}
-sample Test-I-123A {
+```cmdl{2-3}
+char_data Test-I-123A-nmr {
    time_point: 5 s;
+   sample_id: "Test-I-123A";
+}
+```
 
-   nmr Test-I-123A-nmr {
-      nmr_nuclei: "1H";
+Finally, within a `char_data` group we can define different characterization techniques such as `nmr`, `gpc`, or `dsc`. For a full list of currently supported characterization techniques, see the CMDL guide.
 
+To the `char_data` group, let's a technique of `nmr`:
 
-   };
+```cmdl
+char_data Test-I-123A-nmr {
+   time_point: 5 s;
+   sample_id: "Test-I-123A";
+   technique: "nmr";
+}
+```
 
-   gpc Test-I-123A-gpc {
+We can add a second `char_data` for `gpc` analysis of the same sample:
 
-   };
+```cmdl
+char_data Test-I-123A-nmr {
+   time_point: 5 s;
+   sample_id: "Test-I-123A";
+   technique: "nmr";
+}
+
+char_data Test-I-123A-gpc {
+   time_point: 5 s;
+   sample_id: "Test-I-123A";
+   technique: "gpc";
 }
 ```
 
@@ -483,84 +449,84 @@ Now we can add specific results for different chemicals which participated in th
 **Note**: _All of the properties for `conversion`, `mn_avg`, `yield`, and the like are values based off of the users interpretation of the characterization data_
 
 ```cmdl{7-9,14-17}
-sample Test-I-123A {
+char_data Test-I-123A-nmr {
    time_point: 5 s;
+   sample_id: "Test-I-123A";
+   technique: "nmr";
 
-   nmr Test-I-123A-nmr {
-      nmr_nuclei: "1H";
-
-      @lLactide {
-         conversion: 75%;
-      };
+   @lLactide {
+      conversion: 75%;
    };
+}
 
-   gpc Test-I-123A-gpc {
+char_data Test-I-123A-gpc {
+   time_point: 5 s;
+   sample_id: "Test-I-123A";
+   technique: "gpc";
 
-      @mPEG-PLLA {
-         dispersity: 1.34;
-         mn_avg: 12000 g/mol;
-      };
-
+   @mPEG-PLLA {
+      dispersity: 1.34;
+      mn_avg: 12000 g/mol;
    };
 }
 ```
 
-We can also add values for specific components of the polymer product, such as the theoretical DP<sub>n</sub> for `pl_Lac` repeat unit based off of monomer conversion.
+We can also add values for specific components of the polymer product, such as the theoretical DP<sub>n</sub> for `lLac` repeat unit based off of monomer conversion.
 
-```cmdl{11-13}
-sample Test-I-123A {
+```cmdl{8-10}
+char_data Test-I-123A-nmr {
    time_point: 5 s;
+   sample_id: "Test-I-123A";
+   technique: "nmr";
 
-   nmr Test-I-123A-nmr {
-      nmr_nuclei: "1H";
-
-      @lLactide {
-         conversion: 75%;
-      };
-
-      @mPEG-PLLA.PLLA_Block.p_lLac {
-         degree_poly: 60.3;
-      };
+   @lLactide {
+      conversion: 75%;
    };
 
-   gpc Test-I-123A-gpc {
+   @mPEG-PLLA.PLLA_Block.lLac {
+      degree_poly: 60.3;
+   };
+}
 
-      @mPEG-PLLA {
-         dispersity: 1.34;
-         mn_avg: 12000 g/mol;
-      };
+char_data Test-I-123A-gpc {
+   time_point: 5 s;
+   sample_id: "Test-I-123A";
+   technique: "gpc";
 
+   @mPEG-PLLA {
+      dispersity: 1.34;
+      mn_avg: 12000 g/mol;
    };
 }
 ```
 
 Adding these theoretical DP<sub>n</sub> values allows the CMDL interpreter to compute weights for the edges within the graphs, enabling a better connection between _structure_–_statistical features_–_properties_ for predictive modeling. However in some cases, it may be excedingly difficult to estimate these values experimentally. Future work on polymer graph representations will seek to address these cases.
 
-As mentioned above, there many instances where multiple samples from a single reaction are analyzed, each of which provides a different polymer product based on statistical measures such as molecular weight distrubution. We can add a second `sample` to the same cell describing the results at the completion of the `reaction_time` of `BatchRxn` at 10 seconds.
+As mentioned above, there many instances where multiple samples from a single reaction are analyzed, each of which provides a different polymer product based on statistical measures such as molecular weight distrubution. We can add a additional `char_data` groups to the same cell describing the results at the completion of the `reaction_time` of `BatchRxn` at 10 seconds.
 
 ```cmdl
-sample Test-I-123B {
-   time_point: 5 s;
+char_data Test-I-123B-nmr {
+   time_point: 10 s;
+   sample_id: "Test-I-123B";
+   technique: "nmr";
 
-   nmr Test-I-123B-nmr {
-      nmr_nuclei: "1H";
-
-      @lLactide {
-         conversion: 99%;
-      };
-
-      @mPEG-PLLA.PLLA_Block.p_lLac {
-         degree_poly: 80;
-      }
+   @lLactide {
+      conversion: 99%;
    };
 
-   gpc Test-I-123B-gpc {
+   @mPEG-PLLA.PLLA_Block.lLac {
+      degree_poly: 80;
+   };
+}
 
-      @mPEG-PLLA {
-         dispersity: 1.45;
-         mn_avg: 14000 g/mol;
-      };
+char_data Test-I-123A-gpc {
+   time_point: 5 s;
+   sample_id: "Test-I-123A";
+   technique: "gpc";
 
+   @mPEG-PLLA {
+      dispersity: 1.45;
+      mn_avg: 14000 g/mol;
    };
 }
 ```
@@ -577,11 +543,58 @@ Currently writing of experimental protocols is not directly supported in TYPES. 
 
 ### Example Protocol
 
-For this tutorial we can add a [markdown cell](README.md#adding-a-markdown-cell) and enter an example protocol. One for this reaction is given below:
+Protocols describing the reaction conditions, workup, purification, and sample preparation are critical to facilitating reproducibility. In CMDL, protocols can be constructed, templated, and referenced in different within a CMDL defined experiment. Currently, CMDL supports simple templating in `protocol` groups and referencing of protocols in `reaction` groups.
 
-> In a nitrogen filled glovebox, a 20 ml scintillation vial was charged with L-lactide, mPEG-OH, THF (1.8 ml), and a magnetic stir-bar. The mixture was stirred until fully homogenous, approximately 5 min. While stirring vigorously, a solution of KOtBu in THF (0.2 ml) was added. After 5 s, an aliquout was removed and quenched with a solution of excess benzoic acid in THF and analyzed by 1H NMR and GPC. After 10 s, the reaction mixture was quenched by the addition of a solution of benzoic acid in THF. A sample of the crude reaction mixture was analyzed by 1H NMR and GPC and the remainder of the material was purified by precipitation from MeOH. The solids were collected via centrifugation and decanting of the supernatent. This process of precipation and centrifugation was repeated a total of three times. The isolated material was dried in a vacuum oven at 40 °C until a constant mass was achieved.
+In the `batch_experiment.cmdnb` tutorial notebook, we can add another CMDL cell above the cell containing the `reaction` group. In the cell we can define a protocol group as follows:
 
-The advantage of using markdown is the abilitiy to link images and urls within the text to enrich the content and information shared. As mentioned, above future versions of CMDL will aim to leverage this capapbilites to enhance experimental documentation. However, currently all information entered into markdown cells _will not_ be exported into experimental records. For examples of linking images and urls within the notebook document, see the corresponding notebook for this tutorial provided in the [`examples/batch_experiment` folder](https://github.com/IBM/ibm-materials-notebook/tree/main/apps/docs/examples).
+```cmdl
+protocol testProtocol {
+
+}
+```
+
+The name `testProtocol` allows us to reference this protocol in one or more `reaction` groups. Future versions of CMDL will allow them to be referenced on other groups, such as `char_data` or `solution` to define protocols for their preparation. Unlike other groups, protocols are enclosed with backtics:
+
+```cmdl
+protocol testProtocol {
+   `In a nitrogen filled glovebox, a 20 ml scintillation vial was charged with [[@lLactide]], [[@mPEG-OH]], [[@THF]], and a magnetic stir-bar. The mixture was stirred until fully homogenous, approximately 5 min. While stirring vigorously, a solution of [[@kOtBu]] in [[@THF]] was added. After 5 s, an aliquout was removed and quenched with a solution of excess benzoic acid in THF and analyzed by 1H NMR and GPC. After 10 s, the reaction mixture was quenched by the addition of a solution of benzoic acid in THF. A sample of the crude reaction mixture was analyzed by 1H NMR and GPC and the remainder of the material was purified by precipitation from MeOH. The solids were collected via centrifugation and decanting of the supernatent. This process of precipation and centrifugation was repeated a total of three times. The isolated material was dried in a vacuum oven at 40 °C until a constant mass was achieved.`
+}
+```
+
+Within the protocol references to chemical entities defined in the reaction are enclosed in double square brackets, eg. `[[@lactide]]`. When referenced in a reaction group. The defined quanties for the templated references will be inserted. After running the protocol cell, it may be referenced in a reaction group as follows:
+
+```cmdl{3}
+reaction BatchRxn {
+   temperature: 22 degC;
+   reaction_time: 10 s;
+   protocol: @testProtocol;
+
+   @mPEG-OH {
+      mass: 5 mg;
+      roles: [ "initiator" ];
+      limiting: true;
+   };
+
+   @kOtBu {
+      mass: 5 mg;
+      roles: [ "catalyst", "reagent" ];
+   };
+
+   @lLactide {
+      mass: 1440 mg;
+      roles: [ "monomer" ];
+   };
+
+   @THF {
+      volume: 2 ml;
+      roles: [ "solvent" ];
+   };
+
+   @mPEG-PLLA {
+      roles: [ "product" ];
+   };
+}
+```
 
 ## Experiment Metadata
 
