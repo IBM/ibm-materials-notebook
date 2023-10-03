@@ -24,21 +24,12 @@ export const ChemicalRef: FunctionComponent<{
       {(theme) => {
         return (
           <div className="reaction-item">
-            <h3>{chemical.name}</h3>
-            <i>
-              Molecular Weight:{" "}
-              {`${chemical.molecular_weight.value} ${chemical.molecular_weight.unit}`}
-            </i>
-            {chemical?.density ? (
-              <i>
-                Density: {`${chemical.density.value} ${chemical.density.unit}`}
-              </i>
-            ) : null}
             <ChemicalStructure
               svgId={`${chemical.name}-${index}-${chemical.smiles}`}
               smiles={chemical.smiles}
               theme={theme}
             />
+            <h4>{chemical.name}</h4>
           </div>
         );
       }}
@@ -83,12 +74,12 @@ export const PolymerlRef: FunctionComponent<{
       {(theme) => {
         return (
           <div className="reaction-item">
-            <h3>{polymer.name}</h3>
             <ChemicalStructure
               svgId={`${polymer.name}-${index}-${polymer.smiles}`}
               smiles={polymer.smiles}
               theme={theme}
             />
+            <h4>{polymer.name}</h4>
           </div>
         );
       }}

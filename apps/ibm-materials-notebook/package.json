@@ -16,40 +16,50 @@
     "Notebooks"
   ],
   "activationEvents": [
-    "onNotebook:ibm-materials-notebook"
+    "onNotebook:ibm-materials-notebook",
+    "onLanguage:cmdl",
+    "workspaceContains:*.cmdnb",
+    "workspaceContains:*.cmdl",
+    "workspaceContains:*/*.cmdl",
+    "workspaceContains:*/*/*.cmdl",
+    "workspaceContains:*/*.cmdnb",
+    "workspaceContains:*/*/*.cmdnb"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "ibm-materials-notebook.new",
-        "title": "New Materials Notebook"
-      },
-      {
-        "command": "ibm-materials-notebook.exportWorkspace",
-        "title": "Export Current Workspace"
+        "title": "CMDL: New Materials Notebook"
       },
       {
         "command": "ibm-materials-notebook.toCSV",
-        "title": "Export Notebook Variables to CSV"
+        "title": "CMDL: Export Notebook Variables to CSV"
       },
       {
         "command": "ibm-materials-notebook.loadCSV",
-        "title": "Create New Materials Notebooks From CSV"
+        "title": "CMDL: Create New Materials Notebooks From CSV"
       },
       {
         "command": "ibm-materials-notebook.parseGeneratedPolymers",
-        "title": "Create Notebooks From Generated Polymers"
+        "title": "CMDL: Create Notebooks From Generated Polymers"
+      },
+      {
+        "command": "ibm-materials-notebook.exportRecord",
+        "title": "CMDL: Export Current Notebook"
+      },
+      {
+        "command": "ibm-materials-notebook.exportWorkspace",
+        "title": "CMDL: Export Current Workspace"
+      },
+      {
+        "command": "ibm-materials-notebook.exportRecordProtocol",
+        "title": "CMDL: Export Current Record Protocol"
       }
     ],
     "configuration": {
       "title": "IBM Materials Notebook",
       "properties": {
-        "ibm-materials-notebook.library": {
-          "title": "Output path for workspace",
-          "type": "string",
-          "default": "./lib"
-        },
         "ibm-materials-notebook.structure-theme": {
           "title": "Chemical Structure Theme",
           "default": "dark",
@@ -88,8 +98,12 @@
     "languages": [
       {
         "id": "cmdl",
+        "extensions": [
+          ".cmdl"
+        ],
         "aliases": [
-          "Chemical Markdown Language"
+          "Chemical Markdown Language",
+          "CMDL"
         ]
       }
     ],
@@ -111,11 +125,11 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "precommit": "npm run lint",
     "test": "jest",
-    "lint": "eslint src --ext ts",
-    "generate-types": "npx ts-node ./src/extension/cmdl-language/language-type-generator.ts"
+    "lint": "eslint src --ext ts"
   },
   "devDependencies": {
     "@types/big.js": "^6.1.5",
+    "@types/d3": "^7.4.0",
     "@types/glob": "^7.2.0",
     "@types/jest": "^29.0.0",
     "@types/mocha": "^9.1.1",
@@ -126,13 +140,13 @@
     "@typescript-eslint/parser": "^5.31.0",
     "@vscode/test-electron": "^2.1.5",
     "@vscode/vsce": "^2.16.0",
+    "cmdl": "*",
     "css-loader": "^6.7.1",
     "eslint": "^8.20.0",
     "eslint-config-custom": "*",
     "glob": "^8.0.3",
     "jest": "^28.1.3",
     "mocha": "^10.0.0",
-    "preact": "^10.10.6",
     "style-loader": "^3.3.1",
     "ts-config": "*",
     "ts-jest": "^28.0.8",
@@ -147,9 +161,11 @@
   "dependencies": {
     "big.js": "^6.2.1",
     "chevrotain": "^10.3.0",
-    "winston": "^3.8.2",
+    "d3": "^7.8.5",
     "ts-bigsmiles": "*",
-    "ts-smiles-drawer": "*"
+    "ts-smiles-drawer": "*",
+    "preact": "^10.16.0",
+    "winston": "^3.8.2"
   },
   "jest": {
     "preset": "ts-jest",

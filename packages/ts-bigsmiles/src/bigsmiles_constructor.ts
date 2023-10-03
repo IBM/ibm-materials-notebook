@@ -310,10 +310,8 @@ export class BigSMILESConstructor {
 
   addBondAtomPair(bond_symbol: string, atom_symbol: string): [Bond, Atom] {
     const atom = new Atom(atom_symbol, this._getAtomId());
-    logger.silly(`next atom ${atom}`);
     const parent = this.stack.peek();
     const prior_atom = this._getPriorStochasticAtom(parent);
-    logger.silly(`prior atom is ${prior_atom}`);
 
     if (parent instanceof StochasticObject) {
       throw new BigSMILESError(`Cannot add Atom to StochasticObject`);

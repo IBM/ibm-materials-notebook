@@ -1,0 +1,48 @@
+{
+  "name": "cmdl",
+  "version": "0.1.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "chevrotain": "^10.3.0",
+    "cmdl-types": "*",
+    "cmdl-chemicals": "*",
+    "cmdl-polymers": "*",
+    "cmdl-reactors": "*",
+    "cmdl-units": "*",
+    "logger": "*"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "@types/jest": "^29.0.0",
+    "eslint": "^8.20.0",
+    "eslint-config-custom": "*",
+    "jest": "^28.1.3",
+    "ts-jest": "^28.0.8",
+    "ts-config": "*",
+    "tsup": "^6.6.3",
+    "typescript": "^4.9.5"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "lint": "eslint src --ext ts",
+    "test": "jest",
+    "generate-types": "npx ts-node ./src/parser/language-type-generator.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBM/ibm-materials-notebook"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.ts?$": "ts-jest"
+    }
+  },
+  "author": "npark",
+  "license": "ISC"
+}

@@ -1,6 +1,5 @@
 {
   "name": "docs",
-  "version": "1.0.0",
   "description": "Documentation for IBM Materials software",
   "devDependencies": {
     "@vuepress/plugin-shiki": "^2.0.0-beta.61",

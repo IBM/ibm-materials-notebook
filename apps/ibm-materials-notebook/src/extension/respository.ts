@@ -1,109 +1,98 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
-import * as path from "path";
 import { NOTEBOOK } from "./languageProvider";
 import { logger } from "../logger";
-import { Experiment } from "./experiment";
-import { Library } from "./library";
-import { CMDLSampleResult } from "./cmdl-language/cmdl-symbols/models/sample-model";
-
-interface CmdlEntitySource {
-  title: string | undefined;
-  record_id: string | null;
-  notebook_id: string;
-  lastUpdated: string;
-}
-
-interface CmdlEntity extends CMDLSampleResult {
-  name: string;
-  base_name: string;
-  source: CmdlEntitySource;
-}
+import { CMDLController } from "cmdl";
 
 /**
- * Manages all materials notebooks (.cmdnb) in workspace
+ * Manages all cmdl documents (.cmdnb & .cmdl) in workspace
  */
 export class Repository {
-  private readonly outputPath: string;
-  private readonly library: Library;
+  readonly _controller = new CMDLController.Controller(
+    vscode.workspace.workspaceFolders
+      ? vscode.workspace.workspaceFolders[0].uri.fsPath
+      : ""
+  );
 
-  private _onDidInitialize = new vscode.EventEmitter<Experiment>();
-  readonly onDidInitialize = this._onDidInitialize.event;
+  private _onDidInitializeNotebook =
+    new vscode.EventEmitter<vscode.NotebookDocument>();
+  readonly onDidInitializeNotebook = this._onDidInitializeNotebook.event;
 
-  private _onDidRemove = new vscode.EventEmitter<Experiment>();
-  readonly onDidRemove = this._onDidRemove.event;
+  private _onDidRemoveNotebook =
+    new vscode.EventEmitter<vscode.NotebookDocument>();
+  readonly onDidRemoveNotebook = this._onDidRemoveNotebook.event;
+
+  private _onDidInitializeText = new vscode.EventEmitter<vscode.TextDocument>();
+  readonly onDidInitializeText = this._onDidInitializeText.event;
+
+  private _onDidRemoveText = new vscode.EventEmitter<vscode.TextDocument>();
+  readonly onDidRemoveText = this._onDidRemoveText.event;
 
   private readonly _disposables: vscode.Disposable[] = [];
-  private readonly _repository = new Map<vscode.NotebookDocument, Experiment>();
+  private readonly _documents = new Map<
+    string,
+    vscode.NotebookDocument | vscode.TextDocument
+  >();
 
-  /**
-   * Create a new repository instance to manage materials notebooks
-   * @param outputPath string Path for output folder
-   * @param library string Path for library folder
-   */
-  constructor(outputPath: string, library: Library) {
-    this.outputPath = outputPath;
-    this.library = library;
-
+  constructor() {
     this._disposables.push(
-      vscode.workspace.onDidOpenNotebookDocument(async (notebook) => {
-        logger.notice(">> vscode open notebook event received");
-
-        if (notebook.notebookType !== NOTEBOOK) {
+      vscode.workspace.onDidOpenNotebookDocument((notebookDoc) => {
+        if (notebookDoc.notebookType !== NOTEBOOK) {
           return;
         }
 
-        if (this._repository.has(notebook)) {
-          throw new Error(`${notebook.uri.toString()} already exists!`);
+        const notebookUri = notebookDoc.uri.toString();
+        logger.silly(`Opening ${notebookUri}....`);
+        if (notebookDoc.uri.fragment) {
+          logger.debug(`receiving ${notebookDoc.uri.scheme}`);
+          return;
         }
 
-        const experiment = new Experiment(
-          notebook.uri,
-          notebook.metadata.notebookId,
-          library
-        );
-
-        await experiment.initialize(notebook);
-        this._repository.set(notebook, experiment);
-
-        logger.notice("<< firing experiment initialized event");
-        this._onDidInitialize.fire(experiment);
+        if (this._documents.has(notebookUri)) {
+          logger.info(`notebook: ${notebookUri} is already registered`);
+          return;
+        }
+        const formattedDoc = this.formatNotebook(notebookDoc);
+        this._controller.register(formattedDoc);
+        this._documents.set(notebookUri, notebookDoc);
+        this._onDidInitializeNotebook.fire(notebookDoc);
       })
     );
 
     this._disposables.push(
       vscode.workspace.onDidCloseNotebookDocument((notebook) => {
-        logger.notice(">> vscode close notebook event received");
-        let experiment = this._repository.get(notebook);
+        const notebookUri = notebook.uri.toString();
+        if (this._documents.has(notebookUri)) {
+          //? remove diagnostics
+          // this._controller.unregister(notebookUri);
 
-        if (experiment) {
-          this._repository.delete(notebook);
-
-          logger.notice("<< firing repo remove event");
-          this._onDidRemove.fire(experiment);
+          this._onDidRemoveNotebook.fire(notebook);
         }
       })
     );
 
     this._disposables.push(
       vscode.workspace.onDidChangeNotebookDocument((event) => {
-        logger.notice(">> vscode notebook change event received");
+        const doc = this.find(event.notebook.uri);
 
-        let experiment = this.findExperiment(event.notebook.uri);
-
-        if (!experiment) {
+        if (!doc) {
           return;
         }
 
+        const docUri = doc.uri.toString();
+
         if (event.contentChanges.length) {
-          for (let change of event.contentChanges) {
-            for (let cell of change.removedCells) {
-              experiment.delete(cell.document);
+          for (const change of event.contentChanges) {
+            for (const cell of change.removedCells) {
+              this._controller.removeNotebookCell(
+                cell.document.uri.toString(),
+                docUri
+              );
             }
 
-            for (let cell of change.addedCells) {
+            for (const cell of change.addedCells) {
               if (cell.kind === vscode.NotebookCellKind.Code) {
-                experiment.insertOrUpdate(cell.document);
+                const newCell = this.formatCell(cell);
+                this._controller.addNotebookCell(docUri, newCell);
               }
             }
           }
@@ -112,106 +101,158 @@ export class Repository {
     );
 
     this._disposables.push(
-      vscode.workspace.onDidSaveNotebookDocument((event) => {
-        logger.notice(
-          ">>vscode notebook saved event recieved, exporting contents to JSON lib"
-        );
-
-        let experiment = this.findExperiment(event.uri);
-
-        if (!experiment) {
-          logger.error(`Experiment: ${event.uri.toString()} not found!`);
+      vscode.workspace.onDidOpenTextDocument((doc) => {
+        if (doc.languageId !== "cmdl") {
           return;
         }
 
-        const output = experiment.toJSON();
+        const docUri = doc.uri.toString();
 
-        if (!output) {
-          logger.error(`Encountered error during extracting record output!`);
+        if (this._documents.has(docUri)) {
+          logger.info(`${docUri} is already registered`);
           return;
         }
 
-        const rootUri = vscode.workspace.getWorkspaceFolder(event.uri);
-
-        if (!rootUri) {
-          logger.error(
-            `No uri for current experiment at ${event.uri.toString()} found!`
-          );
+        if (doc.uri.fragment.length) {
           return;
         }
 
-        const filepath = event.uri.path.split("/");
-        const fileName = filepath[filepath.length - 1].split(".");
+        const textDoc = this.formatTextDocument(doc);
+        this._controller.register(textDoc);
+        this._documents.set(docUri, doc);
+        this._onDidInitializeText.fire(doc);
+      })
+    );
 
-        if (output?.results && output.results?.outputs) {
-          let resultOutputs: CmdlEntity[] = [];
-          for (const result of output.results.outputs) {
-            let newResult: CmdlEntity = {
-              ...result,
-              name: `${result.sampleId}-${result.name}`,
-              base_name: result.name,
-              source: {
-                title: output.title,
-                record_id: output.metadata?.record_id || null,
-                notebook_id: experiment.id,
-                lastUpdated: new Date(Date.now()).toISOString(),
-              },
-            };
-
-            this.library.addItem(newResult);
-            resultOutputs.push(newResult);
-          }
+    this._disposables.push(
+      vscode.workspace.onDidCloseTextDocument((doc) => {
+        if (doc.languageId !== "cmdl") {
+          return;
         }
 
-        this.writeToOutput(output, fileName, rootUri);
+        this._onDidRemoveText.fire(doc);
+      })
+    );
+
+    this._disposables.push(
+      vscode.workspace.onDidRenameFiles((event) => {
+        for (const file of event.files) {
+          const oldFile = {
+            uri: file.oldUri.toString(),
+            fileName: this.extractFileName(file.oldUri),
+          };
+          const newFile = {
+            uri: file.newUri.toString(),
+            fileName: this.extractFileName(file.newUri),
+          };
+          this._controller.renameFile(oldFile, newFile);
+        }
+      })
+    );
+
+    this._disposables.push(
+      vscode.workspace.onDidDeleteFiles((event) => {
+        for (const uri of event.files) {
+          const fileUri = uri.toString();
+          this._documents.delete(fileUri);
+          this._controller.unregister(fileUri);
+          //remove diagnostics
+        }
       })
     );
   }
 
-  /**
-   * Writes JSON record output from experimental notebook to file
-   * @param contents Contents to write to a JSON output
-   * @param fileName string[] Array containing parts of a filename
-   * @param rootUri vscode.WorkspaceFolder
-   */
-  private writeToOutput(
-    contents: any,
-    fileName: string[],
-    rootUri: vscode.WorkspaceFolder
-  ): void {
-    fs.writeFile(
-      path.join(
-        rootUri.uri.fsPath,
-        `${this.outputPath}/${fileName[0] || test}.json`
-      ),
-      JSON.stringify(contents, null, 2),
-      (err) => {
-        if (err) {
-          logger.error(`Error during writing to file: ${err?.message}`);
-        } else {
-          vscode.window.showInformationMessage(
-            `Successfully exported experiment to JSON`
+  public initialize() {
+    vscode.workspace
+      .findFiles("**/*.{cmdl,cmdnb}")
+      .then(
+        (files) => {
+          const libFiles = files.filter(
+            (el) => el.path.includes("/lib") && el.path.includes(".cmdl")
           );
-          logger.info(`Successfully exported experiment to JSON`);
+          const nbFiles = files.filter((el) => el.path.includes(".cmdnb"));
+
+          for (const uri of libFiles) {
+            vscode.workspace.openTextDocument(uri);
+          }
+
+          return nbFiles;
+        },
+        () => {
+          logger.info(`no cmdl files found during initialization`);
         }
+      )
+      .then((value) => {
+        for (const uri of value) {
+          vscode.workspace.openNotebookDocument(uri);
+        }
+      });
+  }
+
+  public getItems() {
+    return this._documents.entries();
+  }
+
+  public formatNotebook(doc: vscode.NotebookDocument) {
+    const fileName = this.extractFileName(doc.uri);
+    let cellArr = [];
+
+    for (const cell of doc.getCells()) {
+      if (cell.kind === vscode.NotebookCellKind.Code) {
+        const cmdlCell = this.formatCell(cell);
+        cellArr.push(cmdlCell);
       }
-    );
+    }
+    return {
+      uri: doc.uri.toString(),
+      fileName: fileName,
+      version: doc.version,
+      cells: cellArr,
+    };
+  }
+
+  public formatTextDocument(doc: vscode.TextDocument) {
+    const fileName = this.extractFileName(doc.uri);
+    return {
+      uri: doc.uri.toString(),
+      fileName: fileName,
+      version: doc.version,
+      text: doc.getText(),
+    };
+  }
+
+  public formatCell(cell: vscode.NotebookCell) {
+    return {
+      uri: cell.document.uri.toString(),
+      text: cell.document.getText(),
+      version: cell.document.version,
+    };
+  }
+
+  public extractFileName(uri: vscode.Uri) {
+    const fileNameArr = uri.path.split("/");
+    return fileNameArr[fileNameArr.length - 1];
   }
 
   /**
    * Finds experiment in current repository
    * @param uri vscode.Uri
-   * @returns Experiment
+   * @returns NotebookDocument
    */
-  findExperiment(uri: vscode.Uri): Experiment | undefined {
-    for (let [notebook, exp] of this._repository) {
-      if (notebook.uri.toString() === uri.toString()) {
-        return exp;
+  public find(
+    uri: vscode.Uri
+  ): vscode.NotebookDocument | vscode.TextDocument | undefined {
+    const searchUri = uri.toString();
+    for (const [documentUri, document] of this._documents) {
+      if (documentUri === searchUri) {
+        return document;
       }
 
-      for (let cells of notebook.getCells()) {
-        if (cells.document.uri.toString() === uri.toString()) {
-          return exp;
+      if ("notebookType" in document) {
+        for (const cell of document.getCells()) {
+          if (cell.document.uri.toString() === searchUri) {
+            return document;
+          }
         }
       }
     }
@@ -219,9 +260,12 @@ export class Repository {
 
   /**
    * Returns all current Experiments in Repository
-   * @returns IterableIterator<Experiment>
+   * @returns IterableIterator<NotebookDocument>
+   * @deprecated
    */
-  all() {
-    return this._repository.values();
+  public all(): IterableIterator<
+    vscode.NotebookDocument | vscode.TextDocument
+  > {
+    return this._documents.values();
   }
 }

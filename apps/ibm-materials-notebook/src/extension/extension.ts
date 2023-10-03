@@ -1,26 +1,26 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { CMDLNotebookSerializer } from "./notebookSerializer";
-import { MaterialsKernel } from "./notebookExecutionKernel";
+import { CMDLNotebookSerializer } from "./serializer";
+import { MaterialsKernel } from "./kernel";
 import { registerLanguageProvider } from "./languageProvider";
 import { Repository } from "./respository";
-import { Library } from "./library";
 import { NOTEBOOK } from "./languageProvider";
 import { logger } from "../logger";
-import { registerCommands } from "./commands";
+import { registerCommands } from "./commandProvider";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export async function activate(context: vscode.ExtensionContext) {
-  const wsLibPath = vscode.workspace
-    .getConfiguration("ibm-materials-notebook")
-    .get("library") as string;
-
-  const library = new Library(context, wsLibPath);
-  await library.initialize();
-
-  const repository = new Repository(wsLibPath, library);
+export function activate(context: vscode.ExtensionContext) {
+  logger.info(
+    `workspace path: ${
+      vscode.workspace.workspaceFolders
+        ? vscode.workspace.workspaceFolders[0].uri.fsPath
+        : ""
+    }`
+  );
+  const repository = new Repository();
+  repository.initialize();
   logger.info("IBM Materials notebook extension is activated");
 
   // Use the console to output diagnostic information (console.log) and errors (console.error)
@@ -34,7 +34,7 @@ export async function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  context.subscriptions.push(registerLanguageProvider(repository, library));
+  context.subscriptions.push(registerLanguageProvider(repository));
   context.subscriptions.push(registerCommands(repository));
 }
 

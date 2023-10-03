@@ -1,6 +1,7 @@
 import { h, FunctionComponent } from "preact";
-import { ChemicalStructure } from "./chemicals";
-import { StructureTheme } from ".";
+// import { ChemicalStructure } from "./chemicals";
+// import { StructureTheme } from ".";
+import { TYPES } from "cmdl-types";
 
 export function formatTemp(unit: string) {
   if (unit === "degC") {
@@ -76,120 +77,126 @@ export const ReactionTable: FunctionComponent<{
   );
 };
 
-const ReactionStructureItem: FunctionComponent<{
-  rxnName: string;
-  name: string;
-  index: number;
-  smiles: string;
-  type: "reactant" | "product";
-}> = ({ rxnName, name, index, smiles, type }) => {
-  return (
-    <StructureTheme.Consumer>
-      {(theme) => {
-        return (
-          <div className="reaction-item">
-            <ChemicalStructure
-              svgId={`${type}-structure-${rxnName}-${name}-${index}`}
-              smiles={smiles}
-              theme={theme}
-            />
-            <small>{name}</small>
-          </div>
-        );
-      }}
-    </StructureTheme.Consumer>
-  );
-};
+// const ReactionStructureItem: FunctionComponent<{
+//   rxnName: string;
+//   name: string;
+//   index: number;
+//   smiles: string;
+//   type: "reactant" | "product";
+// }> = ({ rxnName, name, index, smiles, type }) => {
+//   return (
+//     <StructureTheme.Consumer>
+//       {(theme) => {
+//         return (
+//           <div className="reaction-item">
+//             <ChemicalStructure
+//               svgId={`${type}-structure-${rxnName}-${name}-${index}`}
+//               smiles={smiles}
+//               theme={theme}
+//             />
+//             <small>{name}</small>
+//           </div>
+//         );
+//       }}
+//     </StructureTheme.Consumer>
+//   );
+// };
 
-export const ReactionChemicals: FunctionComponent<{
-  reaction: any;
-  rxnName: any;
-}> = ({ reaction, rxnName }) => {
-  return (
-    <div className="reaction-scheme">
-      {reaction?.reactants && reaction.reactants.length
-        ? reaction.reactants.map((el: any, index: number) => {
-            if (el?.smiles) {
-              return (
-                <ReactionStructureItem
-                  key={`reactant-${rxnName}-${el.name}-${index}`}
-                  smiles={el.smiles}
-                  name={el.name}
-                  rxnName={rxnName}
-                  index={index}
-                  type="reactant"
-                />
-              );
-            } else {
-              return null;
-            }
-          })
-        : reaction?.components && reaction.components.length
-        ? reaction.components.map((el: any, index: number) => {
-            if (el?.smiles) {
-              return (
-                <ReactionStructureItem
-                  key={`reactant-${rxnName}-${el.name}-${index}`}
-                  smiles={el.smiles}
-                  name={el.name}
-                  rxnName={rxnName}
-                  index={index}
-                  type="reactant"
-                />
-              );
-            } else {
-              return null;
-            }
-          })
-        : null}
-      {reaction?.products && reaction.products.length
-        ? reaction.products.map((el: any, index: any) => {
-            if (el?.smiles) {
-              return (
-                <ReactionStructureItem
-                  key={`reactant-${rxnName}-${el.name}-${index}`}
-                  smiles={el.smiles}
-                  name={el.name}
-                  rxnName={rxnName}
-                  index={index}
-                  type="product"
-                />
-              );
-            } else if (el?.components && el.components.length) {
-              return (
-                <div className="reaction-item">
-                  {el.components.map((comp: any, compIdx: number) => {
-                    if (comp?.smiles) {
-                      return (
-                        <ReactionStructureItem
-                          key={`reactant-${rxnName}-${el.name}-${index}`}
-                          smiles={el.smiles}
-                          name={el.name}
-                          rxnName={rxnName}
-                          index={index}
-                          type="product"
-                        />
-                      );
-                    }
-                  })}
-                  <small>{el.name}</small>
-                </div>
-              );
-            } else {
-              return null;
-            }
-          })
-        : null}
-    </div>
-  );
-};
+// export const ReactionChemicals: FunctionComponent<{
+//   reaction: any;
+//   rxnName: any;
+// }> = ({ reaction, rxnName }) => {
+//   return (
+//     <div className="reaction-scheme">
+//       {reaction?.reactants && reaction.reactants.length
+//         ? reaction.reactants.map((el: any, index: number) => {
+//             if (el?.smiles) {
+//               return (
+//                 <ReactionStructureItem
+//                   key={`reactant-${rxnName}-${el.name}-${index}`}
+//                   smiles={el.smiles}
+//                   name={el.name}
+//                   rxnName={rxnName}
+//                   index={index}
+//                   type="reactant"
+//                 />
+//               );
+//             } else {
+//               return null;
+//             }
+//           })
+//         : reaction?.components && reaction.components.length
+//         ? reaction.components.map((el: any, index: number) => {
+//             if (el?.smiles) {
+//               return (
+//                 <ReactionStructureItem
+//                   key={`reactant-${rxnName}-${el.name}-${index}`}
+//                   smiles={el.smiles}
+//                   name={el.name}
+//                   rxnName={rxnName}
+//                   index={index}
+//                   type="reactant"
+//                 />
+//               );
+//             } else {
+//               return null;
+//             }
+//           })
+//         : null}
+//       {reaction?.products && reaction.products.length
+//         ? reaction.products.map((el: any, index: any) => {
+//             if (el?.smiles) {
+//               return (
+//                 <ReactionStructureItem
+//                   key={`reactant-${rxnName}-${el.name}-${index}`}
+//                   smiles={el.smiles}
+//                   name={el.name}
+//                   rxnName={rxnName}
+//                   index={index}
+//                   type="product"
+//                 />
+//               );
+//             } else if (el?.components && el.components.length) {
+//               return (
+//                 <div className="reaction-item">
+//                   {el.components.map((comp: any, compIdx: number) => {
+//                     if (comp?.smiles) {
+//                       return (
+//                         <ReactionStructureItem
+//                           key={`reactant-${rxnName}-${el.name}-${index}`}
+//                           smiles={el.smiles}
+//                           name={el.name}
+//                           rxnName={rxnName}
+//                           index={index}
+//                           type="product"
+//                         />
+//                       );
+//                     }
+//                   })}
+//                   <small>{el.name}</small>
+//                 </div>
+//               );
+//             } else {
+//               return null;
+//             }
+//           })
+//         : null}
+//     </div>
+//   );
+// };
 
-export const BatchReactionTableHeader: FunctionComponent<{ reaction: any }> = ({
-  reaction,
-}) => {
+export const BatchReactionTableHeader: FunctionComponent<{
+  reaction: TYPES.Reaction;
+}> = ({ reaction }) => {
   return (
     <div>
       <h3>{reaction.name}</h3>
+      {reaction?.reaction_time ? (
+        <p>
+          Time:{" "}
+          {`${reaction.reaction_time.value} ${reaction.reaction_time.unit}`}
+        </p>
+      ) : null}
       {reaction?.temperature ? (
         <p>
           Temperature:{" "}
@@ -201,18 +208,19 @@ export const BatchReactionTableHeader: FunctionComponent<{ reaction: any }> = ({
       {reaction?.volume ? (
         <p>Volume: {`${reaction.volume.value} ${reaction.volume.unit}`}</p>
       ) : null}
-      <ReactionChemicals reaction={reaction} rxnName={reaction.name} />
+      {/* <ReactionChemicals reaction={reaction} rxnName={reaction.name} /> */}
     </div>
   );
 };
 
-export const Reaction: FunctionComponent<{ reaction: any }> = ({
+export const Reaction: FunctionComponent<{ reaction: TYPES.Reaction }> = ({
   reaction,
 }) => {
   return (
     <div>
       <BatchReactionTableHeader reaction={reaction} />
       <ReactionTable reaction={reaction} rxnName={reaction.name} />
+      {reaction.protocol ? <p>{reaction.protocol}</p> : null}
     </div>
   );
 };

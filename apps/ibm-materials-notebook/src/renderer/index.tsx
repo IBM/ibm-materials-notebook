@@ -4,8 +4,9 @@ import { ChemicalRef, ComplexRef, PolymerlRef } from "./chemicals";
 import { Reaction } from "./reaction";
 import { Solution } from "./flowRxn";
 import { FlowRun } from "./flowRxn";
-import { Sample } from "./sample";
+import { CharData } from "./sample";
 import "./style.css";
+import { ModelType } from "cmdl-types";
 
 export const StructureTheme = createContext<"light" | "dark">("dark");
 
@@ -68,8 +69,8 @@ const App: FunctionComponent<{ data: any[]; theme: "light" | "dark" }> = ({
               return <FlowRun key={`flow-run-${index}`} run={item} />;
             } else if (item.type === "solution") {
               return <Solution key={`solution-${index}`} solution={item} />;
-            } else if (item.type === "sample") {
-              return <Sample key={`sample-${index}`} sample={item} />;
+            } else if (item.type === ModelType.CHAR_DATA) {
+              return <CharData key={`charaData-${index}`} charData={item} />;
             } else {
               return <div></div>;
             }
@@ -91,9 +92,8 @@ export const activate: ActivationFunction = (context) => {
   return {
     renderOutputItem(data, element) {
       const output = data.json();
-      console.log(output);
       render(
-        <App data={output.output} theme={output.structureTheme} />,
+        <App data={output.cellOutput} theme={output.structureTheme} />,
         element
       );
     },

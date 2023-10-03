@@ -1,9 +1,7 @@
 import * as vscode from "vscode";
-import { logger } from "../logger";
-import { CmdlCompletions } from "./cmdl-language/cmdl-completions";
+import { CmdlCompletions } from "./cmdl-completion";
 import { Repository } from "./respository";
-import { Library } from "./library";
-import { Validation } from "./notebookValidator";
+import { Validation } from "./validator";
 
 export const LANGUAGE = "cmdl";
 export const NOTEBOOK = "ibm-materials-notebook";
@@ -40,7 +38,7 @@ class CompletionItemProvider implements vscode.CompletionItemProvider {
 
 class ImportProvder implements vscode.CompletionItemProvider {
   readonly completionProvider = new CmdlCompletions();
-  constructor(readonly library: Library) {}
+  constructor(readonly repository: Repository) {}
 
   public provideCompletionItems(
     document: vscode.TextDocument,
@@ -66,19 +64,31 @@ class ImportProvder implements vscode.CompletionItemProvider {
       return;
     }
 
-    const matchingItems = this.library.search(wordArr[1].trim());
+    let modules: string[] = [];
+    const libRegex = new RegExp("/lib/");
+    for (const [key, value] of this.repository.getItems()) {
+      if (libRegex.test(key)) {
+        modules.push(this.repository.extractFileName(value.uri));
+      }
+    }
+
+    const matchingItems = this.repository._controller.provideImportCompletions(
+      modules,
+      wordArr[1]
+    );
 
     const completionItems: vscode.CompletionItem[] = matchingItems.map(
       (item) => {
         const textSnippet = new vscode.SnippetString();
-        textSnippet.appendText(`${item.name} from "cmdl.lib";`);
+
+        textSnippet.appendText(`${item.name} from "./lib/${item.module}";`);
 
         return {
           label: item.name,
           insertText: textSnippet,
-          kind: vscode.CompletionItemKind.Constant,
-          documentation: "chemical documentation",
-          detail: "chemical detail",
+          kind: vscode.CompletionItemKind.Interface,
+          documentation: "entity documentation",
+          detail: "entity detail",
         };
       }
     );
@@ -103,13 +113,9 @@ class SymbolProvider implements vscode.CompletionItemProvider {
       return;
     }
 
-    const exp = this.repository.findExperiment(document.uri);
-
-    if (!exp) {
-      return;
-    }
-
-    let symbols = exp.getSymbols();
+    const namespace = this.repository.extractFileName(document.uri);
+    const symbols =
+      this.repository._controller.getNamespaceDeclarations(namespace);
 
     const results = symbols.map((el) => {
       return {
@@ -141,12 +147,6 @@ class SymbolMemberProvider implements vscode.CompletionItemProvider {
       return;
     }
 
-    const exp = this.repository.findExperiment(document.uri);
-
-    if (!exp) {
-      return;
-    }
-
     const range = document.getWordRangeAtPosition(
       position,
       /[@a-zA-Z0-9-_\.]+/
@@ -154,7 +154,12 @@ class SymbolMemberProvider implements vscode.CompletionItemProvider {
     const word = document.getText(range);
 
     const slicedWord = word.slice(1, -1);
-    let symbols = exp.getSymbolMembers(slicedWord);
+
+    const namespace = this.repository.extractFileName(document.uri);
+    const symbols = this.repository._controller.getNamespaceSymbolMembers(
+      namespace,
+      slicedWord
+    );
 
     if (!symbols) {
       return;
@@ -182,7 +187,6 @@ class HoverProvider implements vscode.HoverProvider {
     position: vscode.Position,
     token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.Hover> {
-    logger.notice(">> providing hover craft");
     const nodeGroup = this._completionProvider.provideHover(position, document);
     const range = document.getWordRangeAtPosition(position, /[@a-zA-Z0-9-_]+/);
     const word = document.getText(range);
@@ -193,7 +197,7 @@ class HoverProvider implements vscode.HoverProvider {
       const markdownText = new vscode.MarkdownString();
       markdownText.appendMarkdown(`**${word}** — *${nodeGroup.detail}*`);
       markdownText.appendMarkdown(`\n\n${nodeGroup.description}`);
-      return new vscode.Hover(markdownText, range); //create range for hovercraft
+      return new vscode.Hover(markdownText, range);
     }
   }
 }
@@ -218,10 +222,7 @@ class SemanticTokenProvider implements vscode.DocumentSemanticTokensProvider {
   }
 }
 
-export function registerLanguageProvider(
-  repo: Repository,
-  lib: Library
-): vscode.Disposable {
+export function registerLanguageProvider(repo: Repository): vscode.Disposable {
   const disposables: vscode.Disposable[] = [];
   const symbolProvider = new SymbolProvider(repo);
   const memberProvider = new SymbolMemberProvider(repo);
@@ -263,7 +264,7 @@ export function registerLanguageProvider(
   disposables.push(
     vscode.languages.registerCompletionItemProvider(
       selector,
-      new ImportProvder(lib)
+      new ImportProvder(repo)
     )
   );
 

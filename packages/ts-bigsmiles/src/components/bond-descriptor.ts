@@ -40,9 +40,6 @@ export class BondDescriptor implements BaseComponent {
 
   constructor(stochastic_object: StochasticObject, symbol: string) {
     const [processedSymbol, index] = processBondingDescriptorSymbol(symbol);
-    logger.silly(
-      `Processed symbol is ${processedSymbol} for bonding descriptor: ${symbol}`
-    );
     this._text = symbol;
     this.symbol = processedSymbol;
     this.stochastic_object = stochastic_object;

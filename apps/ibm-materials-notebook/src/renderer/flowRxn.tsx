@@ -1,5 +1,5 @@
 import { h, FunctionComponent } from "preact";
-import { ReactionChemicals, ReactionTable } from "./reaction";
+import { ReactionTable } from "./reaction";
 import { ChemicalStructure } from "./chemicals";
 import { StructureTheme } from ".";
 
@@ -57,7 +57,7 @@ const ReactorReaction: FunctionComponent<{ reaction: any }> = ({
         Residence Time:{" "}
         {`${reaction.residenceTime.value} ${reaction.residenceTime.unit}`}
       </p>
-      <ReactionChemicals reaction={reaction} rxnName={reaction.name} />
+      {/* <ReactionChemicals reaction={reaction} rxnName={reaction.name} /> */}
       <ReactionTable reaction={reaction} rxnName={reaction.name} />
     </div>
   );
@@ -69,7 +69,7 @@ export const Solution: FunctionComponent<{ solution: any }> = ({
   return (
     <div>
       <h3>{solution.name}</h3>
-      <ReactionChemicals reaction={solution} rxnName={solution.name} />
+      {/* <ReactionChemicals reaction={solution} rxnName={solution.name} /> */}
       <ReactionTable reaction={solution} rxnName={solution.name} />
     </div>
   );

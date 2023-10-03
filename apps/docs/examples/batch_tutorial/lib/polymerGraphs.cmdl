@@ -1,0 +1,21 @@
+fragments {
+   MeO =: "CO[R]";
+   PEO =: "[Q]OCC[R]";
+   Llac =: "O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C";
+}
+
+polymer_graph PEG_PLLA {
+   nodes: [ @MeO ];
+   <@MeO.R => @PEG_Block.PEO.R>;
+   <@PEG_Block.PEO.Q => @Lactide_Block.Llac.R>;
+
+   container PEG_Block {
+      nodes: [ @PEO ];
+      <@PEO.Q => @PEO.R>;
+   };
+
+   container Lactide_Block {
+     nodes: [ @Llac ];
+     <@Llac.Q => @Llac.R>; 
+   };
+}
