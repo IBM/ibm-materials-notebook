@@ -140,7 +140,6 @@
     "@typescript-eslint/parser": "^5.31.0",
     "@vscode/test-electron": "^2.1.5",
     "@vscode/vsce": "^2.16.0",
-    "cmdl": "*",
     "css-loader": "^6.7.1",
     "eslint": "^8.20.0",
     "eslint-config-custom": "*",
@@ -160,8 +159,10 @@
   },
   "dependencies": {
     "big.js": "^6.2.1",
+    "cmdl": "*",
     "chevrotain": "^10.3.0",
     "d3": "^7.8.5",
+    "logger": "*",
     "ts-bigsmiles": "*",
     "ts-smiles-drawer": "*",
     "preact": "^10.16.0",
