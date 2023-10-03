@@ -28,3 +28,10 @@ Preprint publication for concepts implemented within this extension can be found
     - Enabled workspace storage for persisting experiment outputs
     - Enabled adjustment of chemical structure theme
     - Added support for adding and validating BigSMILES strings to polymer definitions
+
+### v0.1.5
+
+    - Re-organization of CMDL language files and VS Code extension package
+    – Updates to CMDL syntax
+    — Improved sharing data via `imports`
+    — Modification to how data is exported from workspaces
