@@ -35,3 +35,7 @@ Preprint publication for concepts implemented within this extension can be found
     – Updates to CMDL syntax
     — Improved sharing data via `imports`
     — Modification to how data is exported from workspaces
+
+### v0.1.6
+
+    - Minor bug fixes...
