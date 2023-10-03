@@ -10,7 +10,7 @@
   },
   "version": "0.1.5",
   "engines": {
-    "vscode": "^1.70.0"
+    "vscode": "^1.81.1"
   },
   "categories": [
     "Notebooks"

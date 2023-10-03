@@ -1,5 +1,4 @@
-import { createLogger, transports, format } from "winston";
-import winston = require("winston/lib/winston/config");
+import { createLogger, transports, format, addColors } from "winston";
 
 export const LEVELS = {
   error: 0,
@@ -21,7 +20,7 @@ export const COLORS = {
   silly: "red cyanBG",
 };
 
-winston.addColors(COLORS);
+addColors(COLORS);
 
 export const logger = createLogger({
   transports: [
