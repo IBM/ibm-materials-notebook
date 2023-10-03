@@ -1,8 +1,10 @@
+
 chemical tetrahydrofuran {
     smiles: "C1CCOC1";
-    state: "liquid";
     molecular_weight: 72.11 g/mol;
-    density: 0.8876 g/ml;   
+    density: 0.8876 g/ml;
+    state: "liquid";
+    inchi: "1S/C4H8O/c1-2-4-5-3-1/h1-4H2";
 }
 
 chemical potassium_tert-butoxide {
