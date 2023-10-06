@@ -11,10 +11,9 @@ export default class Liquid extends BaseChemical {
     roles: ReactionRoles[],
     mw: Big,
     density: Big,
-    limiting: boolean,
-    smiles?: string
+    limiting: boolean
   ) {
-    super(name, roles, limiting, smiles);
+    super(name, roles, limiting);
     this.mw = mw;
     this.density = density;
   }
@@ -121,7 +120,6 @@ export default class Liquid extends BaseChemical {
       mw: this.mw,
       density: this.density ? this.density : null,
       name: this.name,
-      smiles: this.smiles,
       quantity: {
         name: PROPERTIES.MOLES,
         unit: newMoles.unit,
@@ -143,7 +141,6 @@ export default class Liquid extends BaseChemical {
       mw: this.mw,
       density: this.density,
       name: this.name,
-      smiles: this.smiles,
       quantity: {
         name: PROPERTIES.MOLES,
         unit: this.moles.unit,

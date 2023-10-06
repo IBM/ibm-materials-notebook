@@ -2,7 +2,7 @@ import ChemicalSet from "../chemical-set";
 import Big from "big.js";
 import { solidChemicalMass } from "./chemical.test";
 import Solid from "../solid";
-import { PROPERTIES, TAGS, CMDL } from "cmdl-types";
+import { PROPERTIES, TAGS, TYPES } from "cmdl-types";
 
 const catalyst: TYPES.ChemicalConfig = {
   name: "KOME",

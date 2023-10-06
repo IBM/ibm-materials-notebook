@@ -11,10 +11,9 @@ export default class Gas extends BaseChemical {
     name: string,
     roles: ReactionRoles[],
     mw: Big,
-    limiting: boolean,
-    smiles?: string
+    limiting: boolean
   ) {
-    super(name, roles, limiting, smiles);
+    super(name, roles, limiting);
     this.mw = mw;
   }
 
@@ -76,7 +75,6 @@ export default class Gas extends BaseChemical {
       mw: this.mw,
       density: this.density,
       name: this.name,
-      smiles: this.smiles,
       quantity: {
         name: PROPERTIES.PRESSURE,
         unit: this.pressure.unit,

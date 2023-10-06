@@ -351,7 +351,6 @@ describe("Test computations for chemicals", () => {
       volume: null,
       moles: { value: 0.8186, unit: "mmol", uncertainty: null },
       pressure: null,
-      smiles: null,
       ratio: 0.1,
       roles: [TAGS.INITIATOR],
       mw: 122.16,

@@ -1,7 +1,8 @@
 {
   "name": "logger",
   "version": "0.1.0",
-  "description": "",
+  "description": "Shared logging configuration for packages",
+  "private": true,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -18,5 +19,5 @@
     "test": "echo \"Passing with no tests...\" && exit 0"
   },
   "author": "npark",
-  "license": "ISC"
+  "license": "MIT"
 }

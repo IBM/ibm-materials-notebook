@@ -1,8 +1,13 @@
 {
   "name": "ts-config",
   "version": "1.0.0",
+  "description": "Shared typescript configurations",
+  "private": true,
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "test": "echo \"Passing with no tests...\" && exit 0"
+  },
   "files": [
     "base.json"
   ]

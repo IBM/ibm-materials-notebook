@@ -1,7 +1,8 @@
 {
   "name": "cmdl-types",
   "version": "0.1.0",
-  "description": "",
+  "description": "Shared type information for CMDL",
+  "private": true,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -23,19 +24,12 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "lint": "eslint src --ext ts",
-    "test": "jest"
+    "test": "echo \"Passing with no tests...\" && exit 0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/IBM/ibm-materials-notebook"
   },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.ts?$": "ts-jest"
-    }
-  },
   "author": "npark",
-  "license": "ISC"
+  "license": "MIT"
 }

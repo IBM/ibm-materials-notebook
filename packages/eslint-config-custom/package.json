@@ -2,10 +2,15 @@
   "name": "eslint-config-custom",
   "version": "1.0.0",
   "main": "index.js",
+  "description": "Shared configurations for eslint",
+  "private": true,
   "license": "MIT",
   "files": [
     "base.json"
   ],
+  "scripts": {
+    "test": "echo \"Passing with no tests...\" && exit 0"
+  },
   "dependencies": {
     "eslint": "8.35.0"
   }

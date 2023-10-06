@@ -1,7 +1,8 @@
 {
   "name": "ts-bigsmiles",
   "version": "0.0.1",
-  "description": "",
+  "description": "Typescript port of BigSMILES parser orignally written in python",
+  "private": true,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -31,5 +32,5 @@
     }
   },
   "author": "npark",
-  "license": "ISC"
+  "license": "MIT"
 }

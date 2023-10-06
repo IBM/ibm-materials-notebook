@@ -1,11 +1,11 @@
 {
   "name": "ibm-materials",
-  "version": "0.0.0",
-  "description": "",
+  "description": "Monorepo hosting VSCode extension and language packages for CMDL",
   "scripts": {
     "watch:ext": "npm run watch -workspace=ibm-materials-notebook",
     "build": "lerna run build",
-    "test": "npm run test -workspace=ibm-materials-notebook",
+    "test": "lerna run test",
+    "publish-ci": "lerna publish from-package --yes",
     "deploy": "npm run deploy -workspace=ibm-materials-notebook",
     "docs:build": "npm run docs:build -workspace=docs"
   },
