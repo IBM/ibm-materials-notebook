@@ -12,6 +12,7 @@
     "eslint": "^8.20.0",
     "@ibm-materials/eslint-config-custom": "*",
     "@ibm-materials/ts-config": "*",
+    "@ibm-materials/jest-config": "*",
     "tsup": "^6.6.3",
     "typescript": "^4.9.5"
   },
@@ -23,13 +24,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/IBM/ibm-materials-notebook"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.ts?$": "ts-jest"
-    }
   },
   "author": "npark",
   "license": "MIT"

@@ -132,7 +132,6 @@
     "@types/big.js": "^6.1.5",
     "@types/d3": "^7.4.0",
     "@types/glob": "^7.2.0",
-    "@types/jest": "^29.0.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
     "@types/vscode": "^1.70.0",
@@ -145,11 +144,10 @@
     "eslint": "^8.20.0",
     "@ibm-materials/eslint-config-custom": "*",
     "glob": "^8.0.3",
-    "jest": "^28.1.3",
     "mocha": "^10.0.0",
     "style-loader": "^3.3.1",
     "@ibm-materials/ts-config": "*",
-    "ts-jest": "^28.0.8",
+    "@ibm-materials/jest-config": "*",
     "ts-loader": "^9.3.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4",
@@ -168,12 +166,5 @@
     "@ibm-materials/ts-smiles-drawer": "*",
     "preact": "^10.16.0",
     "winston": "^3.8.2"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.ts?$": "ts-jest"
-    }
   }
 }
