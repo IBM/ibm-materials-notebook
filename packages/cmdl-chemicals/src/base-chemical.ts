@@ -1,6 +1,6 @@
-import { Unit, handleRounding } from "cmdl-units";
+import { Unit, handleRounding } from "@ibm-materials/cmdl-units";
 import Big from "big.js";
-import { UNITS, ReactionRoles, TYPES } from "cmdl-types";
+import { UNITS, ReactionRoles, TYPES } from "@ibm-materials/cmdl-types";
 
 export enum ChemPropKey {
   MASS = "mass",

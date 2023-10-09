@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { NOTEBOOK } from "./languageProvider";
 import { logger } from "../logger";
-import { CMDLController } from "cmdl";
+import { CMDLController } from "@ibm-materials/cmdl";
 
 /**
  * Manages all cmdl documents (.cmdnb & .cmdl) in workspace

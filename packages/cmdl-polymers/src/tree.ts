@@ -2,7 +2,7 @@ import { PolymerEdge } from "./edge";
 import { Container } from "./tree-container";
 import { PolymerNode } from "./node";
 import { PolymerTreeVisitor } from "./polymer-visitors";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 import { PolymerComponent } from "./types";
 
 /**

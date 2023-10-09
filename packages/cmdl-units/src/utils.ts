@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 import Unit from "./unit-compound";
 
 const MIN_EXP_PLACES = -3;

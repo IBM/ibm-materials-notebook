@@ -3,7 +3,7 @@ import { PolymerTree } from "./tree";
 import { PolymerWeight } from "./weights";
 import { PolymerNode } from "./node";
 import { Container } from "./tree-container";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 
 /**
  * Top level class for managing polymer tree and graph representations

@@ -94,7 +94,7 @@ export async function exportCurrentWorkspace(repo: Repository) {
 
   const repoOutput = repo._controller.exportRepository(documentUris);
 
-  const content = repoOutput.map((el) => JSON.stringify(el)).join("\n");
+  const content = repoOutput.map((el: any) => JSON.stringify(el)).join("\n");
 
   fs.writeFile(outputPath, content, (err) => {
     if (err) {

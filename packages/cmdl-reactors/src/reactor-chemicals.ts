@@ -1,5 +1,5 @@
-import { ChemicalSet } from "cmdl-chemicals";
-import { TYPES } from "cmdl-types";
+import { ChemicalSet } from "@ibm-materials/cmdl-chemicals";
+import { TYPES } from "@ibm-materials/cmdl-types";
 
 /**
  * Class for managing a set of chemicals in a continous-flow reactor

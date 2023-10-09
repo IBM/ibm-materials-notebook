@@ -18,7 +18,7 @@ import { ModelFactory } from "./model-factory";
 import { ModelActivationRecord } from "./model-AR";
 import { CmdlStack } from "../cmdl-stack";
 import { logger } from "../logger";
-import { typeManager, ModelType, GROUPS } from "cmdl-types";
+import { typeManager, ModelType, GROUPS } from "@ibm-materials/cmdl-types";
 import { Controller } from "../controller";
 import { Clonable, CharFileReader, ProtocolModel } from "./models";
 

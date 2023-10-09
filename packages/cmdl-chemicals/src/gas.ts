@@ -1,7 +1,12 @@
-import { Unit } from "cmdl-units";
+import { Unit } from "@ibm-materials/cmdl-units";
 import Big from "big.js";
 import { BaseChemical } from "./base-chemical";
-import { UNITS, PROPERTIES, ReactionRoles, TYPES } from "cmdl-types";
+import {
+  UNITS,
+  PROPERTIES,
+  ReactionRoles,
+  TYPES,
+} from "@ibm-materials/cmdl-types";
 
 /**
  * Class representing gaseous chemicals in a reaction

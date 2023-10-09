@@ -1,4 +1,4 @@
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 import { ExportStrategy } from "./base-template";
 import { Model } from "../intepreter";
 import {

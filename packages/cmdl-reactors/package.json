@@ -1,5 +1,5 @@
 {
-  "name": "cmdl-reactors",
+  "name": "@ibm-materials/cmdl-reactors",
   "version": "0.0.1",
   "description": "Package for handling flow reactors in CMDL",
   "private": true,
@@ -7,21 +7,21 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "cmdl-units": "*",
-    "cmdl-chemicals": "*",
-    "cmdl-types": "*",
+    "@ibm-materials/cmdl-units": "*",
+    "@ibm-materials/cmdl-chemicals": "*",
+    "@ibm-materials/cmdl-types": "*",
     "big.js": "^6.2.1",
-    "logger": "*"
+    "@ibm-materials/logger": "*"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
     "@types/jest": "^29.0.0",
     "eslint": "^8.20.0",
-    "eslint-config-custom": "*",
+    "@ibm-materials/eslint-config-custom": "*",
     "jest": "^28.1.3",
     "ts-jest": "^28.0.8",
-    "ts-config": "*",
+    "@ibm-materials/ts-config": "*",
     "tsup": "^6.6.3",
     "typescript": "^4.9.5"
   },

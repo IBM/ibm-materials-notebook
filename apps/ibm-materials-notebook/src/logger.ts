@@ -1,3 +1,3 @@
-import { buildLogger } from "logger";
+import { buildLogger } from "@ibm-materials/logger";
 
 export const logger = buildLogger("extension");

@@ -1,8 +1,8 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { FlowRxnModel, ReactorModel, SolutionModel } from "./models";
-import { ModelType, TYPES } from "cmdl-types";
-import { ReactorChemicals } from "cmdl-reactors";
+import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
+import { ReactorChemicals } from "@ibm-materials/cmdl-reactors";
 import { logger } from "../logger";
 
 export class FlowReaction extends BaseModel {

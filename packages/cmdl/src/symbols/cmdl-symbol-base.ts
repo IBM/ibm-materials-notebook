@@ -1,4 +1,4 @@
-import { ModelType } from "cmdl-types";
+import { ModelType } from "@ibm-materials/cmdl-types";
 import { CmdlToken } from "../cmdl-ast";
 
 /**

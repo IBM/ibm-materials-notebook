@@ -3,7 +3,7 @@ import { CmdlToken } from "../cmdl-ast";
 import { Property } from "./base-components";
 import { ModelVisitor } from "../intepreter";
 import { BaseError, InvalidPropertyError } from "../errors";
-import { PropertyTypes } from "cmdl-types";
+import { PropertyTypes } from "@ibm-materials/cmdl-types";
 
 /**
  * Handles boolean properties in CMDL Record trees

@@ -1,6 +1,6 @@
 import { Model, ChemicalEntity, EntityConfigValues } from "./model";
-import { TYPES, ModelType } from "cmdl-types";
-import { PolymerContainer } from "cmdl-polymers";
+import { TYPES, ModelType } from "@ibm-materials/cmdl-types";
+import { PolymerContainer } from "@ibm-materials/cmdl-polymers";
 import Big from "big.js";
 import { logger } from "../../logger";
 

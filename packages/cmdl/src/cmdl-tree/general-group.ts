@@ -1,7 +1,7 @@
 import { CmdlToken } from "../cmdl-ast";
 import { BaseError, InvalidGroupError, InvalidPropertyError } from "../errors";
 import { Group, Property, RecordNode } from "./base-components";
-import { GroupTypes, PROPERTIES } from "cmdl-types";
+import { GroupTypes, PROPERTIES } from "@ibm-materials/cmdl-types";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
 import { AssignmentProperty } from "./assignment-property";

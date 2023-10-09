@@ -3,7 +3,7 @@ import { isCompatible } from "./comparators";
 import Big from "big.js";
 import { UnitPrefixes } from "./unit-conversions";
 import BaseUnit from "./base-unit";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 
 /**
  *Performs basic unit operations

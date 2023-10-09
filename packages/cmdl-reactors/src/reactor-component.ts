@@ -1,7 +1,7 @@
-import { Unit } from "cmdl-units";
+import { Unit } from "@ibm-materials/cmdl-units";
 import { ReactorNode, Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 
 /**
  * Class representing an individual component in a continuous-flow reactor

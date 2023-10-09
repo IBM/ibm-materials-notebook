@@ -6,7 +6,7 @@ import { Solution } from "./flowRxn";
 import { FlowRun } from "./flowRxn";
 import { CharData } from "./sample";
 import "./style.css";
-import { ModelType } from "cmdl-types";
+import { ModelType } from "@ibm-materials/cmdl-types";
 
 export const StructureTheme = createContext<"light" | "dark">("dark");
 

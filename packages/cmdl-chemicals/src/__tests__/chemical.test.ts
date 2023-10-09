@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { UNITS, TYPES, PROPERTIES, TAGS } from "cmdl-types";
+import { UNITS, TYPES, PROPERTIES, TAGS } from "@ibm-materials/cmdl-types";
 import ChemicalFactory from "../chemical-factory";
 import Gas from "../gas";
 import Liquid from "../liquid";

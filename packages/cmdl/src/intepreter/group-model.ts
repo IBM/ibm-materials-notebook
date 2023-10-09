@@ -1,5 +1,5 @@
 import { ModelActivationRecord } from "./model-AR";
-import { ModelType, PROPERTIES, TYPES } from "cmdl-types";
+import { ModelType, PROPERTIES, TYPES } from "@ibm-materials/cmdl-types";
 import { BaseModel } from "./base-model";
 import { Model, ChemicalModel, FragmentModel } from "./models";
 

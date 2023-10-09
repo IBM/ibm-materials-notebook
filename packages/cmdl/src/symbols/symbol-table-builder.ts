@@ -12,7 +12,7 @@ import {
   ImportSymbol,
 } from "./cmdl-symbol-base";
 import { BaseError, DuplicationError, RefError } from "../errors";
-import { ModelType, typeManager } from "cmdl-types";
+import { ModelType, typeManager } from "@ibm-materials/cmdl-types";
 import {
   AngleProperty,
   NamedGroup,
@@ -33,7 +33,7 @@ import {
 import { CmdlStack } from "../cmdl-stack";
 // import { CmdlToken } from "../cmdl-ast";
 import { ErrorTable } from "../error-manager";
-// import { TYPES } from "cmdl-types";
+// import { TYPES } from "@ibm-materials/cmdl-types";
 
 /**
  * Visits record tree and constructs symbol table for entire document

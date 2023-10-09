@@ -1,4 +1,4 @@
-import { TAGS, TYPES } from "cmdl-types";
+import { TAGS, TYPES } from "@ibm-materials/cmdl-types";
 import { Model } from "./model";
 
 export class ProtocolModel extends Model<any> {

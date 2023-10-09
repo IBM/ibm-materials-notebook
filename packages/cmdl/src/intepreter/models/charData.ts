@@ -1,7 +1,7 @@
 import { Model, ChemicalEntity, EntityConfigValues } from "./model";
 import { PolymerModel } from "./polymer";
 import { ChemicalModel } from "./chemicals";
-import { TYPES, TAGS, PROPERTIES } from "cmdl-types";
+import { TYPES, TAGS, PROPERTIES } from "@ibm-materials/cmdl-types";
 import Big from "big.js";
 import { CharFileReader } from "./files";
 import { logger } from "../../logger";

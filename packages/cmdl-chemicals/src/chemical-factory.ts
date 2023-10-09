@@ -1,7 +1,7 @@
 import Gas from "./gas";
 import Solid from "./solid";
 import Liquid from "./liquid";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 
 /**
  * Class for creating and initializing chemical instances from ChemicalConfigs

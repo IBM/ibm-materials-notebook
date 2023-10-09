@@ -2,7 +2,7 @@ import { h, FunctionComponent } from "preact";
 import { useEffect } from "preact/hooks";
 import { ChemicalStructure } from "./chemicals";
 import { StructureTheme } from ".";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 import LineChart from "./lineChart";
 
 function formatName(name: string) {

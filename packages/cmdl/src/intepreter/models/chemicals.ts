@@ -1,5 +1,5 @@
 import { Model, EntityConfigValues, ChemicalEntity } from "./model";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 
 export class FragmentModel extends Model<TYPES.Fragments> {
   public getFragmentMap() {

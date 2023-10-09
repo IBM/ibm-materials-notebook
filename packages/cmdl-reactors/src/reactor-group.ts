@@ -1,6 +1,6 @@
 import Big from "big.js";
-import { convertQty } from "cmdl-units";
-import { TYPES } from "cmdl-types";
+import { convertQty } from "@ibm-materials/cmdl-units";
+import { TYPES } from "@ibm-materials/cmdl-types";
 import { ReactorComponent } from "./reactor-component";
 import { ReactorChemicals } from "./reactor-chemicals";
 import { ReactorGroupOutput } from "./reactor-container";

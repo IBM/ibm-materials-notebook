@@ -1,6 +1,6 @@
 import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType, TYPES } from "cmdl-types";
+import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
 import { ReactorModel } from "./models";
 
 export class Reactor extends BaseModel {

@@ -1,4 +1,4 @@
-import { typeManager, IGroup, IProperty } from "cmdl-types";
+import { typeManager, IGroup, IProperty } from "@ibm-materials/cmdl-types";
 import { CmdlToken } from "../cmdl-ast";
 import {
   BaseError,

@@ -6,7 +6,7 @@
 //   CMDLInterpreter,
 //   CMDLCompiler,
 //   CMDLTypes,
-// } from "cmdl";
+// } from "@ibm-materials/cmdl";
 // import { CmdlCompletions } from "./cmdl-completion";
 // import { logger } from "../logger";
 // import { ErrorTable } from "./errors";

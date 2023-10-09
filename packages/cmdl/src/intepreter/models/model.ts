@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 
 export interface Clonable {
   clone(): this;

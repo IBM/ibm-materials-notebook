@@ -1,4 +1,9 @@
-import { PROPERTIES, ReactionRoles, typeManager, TYPES } from "cmdl-types";
+import {
+  PROPERTIES,
+  ReactionRoles,
+  typeManager,
+  TYPES,
+} from "@ibm-materials/cmdl-types";
 import { BaseChemical } from "./base-chemical";
 import Big from "big.js";
 

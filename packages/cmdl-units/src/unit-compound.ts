@@ -1,7 +1,7 @@
 import BaseUnit from "./base-unit";
 import Big from "big.js";
 import { UnitPrefixes } from "./unit-conversions";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 
 /**
  * Top-level class for managing and converting units

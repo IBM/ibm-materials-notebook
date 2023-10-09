@@ -1,7 +1,7 @@
 import { ReactorChemicals } from "../reactor-chemicals";
 import { ReactorComponent } from "../reactor-component";
 import { flowRate } from "./reactor-chem.test";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 import Big from "big.js";
 
 const NODE_A = "node_a";

@@ -1,5 +1,5 @@
 {
-  "name": "ts-bigsmiles",
+  "name": "@ibm-materials/ts-bigsmiles",
   "version": "0.0.1",
   "description": "Typescript port of BigSMILES parser orignally written in python",
   "private": true,
@@ -10,8 +10,8 @@
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
     "eslint": "^8.20.0",
-    "eslint-config-custom": "*",
-    "ts-config": "*",
+    "@ibm-materials/eslint-config-custom": "*",
+    "@ibm-materials/ts-config": "*",
     "tsup": "^6.6.3",
     "typescript": "^4.9.5"
   },

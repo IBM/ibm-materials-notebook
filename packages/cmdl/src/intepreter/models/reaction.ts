@@ -1,7 +1,10 @@
-import { ChemicalSet } from "cmdl-chemicals";
+import { ChemicalSet } from "@ibm-materials/cmdl-chemicals";
 import { Model } from "./model";
-import { ModelType, TYPES } from "cmdl-types";
-import { ReactorChemicals, ReactorContainer } from "cmdl-reactors";
+import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
+import {
+  ReactorChemicals,
+  ReactorContainer,
+} from "@ibm-materials/cmdl-reactors";
 import { ModelActivationRecord } from "../model-AR";
 import { ChemicalTranslator } from "./utils";
 import { logger } from "../../logger";

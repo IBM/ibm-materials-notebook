@@ -1,5 +1,5 @@
 {
-  "name": "ts-config",
+  "name": "@ibm-materials/ts-config",
   "version": "1.0.0",
   "description": "Shared typescript configurations",
   "private": true,

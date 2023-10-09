@@ -2,7 +2,7 @@ import { ModelVisitor, ModelARManager } from "../intepreter";
 import { Compiler } from "../compiler";
 import { SymbolTable, SymbolTableBuilder } from "../symbols";
 import { CmdlTree } from "../cmdl-tree";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 import { ErrorTable } from "../error-manager";
 import { Controller } from "../controller";
 import { SymbolTableManager } from "../symbol-manager";

@@ -2,7 +2,7 @@ import { Reactor } from "./reactor-group";
 import { ReactorChemicals } from "./reactor-chemicals";
 import { ReactorComponent } from "./reactor-component";
 import { logger } from "./logger";
-import { TYPES } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
 
 export interface ReactorEdge {
   id: string;

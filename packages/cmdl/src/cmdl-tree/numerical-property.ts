@@ -8,8 +8,8 @@ import {
 import { Property, Group } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
-import { TYPES } from "cmdl-types";
-import { typeManager } from "cmdl-types";
+import { TYPES } from "@ibm-materials/cmdl-types";
+import { typeManager } from "@ibm-materials/cmdl-types";
 import Big from "big.js";
 
 /**

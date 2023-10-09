@@ -1,6 +1,6 @@
 import Big from "big.js";
 import { ReactorChemicals } from "../reactor-chemicals";
-import { PROPERTIES, TAGS, TYPES } from "cmdl-types";
+import { PROPERTIES, TAGS, TYPES } from "@ibm-materials/cmdl-types";
 
 export const flowRate: TYPES.BigQty = {
   unit: "ml/min",

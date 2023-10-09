@@ -1,5 +1,5 @@
 {
-  "name": "eslint-config-custom",
+  "name": "@ibm-materials/eslint-config-custom",
   "version": "1.0.0",
   "main": "index.js",
   "description": "Shared configurations for eslint",

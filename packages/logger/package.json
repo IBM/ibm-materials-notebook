@@ -1,6 +1,6 @@
 {
-  "name": "logger",
-  "version": "0.1.0",
+  "name": "@ibm-materials/logger",
+  "version": "0.0.1",
   "description": "Shared logging configuration for packages",
   "private": true,
   "main": "./dist/index.js",
@@ -10,7 +10,7 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
-    "ts-config": "*",
+    "@ibm-materials/ts-config": "*",
     "tsup": "^6.6.3",
     "typescript": "^4.9.5"
   },

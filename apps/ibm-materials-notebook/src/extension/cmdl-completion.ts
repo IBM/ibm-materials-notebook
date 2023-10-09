@@ -1,5 +1,10 @@
 import * as vscode from "vscode";
-import { CMDLCompiler, CMDLTypes, CMDLAst, AstNodes } from "cmdl";
+import {
+  CMDLCompiler,
+  CMDLTypes,
+  CMDLAst,
+  AstNodes,
+} from "@ibm-materials/cmdl";
 
 /**
  * Assists in providing completion items for CMDL language
@@ -203,7 +208,7 @@ export class CmdlCompletions {
       }
 
       const refProps = parentGroup.referenceProps
-        .map((el) => CMDLTypes.typeManager.getProperty(el))
+        .map((el: any) => CMDLTypes.typeManager.getProperty(el))
         .filter(CMDLTypes.typeManager.isProperty);
 
       return [...this.createPropertyCompletions(refProps)];
@@ -215,11 +220,11 @@ export class CmdlCompletions {
       }
 
       const subGroups = availableGroup.subGroups
-        .map((el) => CMDLTypes.typeManager.getGroup(el))
+        .map((el: any) => CMDLTypes.typeManager.getGroup(el))
         .filter(CMDLTypes.typeManager.isGroup);
 
       const properties = availableGroup.properties
-        .map((el) => CMDLTypes.typeManager.getProperty(el))
+        .map((el: any) => CMDLTypes.typeManager.getProperty(el))
         .filter(CMDLTypes.typeManager.isProperty);
 
       return [
@@ -252,11 +257,11 @@ export class CmdlCompletions {
     }
 
     const subGroups = availableGroup.subGroups
-      .map((el) => CMDLTypes.typeManager.getGroup(el))
+      .map((el: any) => CMDLTypes.typeManager.getGroup(el))
       .filter(CMDLTypes.typeManager.isGroup);
 
     const properties = availableGroup.properties
-      .map((el) => CMDLTypes.typeManager.getProperty(el))
+      .map((el: any) => CMDLTypes.typeManager.getProperty(el))
       .filter(CMDLTypes.typeManager.isProperty);
 
     return [

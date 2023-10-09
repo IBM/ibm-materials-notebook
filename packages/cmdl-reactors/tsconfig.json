@@ -1,5 +1,5 @@
 {
-  "extends": "ts-config/base.json",
+  "extends": "@ibm-materials/ts-config/base.json",
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES2021",

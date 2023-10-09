@@ -1,8 +1,8 @@
 import { BaseChemical, ChemPropKey } from "./base-chemical";
-import { UnitOperator, Unit } from "cmdl-units";
+import { UnitOperator, Unit } from "@ibm-materials/cmdl-units";
 import ChemicalFactory from "./chemical-factory";
 import Big from "big.js";
-import { TAGS, TYPES } from "cmdl-types";
+import { TAGS, TYPES } from "@ibm-materials/cmdl-types";
 
 /**
  * Class for managing sets of chemicals in a solution or reaction
