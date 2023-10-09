@@ -11,8 +11,7 @@
   },
   "devDependencies": {
     "@ibm-materials/ts-config": "*",
-    "tsup": "^6.6.3",
-    "typescript": "^4.9.5"
+    "tsup": "^6.6.3"
   },
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts",
