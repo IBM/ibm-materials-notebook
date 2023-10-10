@@ -5,6 +5,9 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@ibm-materials/eslint-config": "*",
     "@ibm-materials/ts-config": "*",
