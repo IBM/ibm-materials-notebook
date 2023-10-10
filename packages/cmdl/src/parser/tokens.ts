@@ -7,14 +7,14 @@ import {
 
 const tokenVocabulary: Record<string, TokenType> = {};
 
-const IDENT_REGEX = /[_a-zA-Z0-9-\/%]+/;
+const IDENT_REGEX = /[_a-zA-Z0-9-/%]+/;
 const LINK = /@[_a-zA-Z0-9-]+/;
 const ProtocolRef = /\[\[@[_a-zA-Z0-9-]+\]\]/;
 const VARIABLE = /\$[_a-zA-Z0-9-]+/;
-const STRING_LITERAL = /"(?:[^\"]|\\(?:[bfnrtv"\/]|u[0-9a-fA-F]{4}))+"/;
+const STRING_LITERAL = /"(?:[^"]|\\(?:[bfnrtv"/]|u[0-9a-fA-F]{4}))+"/;
 const NUM_REGEX = /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/;
 const UNC_REGEX = /±|\+-/;
-const MultiLineText = /[_a-zA-Z0-9-',\/%\.\s\\n\\r\\t]+/;
+const MultiLineText = /[_a-zA-Z0-9-',/%.\s\\n\\r\\t]+/;
 
 const True = createToken({ name: "True", pattern: /true/ });
 const False = createToken({ name: "False", pattern: /false/ });

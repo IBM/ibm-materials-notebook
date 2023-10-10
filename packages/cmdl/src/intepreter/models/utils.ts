@@ -10,7 +10,7 @@ export class ChemicalTranslator {
    * @returns NamedQuantity
    */
   static extractQuantity(ref: TYPES.ChemicalReference): TYPES.NamedQty {
-    let name: TYPES.QuantityNames;
+    // let name: TYPES.QuantityNames;
     if (ref?.mass) {
       return {
         name: PROPERTIES.MASS,
@@ -49,9 +49,9 @@ export class ChemicalTranslator {
     globalAR: ModelActivationRecord,
     params?: { volume?: TYPES.BigQty | null; temperature?: TYPES.BigQty | null }
   ): TYPES.ChemicalConfig[] {
-    let configs: TYPES.ChemicalConfig[] = [];
+    const configs: TYPES.ChemicalConfig[] = [];
     for (const chemical of chemicals) {
-      let parentModel = globalAR.getValue<ChemicalEntity>(chemical.name);
+      const parentModel = globalAR.getValue<ChemicalEntity>(chemical.name);
 
       const quantity = this.extractQuantity(chemical);
       const configValues = parentModel.getConfigValues();

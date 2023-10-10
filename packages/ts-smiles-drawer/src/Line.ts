@@ -77,7 +77,7 @@ export class Line {
    */
   getAngle() {
     // Get the angle between the line and the x-axis
-    let diff = Vector2.subtract(this.getRightVector(), this.getLeftVector());
+    const diff = Vector2.subtract(this.getRightVector(), this.getLeftVector());
     return diff.angle();
   }
 
@@ -205,7 +205,7 @@ export class Line {
    * @returns {Line} This line.
    */
   rotateToXAxis() {
-    let left = this.getLeftVector();
+    const left = this.getLeftVector();
 
     this.setRightVector(left.x + this.getLength(), left.y);
 
@@ -219,13 +219,13 @@ export class Line {
    * @returns {Line} This line.
    */
   rotate(theta: number) {
-    let l = this.getLeftVector();
-    let r = this.getRightVector();
-    let sinTheta = Math.sin(theta);
-    let cosTheta = Math.cos(theta);
+    const l = this.getLeftVector();
+    const r = this.getRightVector();
+    const sinTheta = Math.sin(theta);
+    const cosTheta = Math.cos(theta);
 
-    let x = cosTheta * (r.x - l.x) - sinTheta * (r.y - l.y) + l.x;
-    let y = sinTheta * (r.x - l.x) - cosTheta * (r.y - l.y) + l.y;
+    const x = cosTheta * (r.x - l.x) - sinTheta * (r.y - l.y) + l.x;
+    const y = sinTheta * (r.x - l.x) - cosTheta * (r.y - l.y) + l.y;
 
     this.setRightVector(x, y);
 
@@ -239,7 +239,7 @@ export class Line {
    * @returns {Line} This line.
    */
   shortenFrom(by: number) {
-    let f = Vector2.subtract(this.to, this.from);
+    const f = Vector2.subtract(this.to, this.from);
 
     f.normalize();
     f.multiplyScalar(by);
@@ -256,7 +256,7 @@ export class Line {
    * @returns {Line} This line.
    */
   shortenTo(by: number) {
-    let f = Vector2.subtract(this.from, this.to);
+    const f = Vector2.subtract(this.from, this.to);
 
     f.normalize();
     f.multiplyScalar(by);
@@ -305,7 +305,7 @@ export class Line {
    * @returns {Line} This line.
    */
   shorten(by: number) {
-    let f = Vector2.subtract(this.from, this.to);
+    const f = Vector2.subtract(this.from, this.to);
 
     f.normalize();
     f.multiplyScalar(by / 2.0);

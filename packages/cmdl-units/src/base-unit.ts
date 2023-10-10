@@ -17,7 +17,7 @@ export default class BaseUnit {
   _conversion_factor: Big;
 
   constructor(unit: string) {
-    let { prefix, base, exponent, type } = parseUnit(unit);
+    const { prefix, base, exponent, type } = parseUnit(unit);
     this.unit = unit;
     this.prefix = prefix;
     this.base = base;
@@ -67,9 +67,9 @@ export default class BaseUnit {
       return 1;
     }
 
-    let ratio = this.computeFactorRatio({ prefix: newPrefix, base: this.base });
-    let newUnit = this.buildUnitString(newPrefix, this.base, this.exponent);
-    let conversionFactor = ratio.pow(this.exponent);
+    const ratio = this.computeFactorRatio({ prefix: newPrefix, base: this.base });
+    const newUnit = this.buildUnitString(newPrefix, this.base, this.exponent);
+    const conversionFactor = ratio.pow(this.exponent);
 
     this.unit = newUnit;
     this.prefix = newPrefix;
@@ -101,8 +101,8 @@ export default class BaseUnit {
    * @returns number | false
    */
   public scaleToNext(direction: number): number | false {
-    let prefixArr = Object.keys(prefixes);
-    let currIndex = prefixArr.indexOf(this.prefix);
+    const prefixArr = Object.keys(prefixes);
+    const currIndex = prefixArr.indexOf(this.prefix);
 
     if (
       (this.prefix === "k" && direction < 0) ||
@@ -110,7 +110,7 @@ export default class BaseUnit {
     ) {
       return this.scaleTo("base");
     } else if (this.prefix === "base") {
-      let newPrefix = direction > 0 ? "k" : "m";
+      const newPrefix = direction > 0 ? "k" : "m";
       return this.scaleTo(newPrefix as UnitPrefixes);
     } else {
       if (
@@ -119,8 +119,8 @@ export default class BaseUnit {
       ) {
         return false;
       } else {
-        let newIndex = currIndex - direction;
-        let nextPrefix = prefixArr[newIndex] as UnitPrefixes;
+        const newIndex = currIndex - direction;
+        const nextPrefix = prefixArr[newIndex] as UnitPrefixes;
         return this.scaleTo(nextPrefix);
       }
     }
@@ -185,7 +185,7 @@ export default class BaseUnit {
     base: UnitBases,
     exponent: number
   ): string {
-    let prefixString = prefix === "base" ? "" : prefix;
+    const prefixString = prefix === "base" ? "" : prefix;
     switch (true) {
       case (exponent > 1 || exponent < 0) && prefix === "base":
         return `${base}^${exponent}`;
@@ -206,9 +206,9 @@ export default class BaseUnit {
    * Inverts value of exponent and adjusts unit string
    */
   public invertBaseUnit(): void {
-    let { prefix, base } = this;
-    let newExponent = -this.exponent;
-    let newUnit = this.buildUnitString(prefix, base, newExponent);
+    const { prefix, base } = this;
+    const newExponent = -this.exponent;
+    const newUnit = this.buildUnitString(prefix, base, newExponent);
     this.unit = newUnit;
     this.exponent = newExponent;
     this.conversion_factor = this._prefix_factor.pow(newExponent);
@@ -236,7 +236,7 @@ export default class BaseUnit {
     exponent: number;
     type: (string | number)[];
   } {
-    let { prefix, base, exponent, type } = this;
+    const { prefix, base, exponent, type } = this;
     return { prefix, base, exponent, type };
   }
 }

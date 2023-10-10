@@ -35,18 +35,18 @@ export class StringProperty extends Property {
       this.propertyType?.type !== PropertyTypes.TEXT &&
       this.propertyType?.type !== PropertyTypes.CATEGORICAL_SINGLE
     ) {
-      let msg = `Invalid property type for ${this.name}`;
-      let err = new InvalidPropertyError(msg, this.nameToken);
+      const msg = `Invalid property type for ${this.name}`;
+      const err = new InvalidPropertyError(msg, this.nameToken);
       this.errors.push(err);
     }
 
     if (this.name === PROPERTIES.BIG_SMILES) {
       try {
         const bigSmilesParser = new BigSMILES(this.value);
-        const validatedStr = bigSmilesParser.toString();
+        bigSmilesParser.toString();
       } catch (error) {
-        let msg = (error as Error).message;
-        let err = new InvalidPropertyError(msg, this.nameToken);
+        const msg = (error as Error).message;
+        const err = new InvalidPropertyError(msg, this.nameToken);
         this.errors.push(err);
       }
     }

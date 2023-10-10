@@ -6,7 +6,6 @@ import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
 import { AngleProperty } from "./angle-property";
 import { AssignmentProperty } from "./assignment-property";
-import { logger } from "../logger";
 import { PROPERTIES } from "@ibm-materials/cmdl-types";
 
 /**
@@ -38,7 +37,7 @@ export class NamedGroup extends Group {
     let msg: string;
     let err: BaseError;
 
-    if (child instanceof AngleProperty)
+    if (child instanceof AngleProperty) {
       if (!this.groupProps.properties.includes(PROPERTIES.CONNECTIONS)) {
         msg = `${child.name} is not a valid sub-group of ${this.name} ${this.identifier}`;
         err = new InvalidGroupError(msg, child.nameToken);
@@ -47,6 +46,7 @@ export class NamedGroup extends Group {
       } else {
         return;
       }
+    }
 
     if (child instanceof AssignmentProperty) {
       if (!this.groupProps.properties.includes(PROPERTIES.FRAGMENT)) {

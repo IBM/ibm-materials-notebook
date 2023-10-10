@@ -161,8 +161,8 @@ export class Vector2 {
    * @returns {Number} Returns -1, 0 or 1 if the vector supplied as an argument is clockwise, neutral or counter-clockwise respectively to this vector in relation to the coordinate system.
    */
   clockwise(vec: Vector2) {
-    let a = this.y * vec.x;
-    let b = this.x * vec.y;
+    const a = this.y * vec.x;
+    const b = this.x * vec.y;
 
     if (a > b) {
       return -1;
@@ -181,8 +181,8 @@ export class Vector2 {
    * @returns {Number} Returns -1, 0 or 1 if the vector supplied as an argument is clockwise, neutral or counter-clockwise respectively to this vector in relation to an arbitrary third vector.
    */
   relativeClockwise(center: Vector2, vec: Vector2) {
-    let a = (this.y - center.y) * (vec.x - center.x);
-    let b = (this.x - center.x) * (vec.y - center.y);
+    const a = (this.y - center.y) * (vec.x - center.x);
+    const b = (this.x - center.x) * (vec.y - center.y);
 
     if (a > b) {
       return -1;
@@ -200,9 +200,9 @@ export class Vector2 {
    * @returns {Vector2} Returns itself.
    */
   rotate(angle: number) {
-    let tmp = new Vector2(0, 0);
-    let cosAngle = Math.cos(angle);
-    let sinAngle = Math.sin(angle);
+    const tmp = new Vector2(0, 0);
+    const cosAngle = Math.cos(angle);
+    const sinAngle = Math.sin(angle);
 
     tmp.x = this.x * cosAngle - this.y * sinAngle;
     tmp.y = this.x * sinAngle + this.y * cosAngle;
@@ -221,14 +221,14 @@ export class Vector2 {
    * @returns {Vector2} Returns itself.
    */
   rotateAround(angle: number, vec: Vector2) {
-    let s = Math.sin(angle);
-    let c = Math.cos(angle);
+    const s = Math.sin(angle);
+    const c = Math.cos(angle);
 
     this.x -= vec.x;
     this.y -= vec.y;
 
-    let x = this.x * c - this.y * s;
-    let y = this.x * s + this.y * c;
+    const x = this.x * c - this.y * s;
+    const y = this.x * s + this.y * c;
 
     this.x = x + vec.x;
     this.y = y + vec.y;
@@ -249,9 +249,9 @@ export class Vector2 {
     this.x += 0.001;
     this.y -= 0.001;
 
-    let a = Vector2.subtract(this, center);
-    let b = Vector2.subtract(vec, center);
-    let angle = Vector2.angle(b, a);
+    const a = Vector2.subtract(this, center);
+    const b = Vector2.subtract(vec, center);
+    const angle = Vector2.angle(b, a);
 
     this.rotateAround(angle + offsetAngle, center);
 
@@ -268,11 +268,11 @@ export class Vector2 {
   rotateAwayFrom(vec: Vector2, center: Vector2, angle: number) {
     this.rotateAround(angle, center);
 
-    let distSqA = this.distanceSq(vec);
+    const distSqA = this.distanceSq(vec);
 
     this.rotateAround(-2.0 * angle, center);
 
-    let distSqB = this.distanceSq(vec);
+    const distSqB = this.distanceSq(vec);
 
     // If it was rotated towards the other vertex, rotate in other direction by same amount.
     if (distSqB < distSqA) {
@@ -289,15 +289,15 @@ export class Vector2 {
    * @returns {Number} The angle in radians.
    */
   getRotateAwayFromAngle(vec: Vector2, center: Vector2, angle: number) {
-    let tmp = this.clone();
+    const tmp = this.clone();
 
     tmp.rotateAround(angle, center);
 
-    let distSqA = tmp.distanceSq(vec);
+    const distSqA = tmp.distanceSq(vec);
 
     tmp.rotateAround(-2.0 * angle, center);
 
-    let distSqB = tmp.distanceSq(vec);
+    const distSqB = tmp.distanceSq(vec);
 
     if (distSqB < distSqA) {
       return angle;
@@ -315,15 +315,15 @@ export class Vector2 {
    * @returns {Number} The angle in radians.
    */
   getRotateTowardsAngle(vec: Vector2, center: Vector2, angle: number) {
-    let tmp = this.clone();
+    const tmp = this.clone();
 
     tmp.rotateAround(angle, center);
 
-    let distSqA = tmp.distanceSq(vec);
+    const distSqA = tmp.distanceSq(vec);
 
     tmp.rotateAround(-2.0 * angle, center);
 
-    let distSqB = tmp.distanceSq(vec);
+    const distSqB = tmp.distanceSq(vec);
 
     if (distSqB > distSqA) {
       return angle;
@@ -340,9 +340,9 @@ export class Vector2 {
    * @returns {Number} The angle between this vector and another vector around a center of rotation in radians.
    */
   getRotateToAngle(vec: Vector2, center: Vector2) {
-    let a = Vector2.subtract(this, center);
-    let b = Vector2.subtract(vec, center);
-    let angle = Vector2.angle(b, a);
+    const a = Vector2.subtract(this, center);
+    const b = Vector2.subtract(vec, center);
+    const angle = Vector2.angle(b, a);
 
     return Number.isNaN(angle) ? 0.0 : angle;
   }
@@ -433,8 +433,8 @@ export class Vector2 {
    * @returns {Boolean} Returns a boolean indicating whether or not this vector is on the same side as another vector.
    */
   sameSideAs(vecA: Vector2, vecB: Vector2, vecC: Vector2) {
-    let d = this.whichSide(vecA, vecB);
-    let dRef = vecC.whichSide(vecA, vecB);
+    const d = this.whichSide(vecA, vecB);
+    const dRef = vecC.whichSide(vecA, vecB);
 
     return (
       (d < 0 && dRef < 0) || (d === 0 && dRef === 0) || (d > 0 && dRef > 0)
@@ -510,7 +510,7 @@ export class Vector2 {
    * @returns {Vector2[]} An array containing the two normals, each represented by a vector.
    */
   static normals(vecA: Vector2, vecB: Vector2) {
-    let delta = Vector2.subtract(vecB, vecA);
+    const delta = Vector2.subtract(vecB, vecA);
 
     return [new Vector2(-delta.y, delta.x), new Vector2(delta.y, -delta.x)];
   }
@@ -524,7 +524,7 @@ export class Vector2 {
    * @returns {Vector2[]} An array containing the two unit vectors.
    */
   static units(vecA: Vector2, vecB: Vector2) {
-    let delta = Vector2.subtract(vecB, vecA);
+    const delta = Vector2.subtract(vecB, vecA);
 
     return [
       new Vector2(-delta.y, delta.x).normalize(),
@@ -577,7 +577,7 @@ export class Vector2 {
    * @returns {Number} The angle between two vectors in radians.
    */
   static angle(vecA: Vector2, vecB: Vector2) {
-    let dot = Vector2.dot(vecA, vecB);
+    const dot = Vector2.dot(vecA, vecB);
 
     return Math.acos(dot / (vecA.length() * vecB.length()));
   }
@@ -592,10 +592,10 @@ export class Vector2 {
    * @returns {Number} The angle in radians.
    */
   static threePointangle(vecA: Vector2, vecB: Vector2, vecC: Vector2) {
-    let ab = Vector2.subtract(vecB, vecA);
-    let bc = Vector2.subtract(vecC, vecB);
-    let abLength = vecA.distance(vecB);
-    let bcLength = vecB.distance(vecC);
+    const ab = Vector2.subtract(vecB, vecA);
+    const bc = Vector2.subtract(vecC, vecB);
+    const abLength = vecA.distance(vecB);
+    const bcLength = vecB.distance(vecC);
 
     return Math.acos(Vector2.dot(ab, bc) / (abLength * bcLength));
   }
@@ -609,7 +609,7 @@ export class Vector2 {
    * @returns {Number} The scalar component.
    */
   static scalarProjection(vecA: Vector2, vecB: Vector2) {
-    let unit = vecB.normalized();
+    const unit = vecB.normalized();
 
     return Vector2.dot(vecA, unit);
   }
@@ -622,10 +622,10 @@ export class Vector2 {
    * @returns {Vector2} The resulting vector (normalized).
    */
   static averageDirection(vecs: any[]) {
-    let avg = new Vector2(0.0, 0.0);
+    const avg = new Vector2(0.0, 0.0);
 
-    for (var i = 0; i < vecs.length; i++) {
-      let vec = vecs[i];
+    for (let i = 0; i < vecs.length; i++) {
+      const vec = vecs[i];
       avg.add(vec);
     }
 

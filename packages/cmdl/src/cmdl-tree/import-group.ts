@@ -4,7 +4,6 @@ import { RecordNode } from "./base-components";
 import { parseStringImage } from "./utils";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
-import { logger } from "../logger";
 
 /**
  * Component AST node for handling import operations
@@ -36,12 +35,9 @@ export class ImportOp implements RecordNode {
 
   // ? Set module reference -> have symbol compiler parse and resolve imports/export
   public doValidation(): BaseError[] {
-    let msg: string;
-    let err: BaseError;
-
     if (!this.source || !this.name) {
-      let msg = `Invalid import operation, source or name is invalid`;
-      let err = new RefError(msg, this.nameToken);
+      const msg = `Invalid import operation, source or name is invalid`;
+      const err = new RefError(msg, this.nameToken);
       this.errors.push(err);
     }
 
@@ -96,12 +92,9 @@ export class ImportFileOp implements RecordNode {
   }
 
   public doValidation(): BaseError[] {
-    let msg: string;
-    let err: BaseError;
-
     if (!this.source || !this.name) {
-      let msg = `Invalid import operation, source or name is invalid`;
-      let err = new RefError(msg, this.nameToken);
+      const msg = `Invalid import operation, source or name is invalid`;
+      const err = new RefError(msg, this.nameToken);
       this.errors.push(err);
     }
 

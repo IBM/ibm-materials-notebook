@@ -78,12 +78,12 @@ export class ReactionDrawer {
       svg.removeChild(svg.firstChild);
     }
 
-    let elements = [];
+    const elements = [];
 
     let maxHeight = 0.0;
 
     // Reactants
-    for (var i = 0; i < reaction.reactants.length; i++) {
+    for (let i = 0; i < reaction.reactants.length; i++) {
       if (i > 0) {
         elements.push({
           width: this.opts.plus.size * this.opts.scale,
@@ -92,14 +92,14 @@ export class ReactionDrawer {
         });
       }
 
-      let reactantSvg = document.createElementNS(
+      const reactantSvg = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "svg"
       );
 
       this.drawer.draw(reaction.reactants[i], reactantSvg, themeName, infoOnly);
 
-      let element = {
+      const element = {
         width: reactantSvg.viewBox.baseVal.width * this.opts.scale,
         height: reactantSvg.viewBox.baseVal.height * this.opts.scale,
         svg: reactantSvg,
@@ -121,7 +121,7 @@ export class ReactionDrawer {
 
     // Text above the arrow / reagents
     let reagentsText = "";
-    for (var i = 0; i < reaction.reagents.length; i++) {
+    for (let i = 0; i < reaction.reagents.length; i++) {
       if (i > 0) {
         reagentsText += ", ";
       }
@@ -182,7 +182,7 @@ export class ReactionDrawer {
     });
 
     // Products
-    for (var i = 0; i < reaction.products.length; i++) {
+    for (let i = 0; i < reaction.products.length; i++) {
       if (i > 0) {
         elements.push({
           width: this.opts.plus.size,
@@ -191,14 +191,14 @@ export class ReactionDrawer {
         });
       }
 
-      let productSvg = document.createElementNS(
+      const productSvg = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "svg"
       );
 
       this.drawer.draw(reaction.products[i], productSvg, themeName, infoOnly);
 
-      let element = {
+      const element = {
         width: productSvg.viewBox.baseVal.width * this.opts.scale,
         height: productSvg.viewBox.baseVal.height * this.opts.scale,
         svg: productSvg,
@@ -214,8 +214,8 @@ export class ReactionDrawer {
     let totalWidth = 0.0;
 
     elements.forEach((element: any) => {
-      let offsetX = element.offsetX ?? 0.0;
-      let offsetY = element.offsetY ?? 0.0;
+      const offsetX = element.offsetX ?? 0.0;
+      const offsetY = element.offsetY ?? 0.0;
 
       element.svg.setAttributeNS(null, "x", Math.round(totalWidth + offsetX));
       element.svg.setAttributeNS(
@@ -240,11 +240,17 @@ export class ReactionDrawer {
   }
 
   getPlus() {
-    let s = this.opts.plus.size;
-    let w = this.opts.plus.thickness;
-    let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    let rect_h = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    let rect_v = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    const s = this.opts.plus.size;
+    const w = this.opts.plus.thickness;
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const rect_h = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
+    const rect_v = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
 
     svg.setAttributeNS(null, "id", "plus");
 
@@ -268,12 +274,12 @@ export class ReactionDrawer {
   }
 
   getArrowhead() {
-    let s = this.opts.arrow.headSize;
-    let marker = document.createElementNS(
+    const s = this.opts.arrow.headSize;
+    const marker = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "marker"
     );
-    let polygon = document.createElementNS(
+    const polygon = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "polygon"
     );
@@ -296,13 +302,13 @@ export class ReactionDrawer {
   }
 
   getCDArrowhead() {
-    let s = this.opts.arrow.headSize;
-    let sw = s * (7 / 4.5);
-    let marker = document.createElementNS(
+    const s = this.opts.arrow.headSize;
+    const sw = s * (7 / 4.5);
+    const marker = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "marker"
     );
-    let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
     marker.setAttributeNS(null, "id", "arrowhead");
     marker.setAttributeNS(null, "viewBox", `0 0 ${sw} ${s}`);
@@ -327,12 +333,12 @@ export class ReactionDrawer {
   }
 
   getArrow() {
-    let s = this.opts.arrow.headSize;
-    let l = this.opts.arrow.length;
+    const s = this.opts.arrow.headSize;
+    const l = this.opts.arrow.length;
 
-    let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 
     defs.appendChild(this.getCDArrowhead());
     svg.appendChild(defs);

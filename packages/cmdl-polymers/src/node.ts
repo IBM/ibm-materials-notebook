@@ -50,7 +50,7 @@ export class PolymerNode implements PolymerComponent {
    * @returns number
    */
   public getDegreePoly(): number {
-    let nodeDP = this.properties.get("degree_poly");
+    const nodeDP = this.properties.get("degree_poly");
     if (!nodeDP) {
       return 1;
     } else {
@@ -64,7 +64,7 @@ export class PolymerNode implements PolymerComponent {
    * @returns string
    */
   public toCompressedString(mask: string): string {
-    let nodeDP = this.properties.get("degree_poly");
+    const nodeDP = this.properties.get("degree_poly");
     return `${mask};${this.smiles}${nodeDP ? `;${nodeDP.value}` : ""}`;
   }
 

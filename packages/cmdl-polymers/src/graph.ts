@@ -29,7 +29,7 @@ export class PolymerGraph {
       return;
     }
 
-    let queue: PolymerComponent[] = [tree.root];
+    const queue: PolymerComponent[] = [tree.root];
     let curr: PolymerComponent | undefined;
     let edges: PolymerEdge[] = [];
 
@@ -54,7 +54,7 @@ export class PolymerGraph {
     }
 
     for (const edge of edges) {
-      let list = this.adjacencyList.get(edge.sourceName);
+      const list = this.adjacencyList.get(edge.sourceName);
 
       if (!list) {
         throw new Error(`node ${edge.sourceName} does not exist`);
@@ -89,7 +89,7 @@ export class PolymerGraph {
    */
   public setNodeProperty(nodePath: string, property: any): void {
     logger.debug(`-${[...this.nodes.keys()].join("\n-")}`);
-    let node = this.nodes.get(nodePath);
+    const node = this.nodes.get(nodePath);
 
     if (!node) {
       throw new Error(`invalid path for node, path: ${nodePath}`);
@@ -114,7 +114,7 @@ export class PolymerGraph {
    */
   public toString() {
     let output = "";
-    let queue = [...this.adjacencyList.keys()];
+    const queue = [...this.adjacencyList.keys()];
     let key: string | undefined;
 
     let groupNumber = 1;
@@ -134,9 +134,9 @@ export class PolymerGraph {
         break;
       }
 
-      let node = this.nodes.get(key);
-      let adjList = this.adjacencyList.get(key);
-      let nodeMask = maskMap.get(key);
+      const node = this.nodes.get(key);
+      const adjList = this.adjacencyList.get(key);
+      const nodeMask = maskMap.get(key);
 
       if (!node || !adjList || !nodeMask) {
         throw new Error(`unable to find data for node ${key}`);

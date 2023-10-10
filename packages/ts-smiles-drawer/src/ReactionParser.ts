@@ -8,7 +8,7 @@ export class ReactionParser {
    * @returns {Reaction} A reaction object.
    */
   static parse(reactionSmiles: string) {
-    let reaction = new Reaction(reactionSmiles);
+    const reaction = new Reaction(reactionSmiles);
 
     return reaction;
   }

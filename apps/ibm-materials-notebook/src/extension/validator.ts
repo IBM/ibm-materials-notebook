@@ -160,7 +160,7 @@ export class Validation {
     exp: vscode.NotebookDocument | vscode.TextDocument
   ): void {
     const expUri = exp.uri.toString();
-    let diagnosticCollection = this._collections.get(expUri);
+    const diagnosticCollection = this._collections.get(expUri);
     if (diagnosticCollection) {
       diagnosticCollection.dispose();
       this._collections.delete(expUri);
@@ -179,8 +179,8 @@ export class Validation {
   ): vscode.Diagnostic[] {
     const diagnostics: vscode.Diagnostic[] = [];
     for (const err of errors) {
-      let start = doc.positionAt(err.start);
-      let stop = doc.positionAt(err.stop);
+      const start = doc.positionAt(err.start);
+      const stop = doc.positionAt(err.stop);
       const range = new vscode.Range(start, stop);
       const codeDiagnostic = new LanguageDiagnostic(range, err.message);
       diagnostics.push(codeDiagnostic);

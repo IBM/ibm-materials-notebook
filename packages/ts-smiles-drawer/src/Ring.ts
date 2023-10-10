@@ -64,7 +64,7 @@ export class Ring {
    * @returns {Ring} A clone of this ring.
    */
   clone() {
-    let clone = new Ring(this.members);
+    const clone = new Ring(this.members);
 
     clone.id = this.id;
     clone.insiders = ArrayHelper.clone(this.insiders);
@@ -98,7 +98,7 @@ export class Ring {
    * @returns {Vector2[]} An array of the positional vectors of the ring members.
    */
   getPolygon(vertices: Vertex[]) {
-    let polygon = [];
+    const polygon = [];
 
     for (let i = 0; i < this.members.length; i++) {
       polygon.push(vertices[this.members[i]].position);
@@ -136,7 +136,7 @@ export class Ring {
     let max = 0;
 
     while (current !== null && max < 100) {
-      let prev = current;
+      const prev = current;
 
       callback(prev);
       current = (vertices as any)[current].getNextInRing(
@@ -162,10 +162,10 @@ export class Ring {
    * @returns {Object[]} An array of neighbouring rings sorted by ring size. Example: { n: 5, neighbour: 1 }.
    */
   getOrderedNeighbours(ringConnections: RingConnection[]) {
-    let orderedNeighbours = Array(this.neighbours.length);
+    const orderedNeighbours = Array(this.neighbours.length);
 
     for (let i = 0; i < this.neighbours.length; i++) {
-      let vertices = RingConnection.getVertices(
+      const vertices = RingConnection.getVertices(
         ringConnections,
         this.id as number,
         this.neighbours[i]
@@ -192,8 +192,8 @@ export class Ring {
    * @returns {Boolean} A boolean indicating whether or not this ring is an implicitly defined benzene-like.
    */
   isBenzeneLike(vertices: Vertex[]) {
-    let db = this.getDoubleBondCount(vertices);
-    let length = this.members.length;
+    const db = this.getDoubleBondCount(vertices);
+    const length = this.members.length;
 
     return (db === 3 && length === 6) || (db === 2 && length === 5);
   }
@@ -208,7 +208,7 @@ export class Ring {
     let doubleBondCount = 0;
 
     for (let i = 0; i < this.members.length; i++) {
-      let atom = vertices[this.members[i]].value;
+      const atom = vertices[this.members[i]].value;
 
       if (atom.bondType === "=" || atom.branchBond === "=") {
         doubleBondCount++;

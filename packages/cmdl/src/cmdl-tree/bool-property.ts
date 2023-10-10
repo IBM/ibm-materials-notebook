@@ -30,8 +30,8 @@ export class BoolProperty extends Property {
     this.validateProperty();
 
     if (this.propertyType?.type !== PropertyTypes.BOOLEAN) {
-      let msg = `Invalid property type for ${this.name}`;
-      let err = new InvalidPropertyError(msg, this.nameToken);
+      const msg = `Invalid property type for ${this.name}`;
+      const err = new InvalidPropertyError(msg, this.nameToken);
       this.errors.push(err);
     }
 

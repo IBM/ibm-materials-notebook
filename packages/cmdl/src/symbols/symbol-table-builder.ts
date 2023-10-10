@@ -67,7 +67,7 @@ export class SymbolTableBuilder implements AstVisitor {
 
     if (table.has(symbol.name)) {
       if (symbol instanceof ConnectionSymbol) {
-        let conn = table.get(symbol.name);
+        const conn = table.get(symbol.name);
 
         if (!this.isAngleProp(conn)) {
           throw new RefError(
@@ -398,8 +398,8 @@ export class SymbolTableBuilder implements AstVisitor {
    * @param refList RefListProperty
    */
   public visitRefListProp(refList: RefListProperty): void {
-    let valueList = refList.getValues();
-    let valueSymbolList = this.createRefArray(valueList);
+    const valueList = refList.getValues();
+    const valueSymbolList = this.createRefArray(valueList);
 
     const propSymbol = new PropertySymbol(
       {
@@ -445,11 +445,11 @@ export class SymbolTableBuilder implements AstVisitor {
    * @param angleProp AngleProperty
    */
   public visitAngleProp(angleProp: AngleProperty): void {
-    let sourceList = angleProp.getSources();
-    let targetList = angleProp.getTargets();
+    const sourceList = angleProp.getSources();
+    const targetList = angleProp.getTargets();
 
-    let sourceSymList = this.createRefArray(sourceList);
-    let targetSymList = this.createRefArray(targetList);
+    const sourceSymList = this.createRefArray(sourceList);
+    const targetSymList = this.createRefArray(targetList);
 
     const propSymbol = new ConnectionSymbol(
       {
@@ -472,10 +472,10 @@ export class SymbolTableBuilder implements AstVisitor {
    * @returns ReferenceSymbol[]
    */
   private createRefArray(refValueArr: ReferenceValue[]): ReferenceSymbol[] {
-    let valueSymbolList = [];
+    const valueSymbolList = [];
 
     for (const value of refValueArr) {
-      let valueSymbol = this.createReference(value);
+      const valueSymbol = this.createReference(value);
       valueSymbolList.push(valueSymbol);
     }
     return valueSymbolList;
@@ -488,7 +488,7 @@ export class SymbolTableBuilder implements AstVisitor {
    */
   private createReference(refComponent: SymbolReference): ReferenceSymbol {
     let symbolName: string;
-    let path = refComponent.getPath();
+    const path = refComponent.getPath();
 
     if (refComponent instanceof ReferenceGroup) {
       symbolName = refComponent.name;

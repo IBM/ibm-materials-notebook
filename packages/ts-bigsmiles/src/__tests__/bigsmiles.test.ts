@@ -3,14 +3,14 @@ import { logger } from "../logger";
 
 function bigSmilesTestMapper(testcases: string[]) {
   for (const testcase of testcases) {
-    let bigsmiles = new BigSMILES(testcase);
+    const bigsmiles = new BigSMILES(testcase);
     logger.info(`Tree: ${bigsmiles.print()}`);
     expect(bigsmiles.toString()).toEqual(testcase);
   }
 }
 
 function parseBigSmiles(testStr: string) {
-  let bigsmiles = new BigSMILES(testStr);
+  const bigsmiles = new BigSMILES(testStr);
   // logger.info(`Tree: ${bigsmiles.print()}`);
   expect(bigsmiles.toString()).toEqual(testStr);
 }

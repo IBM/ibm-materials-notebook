@@ -130,12 +130,12 @@ export class CanvasWrapper {
     let minX = Number.MAX_VALUE;
     let minY = Number.MAX_VALUE;
 
-    for (var i = 0; i < vertices.length; i++) {
+    for (let i = 0; i < vertices.length; i++) {
       if (!vertices[i].value.isDrawn) {
         continue;
       }
 
-      let p = vertices[i].position;
+      const p = vertices[i].position;
 
       if (maxX < p.x) {
         maxX = p.x;
@@ -152,7 +152,7 @@ export class CanvasWrapper {
     }
 
     // Add padding
-    var padding = this.opts.padding;
+    const padding = this.opts.padding;
     maxX += padding;
     maxY += padding;
     minX -= padding;
@@ -161,10 +161,10 @@ export class CanvasWrapper {
     this.drawingWidth = maxX - minX;
     this.drawingHeight = maxY - minY;
 
-    var scaleX = this.canvas.offsetWidth / this.drawingWidth;
-    var scaleY = this.canvas.offsetHeight / this.drawingHeight;
+    const scaleX = this.canvas.offsetWidth / this.drawingWidth;
+    const scaleY = this.canvas.offsetHeight / this.drawingHeight;
 
-    var scale = scaleX < scaleY ? scaleX : scaleY;
+    const scale = scaleX < scaleY ? scaleX : scaleY;
 
     this.ctx.scale(scale, scale);
 
@@ -223,9 +223,9 @@ export class CanvasWrapper {
     debug = false,
     debugText = ""
   ) {
-    let ctx = this.ctx;
-    let offsetX = this.offsetX;
-    let offsetY = this.offsetY;
+    const ctx = this.ctx;
+    const offsetX = this.offsetX;
+    const offsetY = this.offsetY;
 
     ctx.save();
     ctx.lineWidth = 1.5;
@@ -264,12 +264,12 @@ export class CanvasWrapper {
    * @param {Number} [alpha=1.0] The alpha value of the color.
    */
   drawLine(line: Line, dashed = false, alpha = 1.0) {
-    let ctx = this.ctx;
-    let offsetX = this.offsetX;
-    let offsetY = this.offsetY;
+    const ctx = this.ctx;
+    const offsetX = this.offsetX;
+    const offsetY = this.offsetY;
 
     // Add a shadow behind the line
-    let shortLine = line.clone().shorten(4.0);
+    const shortLine = line.clone().shorten(4.0);
 
     let l = shortLine.getLeftVector().clone();
     let r = shortLine.getRightVector().clone();
@@ -311,7 +311,7 @@ export class CanvasWrapper {
     ctx.lineCap = "round";
     ctx.lineWidth = this.opts.bondThickness;
 
-    let gradient = this.ctx.createLinearGradient(l.x, l.y, r.x, r.y);
+    const gradient = this.ctx.createLinearGradient(l.x, l.y, r.x, r.y);
     gradient.addColorStop(
       0.4,
       this.themeManager.getColor(line.getLeftElement()) ||
@@ -354,12 +354,12 @@ export class CanvasWrapper {
       return;
     }
 
-    let ctx = this.ctx;
-    let offsetX = this.offsetX;
-    let offsetY = this.offsetY;
+    const ctx = this.ctx;
+    const offsetX = this.offsetX;
+    const offsetY = this.offsetY;
 
     // Add a shadow behind the line
-    let shortLine = line.clone().shorten(5.0);
+    const shortLine = line.clone().shorten(5.0);
 
     let l = shortLine.getLeftVector().clone();
     let r = shortLine.getRightVector().clone();
@@ -381,12 +381,12 @@ export class CanvasWrapper {
 
     ctx.save();
 
-    let normals = Vector2.normals(l, r);
+    const normals = Vector2.normals(l, r);
 
     normals[0].normalize();
     normals[1].normalize();
 
-    let isRightChiralCenter = line.getRightChiral();
+    const isRightChiralCenter = line.getRightChiral();
 
     let start = l;
     let end = r;
@@ -396,19 +396,19 @@ export class CanvasWrapper {
       end = l;
     }
 
-    let t = Vector2.add(
+    const t = Vector2.add(
       start,
       Vector2.multiplyScalar(normals[0], this.halfBondThickness)
     );
-    let u = Vector2.add(
+    const u = Vector2.add(
       end,
       Vector2.multiplyScalar(normals[0], 1.5 + this.halfBondThickness)
     );
-    let v = Vector2.add(
+    const v = Vector2.add(
       end,
       Vector2.multiplyScalar(normals[1], 1.5 + this.halfBondThickness)
     );
-    let w = Vector2.add(
+    const w = Vector2.add(
       start,
       Vector2.multiplyScalar(normals[1], this.halfBondThickness)
     );
@@ -419,7 +419,7 @@ export class CanvasWrapper {
     ctx.lineTo(v.x, v.y);
     ctx.lineTo(w.x, w.y);
 
-    let gradient = this.ctx.createRadialGradient(
+    const gradient = this.ctx.createRadialGradient(
       r.x,
       r.y,
       this.opts.bondLength,
@@ -459,12 +459,12 @@ export class CanvasWrapper {
       return;
     }
 
-    let ctx = this.ctx;
-    let offsetX = this.offsetX;
-    let offsetY = this.offsetY;
+    const ctx = this.ctx;
+    const offsetX = this.offsetX;
+    const offsetY = this.offsetY;
 
-    let l = line.getLeftVector().clone();
-    let r = line.getRightVector().clone();
+    const l = line.getLeftVector().clone();
+    const r = line.getRightVector().clone();
 
     l.x += offsetX;
     l.y += offsetY;
@@ -474,19 +474,19 @@ export class CanvasWrapper {
 
     ctx.save();
 
-    let normals = Vector2.normals(l, r);
+    const normals = Vector2.normals(l, r);
 
     normals[0].normalize();
     normals[1].normalize();
 
-    let isRightChiralCenter = line.getRightChiral();
+    const isRightChiralCenter = line.getRightChiral();
 
     let start;
     let end;
     let sStart;
     let sEnd;
 
-    let shortLine = line.clone();
+    const shortLine = line.clone();
 
     if (isRightChiralCenter) {
       start = r;
@@ -511,20 +511,20 @@ export class CanvasWrapper {
     sEnd.x += offsetX;
     sEnd.y += offsetY;
 
-    let dir = Vector2.subtract(end, start).normalize();
+    const dir = Vector2.subtract(end, start).normalize();
     ctx.strokeStyle = this.themeManager.getColor("C");
     ctx.lineCap = "round";
     ctx.lineWidth = this.opts.bondThickness;
     ctx.beginPath();
-    let length = line.getLength();
-    let step = 1.25 / (length / (this.opts.bondThickness * 3.0));
+    const length = line.getLength();
+    const step = 1.25 / (length / (this.opts.bondThickness * 3.0));
 
     let changed = false;
-    for (var t = 0.0; t < 1.0; t += step) {
-      let to = Vector2.multiplyScalar(dir, t * length);
-      let startDash = Vector2.add(start, to);
-      let width = 1.5 * t;
-      let dashOffset = Vector2.multiplyScalar(normals[0], width);
+    for (let t = 0.0; t < 1.0; t += step) {
+      const to = Vector2.multiplyScalar(dir, t * length);
+      const startDash = Vector2.add(start, to);
+      const width = 1.5 * t;
+      const dashOffset = Vector2.multiplyScalar(normals[0], width);
 
       if (!changed && t > 0.5) {
         ctx.stroke();
@@ -553,7 +553,7 @@ export class CanvasWrapper {
    * @param {String} text The debug text.
    */
   drawDebugText(x: number, y: number, text: any) {
-    let ctx = this.ctx;
+    const ctx = this.ctx;
 
     ctx.save();
     ctx.font = "5px Droid Sans, sans-serif";
@@ -572,7 +572,7 @@ export class CanvasWrapper {
    * @param {String} elementName The name of the element (single-letter).
    */
   drawBall(x: number, y: number, elementName: string) {
-    let ctx = this.ctx;
+    const ctx = this.ctx;
 
     ctx.save();
     ctx.beginPath();
@@ -597,9 +597,9 @@ export class CanvasWrapper {
    * @param {String} elementName The name of the element (single-letter).
    */
   drawPoint(x: number, y: number, elementName: string) {
-    let ctx = this.ctx;
-    let offsetX = this.offsetX;
-    let offsetY = this.offsetY;
+    const ctx = this.ctx;
+    const offsetX = this.offsetX;
+    const offsetY = this.offsetY;
 
     ctx.save();
     ctx.globalCompositeOperation = "destination-out";
@@ -652,16 +652,16 @@ export class CanvasWrapper {
     vertexCount: number,
     attachedPseudoElement: Record<string, any> = {}
   ) {
-    let ctx = this.ctx;
-    let offsetX = this.offsetX;
-    let offsetY = this.offsetY;
+    const ctx = this.ctx;
+    const offsetX = this.offsetX;
+    const offsetY = this.offsetY;
 
     ctx.save();
 
     ctx.textAlign = "start";
     ctx.textBaseline = "alphabetic";
 
-    let pseudoElementHandled = false;
+    const pseudoElementHandled = false;
 
     // Charge
     let chargeText = "";
@@ -706,7 +706,7 @@ export class CanvasWrapper {
     ctx.font = this.fontLarge;
     ctx.fillStyle = this.themeManager.getColor("BACKGROUND");
 
-    let dim = ctx.measureText(elementName);
+    const dim = ctx.measureText(elementName);
 
     dim.totalWidth = dim.width + chargeWidth;
     dim.height = parseInt(this.fontLarge, 10);
@@ -827,7 +827,7 @@ export class CanvasWrapper {
       return;
     }
 
-    for (let key in attachedPseudoElement) {
+    for (const key in attachedPseudoElement) {
       if (!attachedPseudoElement.hasOwnProperty(key)) {
         continue;
       }
@@ -835,10 +835,10 @@ export class CanvasWrapper {
       let openParenthesisWidth = 0;
       let closeParenthesisWidth = 0;
 
-      let element = attachedPseudoElement[key].element;
-      let elementCount = attachedPseudoElement[key].count;
-      let hydrogenCount = attachedPseudoElement[key].hydrogenCount;
-      let elementCharge = attachedPseudoElement[key].charge;
+      const element = attachedPseudoElement[key].element;
+      const elementCount = attachedPseudoElement[key].count;
+      const hydrogenCount = attachedPseudoElement[key].hydrogenCount;
+      const elementCharge = attachedPseudoElement[key].charge;
 
       ctx.font = this.fontLarge;
 
@@ -847,7 +847,7 @@ export class CanvasWrapper {
         closeParenthesisWidth = ctx.measureText(")").width;
       }
 
-      let elementWidth = ctx.measureText(element).width;
+      const elementWidth = ctx.measureText(element).width;
       let elementCountWidth = 0;
 
       let elementChargeText = "";
@@ -878,8 +878,8 @@ export class CanvasWrapper {
 
       ctx.font = this.fontLarge;
 
-      let hx = x + offsetX;
-      let hy = y + offsetY + this.opts.halfFontSizeLarge;
+      const hx = x + offsetX;
+      const hy = y + offsetY + this.opts.halfFontSizeLarge;
 
       ctx.fillStyle = this.themeManager.getColor(element);
 
@@ -1035,8 +1035,8 @@ export class CanvasWrapper {
    * @param {Ring} ring A ring.
    */
   drawAromaticityRing(ring: Ring) {
-    let ctx = this.ctx;
-    let radius = MathHelper.apothemFromSideLength(
+    const ctx = this.ctx;
+    const radius = MathHelper.apothemFromSideLength(
       this.opts.bondLength,
       ring.getSize()
     );

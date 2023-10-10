@@ -72,7 +72,7 @@ export class EdgeMultiplier implements PolymerTreeVisitor {
     sourceGroup: string,
     targetGroup: string
   ): void {
-    let total = this.weightor.getAllEdges(sourceGroup, targetGroup);
+    const total = this.weightor.getAllEdges(sourceGroup, targetGroup);
 
     if (
       total > 1 &&
@@ -141,7 +141,7 @@ export class EdgeMultiplier implements PolymerTreeVisitor {
    * @returns void
    */
   private scoreMultiTargetEdges(edge: PolymerEdge): void {
-    let numSources = this.weightor.targetCountMap.get(edge.targetName);
+    const numSources = this.weightor.targetCountMap.get(edge.targetName);
     const graftMultiplier = this.weightor.graftMultipliers.get(
       edge.getSourceGroup()
     );

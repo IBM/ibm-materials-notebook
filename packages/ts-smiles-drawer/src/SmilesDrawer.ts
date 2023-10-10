@@ -1,4 +1,4 @@
-import { Drawer } from "./Drawer";
+// import { Drawer } from "./Drawer";
 import Parser from "./Parser";
 import { ReactionParser } from "./ReactionParser";
 import { SvgDrawer } from "./SvgDrawer";
@@ -38,9 +38,9 @@ export class SmilesDrawer {
     successCallback = null,
     errorCallback = null
   ) {
-    let elements = document.querySelectorAll(`[${attribute}]`);
+    const elements = document.querySelectorAll(`[${attribute}]`);
     elements.forEach((element) => {
-      let smiles: any = element.getAttribute(attribute);
+      const smiles: any = element.getAttribute(attribute);
       let currentTheme: any = theme;
 
       if (element.hasAttribute("data-smiles-theme")) {
@@ -69,7 +69,7 @@ export class SmilesDrawer {
           );
         }
 
-        let smilesDrawer = new SmilesDrawer(moleculeOptions, reactionOptions);
+        const smilesDrawer = new SmilesDrawer(moleculeOptions, reactionOptions);
         smilesDrawer.draw(
           smiles,
           element,
@@ -99,12 +99,12 @@ export class SmilesDrawer {
     // get the settings
     let rest = [];
     [smiles, ...rest] = smiles.split(" ");
-    let info = rest.join(" ");
+    const info = rest.join(" ");
 
     let settings = {};
 
     if (info.includes("__")) {
-      let settingsString = info.substring(
+      const settingsString = info.substring(
         info.indexOf("__") + 2,
         info.lastIndexOf("__")
       );
@@ -112,7 +112,7 @@ export class SmilesDrawer {
       settings = JSON.parse(settingsString.replaceAll("'", '"'));
     }
 
-    let defaultSettings = {
+    const defaultSettings = {
       textAboveArrow: "{reagents}",
       textBelowArrow: "",
     };
@@ -144,23 +144,23 @@ export class SmilesDrawer {
   }
 
   drawMolecule(smiles: string, target: any, theme: any, callback: any) {
-    let parseTree = Parser.parse(smiles);
+    const parseTree = Parser.parse(smiles);
 
     if (target === null || target === "svg") {
-      let svg = this.drawer.draw(parseTree, null, theme);
-      let dims = this.getDimensions(svg);
+      const svg = this.drawer.draw(parseTree, null, theme);
+      const dims = this.getDimensions(svg);
       svg.setAttributeNS(null, "width", "" + dims.w);
       svg.setAttributeNS(null, "height", "" + dims.h);
       if (callback) {
         callback(svg);
       }
     } else if (target === "canvas") {
-      let canvas = this.svgToCanvas(this.drawer.draw(parseTree, null, theme));
+      const canvas = this.svgToCanvas(this.drawer.draw(parseTree, null, theme));
       if (callback) {
         callback(canvas);
       }
     } else if (target === "img") {
-      let img = this.svgToImg(this.drawer.draw(parseTree, null, theme));
+      const img = this.svgToImg(this.drawer.draw(parseTree, null, theme));
       if (callback) {
         callback(img);
       }
@@ -175,9 +175,9 @@ export class SmilesDrawer {
         callback(target);
       }
     } else {
-      let elements = document.querySelectorAll(target);
+      const elements = document.querySelectorAll(target);
       elements.forEach((element) => {
-        let tag = element.nodeName.toLowerCase();
+        const tag = element.nodeName.toLowerCase();
         if (tag === "svg") {
           this.drawer.draw(parseTree, element, theme);
           // let dims = this.getDimensions(element);
@@ -208,18 +208,18 @@ export class SmilesDrawer {
     settings: any,
     callback: any
   ) {
-    let reaction = ReactionParser.parse(smiles);
+    const reaction = ReactionParser.parse(smiles);
 
     if (target === null || target === "svg") {
-      let svg = this.reactionDrawer.draw(reaction, null, theme);
-      let dims = this.getDimensions(svg);
+      const svg = this.reactionDrawer.draw(reaction, null, theme);
+      const dims = this.getDimensions(svg);
       svg.setAttributeNS(null, "width", "" + dims.w);
       svg.setAttributeNS(null, "height", "" + dims.h);
       if (callback) {
         callback(svg);
       }
     } else if (target === "canvas") {
-      let canvas = this.svgToCanvas(
+      const canvas = this.svgToCanvas(
         this.reactionDrawer.draw(
           reaction,
           null,
@@ -232,7 +232,7 @@ export class SmilesDrawer {
         callback(canvas);
       }
     } else if (target === "img") {
-      let img = this.svgToImg(
+      const img = this.svgToImg(
         this.reactionDrawer.draw(
           reaction,
           null,
@@ -270,9 +270,9 @@ export class SmilesDrawer {
         callback(target);
       }
     } else {
-      let elements = document.querySelectorAll(target);
+      const elements = document.querySelectorAll(target);
       elements.forEach((element) => {
-        let tag = element.nodeName.toLowerCase();
+        const tag = element.nodeName.toLowerCase();
         if (tag === "svg") {
           this.reactionDrawer.draw(
             reaction,
@@ -331,7 +331,7 @@ export class SmilesDrawer {
       canvas = document.createElement("canvas");
     }
 
-    let dims = this.getDimensions(canvas, svg);
+    const dims = this.getDimensions(canvas, svg);
 
     SvgWrapper.svgToCanvas(svg, canvas, dims.w, dims.h);
     return canvas;
@@ -342,7 +342,7 @@ export class SmilesDrawer {
       img = document.createElement("img");
     }
 
-    let dims = this.getDimensions(img, svg);
+    const dims = this.getDimensions(img, svg);
 
     SvgWrapper.svgToImg(svg, img, dims.w, dims.h);
     return img;

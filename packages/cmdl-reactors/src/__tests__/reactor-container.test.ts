@@ -102,8 +102,8 @@ describe("Tests for reactor container", () => {
     container.setNodeInput("MonomerTank", inputA);
     container.setNodeInput("CatalystTank", inputB);
 
-    let monomerTank = container.nodeMap.get("MonomerTank");
-    let catalystTank = container.nodeMap.get("CatalystTank");
+    const monomerTank = container.nodeMap.get("MonomerTank");
+    const catalystTank = container.nodeMap.get("CatalystTank");
 
     expect(monomerTank?.input).toBeTruthy();
     expect(catalystTank?.input).toBeTruthy();
@@ -124,7 +124,7 @@ describe("Tests for reactor container", () => {
     container.setNodeInput("CatalystTank", inputB);
 
     container.processReactor();
-    let outputs = container.getOutputs();
+    const outputs = container.getOutputs();
 
     expect(outputs).toBeTruthy();
   });

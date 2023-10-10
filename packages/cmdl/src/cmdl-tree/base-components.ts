@@ -73,8 +73,8 @@ export abstract class Group implements RecordNode {
     const groupProps = typeManager.getGroup(this.name);
 
     if (!groupProps) {
-      let msg = `${this.name} is not a recognized group.`;
-      let err = new InvalidGroupError(msg, this.nameToken);
+      const msg = `${this.name} is not a recognized group.`;
+      const err = new InvalidGroupError(msg, this.nameToken);
       this.errors.push(err);
     } else {
       this.groupProps = groupProps;
@@ -89,7 +89,7 @@ export abstract class Group implements RecordNode {
     injectValidation?: (child: RecordNode) => void
   ): void {
     for (const child of this.children) {
-      let childErrors = child.doValidation();
+      const childErrors = child.doValidation();
       this.errors = this.errors.concat(childErrors);
 
       if (injectValidation) {
@@ -104,8 +104,8 @@ export abstract class Group implements RecordNode {
    * @param id string
    */
   protected createDuplicationErr(child: RecordNode, id?: string): void {
-    let msg = `${child.name} ${id ? id : ""} already exists on ${this.name}`;
-    let err = new DuplicationError(msg, child.nameToken);
+    const msg = `${child.name} ${id ? id : ""} already exists on ${this.name}`;
+    const err = new DuplicationError(msg, child.nameToken);
     this.errors.push(err);
   }
 
@@ -161,8 +161,8 @@ export abstract class Property implements RecordNode {
     const propertyType = typeManager.getProperty(this.name);
 
     if (!propertyType) {
-      let msg = `${this.name} is an unrecognized property`;
-      let err = new InvalidPropertyError(msg, this.nameToken);
+      const msg = `${this.name} is an unrecognized property`;
+      const err = new InvalidPropertyError(msg, this.nameToken);
       this.errors.push(err);
       return;
     }
@@ -176,8 +176,8 @@ export abstract class Property implements RecordNode {
    */
   protected validateProperty(): void {
     if (!this.value) {
-      let msg = `missing value for ${this.name}`;
-      let err = new MissingValueError(msg, this.nameToken);
+      const msg = `missing value for ${this.name}`;
+      const err = new MissingValueError(msg, this.nameToken);
       this.errors.push(err);
       return;
     }

@@ -10,10 +10,10 @@ export class ArrayHelper {
    * @returns {*} A clone of the array or object.
    */
   static clone(arr: any): any {
-    let out = Array.isArray(arr) ? Array() : ({} as Record<string, any>);
+    const out = Array.isArray(arr) ? [] : ({} as Record<string, any>);
 
-    for (let key in arr) {
-      let value = arr[key];
+    for (const key in arr) {
+      const value = arr[key];
 
       if (typeof value.clone === "function") {
         out[key] = value.clone();
@@ -39,10 +39,10 @@ export class ArrayHelper {
       return false;
     }
 
-    let tmpA = arrA.slice().sort();
-    let tmpB = arrB.slice().sort();
+    const tmpA = arrA.slice().sort();
+    const tmpB = arrB.slice().sort();
 
-    for (var i = 0; i < tmpA.length; i++) {
+    for (let i = 0; i < tmpA.length; i++) {
       if (tmpA[i] !== tmpB[i]) {
         return false;
       }
@@ -149,7 +149,7 @@ export class ArrayHelper {
    * @returns {Array} The intersecting vlaues.
    */
   static intersection(arrA: any[], arrB: any[]) {
-    let intersection = new Array();
+    const intersection = [];
 
     for (let i = 0; i < arrA.length; i++) {
       for (let j = 0; j < arrB.length; j++) {
@@ -170,7 +170,7 @@ export class ArrayHelper {
    * @returns {Array} An array of unique elements contained within the array supplied as an argument.
    */
   static unique(arr: any[]) {
-    let contains: Record<any, any> = {};
+    const contains: Record<any, any> = {};
     return arr.filter(function (i) {
       // using !== instead of hasOwnProperty (http://andrew.hedges.name/experiments/in/)
       return contains[i] !== undefined ? false : (contains[i] = true);
@@ -206,7 +206,7 @@ export class ArrayHelper {
    * @returns {Array} The toggled array.
    */
   static toggle(arr: any[], value: any) {
-    let newArr = Array();
+    const newArr = [];
 
     let removed = false;
     for (let i = 0; i < arr.length; i++) {
@@ -238,7 +238,7 @@ export class ArrayHelper {
    * @returns {Array} A new array with the element with a given value removed.
    */
   static remove(arr: any[], value: any) {
-    let tmp = Array();
+    const tmp = [];
 
     for (let i = 0; i < arr.length; i++) {
       if (arr[i] !== value) {
@@ -258,7 +258,7 @@ export class ArrayHelper {
    * @returns {Array} An array with the element with a given value removed.
    */
   static removeUnique(arr: any[], value: any) {
-    let index = arr.indexOf(value);
+    const index = arr.indexOf(value);
 
     if (index > -1) {
       arr.splice(index, 1);
@@ -290,7 +290,7 @@ export class ArrayHelper {
    * @returns {Array} The merged array.
    */
   static merge(arrA: any[], arrB: any[]) {
-    let arr = new Array(arrA.length + arrB.length);
+    const arr = new Array(arrA.length + arrB.length);
 
     for (let i = 0; i < arrA.length; i++) {
       arr[i] = arrA[i];
@@ -333,12 +333,12 @@ export class ArrayHelper {
    * @returns {Object[]} The array sorted by atomic number. Example of an array entry: { atomicNumber: 2, vertexId: 5 }.
    */
   static sortByAtomicNumberDesc(arr: any[]) {
-    let map = arr.map(function (e, i) {
+    const map = arr.map(function (e, i) {
       return { index: i, value: e.atomicNumber.split(".").map(Number) };
     });
 
     map.sort(function (a, b) {
-      let min = Math.min(b.value.length, a.value.length);
+      const min = Math.min(b.value.length, a.value.length);
       let i = 0;
 
       while (i < min && b.value[i] === a.value[i]) {
@@ -362,10 +362,10 @@ export class ArrayHelper {
    * @returns {Array} The copy.
    */
   static deepCopy(arr: any[]) {
-    let newArr = Array();
+    const newArr = [];
 
     for (let i = 0; i < arr.length; i++) {
-      let item = arr[i];
+      const item = arr[i];
 
       if (item instanceof Array) {
         newArr[i] = ArrayHelper.deepCopy(item);

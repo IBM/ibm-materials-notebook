@@ -57,8 +57,8 @@ export class ReactorContainer {
    */
   public addNode(component: TYPES.ReactorNode): ReactorComponent {
     const node = new ReactorComponent(component.name);
-    let target = component?.target;
-    let volume = component?.volume;
+    const target = component?.target;
+    const volume = component?.volume;
 
     node.length = component?.length;
     node.inner_diameter = component?.inner_diameter;
@@ -88,7 +88,7 @@ export class ReactorContainer {
    */
   public linkNodeGraph(): void {
     for (const edge of this.edgeMap.values()) {
-      let sourceNode = this.nodeMap.get(edge.id);
+      const sourceNode = this.nodeMap.get(edge.id);
 
       if (!sourceNode) {
         throw new Error(`reactor node ${edge.id} is missing`);
@@ -105,7 +105,7 @@ export class ReactorContainer {
         }
       }
 
-      let targetNode = this.nodeMap.get(edge.target);
+      const targetNode = this.nodeMap.get(edge.target);
 
       if (!targetNode) {
         throw new Error(`reactor node ${targetNode} is missing`);
@@ -139,7 +139,7 @@ export class ReactorContainer {
     const outputs: ReactorGroupOutput[] = [];
 
     for (const reactor of this.reactorMap.values()) {
-      let reactorOutput = reactor.getOutput();
+      const reactorOutput = reactor.getOutput();
       outputs.push(reactorOutput);
     }
     return outputs;

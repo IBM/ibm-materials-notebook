@@ -364,9 +364,9 @@ export class CstRecordVisitor extends BaseVisitor {
   }
 
   list(ctx: ListCstChildren, parent: ListProperty) {
-    let tokens: CmdlToken[] = [];
+    const tokens: CmdlToken[] = [];
     let token: CmdlToken;
-    let values: string[] = [];
+    const values: string[] = [];
     for (const value of ctx.StringLiteral) {
       token = this.extractToken(value);
       tokens.push(token);

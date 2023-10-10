@@ -53,7 +53,7 @@ export class StrategyVisitor implements PolymerTreeVisitor {
     if (!sourceEdges) {
       this.sourceEdges.set(edge.sourceName, 1);
     } else {
-      let newCount = sourceEdges++;
+      const newCount = sourceEdges++;
       this.sourceEdges.set(edge.sourceName, newCount);
     }
   }

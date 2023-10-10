@@ -26,7 +26,7 @@ export class MathHelper {
     let sin = 0.0;
     let cos = 0.0;
 
-    for (var i = 0; i < arr.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
       sin += Math.sin(arr[i]);
       cos += Math.cos(arr[i]);
     }
@@ -70,7 +70,7 @@ export class MathHelper {
   }
 
   static apothemFromSideLength(s: number, n: number) {
-    let r = MathHelper.polyCircumradius(s, n);
+    const r = MathHelper.polyCircumradius(s, n);
 
     return MathHelper.apothem(r, n);
   }
@@ -114,10 +114,10 @@ export class MathHelper {
    * @returns {Number} The parity of the permutation (1 or -1), where 1 means even and -1 means odd.
    */
   static parityOfPermutation(arr: any) {
-    let visited = new Uint8Array(arr.length);
+    const visited = new Uint8Array(arr.length);
     let evenLengthCycleCount = 0;
 
-    let traverseCycle: any = function (i: any, cycleLength = 0) {
+    const traverseCycle: any = function (i: any, cycleLength = 0) {
       if (visited[i] === 1) {
         return cycleLength;
       }
@@ -128,12 +128,12 @@ export class MathHelper {
       return traverseCycle(arr[i], cycleLength);
     };
 
-    for (var i = 0; i < arr.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
       if (visited[i] === 1) {
         continue;
       }
 
-      let cycleLength = traverseCycle(i);
+      const cycleLength = traverseCycle(i);
       evenLengthCycleCount += 1 - (cycleLength % 2);
     }
 

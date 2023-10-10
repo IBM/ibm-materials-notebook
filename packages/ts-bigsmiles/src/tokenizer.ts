@@ -41,8 +41,8 @@ const _isotope_pattern = new RegExp(/(?<isotope>[\d]{1,3})?/);
 const _element_pattern = new RegExp(_element_pattern_string);
 const _stereo_pattern = new RegExp(/(?<stereo>@{1,2})?/);
 const _hydrogen_pattern = new RegExp(/(?<hcount>H[\d]?)?/);
-const _charge_pattern = new RegExp(/(?<charge>[-|\+]{1,3}[\d]?)?/);
-const atom_pattern_string = `(?:\[)${_isotope_pattern.source}${_element_pattern.source}${_stereo_pattern.source}${_hydrogen_pattern.source}${_charge_pattern.source}(?:\])`;
+const _charge_pattern = new RegExp(/(?<charge>[-|+]{1,3}[\d]?)?/);
+const atom_pattern_string = `(?:[)${_isotope_pattern.source}${_element_pattern.source}${_stereo_pattern.source}${_hydrogen_pattern.source}${_charge_pattern.source}(?:])`;
 const atom_extend_pattern = new RegExp(atom_pattern_string);
 
 const _bond_pattern = new RegExp(/[=|#]/);
@@ -105,17 +105,17 @@ export class Token {
 
 export function tokenize(text: string): Token[] {
   logger.info(`Starting tokenization of ${text}`);
-  let result: any = [];
+  const result: any = [];
   let prior = 0;
 
-  let matches = text.trim().matchAll(token_regex);
+  const matches = text.trim().matchAll(token_regex);
 
   for (const match of matches) {
     if (!match?.groups) {
       throw new BigSMILESError(`Matching groups are undefined!`);
     }
 
-    let groupNames = Object.keys(match.groups).filter((key) =>
+    const groupNames = Object.keys(match.groups).filter((key) =>
       match?.groups ? match.groups[key] : false
     );
 
@@ -124,8 +124,8 @@ export function tokenize(text: string): Token[] {
       logger.warn(`Bad group capture...`, { meta: groupNames });
     }
 
-    let kind = groupNames[0];
-    let value = match.groups[kind];
+    const kind = groupNames[0];
+    const value = match.groups[kind];
 
     if (kind === TokenKind.SKIP) {
       continue;
@@ -143,7 +143,7 @@ export function tokenize(text: string): Token[] {
 
     prior = match.index + value.length;
 
-    let newToken = new Token(kind as TokenKind, value);
+    const newToken = new Token(kind as TokenKind, value);
     result.push(newToken);
   }
 

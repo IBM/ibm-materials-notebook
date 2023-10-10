@@ -14,7 +14,7 @@ function evalutateText(text: string) {
   const globalTable = new SymbolTable("GLOBAL", symbolManager);
   const builder = new SymbolTableBuilder(globalTable, errors, namespace, uri);
 
-  let { parserErrors, recordTree } = compiler.parse(text);
+  const { parserErrors, recordTree } = compiler.parse(text);
   const semanticErrors = recordTree.validate();
   recordTree.createSymbolTable(builder);
   globalTable.validate(errors);
@@ -292,7 +292,7 @@ describe("Tests for parsing cmdl polymer graphs", () => {
           };
       }`;
 
-    const { parserErrors, symbolErrors, semanticErrors, globalTable } =
+    const { parserErrors, symbolErrors, semanticErrors } =
       evalutateText(graphText);
 
     expect(parserErrors.length).toBe(0);

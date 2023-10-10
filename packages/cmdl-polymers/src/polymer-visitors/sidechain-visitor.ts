@@ -30,14 +30,14 @@ export class SideChainVisitor implements PolymerTreeVisitor {
       targetGroup === this.currentScope &&
       this.weightor.isRepeatUnit(edge.targetName)
     ) {
-      let targetDp = this.weightor.getNodeDP(edge.targetName);
+      const targetDp = this.weightor.getNodeDP(edge.targetName);
       this.weightor.setGraftMultipliers(sourceGroup, targetDp, targetGroup);
     } else if (
       targetGroup !== this.currentScope &&
       sourceGroup === this.currentScope &&
       this.weightor.isRepeatUnit(edge.sourceName)
     ) {
-      let sourceDp = this.weightor.getNodeDP(edge.sourceName);
+      const sourceDp = this.weightor.getNodeDP(edge.sourceName);
       this.weightor.setGraftMultipliers(sourceGroup, sourceDp, sourceGroup);
     }
   }

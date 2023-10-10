@@ -101,7 +101,7 @@ export class Reactor implements ReactorNode {
       throw new Error(`reactor ${this.name} has no volume set`);
     }
 
-    let inputs = this.outputNode.getInputs();
+    const inputs = this.outputNode.getInputs();
 
     this.computeTotalFlowRate(inputs);
     this.computeResidenceTime();
@@ -112,11 +112,11 @@ export class Reactor implements ReactorNode {
 
     let newConfigs: TYPES.ChemicalConfig[] = [];
     for (const input of inputs) {
-      let chemMoles = input.getByVolume(this.flowRate, this.volume);
+      const chemMoles = input.getByVolume(this.flowRate, this.volume);
       newConfigs = newConfigs.concat(chemMoles);
     }
 
-    let output = new ReactorChemicals(this.flowRate);
+    const output = new ReactorChemicals(this.flowRate);
     output.setChemicals(newConfigs);
 
     this.reactorOutput = output.computeValues();
@@ -135,7 +135,7 @@ export class Reactor implements ReactorNode {
       );
     }
 
-    let newFlowRate = arr.reduce((acc, curr) => {
+    const newFlowRate = arr.reduce((acc, curr) => {
       return acc.plus(curr.flowRate.value);
     }, Big(0));
 

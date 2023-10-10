@@ -28,13 +28,13 @@ export default class UnitOperator {
       return { ...unitList[0].output(), uncertainty: null };
     }
 
-    let checkUnits = isCompatible(unitList);
+    const checkUnits = isCompatible(unitList);
 
     if (!checkUnits) {
       throw new Error(`Attempting to add incompatible units: ${unitList}`);
     }
 
-    let sumObject: TYPES.BigQty = unitList.reduce(
+    const sumObject: TYPES.BigQty = unitList.reduce(
       (acc, item) => {
         item.scaleTo(scale);
 
@@ -57,9 +57,9 @@ export default class UnitOperator {
     unitA.convertToBaseType();
     unitB.convertToBaseType();
 
-    let scalar = unitA.value.times(unitB.value);
+    const scalar = unitA.value.times(unitB.value);
 
-    let unit = UnitOperator.multiplyUnits([
+    const unit = UnitOperator.multiplyUnits([
       ...unitA.subUnits,
       ...unitB.subUnits,
     ]);
@@ -88,7 +88,7 @@ export default class UnitOperator {
    * @returns string
    */
   static multiplyUnits(subUnitArr: BaseUnit[]): string {
-    let unitMap = subUnitArr.reduce((acc, item) => {
+    const unitMap = subUnitArr.reduce((acc, item) => {
       if (!acc[item.base]) {
         acc[item.base] = item.exponent;
       } else {
@@ -97,14 +97,14 @@ export default class UnitOperator {
       return acc;
     }, {} as Record<string, number>);
 
-    let newUnitString = Object.keys(unitMap)
+    const newUnitString = Object.keys(unitMap)
       .filter((key) => unitMap[key] !== 0)
       .sort((a, b) => unitMap[b] - unitMap[a])
       .reduce((acc, curr) => {
-        let exponent = unitMap[curr];
-        let newUnit =
+        const exponent = unitMap[curr];
+        const newUnit =
           exponent > 1 || exponent < 0 ? `${curr}^${exponent}` : curr;
-        let currString = acc.length ? `${acc}*` : "";
+        const currString = acc.length ? `${acc}*` : "";
         return `${currString}${newUnit}`;
       }, "");
 

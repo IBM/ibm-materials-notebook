@@ -22,7 +22,7 @@ export class Reaction {
     this.reagents = [];
     this.products = [];
 
-    let parts = reactionSmiles.split(">");
+    const parts = reactionSmiles.split(">");
 
     if (parts.length !== 3) {
       throw new Error(
@@ -42,15 +42,15 @@ export class Reaction {
       this.productsSmiles = parts[2].split(".");
     }
 
-    for (var i = 0; i < this.reactantsSmiles.length; i++) {
+    for (let i = 0; i < this.reactantsSmiles.length; i++) {
       this.reactants.push(Parser.parse(this.reactantsSmiles[i]));
     }
 
-    for (var i = 0; i < this.reagentsSmiles.length; i++) {
+    for (let i = 0; i < this.reagentsSmiles.length; i++) {
       this.reagents.push(Parser.parse(this.reagentsSmiles[i]));
     }
 
-    for (var i = 0; i < this.productsSmiles.length; i++) {
+    for (let i = 0; i < this.productsSmiles.length; i++) {
       this.products.push(Parser.parse(this.productsSmiles[i]));
     }
   }

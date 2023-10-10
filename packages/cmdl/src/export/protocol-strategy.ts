@@ -1,12 +1,6 @@
 import { ExportStrategy } from "./base-template";
 import { Model } from "../intepreter";
-import {
-  CharDataModel,
-  PolymerModel,
-  ReactionModel,
-  ResultModel,
-} from "../intepreter/models";
-import { logger } from "../logger";
+import { ReactionModel, ResultModel } from "../intepreter/models";
 
 export class ProtocolProductStrategy implements ExportStrategy {
   protocol?: string;

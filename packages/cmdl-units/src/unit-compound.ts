@@ -52,7 +52,7 @@ export default class Unit {
    * @param unit string
    */
   public parseUnit(unit: string): void {
-    let componentUnits = unit.split("*");
+    const componentUnits = unit.split("*");
     this.subUnits = componentUnits.map((item) => new BaseUnit(item));
     this.numerator = this.subUnits.filter((unit) => unit.exponent > 0);
     this.denominator = this.subUnits.filter((unit) => unit.exponent < 0);
@@ -66,14 +66,14 @@ export default class Unit {
     if (newUnit === this.unit) {
       return;
     }
-    let componentUnits = newUnit.split("*");
+    const componentUnits = newUnit.split("*");
     const newSubUnits = componentUnits.map((item) => new BaseUnit(item));
 
     if (newSubUnits.length === this.subUnits.length) {
-      let newConversionFactors = this.subUnits.map((sub, index) => {
-        let base = newSubUnits[index].base;
-        let prefix = newSubUnits[index].prefix;
-        let exp = newSubUnits[index].exponent;
+      const newConversionFactors = this.subUnits.map((sub, index) => {
+        const base = newSubUnits[index].base;
+        const prefix = newSubUnits[index].prefix;
+        const exp = newSubUnits[index].exponent;
 
         if (base !== sub.base) {
           throw new Error("Invalid unit base conversion");
@@ -97,8 +97,8 @@ export default class Unit {
    * @todo Handle that some units (eg. time) do not have use certain prefixes
    */
   public scaleTo(newPrefix: UnitPrefixes): void {
-    let newConversionFactors = this.subUnits.map((item) => {
-      let newFactor = item.scaleTo(newPrefix);
+    const newConversionFactors = this.subUnits.map((item) => {
+      const newFactor = item.scaleTo(newPrefix);
       return newFactor;
     });
     this.updateUnitValues(newConversionFactors);
@@ -110,12 +110,12 @@ export default class Unit {
    * @TODO add type predicate for isValid
    */
   public scaleToNext(direction: number): void {
-    let newConversionFactors = this.subUnits.map((item) => {
-      let newFactor = item.scaleToNext(direction);
+    const newConversionFactors = this.subUnits.map((item) => {
+      const newFactor = item.scaleToNext(direction);
       return newFactor;
     });
 
-    let isValid = newConversionFactors.every((el) => el);
+    const isValid = newConversionFactors.every((el) => el);
 
     if (isValid) {
       this.updateUnitValues(newConversionFactors as number[]);
@@ -152,8 +152,8 @@ export default class Unit {
    * converts unit to the base type for that unit (e.g mg --> g, mcmol --> mol)
    */
   public convertToBaseType(): void {
-    let newConversionFactors = this.subUnits.map((item) => {
-      let newFactor = item.convertToBaseType();
+    const newConversionFactors = this.subUnits.map((item) => {
+      const newFactor = item.convertToBaseType();
       return newFactor;
     });
     this.updateUnitValues(newConversionFactors);
@@ -180,10 +180,10 @@ export default class Unit {
     if (this.subUnits.length === 1) {
       return this.subUnits[0].unit;
     }
-    let finalUnit = this.subUnits
+    const finalUnit = this.subUnits
       .sort((a, b) => b.exponent - a.exponent)
       .reduce((acc, curr) => {
-        let currString = acc.length ? `${acc}*` : "";
+        const currString = acc.length ? `${acc}*` : "";
         return `${currString}${curr.unit}`;
       }, "");
 
@@ -206,7 +206,7 @@ export default class Unit {
    * @returns Object<{ unit: string; value: Big }>
    */
   public output(): { unit: string; value: Big } {
-    let { unit, value } = this;
+    const { unit, value } = this;
     return { unit, value };
   }
 }

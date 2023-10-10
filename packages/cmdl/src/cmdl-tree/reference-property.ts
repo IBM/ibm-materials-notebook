@@ -47,8 +47,8 @@ export class RefProperty extends Property implements SymbolReference {
    */
   private validateRef(): void {
     if (!this.value || !this.valueToken) {
-      let msg = `${this.name} is missing a value!`;
-      let err = new InvalidPropertyError(msg, this.nameToken);
+      const msg = `${this.name} is missing a value!`;
+      const err = new InvalidPropertyError(msg, this.nameToken);
       this.errors.push(err);
     }
   }

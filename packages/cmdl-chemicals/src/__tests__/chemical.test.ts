@@ -164,7 +164,7 @@ const factory = new ChemicalFactory();
 
 describe("Tests for chemical factory", () => {
   it("creates a solid reagent with a mass value", () => {
-    let solid = factory.create(solidChemicalMass);
+    const solid = factory.create(solidChemicalMass);
     expect(solid).toBeInstanceOf(Solid);
     expect(solid.mass?.value.toNumber()).toBeCloseTo(100);
     expect(solid.mass?.unit).toBe("mg");
@@ -175,7 +175,7 @@ describe("Tests for chemical factory", () => {
   });
 
   it("creates a solid reagent with a moles value", () => {
-    let solid = factory.create(solidChemicalMoles);
+    const solid = factory.create(solidChemicalMoles);
     expect(solid).toBeInstanceOf(Solid);
     expect(solid.mass?.value.toNumber()).toBeCloseTo(12216);
     expect(solid.mass?.unit).toBe("mg");
@@ -186,7 +186,7 @@ describe("Tests for chemical factory", () => {
   });
 
   it("creates a liquid reagent from a mass value", () => {
-    let liquid = factory.create(liquidChemicalMass);
+    const liquid = factory.create(liquidChemicalMass);
     expect(liquid).toBeInstanceOf(Liquid);
     expect(liquid.mass?.value.toNumber()).toBeCloseTo(20);
     expect(liquid.mass?.unit).toBe("kg");
@@ -197,7 +197,7 @@ describe("Tests for chemical factory", () => {
   });
 
   it("creates a liquid reagent from a volume value", () => {
-    let liquid = factory.create(liquidChemicalVol);
+    const liquid = factory.create(liquidChemicalVol);
     expect(liquid).toBeInstanceOf(Liquid);
     expect(liquid.mass?.value.toNumber()).toBeCloseTo(266.28);
     expect(liquid.mass?.unit).toBe("g");
@@ -208,7 +208,7 @@ describe("Tests for chemical factory", () => {
   });
 
   it("creates a liquid reagent from a moles value", () => {
-    let liquid = factory.create(liquidChemicalMoles);
+    const liquid = factory.create(liquidChemicalMoles);
     expect(liquid).toBeInstanceOf(Liquid);
     expect(liquid.mass?.value.toNumber()).toBeCloseTo(721.1);
     expect(liquid.mass?.unit).toBe("g");
@@ -219,7 +219,7 @@ describe("Tests for chemical factory", () => {
   });
 
   it("creates a gaseous reagent", () => {
-    let gas = factory.create(gasChemical);
+    const gas = factory.create(gasChemical);
     expect(gas).toBeInstanceOf(Gas);
     expect(gas.pressure?.value.toNumber()).toBeCloseTo(300);
     expect(gas.pressure?.unit).toBe("atm");
@@ -243,24 +243,24 @@ describe("Tests for chemical factory", () => {
 
 describe("Test computations for chemicals", () => {
   it("calculates the ratio (equivalents)", () => {
-    let chem = factory.create(solidChemicalMass);
+    const chem = factory.create(solidChemicalMass);
     chem.computeRatio(Big("0.00818"));
     expect(chem.ratio).toBeTruthy();
-    let ratio = chem.ratio ? chem.ratio.toNumber() : null;
+    const ratio = chem.ratio ? chem.ratio.toNumber() : null;
     expect(ratio).toBeCloseTo(0.1);
   });
 
   it("calculates the molarity of the chemical", () => {
-    let totalSolventVolume = {
+    const totalSolventVolume = {
       unit: "l",
       value: Big("9.00e-3"),
       uncertainty: null,
     };
-    let chemical = factory.create(solidChemicalMass);
+    const chemical = factory.create(solidChemicalMass);
     chemical.computeConcentration(totalSolventVolume, "molarity");
     expect(chemical.molarity).toBeTruthy();
-    let molarityUnit = chemical.molarity ? chemical.molarity.unit : null;
-    let molarityValue = chemical.molarity
+    const molarityUnit = chemical.molarity ? chemical.molarity.unit : null;
+    const molarityValue = chemical.molarity
       ? chemical.molarity.value.toNumber()
       : null;
     expect(molarityUnit).toBe(UNITS.MOL_L);
@@ -268,16 +268,16 @@ describe("Test computations for chemicals", () => {
   });
 
   it("calculates the molality of the chemical", () => {
-    let totalSolventMass = {
+    const totalSolventMass = {
       unit: "kg",
       value: Big("8.001e-3"),
       uncertainty: null,
     };
-    let chemical = factory.create(solidChemicalMass);
+    const chemical = factory.create(solidChemicalMass);
     chemical.computeConcentration(totalSolventMass, "molality");
     expect(chemical.molality).toBeTruthy();
-    let molalityUnit = chemical.molality ? chemical.molality.unit : null;
-    let molalityValue = chemical.molality
+    const molalityUnit = chemical.molality ? chemical.molality.unit : null;
+    const molalityValue = chemical.molality
       ? chemical.molality.value.toNumber()
       : null;
     expect(molalityUnit).toBe(UNITS.MOL_KG);
@@ -285,16 +285,16 @@ describe("Test computations for chemicals", () => {
   });
 
   it("Calculates the moles per unit volume of the chemical", () => {
-    let totalReactionVolume = {
+    const totalReactionVolume = {
       unit: "l",
       value: Big("9.00e-3"),
       uncertainty: null,
     };
-    let chemical = factory.create(solidChemicalMass);
+    const chemical = factory.create(solidChemicalMass);
     chemical.computeConcentration(totalReactionVolume, "moles_vol");
     expect(chemical.moles_vol).toBeTruthy();
-    let moles_volUnit = chemical.moles_vol ? chemical.moles_vol.unit : null;
-    let moles_volValue = chemical.moles_vol
+    const moles_volUnit = chemical.moles_vol ? chemical.moles_vol.unit : null;
+    const moles_volValue = chemical.moles_vol
       ? chemical.moles_vol.value.toNumber()
       : null;
     expect(moles_volUnit).toBe(UNITS.MOL_L);
@@ -302,21 +302,21 @@ describe("Test computations for chemicals", () => {
   });
 
   it("calculates moles from molarity", () => {
-    let newVolume = { unit: "ml", value: Big("10"), uncertainty: null };
-    let totalSolventVolume = {
+    const newVolume = { unit: "ml", value: Big("10"), uncertainty: null };
+    const totalSolventVolume = {
       unit: "l",
       value: Big("9.00e-3"),
       uncertainty: null,
     };
-    let chemical = factory.create(solidChemicalMass);
+    const chemical = factory.create(solidChemicalMass);
     chemical.computeConcentration(totalSolventVolume, "molarity");
-    let molesOutput = chemical.getMolesByVolume(newVolume);
+    const molesOutput = chemical.getMolesByVolume(newVolume);
     expect(molesOutput.quantity.unit).toBe(UNITS.MMOL);
     expect(molesOutput.quantity.value.toNumber()).toBeCloseTo(0.9095);
   });
 
   it("exports a chemical config", () => {
-    let chemical = factory.create(solidChemicalMass);
+    const chemical = factory.create(solidChemicalMass);
     const outputConfig = chemical.export();
 
     expect(outputConfig.quantity.unit).toBe(UNITS.MMOL);
@@ -324,27 +324,27 @@ describe("Test computations for chemicals", () => {
   });
 
   it("returns the correct values", () => {
-    let totalSolventVolume = {
+    const totalSolventVolume = {
       unit: "l",
       value: Big("9.00e-3"),
       uncertainty: null,
     };
-    let totalSolventMass = {
+    const totalSolventMass = {
       unit: "kg",
       value: Big("8.001e-3"),
       uncertainty: null,
     };
-    let totalReactionVolume = {
+    const totalReactionVolume = {
       unit: "l",
       value: Big("9.00e-3"),
       uncertainty: null,
     };
-    let chem = factory.create(solidChemicalMass);
+    const chem = factory.create(solidChemicalMass);
     chem.computeRatio(Big("0.00818"));
     chem.computeConcentration(totalReactionVolume, "moles_vol");
     chem.computeConcentration(totalSolventMass, "molality");
     chem.computeConcentration(totalSolventVolume, "molarity");
-    let values = chem.getValues();
+    const values = chem.getValues();
     expect(values).toEqual({
       name: "p-methylbenzyl alcohol",
       mass: { value: 100, unit: "mg", uncertainty: null },

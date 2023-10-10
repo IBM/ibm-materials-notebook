@@ -1,5 +1,5 @@
 import { ModelActivationRecord } from "./model-AR";
-import { ModelType, PROPERTIES, TYPES } from "@ibm-materials/cmdl-types";
+import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
 import { BaseModel } from "./base-model";
 import { Model, ChemicalModel, FragmentModel } from "./models";
 
@@ -18,22 +18,22 @@ export class GroupModel extends BaseModel {
   public execute(globalAR: ModelActivationRecord): void {
     if (this.type === ModelType.GROUP) {
       const groupModel = new Model<any>(this.name, this.type);
-      this.copyProperties<any>(groupModel, this.modelAR);
+      this.copyProperties<any>(groupModel);
       globalAR.setValue(this.name, groupModel);
     } else if (this.type === ModelType.CHEMICAL) {
       const chemModel = new ChemicalModel(this.name, this.type);
-      this.copyProperties<TYPES.Chemical>(chemModel, this.modelAR);
+      this.copyProperties<TYPES.Chemical>(chemModel);
       globalAR.setValue(this.name, chemModel);
     } else if (this.type === ModelType.FRAGMENTS) {
       const fragmentModel = new FragmentModel(this.name, this.type);
-      this.copyProperties<any>(fragmentModel, this.modelAR);
+      this.copyProperties<any>(fragmentModel);
       globalAR.setValue(this.name, fragmentModel);
     } else {
       throw new Error(`Invalid group model for ${this.type}`);
     }
   }
 
-  private copyProperties<T>(model: Model<T>, modelAR: ModelActivationRecord) {
+  private copyProperties<T>(model: Model<T>) {
     for (const [name, value] of this.modelAR.all()) {
       model.add(name as keyof T, value as T[keyof T]);
     }

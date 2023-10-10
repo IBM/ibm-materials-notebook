@@ -1,7 +1,6 @@
 import { Config } from "../config";
 import { AstComponent } from "../bigsmiles";
 import { Bond } from "./bond";
-import { logger } from "../logger";
 
 enum AtomChirality {
   none = "",
@@ -71,7 +70,7 @@ export class Atom implements AstComponent {
   }
 
   get ringIndexes(): number[] {
-    let ringIndex: number[] = [];
+    const ringIndex: number[] = [];
 
     for (const bond of this.bonds) {
       if (bond.ring_id) {
@@ -87,11 +86,11 @@ export class Atom implements AstComponent {
     const bracket_regex = new RegExp(/\[|\]/g);
 
     if (bracket_regex.test(symbolText)) {
-      let trimmedSymbol = symbolText.replaceAll(bracket_regex, "");
-      let [isoSymbol, isotope] = this.getIsotope(trimmedSymbol);
-      let [chiralSymbol, chirality] = this.getChirality(isoSymbol);
-      let [hydroSymbol, hydrogens] = this.getHydrogens(chiralSymbol);
-      let [chargeSymbol, charge] = this.getCharge(hydroSymbol);
+      const trimmedSymbol = symbolText.replaceAll(bracket_regex, "");
+      const [isoSymbol, isotope] = this.getIsotope(trimmedSymbol);
+      const [chiralSymbol, chirality] = this.getChirality(isoSymbol);
+      const [hydroSymbol, hydrogens] = this.getHydrogens(chiralSymbol);
+      const [chargeSymbol, charge] = this.getCharge(hydroSymbol);
 
       return [chargeSymbol, chirality, charge, isotope, hydrogens];
     } else {
@@ -101,14 +100,14 @@ export class Atom implements AstComponent {
 
   private getCharge(symbolText: string): [string, number] {
     const chargeRegex = new RegExp(
-      /(?<chargeSymbol>[-|\+]{1,3})(?<chargeNumber>[\d]?)/
+      /(?<chargeSymbol>[-|+]{1,3})(?<chargeNumber>[\d]?)/
     );
     const match = symbolText.match(chargeRegex);
     if (!match || !match?.groups) {
       return [symbolText, 0];
     }
 
-    let newSymbol = symbolText.replace(chargeRegex, "");
+    const newSymbol = symbolText.replace(chargeRegex, "");
     let chargeValue: number;
 
     if (!match.groups?.chargeNumber) {
@@ -117,7 +116,7 @@ export class Atom implements AstComponent {
           ? -1 * match.groups.chargeSymbol.length
           : match.groups.chargeSymbol.length;
     } else {
-      let numberValue = parseInt(match.groups.chargeNumber);
+      const numberValue = parseInt(match.groups.chargeNumber);
       chargeValue =
         match.groups.chargeSymbol[0] === "-" ? -1 * numberValue : numberValue;
     }
@@ -127,7 +126,7 @@ export class Atom implements AstComponent {
 
   private getChirality(symbolText: string): [string, AtomChirality] {
     const chirality_regex = new RegExp(/@{1,2}/);
-    let result = chirality_regex.test(symbolText);
+    const result = chirality_regex.test(symbolText);
 
     if (!result) {
       return [symbolText, AtomChirality.none];

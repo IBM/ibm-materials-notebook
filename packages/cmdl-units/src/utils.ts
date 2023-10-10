@@ -11,8 +11,8 @@ const MIN_EXP_PLACES = -3;
  */
 function minimizeExponent(unit: TYPES.BigQty) {
   if (unit.value.e >= 3 || unit.value.e <= -3) {
-    let direction = unit.value.e > 0 ? 1 : -1;
-    let scaledUnit = new Unit(unit);
+    const direction = unit.value.e > 0 ? 1 : -1;
+    const scaledUnit = new Unit(unit);
     scaledUnit.scaleToNext(direction);
     return scaledUnit.output();
   }
@@ -36,7 +36,7 @@ export function handleRounding(
   let decimalPlaces = 4;
 
   if (adjustExponent) {
-    let updatedUnit = minimizeExponent(unit);
+    const updatedUnit = minimizeExponent(unit);
     return {
       ...updatedUnit,
       value: Big(updatedUnit.value).round(decimalPlaces).toNumber(),

@@ -74,7 +74,7 @@ export abstract class BaseChemical {
    * @returns TYPES.BigQty
    */
   public getProperty(prop: ChemPropKey): TYPES.BigQty {
-    let value = this[prop];
+    const value = this[prop];
 
     if (!value) {
       throw new Error(`Invalid property: ${prop}`);
@@ -185,7 +185,7 @@ export abstract class BaseChemical {
     let newValue: Big;
 
     if (this.moles.unit !== chemical.moles.unit) {
-      let chemicalMoles = new Unit(chemical.moles);
+      const chemicalMoles = new Unit(chemical.moles);
       chemicalMoles.convertTo(this.moles.unit);
       newValue = this.moles.value.plus(chemicalMoles._value);
     } else {
@@ -200,7 +200,7 @@ export abstract class BaseChemical {
    * @returns TYPES.ChemicalOutput
    */
   public getValues(): TYPES.ChemicalOutput {
-    let returnValue = {
+    const returnValue = {
       name: this.name,
       mw: this.mw ? this.mw.toNumber() : null,
       density: this.density ? this.density.toNumber() : null,

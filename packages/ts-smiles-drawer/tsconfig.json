@@ -2,7 +2,7 @@
   "extends": "@ibm-materials/ts-config/base.json",
   "compilerOptions": {
     "rootDir": "src",
-    "lib": ["DOM", "ES2020"]
+    "lib": ["DOM", "ES2021"]
   },
   "include": ["src"]
 }

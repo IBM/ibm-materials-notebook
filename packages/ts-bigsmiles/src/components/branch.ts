@@ -4,7 +4,6 @@ import { StochasticFragment, StochasticObject } from "./stochastic";
 import { BondDescriptorAtom } from "./bond-descriptor";
 import { AstContainer, BigSMILES } from "../bigsmiles";
 import { AstComponent } from "../bigsmiles";
-import { logger } from "../logger";
 
 /**
  * Represents a branch within a SMILES string or StochasticFragment
@@ -39,7 +38,7 @@ export class Branch
 
   print(): string {
     // let branchStr = this.nodes.map((el) => el.print()).join(" ");
-    let text = `Branch ${this.id_}:`;
+    const text = `Branch ${this.id_}:`;
     return text;
   }
 }

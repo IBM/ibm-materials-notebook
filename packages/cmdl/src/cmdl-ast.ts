@@ -111,7 +111,7 @@ export class CmdlAst {
    * @returns CmdlNode | undefined
    */
   public getByOffset(offset: number): CmdlNode | undefined {
-    let queue = [this.root];
+    const queue = [this.root];
     let curr: CmdlNode | null | undefined;
     while (queue.length) {
       curr = queue.shift();
@@ -142,7 +142,7 @@ export class CmdlAst {
    * @returns CmdlNode | undefined
    */
   public findNodeByImage(image: string): CmdlNode | undefined {
-    let queue = [this.root];
+    const queue = [this.root];
     let curr: CmdlNode | null | undefined;
     while (queue.length) {
       curr = queue.shift();
@@ -168,8 +168,8 @@ export class CmdlAst {
    * @returns CmdlNode | undefined
    */
   public findNearestGroup(): CmdlNode | undefined {
-    let stack: CmdlNode[] = [];
-    let queue: CmdlNode[] = [];
+    const stack: CmdlNode[] = [];
+    const queue: CmdlNode[] = [];
     let node: CmdlNode | undefined;
 
     function traverse(current: CmdlNode | null) {

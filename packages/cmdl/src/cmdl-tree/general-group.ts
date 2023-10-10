@@ -25,8 +25,8 @@ export class GeneralGroup extends Group {
     }
 
     if (this.groupProps.type === GroupTypes.NAMED) {
-      let msg = `${this.name} is a named group and is missing an identifier`;
-      let err = new InvalidGroupError(msg, this.nameToken);
+      const msg = `${this.name} is a named group and is missing an identifier`;
+      const err = new InvalidGroupError(msg, this.nameToken);
       this.errors.push(err);
     }
   }

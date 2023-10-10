@@ -53,15 +53,15 @@ export class Vertex {
     this.position = new Vector2(x ? x : 0, y ? y : 0);
     this.previousPosition = new Vector2(0, 0);
     this.parentVertexId = null;
-    this.children = Array();
-    this.spanningTreeChildren = Array();
-    this.edges = Array();
+    this.children = [];
+    this.spanningTreeChildren = [];
+    this.edges = [];
     this.positioned = false;
     this.angle = null;
     this.dir = 1.0;
     this.neighbourCount = 0;
-    this.neighbours = Array();
-    this.neighbouringElements = Array();
+    this.neighbours = [];
+    this.neighbouringElements = [];
     this.forcePositioned = false;
   }
 
@@ -182,7 +182,7 @@ export class Vertex {
    * @returns {Vertex} A clone of this vertex.
    */
   clone() {
-    let clone = new Vertex(this.value, this.position.x, this.position.y);
+    const clone = new Vertex(this.value, this.position.x, this.position.y);
     clone.id = this.id;
     clone.previousPosition = new Vector2(
       this.previousPosition.x,
@@ -238,8 +238,8 @@ export class Vertex {
    * @returns {String} The suggested direction of the text.
    */
   getTextDirection(vertices: Vertex[]) {
-    let neighbours = this.getDrawnNeighbours(vertices);
-    let angles = Array();
+    const neighbours = this.getDrawnNeighbours(vertices);
+    const angles = [];
 
     // If there is only one vertex in the graph, always draw to the right
     if (vertices.length === 1) {
@@ -253,7 +253,7 @@ export class Vertex {
     let textAngle = MathHelper.meanAngle(angles);
 
     // Round to 0, 90, 180 or 270 degree
-    let halfPi = Math.PI / 2.0;
+    const halfPi = Math.PI / 2.0;
     textAngle = Math.round(Math.round(textAngle / halfPi) * halfPi);
 
     if (textAngle === 2) {
@@ -280,7 +280,7 @@ export class Vertex {
       return this.neighbours.slice();
     }
 
-    let arr = Array();
+    const arr = [];
 
     for (let i = 0; i < this.neighbours.length; i++) {
       if (this.neighbours[i] !== vertexId) {
@@ -298,7 +298,7 @@ export class Vertex {
    * @returns {Number[]} An array containing the ids of neighbouring vertices that will be drawn.
    */
   getDrawnNeighbours(vertices: Vertex[]) {
-    let arr = Array();
+    const arr = [];
 
     for (let i = 0; i < this.neighbours.length; i++) {
       if (vertices[this.neighbours[i]].value.isDrawn) {
@@ -325,7 +325,7 @@ export class Vertex {
    * @returns {Number[]} An array containing the ids of the neighbouring vertices.
    */
   getSpanningTreeNeighbours(vertexId: number | null = null) {
-    let neighbours = Array();
+    const neighbours = [];
 
     for (let i = 0; i < this.spanningTreeChildren.length; i++) {
       if (vertexId === undefined || vertexId !== this.spanningTreeChildren[i]) {
@@ -351,7 +351,7 @@ export class Vertex {
    * @returns {Number} The id of the next vertex in the ring.
    */
   getNextInRing(vertices: Vertex[], ringId: number, previousVertexId: number) {
-    let neighbours = this.getNeighbours();
+    const neighbours = this.getNeighbours();
 
     for (let i = 0; i < neighbours.length; i++) {
       if (

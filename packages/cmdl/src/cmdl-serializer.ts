@@ -50,7 +50,7 @@ export class CMDLSerializer {
       let fragments = "";
 
       for (const group of nodeGroups) {
-        let newFragment = this.createFragment(group, rowNumber);
+        const newFragment = this.createFragment(group, rowNumber);
         fragments = `${fragments}\n${newFragment}`;
       }
 
@@ -90,9 +90,9 @@ export class CMDLSerializer {
         })
         .join(", ");
       const baseConnections = groups.baseGroups.map((el) => {
-        let connArr = el.slice(2).map((el) => {
-          let conn = el.split("->");
-          let connStr = this.createConnection(conn, rowNumber);
+        const connArr = el.slice(2).map((el) => {
+          const conn = el.split("->");
+          const connStr = this.createConnection(conn, rowNumber);
           return connStr;
         });
         return connArr;
@@ -109,7 +109,7 @@ export class CMDLSerializer {
       let containers = "";
 
       for (const container of groups.containerGroups) {
-        let containerStr = this.createContainer(container, rowNumber);
+        const containerStr = this.createContainer(container, rowNumber);
         containers = `${containers}\n${containerStr}`;
       }
 
@@ -134,8 +134,8 @@ export class CMDLSerializer {
       const connections = containerGroup
         .slice(2)
         .map((el) => {
-          let conn = el.split("->");
-          let connStr = this.createConnection(conn, rowNumber);
+          const conn = el.split("->");
+          const connStr = this.createConnection(conn, rowNumber);
           return connStr;
         })
         .join("\t\t");
@@ -155,8 +155,8 @@ export class CMDLSerializer {
   private sortGroups(nodeGroups: string[][]) {
     try {
       const connectionRegex = new RegExp(/\[R|Q|Z|X\]/g);
-      let baseGroups = [];
-      let containerGroups = [];
+      const baseGroups = [];
+      const containerGroups = [];
       for (const group of nodeGroups) {
         const nodeSmiles = group[1];
         const matches = nodeSmiles.match(connectionRegex);
@@ -220,22 +220,22 @@ export class CMDLSerializer {
     const smiles = nodeGroup[1];
 
     const connectionPointQ = new RegExp(/\[Q\]/g);
-    let pointQ = connectionPointQ.test(smiles)
+    const pointQ = connectionPointQ.test(smiles)
       ? `\n\tpoint Q {\n\t\tquantity: 1;\n\t};\n`
       : "";
 
     const connectionPointR = new RegExp(/\[R\]/g);
-    let pointR = connectionPointR.test(smiles)
+    const pointR = connectionPointR.test(smiles)
       ? `\n\tpoint R {\n\t\tquantity: 1;\n\t};\n`
       : "";
 
     const connectionPointX = new RegExp(/\[X\]/g);
-    let pointX = connectionPointX.test(smiles)
+    const pointX = connectionPointX.test(smiles)
       ? `\n\tpoint X {\n\t\tquantity: 1;\n\t};\n`
       : "";
 
     const connectionPointZ = new RegExp(/\[Z\]/g);
-    let pointZ = connectionPointZ.test(smiles)
+    const pointZ = connectionPointZ.test(smiles)
       ? `\n\tpoint Z {\n\t\tquantity: 1;\n\t};\n`
       : "";
 

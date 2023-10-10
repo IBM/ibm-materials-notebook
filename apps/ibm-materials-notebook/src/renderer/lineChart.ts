@@ -38,7 +38,7 @@ export default class LineChart extends BaseChart {
 
   set values(lineData: string[][]) {
     this.data = lineData.map((item) => {
-      let updatedItem = [Number(item[0]), Number(item[1])];
+      const updatedItem = [Number(item[0]), Number(item[1])];
       return updatedItem;
     });
   }
@@ -46,8 +46,8 @@ export default class LineChart extends BaseChart {
   private initializeChart() {
     this.xMin = min(this.data, (d) => d[0]);
     this.xMax = max(this.data, (d) => d[0]);
-    let maxValue = this.xMax ? this.xMax : 100;
-    let minValue = this.xMin ? this.xMin : 0;
+    const maxValue = this.xMax ? this.xMax : 100;
+    const minValue = this.xMin ? this.xMin : 0;
 
     this.xScale = scaleLinear()
       .domain([minValue, maxValue])
@@ -55,7 +55,7 @@ export default class LineChart extends BaseChart {
 
     this.yMin = min(this.data, (d) => d[1]);
     this.yMax = max(this.data, (d) => d[1]);
-    let ymaxValue = this.yMax ? this.yMax : 100;
+    const ymaxValue = this.yMax ? this.yMax : 100;
     this.yScale = scaleLinear().domain([0, ymaxValue]).range([this.height, 0]);
   }
 

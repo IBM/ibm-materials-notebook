@@ -3,7 +3,7 @@ import Parser from "./Parser";
 import { ReactionParser } from "./ReactionParser";
 import { SvgDrawer } from "./SvgDrawer";
 import { ReactionDrawer } from "./ReactionDrawer";
-import { SmilesDrawer as SmiDrawer } from "./SmilesDrawer";
+// import { SmilesDrawer as SmiDrawer } from "./SmilesDrawer";
 
 // // Detect SSR (server side rendering)
 // var canUseDOM = !!(
@@ -23,11 +23,11 @@ export function apply(
   themeName = "light",
   onError: any = null
 ) {
-  let smilesDrawer = new Drawer(options);
-  let elements = document.querySelectorAll(selector);
+  const smilesDrawer = new Drawer(options);
+  const elements = document.querySelectorAll(selector);
 
-  for (var i = 0; i < elements.length; i++) {
-    let element = elements[i];
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
 
     parse(
       element.getAttribute("data-smiles") as string,

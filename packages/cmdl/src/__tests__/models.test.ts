@@ -17,7 +17,7 @@ function evalutateText(text: string) {
   const globalTable = new SymbolTable("GLOBAL", symbolManager);
   const builder = new SymbolTableBuilder(globalTable, errors, namespace, uri);
 
-  let { parserErrors, recordTree } = compiler.parse(text);
+  const { parserErrors, recordTree } = compiler.parse(text);
   const semanticErrors = recordTree.validate();
   recordTree.createSymbolTable(builder);
   globalTable.validate(errors);
@@ -219,13 +219,8 @@ describe("Test model evaluation with compiler", () => {
         };
     }`;
 
-    const {
-      parserErrors,
-      symbolErrors,
-      recordTree,
-      semanticErrors,
-      globalTable,
-    } = evalutateText(reactorA);
+    const { parserErrors, symbolErrors, recordTree, semanticErrors } =
+      evalutateText(reactorA);
 
     const testAR = evaluateModel(recordTree);
     const testReactor = testAR.getOptionalValue("FlowTest");
@@ -406,13 +401,8 @@ describe("Test model evaluation with compiler", () => {
           };
       }`;
 
-    const {
-      parserErrors,
-      symbolErrors,
-      recordTree,
-      semanticErrors,
-      globalTable,
-    } = evalutateText(polymerGraph);
+    const { parserErrors, symbolErrors, recordTree, semanticErrors } =
+      evalutateText(polymerGraph);
 
     const testAR = evaluateModel(recordTree);
     const testSample = testAR.getOptionalValue<TYPES.PolymerGraph>("egMeO_pVL");

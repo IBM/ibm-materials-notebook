@@ -39,7 +39,7 @@ export class CmdlCompletions {
     }
     const builder = new vscode.SemanticTokensBuilder();
 
-    let queue = [ast.root];
+    const queue = [ast.root];
     let curr: CMDLAst.CmdlNode | null | undefined;
 
     while (queue.length) {
@@ -132,7 +132,7 @@ export class CmdlCompletions {
     if (!node) {
       return;
     } else if (node.name === AstNodes.PROP_ID && node.image) {
-      let prop = CMDLTypes.typeManager.getProperty(node.image);
+      const prop = CMDLTypes.typeManager.getProperty(node.image);
 
       return {
         node: node,
@@ -140,7 +140,7 @@ export class CmdlCompletions {
         description: prop?.description,
       };
     } else if (node.name === AstNodes.GROUP_ID && node.image) {
-      let group = CMDLTypes.typeManager.getGroup(node.image);
+      const group = CMDLTypes.typeManager.getGroup(node.image);
 
       return {
         node: node,
@@ -148,7 +148,7 @@ export class CmdlCompletions {
         description: group?.description,
       };
     } else if (node.name === AstNodes.UNIT && node.image) {
-      let unit = CMDLTypes.typeManager.getUnit(node.image);
+      const unit = CMDLTypes.typeManager.getUnit(node.image);
 
       return {
         node: node,
@@ -184,7 +184,7 @@ export class CmdlCompletions {
       return this.getCompletionsByImage(word, ast);
     }
 
-    let parentName: string = node.parent.image;
+    const parentName: string = node.parent.image;
 
     if (parentName === word) {
       const groups = CMDLTypes.typeManager.searchGroups(parentName);
@@ -195,13 +195,13 @@ export class CmdlCompletions {
 
       return [...this.createGroupCompletions(groups)];
     } else if (node.parent.name === AstNodes.REF_GROUP) {
-      let refParent = node.parent.parent?.image;
+      const refParent = node.parent.parent?.image;
 
       if (!refParent) {
         return [];
       }
 
-      let parentGroup = CMDLTypes.typeManager.getGroup(refParent);
+      const parentGroup = CMDLTypes.typeManager.getGroup(refParent);
 
       if (!parentGroup) {
         return [];
@@ -213,7 +213,7 @@ export class CmdlCompletions {
 
       return [...this.createPropertyCompletions(refProps)];
     } else {
-      let availableGroup = CMDLTypes.typeManager.getGroup(parentName);
+      const availableGroup = CMDLTypes.typeManager.getGroup(parentName);
 
       if (!availableGroup) {
         return [];
@@ -242,13 +242,13 @@ export class CmdlCompletions {
     }
 
     if (!otherNode.parent.image) {
-      let availableGroups = CMDLTypes.typeManager.searchGroups(
+      const availableGroups = CMDLTypes.typeManager.searchGroups(
         otherNode?.image || ""
       );
       return [...this.createGroupCompletions(availableGroups)];
     }
 
-    let availableGroup = CMDLTypes.typeManager.getGroup(
+    const availableGroup = CMDLTypes.typeManager.getGroup(
       otherNode.parent?.image
     );
 

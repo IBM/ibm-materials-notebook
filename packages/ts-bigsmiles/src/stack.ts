@@ -1,5 +1,3 @@
-import { logger } from "./logger";
-
 export class Stack<T> {
   private _stack: T[] = [];
 

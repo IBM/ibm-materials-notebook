@@ -18,10 +18,10 @@ import { CMDLExporter, ProtocolProductStrategy } from "./export";
 import { DefaultExport } from "./export/default-strategy";
 import { Model } from "./intepreter";
 
-type FileUpdate = {
-  uri: string;
-  fileName: string;
-};
+// type FileUpdate = {
+//   uri: string;
+//   fileName: string;
+// };
 
 interface CompletionItem {
   name: string;
@@ -176,17 +176,17 @@ export class Controller {
     this._documents.delete(uri);
   }
 
-  public renameFile(oldFile: FileUpdate, newFile: FileUpdate) {
-    //find file
-    //rename file
-  }
+  // public renameFile(oldFile: FileUpdate, newFile: FileUpdate) {
+  //   //find file
+  //   //rename file
+  // }
 
   private parseNotebook(
     doc: Notebook,
     symbols: SymbolTable,
     errs: ErrorTable
   ): CMDLCell[] {
-    let parsedCells: CMDLCell[] = [];
+    const parsedCells: CMDLCell[] = [];
 
     for (const cell of doc.cells) {
       const parsedCell = this.parseCell(cell, doc.fileName, symbols, errs);
@@ -310,7 +310,7 @@ export class Controller {
   }
 
   private printRegistered() {
-    let keys: string[] = [];
+    const keys: string[] = [];
     for (const key of this._documents.keys()) {
       keys.push(key);
     }
@@ -318,7 +318,7 @@ export class Controller {
   }
 
   public provideImportCompletions(namespaces: string[], query: string) {
-    let matchingItems: CompletionItem[] = [];
+    const matchingItems: CompletionItem[] = [];
     for (const namespace of namespaces) {
       const symbolTable = this._symbols.getTable(namespace);
       const matchingSymbols = symbolTable.find(query);

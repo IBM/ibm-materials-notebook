@@ -8,7 +8,6 @@ import {
 } from "./bond-descriptor";
 import { AstContainer, BigSMILES } from "../bigsmiles";
 import { AstComponent } from "../bigsmiles";
-import { logger } from "../logger";
 
 /**
  * Represents a stochastic fragment within a BigSMILES string
@@ -42,7 +41,7 @@ export class StochasticFragment
   }
 
   print(): string {
-    let fragmentStr = this.nodes.map((el) => el.print()).join(" ");
+    const fragmentStr = this.nodes.map((el) => el.print()).join(" ");
     return fragmentStr;
   }
 }
@@ -99,7 +98,7 @@ export class StochasticObject
   }
 
   print(): string {
-    let fragmentStr = this.nodes.map((el) => el.print()).join(", ");
+    const fragmentStr = this.nodes.map((el) => el.print()).join(", ");
     const end_group_left = this.end_group_left
       ? this.end_group_left.print()
       : "";

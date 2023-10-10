@@ -26,11 +26,11 @@ export class RingConnection {
     this.secondRingId = secondRing.id;
     this.vertices = new Set<number>();
 
-    for (var m = 0; m < firstRing.members.length; m++) {
-      let c = firstRing.members[m];
+    for (let m = 0; m < firstRing.members.length; m++) {
+      const c = firstRing.members[m];
 
       for (let n = 0; n < secondRing.members.length; n++) {
-        let d = secondRing.members[n];
+        const d = secondRing.members[n];
 
         if (c === d) {
           this.addVertex(c);
@@ -83,7 +83,7 @@ export class RingConnection {
       return true;
     }
 
-    for (let vertexId of this.vertices) {
+    for (const vertexId of this.vertices) {
       if (vertices[vertexId].value.rings.length > 2) {
         return true;
       }
@@ -135,10 +135,10 @@ export class RingConnection {
    * @returns {Number[]} An array of ring ids of neighbouring rings.
    */
   static getNeighbours(ringConnections: RingConnection[], ringId: number) {
-    let neighbours = [];
+    const neighbours = [];
 
     for (let i = 0; i < ringConnections.length; i++) {
-      let ringConnection = ringConnections[i];
+      const ringConnection = ringConnections[i];
 
       if (ringConnection.firstRingId === ringId) {
         neighbours.push(ringConnection.secondRingId);
@@ -165,7 +165,7 @@ export class RingConnection {
     secondRingId: number
   ) {
     for (let i = 0; i < ringConnections.length; i++) {
-      let ringConnection = ringConnections[i];
+      const ringConnection = ringConnections[i];
       if (
         (ringConnection.firstRingId === firstRingId &&
           ringConnection.secondRingId === secondRingId) ||

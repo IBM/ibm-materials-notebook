@@ -73,12 +73,12 @@ export class Bond implements AstComponent {
   }
 
   print(): string {
-    let atom1Txt = this.getAtomText(this.atom1);
+    const atom1Txt = this.getAtomText(this.atom1);
 
     let text = `Bond: {${this.id_}|${atom1Txt}${this.atom1?.id_ || ""}-`;
 
     if (this.atom2) {
-      let atom2Txt = this.getAtomText(this.atom2);
+      const atom2Txt = this.getAtomText(this.atom2);
       text += `>${atom2Txt}${this.atom2.id_}}`;
     }
 

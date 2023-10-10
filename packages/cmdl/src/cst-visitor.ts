@@ -266,7 +266,7 @@ export class CstVisitor extends BaseVisitor {
 
       for (const subId of ctx.Identifier) {
         token = this.extractToken(subId);
-        let subNode = this.createAstNode(
+        const subNode = this.createAstNode(
           AstNodes.REF_ID_PROP,
           currParent,
           token
@@ -278,7 +278,7 @@ export class CstVisitor extends BaseVisitor {
 
   group(ctx: GroupCstChildren, parent: CmdlNode) {
     if (ctx.LCurly && ctx.LCurly.length) {
-      let lCurl = this.extractToken(ctx.LCurly[0]);
+      const lCurl = this.extractToken(ctx.LCurly[0]);
       this.createAstNode(AstNodes.GROUP_LCURL, parent, lCurl);
     }
 
@@ -293,7 +293,7 @@ export class CstVisitor extends BaseVisitor {
     }
 
     if (ctx.RCurly && ctx.RCurly.length) {
-      let rCurl = this.extractToken(ctx.RCurly[0]);
+      const rCurl = this.extractToken(ctx.RCurly[0]);
       this.createAstNode(AstNodes.GROUP_RCURL, parent, rCurl);
     }
   }
@@ -352,7 +352,7 @@ export class CstVisitor extends BaseVisitor {
     const propNode = this.createAstNode(AstNodes.PROP_DEC, parent);
 
     if (ctx.Identifier.length) {
-      let idToken = this.extractToken(ctx.Identifier[0]);
+      const idToken = this.extractToken(ctx.Identifier[0]);
       this.createAstNode(AstNodes.PROP_ID, propNode, idToken);
     }
 
@@ -396,7 +396,7 @@ export class CstVisitor extends BaseVisitor {
 
   list(ctx: ListCstChildren, parent: CmdlNode) {
     if (ctx.LSquare && ctx.LSquare.length) {
-      let lCurl = this.extractToken(ctx.LSquare[0]);
+      const lCurl = this.extractToken(ctx.LSquare[0]);
       this.createAstNode(AstNodes.PROP_LSQUARE, parent, lCurl);
     }
 
@@ -407,14 +407,14 @@ export class CstVisitor extends BaseVisitor {
     }
 
     if (ctx?.RSquare && ctx.RSquare.length) {
-      let lCurl = this.extractToken(ctx.RSquare[0]);
+      const lCurl = this.extractToken(ctx.RSquare[0]);
       this.createAstNode(AstNodes.PROP_RSQUARE, parent, lCurl);
     }
   }
 
   refList(ctx: RefListCstChildren, parent: CmdlNode) {
     if (ctx?.LSquare && ctx.LSquare.length) {
-      let lCurl = this.extractToken(ctx.LSquare[0]);
+      const lCurl = this.extractToken(ctx.LSquare[0]);
       this.createAstNode(AstNodes.PROP_LSQUARE, parent, lCurl);
     }
 
@@ -426,34 +426,34 @@ export class CstVisitor extends BaseVisitor {
     }
 
     if (ctx.RSquare && ctx.RSquare.length) {
-      let lCurl = this.extractToken(ctx.RSquare[0]);
+      const lCurl = this.extractToken(ctx.RSquare[0]);
       this.createAstNode(AstNodes.PROP_RSQUARE, parent, lCurl);
     }
   }
 
   arrowProperty(ctx: ArrowPropertyCstChildren, parent: CmdlNode) {
     if (ctx.RAngle && ctx.RAngle.length) {
-      let lCurl = this.extractToken(ctx.RAngle[0]);
+      const lCurl = this.extractToken(ctx.RAngle[0]);
       this.createAstNode(AstNodes.PROP_LSQUARE, parent, lCurl);
     }
 
     if (ctx.lhs && ctx.lhs.length) {
-      let angleLHS = this.createAstNode(AstNodes.PROP_ANGLE_LHS, parent);
+      const angleLHS = this.createAstNode(AstNodes.PROP_ANGLE_LHS, parent);
       this.visit(ctx.lhs, angleLHS);
     }
 
     if (ctx.Arrow && ctx.Arrow.length) {
-      let arrow = this.extractToken(ctx.Arrow[0]);
+      const arrow = this.extractToken(ctx.Arrow[0]);
       this.createAstNode(AstNodes.PROP_ANGLE_ARROW, parent, arrow);
     }
 
     if (ctx.rhs && ctx.rhs.length) {
-      let angleLHS = this.createAstNode(AstNodes.PROP_ANGLE_RHS, parent);
+      const angleLHS = this.createAstNode(AstNodes.PROP_ANGLE_RHS, parent);
       this.visit(ctx.rhs, angleLHS);
     }
 
     if (ctx.LAngle && ctx.LAngle.length) {
-      let lCurl = this.extractToken(ctx.LAngle[0]);
+      const lCurl = this.extractToken(ctx.LAngle[0]);
       this.createAstNode(AstNodes.PROP_LSQUARE, parent, lCurl);
     }
 
@@ -466,7 +466,7 @@ export class CstVisitor extends BaseVisitor {
   referencePipe(ctx: ReferencePipeCstChildren, parent: CmdlNode) {
     if (ctx?.referenceDeclaration && ctx.referenceDeclaration.length) {
       for (const ref of ctx.referenceDeclaration) {
-        let refValue = this.createAstNode(AstNodes.REF, parent);
+        const refValue = this.createAstNode(AstNodes.REF, parent);
         this.visit(ref, refValue);
       }
     }

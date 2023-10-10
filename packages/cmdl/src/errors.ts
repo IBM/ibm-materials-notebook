@@ -47,8 +47,8 @@ export abstract class BaseError {
     if (!arg) {
       return [0, 1];
     }
-    let start = arg?.startOffset ? arg.startOffset : 0;
-    let stop = arg?.endOffset ? arg?.endOffset + 1 : 1;
+    const start = arg?.startOffset ? arg.startOffset : 0;
+    const stop = arg?.endOffset ? arg?.endOffset + 1 : 1;
     return [start, stop];
   }
 }

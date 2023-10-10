@@ -3,7 +3,6 @@ import { BaseModel } from "./base-model";
 import { FlowRxnModel, ReactorModel, SolutionModel } from "./models";
 import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
 import { ReactorChemicals } from "@ibm-materials/cmdl-reactors";
-import { logger } from "../logger";
 
 export class FlowReaction extends BaseModel {
   constructor(
@@ -54,8 +53,8 @@ export class FlowReaction extends BaseModel {
   }
 
   private extract(arr: (TYPES.SolutionReference | TYPES.ChemicalReference)[]) {
-    let products: TYPES.ChemicalReference[] = [];
-    let solutions: TYPES.SolutionReference[] = [];
+    const products: TYPES.ChemicalReference[] = [];
+    const solutions: TYPES.SolutionReference[] = [];
 
     for (const item of arr) {
       if ("roles" in item) {

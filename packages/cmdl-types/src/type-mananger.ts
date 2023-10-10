@@ -80,17 +80,17 @@ export class TypeManager {
    * @returns RegExp
    */
   public generateUnitRegex() {
-    let unitKeys = [...this.UNITS.keys()];
-    let regexString = unitKeys
+    const unitKeys = [...this.UNITS.keys()];
+    const regexString = unitKeys
       .sort((a, b) => b.length - a.length)
       .reduce((acc, curr) => {
-        let currUnit = this.UNITS.get(curr);
+        const currUnit = this.UNITS.get(curr);
 
         if (!currUnit) {
           return acc;
         }
 
-        let unitRegex = currUnit.regex.source;
+        const unitRegex = currUnit.regex.source;
 
         if (!acc.length) {
           return `${unitRegex}`;
@@ -165,7 +165,7 @@ export class TypeManager {
   }
 
   public getVolToMass(key: string) {
-    let unit = this.volumeQtyUnitMap.get(key);
+    const unit = this.volumeQtyUnitMap.get(key);
     if (unit) {
       return unit;
     } else {
@@ -173,7 +173,7 @@ export class TypeManager {
     }
   }
   public getMolToMass(key: string) {
-    let unit = this.molQtyUnitMap.get(key);
+    const unit = this.molQtyUnitMap.get(key);
     if (unit) {
       return unit;
     } else {

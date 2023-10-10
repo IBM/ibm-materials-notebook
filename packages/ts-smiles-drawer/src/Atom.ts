@@ -1,6 +1,6 @@
 import { ArrayHelper } from "./ArrayHelper";
-import { Vertex } from "./Vertex";
-import { Ring } from "./Ring";
+// import { Vertex } from "./Vertex";
+// import { Ring } from "./Ring";
 
 /**
  * A class representing an atom.
@@ -76,22 +76,22 @@ export class Atom {
   constructor(element: string, bondType = "-") {
     this.element = element.length === 1 ? element.toUpperCase() : element;
     this.drawExplicit = false;
-    this.ringbonds = Array();
-    this.rings = Array();
+    this.ringbonds = [];
+    this.rings = [];
     this.bondType = bondType;
     this.branchBond = null;
     this.isBridge = false;
     this.isBridgeNode = false;
-    this.originalRings = Array();
+    this.originalRings = [];
     this.bridgedRing = null;
-    this.anchoredRings = Array();
+    this.anchoredRings = [];
     this.bracket = null;
     this.plane = 0;
     this.attachedPseudoElements = {};
     this.hasAttachedPseudoElements = false;
     this.isDrawn = true;
     this.isConnectedToRing = false;
-    this.neighbouringElements = Array();
+    this.neighbouringElements = [];
     this.isPartOfAromaticRing = element !== this.element;
     this.bondCount = 0;
     this.chirality = "";
@@ -134,7 +134,7 @@ export class Atom {
       charge = 0;
     }
 
-    let key = hydrogenCount + element + charge;
+    const key = hydrogenCount + element + charge;
 
     if (this.attachedPseudoElements[key]) {
       this.attachedPseudoElements[key].count += 1;
@@ -157,8 +157,8 @@ export class Atom {
    * @returns {Object} The sorted attached pseudo elements.
    */
   getAttachedPseudoElements() {
-    let ordered: Record<string, any> = {};
-    let that = this;
+    const ordered: Record<string, any> = {};
+    const that = this;
 
     Object.keys(this.attachedPseudoElements)
       .sort()
@@ -266,7 +266,7 @@ export class Atom {
     arr.sort();
     this.neighbouringElements.sort();
 
-    for (var i = 0; i < this.neighbouringElements.length; i++) {
+    for (let i = 0; i < this.neighbouringElements.length; i++) {
       if (arr[i] !== this.neighbouringElements[i]) {
         return false;
       }

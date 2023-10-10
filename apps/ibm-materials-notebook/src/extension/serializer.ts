@@ -29,10 +29,10 @@ export class CMDLNotebookSerializer implements vscode.NotebookSerializer {
    * @returns vscode.NotebookCellOutputItem[]
    */
   private convertRawToBytes(raw: RawNotebookCell): vscode.NotebookCellOutput[] {
-    let results: vscode.NotebookCellOutputItem[] = [];
+    const results: vscode.NotebookCellOutputItem[] = [];
 
     for (const output of raw.outputs) {
-      let data = new TextEncoder().encode(
+      const data = new TextEncoder().encode(
         JSON.stringify(output.value, null, 2)
       );
       results.push(new vscode.NotebookCellOutputItem(data, output.mime));
@@ -51,12 +51,12 @@ export class CMDLNotebookSerializer implements vscode.NotebookSerializer {
       return [];
     }
 
-    let results: RawCellOutput[] = [];
+    const results: RawCellOutput[] = [];
 
     for (const output of cell.outputs) {
       for (const item of output.items) {
-        let outputContents = new TextDecoder().decode(item.data);
-        let outputData = JSON.parse(outputContents);
+        const outputContents = new TextDecoder().decode(item.data);
+        const outputData = JSON.parse(outputContents);
         results.push({ mime: item.mime, value: outputData });
       }
     }
@@ -74,7 +74,7 @@ export class CMDLNotebookSerializer implements vscode.NotebookSerializer {
     content: Uint8Array,
     _token: vscode.CancellationToken
   ): Promise<vscode.NotebookData> {
-    let stringContent = new TextDecoder().decode(content);
+    const stringContent = new TextDecoder().decode(content);
 
     let raw: RawNotebookData;
     try {
@@ -84,7 +84,7 @@ export class CMDLNotebookSerializer implements vscode.NotebookSerializer {
     }
 
     const cells = raw.cells.map((item) => {
-      let newCell = new vscode.NotebookCellData(
+      const newCell = new vscode.NotebookCellData(
         item.kind,
         item.value,
         item.language
@@ -115,7 +115,7 @@ export class CMDLNotebookSerializer implements vscode.NotebookSerializer {
     data: vscode.NotebookData,
     _token: vscode.CancellationToken
   ): Promise<Uint8Array> {
-    let cellContents: RawNotebookCell[] = [];
+    const cellContents: RawNotebookCell[] = [];
 
     for (const cell of data.cells) {
       let outputs: vscode.NotebookCellOutput[] = [];

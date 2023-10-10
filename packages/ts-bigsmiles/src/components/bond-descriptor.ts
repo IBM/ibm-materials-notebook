@@ -1,6 +1,5 @@
 import { AstComponent, BaseComponent } from "../bigsmiles";
 import { BigSMILESError } from "../errors";
-import { logger } from "../logger";
 import { StochasticObject } from "./stochastic";
 import { Bond } from "./bond";
 
@@ -13,13 +12,13 @@ export enum BondDescriptorTypes {
 
 function processBondingDescriptorSymbol(symbol: string): [string, number] {
   const bracket_regex = new RegExp(/\[|\]/g);
-  let processedSymbol = symbol.replaceAll(bracket_regex, "");
+  const processedSymbol = symbol.replaceAll(bracket_regex, "");
 
   if (!processedSymbol.length) {
     return [processedSymbol, 0];
   }
 
-  let last = Number(processedSymbol.slice(-1));
+  const last = Number(processedSymbol.slice(-1));
   if (last) {
     return [processedSymbol[0], last];
   }

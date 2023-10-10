@@ -54,7 +54,7 @@ export class SvgDrawer {
         target = document.getElementById(target);
       }
 
-      let preprocessor = this.preprocessor;
+      const preprocessor = this.preprocessor;
 
       preprocessor.initDraw(data, themeName, infoOnly, highlight_atoms);
 
@@ -109,7 +109,7 @@ export class SvgDrawer {
       canvas = target;
     }
 
-    let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
     // 500 as a size is arbritrary, but the canvas is scaled when drawn to the canvas anyway
     svg.setAttributeNS(null, "viewBox", "0 0 " + 500 + " " + 500);
@@ -137,7 +137,7 @@ export class SvgDrawer {
    * @param {Ring} ring A ring.
    */
   drawAromaticityRing(ring: Ring) {
-    let svgWrapper = this.svgWrapper;
+    const svgWrapper = this.svgWrapper;
     svgWrapper.drawRing(ring.center.x, ring.center.y, ring.getSize());
   }
 
@@ -147,7 +147,7 @@ export class SvgDrawer {
    * @param {Boolean} debug A boolean indicating whether or not to draw debug helpers.
    */
   drawEdges(debug: boolean) {
-    let preprocessor = this.preprocessor,
+    const preprocessor = this.preprocessor,
       graph = preprocessor.graph,
       rings = preprocessor.rings,
       drawn = Array(this.preprocessor.graph.edges.length);
@@ -155,9 +155,9 @@ export class SvgDrawer {
     drawn.fill(false);
 
     graph.traverseBF(0, (vertex: any) => {
-      let edges = graph.getEdges(vertex.id);
-      for (var i = 0; i < edges.length; i++) {
-        let edgeId = edges[i];
+      const edges = graph.getEdges(vertex.id);
+      for (let i = 0; i < edges.length; i++) {
+        const edgeId = edges[i];
         if (!drawn[edgeId]) {
           drawn[edgeId] = true;
           this.drawEdge(edgeId, debug);
@@ -167,8 +167,8 @@ export class SvgDrawer {
 
     // Draw ring for implicitly defined aromatic rings
     if (!this.bridgedRing) {
-      for (var i = 0; i < rings.length; i++) {
-        let ring = rings[i];
+      for (let i = 0; i < rings.length; i++) {
+        const ring = rings[i];
 
         //TODO: uses canvas ctx to draw... need to update this to SVG
         if (preprocessor.isRingAromatic(ring)) {
@@ -185,7 +185,7 @@ export class SvgDrawer {
    * @param {Boolean} debug A boolean indicating whether or not to draw debug helpers.
    */
   drawEdge(edgeId: number, debug: boolean) {
-    let preprocessor = this.preprocessor,
+    const preprocessor = this.preprocessor,
       opts = preprocessor.opts,
       svgWrapper = this.svgWrapper,
       edge = preprocessor.graph.edges[edgeId],
@@ -201,7 +201,7 @@ export class SvgDrawer {
       return;
     }
 
-    let a = vertexA.position,
+    const a = vertexA.position,
       b = vertexB.position,
       normals = preprocessor.getEdgeNormals(edge),
       // Create a point on each side of the line
@@ -216,15 +216,18 @@ export class SvgDrawer {
       (edge.isPartOfAromaticRing && preprocessor.bridgedRing)
     ) {
       // Always draw double bonds inside the ring
-      let inRing = preprocessor.areVerticesInSameRing(vertexA, vertexB);
-      let s = preprocessor.chooseSide(vertexA, vertexB, sides);
+      const inRing = preprocessor.areVerticesInSameRing(vertexA, vertexB);
+      const s = preprocessor.chooseSide(vertexA, vertexB, sides);
 
       if (inRing) {
         // Always draw double bonds inside a ring
         // if the bond is shared by two rings, it is drawn in the larger
         // problem: smaller ring is aromatic, bond is still drawn in larger -> fix this
-        let lcr = preprocessor.getLargestOrAromaticCommonRing(vertexA, vertexB);
-        let center = lcr.center;
+        const lcr = preprocessor.getLargestOrAromaticCommonRing(
+          vertexA,
+          vertexB
+        );
+        const center = lcr.center;
 
         normals[0].multiplyScalar(opts.bondSpacing);
         normals[1].multiplyScalar(opts.bondSpacing);
@@ -274,7 +277,7 @@ export class SvgDrawer {
       ) {
         this.multiplyNormals(normals, opts.halfBondSpacing);
 
-        let lineA = new Line(
+        const lineA = new Line(
             Vector2.add(a, normals[0]),
             Vector2.add(b, normals[0]),
             elementA,
@@ -295,7 +298,7 @@ export class SvgDrawer {
       ) {
         this.multiplyNormals(normals, opts.bondSpacing);
 
-        let line = new Line(
+        const line = new Line(
           Vector2.add(a, normals[0]),
           Vector2.add(b, normals[0]),
           elementA,
@@ -312,7 +315,7 @@ export class SvgDrawer {
       ) {
         this.multiplyNormals(normals, opts.bondSpacing);
 
-        let line = new Line(
+        const line = new Line(
           Vector2.add(a, normals[1]),
           Vector2.add(b, normals[1]),
           elementA,
@@ -327,13 +330,13 @@ export class SvgDrawer {
       normals[0].multiplyScalar(opts.bondSpacing / 1.5);
       normals[1].multiplyScalar(opts.bondSpacing / 1.5);
 
-      let lineA = new Line(
+      const lineA = new Line(
         Vector2.add(a, normals[0]),
         Vector2.add(b, normals[0]),
         elementA,
         elementB
       );
-      let lineB = new Line(
+      const lineB = new Line(
         Vector2.add(a, normals[1]),
         Vector2.add(b, normals[1]),
         elementA,
@@ -346,8 +349,8 @@ export class SvgDrawer {
     } else if (edge.bondType === ".") {
       // TODO: Something... maybe... version 2?
     } else {
-      let isChiralCenterA = vertexA.value.isStereoCenter;
-      let isChiralCenterB = vertexB.value.isStereoCenter;
+      const isChiralCenterA = vertexA.value.isStereoCenter;
+      const isChiralCenterB = vertexB.value.isStereoCenter;
 
       if (edge.wedge === "up") {
         svgWrapper.drawWedge(
@@ -365,7 +368,7 @@ export class SvgDrawer {
     }
 
     if (debug) {
-      let midpoint = Vector2.midpoint(a, b);
+      const midpoint = Vector2.midpoint(a, b);
       svgWrapper.drawDebugText(midpoint.x, midpoint.y, "e: " + edgeId);
     }
   }
@@ -376,18 +379,18 @@ export class SvgDrawer {
    * @param {Boolean} debug
    */
   drawAtomHighlights(debug: boolean) {
-    let preprocessor = this.preprocessor;
-    let opts = preprocessor.opts;
-    let graph = preprocessor.graph;
-    let rings = preprocessor.rings;
-    let svgWrapper = this.svgWrapper;
+    const preprocessor = this.preprocessor;
+    const opts = preprocessor.opts;
+    const graph = preprocessor.graph;
+    const rings = preprocessor.rings;
+    const svgWrapper = this.svgWrapper;
 
-    for (var i = 0; i < graph.vertices.length; i++) {
-      let vertex = graph.vertices[i];
-      let atom = vertex.value;
+    for (let i = 0; i < graph.vertices.length; i++) {
+      const vertex = graph.vertices[i];
+      const atom = vertex.value;
 
-      for (var j = 0; j < preprocessor.highlight_atoms.length; j++) {
-        let highlight = preprocessor.highlight_atoms[j];
+      for (let j = 0; j < preprocessor.highlight_atoms.length; j++) {
+        const highlight = preprocessor.highlight_atoms[j];
         if (atom.class === highlight[0]) {
           svgWrapper.drawAtomHighlight(
             vertex.position.x,
@@ -405,29 +408,29 @@ export class SvgDrawer {
    * @param {Boolean} debug A boolean indicating whether or not to draw debug messages to the canvas.
    */
   drawVertices(debug: boolean) {
-    let preprocessor = this.preprocessor,
+    const preprocessor = this.preprocessor,
       opts = preprocessor.opts,
       graph = preprocessor.graph,
       rings = preprocessor.rings,
       svgWrapper = this.svgWrapper;
 
-    var i = graph.vertices.length;
-    for (var i: any = 0; i < graph.vertices.length; i++) {
-      let vertex = graph.vertices[i];
-      let atom = vertex.value;
+    let i = graph.vertices.length;
+    for (let i: any = 0; i < graph.vertices.length; i++) {
+      const vertex = graph.vertices[i];
+      const atom = vertex.value;
       let charge = 0;
       let isotope = 0;
-      let bondCount = vertex.value.bondCount;
-      let element = atom.element;
+      const bondCount = vertex.value.bondCount;
+      const element = atom.element;
       let hydrogens = Atom.maxBonds[element] - bondCount;
       let dir = vertex.getTextDirection(graph.vertices);
-      let isTerminal =
+      const isTerminal =
         opts.terminalCarbons ||
         element !== "C" ||
         atom.hasAttachedPseudoElements
           ? vertex.isTerminal()
           : false;
-      let isCarbon = atom.element === "C";
+      const isCarbon = atom.element === "C";
 
       // This is a HACK to remove all hydrogens from nitrogens in aromatic rings, as this
       // should be the most common state. This has to be fixed by kekulization
@@ -452,7 +455,7 @@ export class SvgDrawer {
         graph.vertices.length === 1
       ) {
         if (opts.atomVisualization === "default") {
-          let attachedPseudoElements = atom.getAttachedPseudoElements();
+          const attachedPseudoElements = atom.getAttachedPseudoElements();
 
           // Draw to the right if the whole molecule is concatenated into one string
           if (
@@ -483,9 +486,9 @@ export class SvgDrawer {
         vertex.forcePositioned === true
       ) {
         // If there is a carbon which bonds are in a straight line, draw a dot
-        let a = graph.vertices[vertex.neighbours[0]].position;
-        let b = graph.vertices[vertex.neighbours[1]].position;
-        let angle = Vector2.threePointangle(vertex.position, a, b);
+        const a = graph.vertices[vertex.neighbours[0]].position;
+        const b = graph.vertices[vertex.neighbours[1]].position;
+        const angle = Vector2.threePointangle(vertex.position, a, b);
 
         if (Math.abs(Math.PI - angle) < 0.1) {
           svgWrapper.drawPoint(vertex.position.x, vertex.position.y, element);
@@ -493,7 +496,8 @@ export class SvgDrawer {
       }
 
       if (debug) {
-        let value = "v: " + vertex.id + " " + ArrayHelper.print(atom.ringbonds);
+        const value =
+          "v: " + vertex.id + " " + ArrayHelper.print(atom.ringbonds);
         svgWrapper.drawDebugText(vertex.position.x, vertex.position.y, value);
       }
       // else {
@@ -503,8 +507,8 @@ export class SvgDrawer {
 
     // Draw the ring centers for debug purposes
     if (opts.debug) {
-      for (var i: any = 0; i < rings.length; i++) {
-        let center = rings[i].center;
+      for (let i: any = 0; i < rings.length; i++) {
+        const center = rings[i].center;
         svgWrapper.drawDebugPoint(center.x, center.y, "r: " + rings[i].id);
       }
     }

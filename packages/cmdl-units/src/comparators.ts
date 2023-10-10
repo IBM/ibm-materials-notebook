@@ -33,7 +33,7 @@ export function diffBaseMap(
 ): boolean {
   let key: string;
   for (key in obj1) {
-    if (!obj2.hasOwnProperty(key)) {
+    if (!(key in obj2)) {
       return false;
     }
     if (obj1[key] !== obj2[key]) {
@@ -56,8 +56,8 @@ export function diffUnits(unit1: Unit, unit2: Unit): boolean {
   ) {
     return false;
   }
-  let subUnitMap1 = mapBases(unit1.subUnits);
-  let subUnitMap2 = mapBases(unit2.subUnits);
+  const subUnitMap1 = mapBases(unit1.subUnits);
+  const subUnitMap2 = mapBases(unit2.subUnits);
 
   if (subUnitMap1 && subUnitMap2) {
     return diffBaseMap(subUnitMap1, subUnitMap2);
@@ -75,16 +75,16 @@ export function compareDiffUnits(
   unitMap: Record<string, Unit[]>,
   keyArr: string[]
 ): boolean {
-  let stdUnit = unitMap[keyArr[0]][0];
-  let otherKeys = keyArr.slice(1);
+  const stdUnit = unitMap[keyArr[0]][0];
+  const otherKeys = keyArr.slice(1);
   while (otherKeys.length) {
-    let currKey = otherKeys.shift();
+    const currKey = otherKeys.shift();
 
     if (!currKey) {
       break;
     }
-    let nextUnit = unitMap[currKey][0];
-    let isCompatible = diffUnits(stdUnit, nextUnit);
+    const nextUnit = unitMap[currKey][0];
+    const isCompatible = diffUnits(stdUnit, nextUnit);
 
     if (!isCompatible) {
       return false;
@@ -107,8 +107,8 @@ export function isCompatible(unitArray: Unit[]): boolean {
     return true;
   }
 
-  let unitMap = unitArray.reduce((acc, curr) => {
-    if (!acc.hasOwnProperty(curr.unit)) {
+  const unitMap = unitArray.reduce((acc, curr) => {
+    if (!(curr.unit in acc)) {
       acc[curr.unit] = [curr];
     } else {
       acc[curr.unit].push(curr);
@@ -116,7 +116,7 @@ export function isCompatible(unitArray: Unit[]): boolean {
     return acc;
   }, {} as Record<string, Unit[]>);
 
-  let uniqueUnits = Object.keys(unitMap);
+  const uniqueUnits = Object.keys(unitMap);
 
   if (uniqueUnits.length > 1) {
     return compareDiffUnits(unitMap, uniqueUnits);

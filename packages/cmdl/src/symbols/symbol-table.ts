@@ -252,7 +252,7 @@ export class SymbolTable {
    * @returns PropertySymbol<any>
    */
   public findVarSymbol(value: string): PropertySymbol<any> | undefined {
-    let queue: SymbolTable[] = [this];
+    const queue: SymbolTable[] = [this];
     let curr: SymbolTable | undefined;
 
     while (queue.length) {
@@ -299,8 +299,8 @@ export class SymbolTable {
    * @returns boolean
    */
   public hasVariables(): boolean {
-    let queue: SymbolTable[] = [this];
-    let variableSymbols: BaseSymbol[] = [];
+    const queue: SymbolTable[] = [this];
+    const variableSymbols: BaseSymbol[] = [];
 
     let curr: SymbolTable | undefined;
 
@@ -334,8 +334,8 @@ export class SymbolTable {
    * @returns BaseSymbol[]
    */
   public exportVariables(): BaseSymbol[] {
-    let queue: SymbolTable[] = [this];
-    let variableSymbols: BaseSymbol[] = [];
+    const queue: SymbolTable[] = [this];
+    const variableSymbols: BaseSymbol[] = [];
 
     let curr: SymbolTable | undefined;
 
@@ -510,9 +510,9 @@ export class SymbolTable {
     globalTable: SymbolTable
   ): RefError | undefined {
     //checks current scope for path item
-    let pathItem = this._symbols.get(path[0]);
-    let nextScope = this.nestedScopes.find((el) => el.scope === path[0]);
-    let newPath = path.slice(1);
+    const pathItem = this._symbols.get(path[0]);
+    const nextScope = this.nestedScopes.find((el) => el.scope === path[0]);
+    const newPath = path.slice(1);
 
     if (pathItem && !newPath.length && !nextScope) {
       return;
@@ -580,7 +580,7 @@ export class SymbolTable {
    * @returns string
    */
   public print(): string {
-    let header = `Scope: ${this.scope}\nEnclosing: ${
+    const header = `Scope: ${this.scope}\nEnclosing: ${
       this.enclosingScope?.scope || null
     }\nNested: ${this.nestedScopes
       .map((el) => el.scope)
@@ -591,7 +591,7 @@ export class SymbolTable {
       table = table + "\n" + `\t${value.print()}`;
     }
 
-    let footer = "\n-------------------\n";
+    const footer = "\n-------------------\n";
 
     let full = `${header}${table}${footer}`;
 

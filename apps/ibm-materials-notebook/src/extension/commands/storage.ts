@@ -17,7 +17,7 @@ export async function addToGlobalStorage() {
     return;
   }
 
-  const libPath = `${repoToLoad[0].fsPath}/lib`;
+  // const libPath = `${repoToLoad[0].fsPath}/lib`;
 
   // await lib.initializeGlobalStorage(libPath);
   vscode.window.showInformationMessage(
@@ -41,7 +41,7 @@ export async function addToWorkspaceStorage() {
     return;
   }
 
-  const libPath = `${repoToLoad[0].fsPath}/lib`;
+  // const libPath = `${repoToLoad[0].fsPath}/lib`;
   // await lib.initializeWorkspaceStorage(libPath);
   vscode.window.showInformationMessage(
     `Successfully added ${repoToLoad[0].fsPath} to global storage`

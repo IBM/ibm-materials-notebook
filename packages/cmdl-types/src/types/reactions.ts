@@ -3,7 +3,7 @@ import { BigQty, Export } from "./quantities";
 import { ModelType } from "../groups/group-types";
 import { ReactionRoles } from "../properties";
 import { BaseModel, Reference, StripType } from "./reference";
-import { ChemicalOutput, ChemicalConfig } from "./chemicals";
+import { ChemicalOutput } from "./chemicals";
 import { ReactorGroupOutput } from "./reactors";
 
 type ComplexComponents = {

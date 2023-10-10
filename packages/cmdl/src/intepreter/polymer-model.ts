@@ -3,7 +3,6 @@ import { BaseModel } from "./base-model";
 import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
 import { PROPERTIES } from "@ibm-materials/cmdl-types";
 import { PolymerModel, PolymerGraphModel } from "./models";
-import { logger } from "../logger";
 
 export class Polymer extends BaseModel {
   constructor(

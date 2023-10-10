@@ -195,7 +195,7 @@ export class Repository {
 
   public formatNotebook(doc: vscode.NotebookDocument) {
     const fileName = this.extractFileName(doc.uri);
-    let cellArr = [];
+    const cellArr = [];
 
     for (const cell of doc.getCells()) {
       if (cell.kind === vscode.NotebookCellKind.Code) {

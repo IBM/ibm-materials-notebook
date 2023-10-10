@@ -88,10 +88,10 @@ export class ReactorComponent implements ReactorNode {
           source.parent instanceof Reactor &&
           source.parent.name !== this.parent?.name //not in same reactor
         ) {
-          let reactorOutput = source.parent.getInputs();
+          const reactorOutput = source.parent.getInputs();
           inputs.push(reactorOutput);
         } else {
-          let sourceOutput = source.getInputs();
+          const sourceOutput = source.getInputs();
           inputs = inputs.concat(sourceOutput);
         }
       }
@@ -110,7 +110,7 @@ export class ReactorComponent implements ReactorNode {
     }
 
     if (vol.unit !== "ml") {
-      let normalVol = new Unit(vol);
+      const normalVol = new Unit(vol);
       normalVol.convertTo("ml");
       return { ...normalVol.output(), uncertainty: null };
     } else {

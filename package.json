@@ -5,6 +5,7 @@
     "watch:ext": "npm run watch -workspace=ibm-materials-notebook",
     "build": "lerna run build",
     "test": "lerna run test",
+    "lint": "lerna run lint",
     "publish-ci": "lerna publish from-package --yes",
     "deploy": "npm run deploy -workspace=ibm-materials-notebook",
     "docs:build": "npm run docs:build -workspace=docs"
@@ -20,8 +21,7 @@
     "apps/*"
   ],
   "devDependencies": {
-    "eslint": "^8.34.0",
-    "eslint-config-custom": "*",
-    "lerna": "^7.1.4"
+    "lerna": "^7.1.4",
+    "eslint": "8.51.0"
   }
 }

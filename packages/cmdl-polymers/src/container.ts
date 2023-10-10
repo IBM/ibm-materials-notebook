@@ -92,7 +92,7 @@ export class PolymerContainer {
   public addGraphValues(values: TYPES.PolymerTreeValue[]) {
     const baseName = this.tree.getBaseName();
     for (const prop of values) {
-      let path = `${baseName}.${prop.path.join(".")}`;
+      const path = `${baseName}.${prop.path.join(".")}`;
 
       if ("degree_poly" in prop) {
         this.graph.setNodeProperty(path, {

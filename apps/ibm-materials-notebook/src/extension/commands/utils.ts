@@ -31,7 +31,7 @@ export async function processRecordExport(
 ): Promise<unknown> {
   const opened = await workspace.openNotebookDocument(docUri);
   await sleep(10);
-  let experiment = repo.find(opened.uri);
+  const experiment = repo.find(opened.uri);
 
   if (!experiment) {
     logger.warn(`unable to find experiment:\n${opened.uri.toString()}`);

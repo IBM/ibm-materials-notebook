@@ -33,10 +33,10 @@ export async function parseGeneratedPolymers() {
   const stream = fs.createReadStream(csvToLoad[0].fsPath);
   const reader = rl.createInterface({ input: stream });
 
-  let data: { structure: string; dispersity: string }[] = [];
+  const data: { structure: string; dispersity: string }[] = [];
 
   reader.on("line", (row) => {
-    let rowData = row.split(",");
+    const rowData = row.split(",");
     const rowObj = { structure: rowData[0], dispersity: rowData[1] };
     data.push(rowObj);
   });
@@ -61,7 +61,7 @@ export async function parseGeneratedPolymers() {
         testArr = data.slice(start, stop);
       }
 
-      let cells: any[] = [];
+      const cells: any[] = [];
 
       for (let i = 0; i < testArr.length; i++) {
         const item = testArr[i];

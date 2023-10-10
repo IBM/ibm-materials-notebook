@@ -5,7 +5,7 @@ describe("Test parser on simple fragment", () => {
   it("parses an import statement", () => {
     const lexingResult = lexerInstance.tokenize(importStatement);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -13,7 +13,7 @@ describe("Test parser on simple fragment", () => {
     const importFileStatment = `import * as nmrFile1 from "./nmrFile1.fid";`;
     const lexingResult = lexerInstance.tokenize(importFileStatment);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -24,7 +24,7 @@ describe("Test parser on simple fragment", () => {
     }`;
     const lexingResult = lexerInstance.tokenize(groupStatement);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
 
     expect(parserInstance.errors.length).toBe(0);
   });
@@ -36,7 +36,7 @@ describe("Test parser on simple fragment", () => {
     }`;
     const lexingResult = lexerInstance.tokenize(groupWithList);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -47,7 +47,7 @@ describe("Test parser on simple fragment", () => {
     }`;
     const lexingResult = lexerInstance.tokenize(refDecGroup);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -58,7 +58,7 @@ describe("Test parser on simple fragment", () => {
     }`;
     const lexingResult = lexerInstance.tokenize(groupWithPropRef);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -76,7 +76,7 @@ describe("Test parser on simple fragment", () => {
 
     const lexingResult = lexerInstance.tokenize(reactionText);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -87,7 +87,7 @@ describe("Test parser on simple fragment", () => {
     }`;
     const lexingResult = lexerInstance.tokenize(refValue);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -98,7 +98,7 @@ describe("Test parser on simple fragment", () => {
     }`;
     const lexingResult = lexerInstance.tokenize(targetsValue);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -111,7 +111,7 @@ describe("Test parser on simple fragment", () => {
 
     const lexingResult = lexerInstance.tokenize(repeatGroup);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -123,7 +123,7 @@ describe("Test parser on simple fragment", () => {
 
     const lexingResult = lexerInstance.tokenize(repeatGroupWithPipe);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -134,7 +134,7 @@ describe("Test parser on simple fragment", () => {
       }`;
     const lexingResult = lexerInstance.tokenize(repeatGroupWithPipeAndQuant);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -148,7 +148,7 @@ describe("Test parser on simple fragment", () => {
 
     const lexingResult = lexerInstance.tokenize(connectionGroup);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -172,7 +172,7 @@ describe("Test parser on simple fragment", () => {
     }`;
     const lexingResult = lexerInstance.tokenize(templateVarText);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -181,7 +181,7 @@ describe("Test parser on simple fragment", () => {
       "protocol Rxn-1 {\n`This is a protocol.\nIt contains 'multi-lines' and [[@references]].`\n}";
     const lexingResult = lexerInstance.tokenize(protocol);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     // console.log(JSON.stringify(cst, null, 2));
     // console.log(JSON.stringify(parserInstance.errors, null, 2));
     expect(parserInstance.errors.length).toBe(0);
@@ -194,7 +194,7 @@ describe("Test parser on simple fragment", () => {
     }`;
     const lexingResult = lexerInstance.tokenize(fragments);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    parserInstance.parseRecord();
     // console.log(JSON.stringify(cst, null, 2));
     // console.log(JSON.stringify(parserInstance.errors, null, 2));
     expect(parserInstance.errors.length).toBe(0);
@@ -206,9 +206,7 @@ describe("Test parser on simple fragment", () => {
     }`;
     const lexingResult = lexerInstance.tokenize(fragments);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
-    console.log(JSON.stringify(cst, null, 2));
-    console.log(JSON.stringify(parserInstance.errors, null, 2));
+    parserInstance.parseRecord();
     expect(parserInstance.errors.length).toBe(0);
   });
 });

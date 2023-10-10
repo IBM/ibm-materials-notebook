@@ -10,28 +10,28 @@ export class SSSR {
    * @returns {Array[]} An array containing arrays, each representing a ring from the smallest set of smallest rings in the group.
    */
   static getRings(graph: Graph, experimental = false) {
-    let adjacencyMatrix = graph.getComponentsAdjacencyMatrix();
+    const adjacencyMatrix = graph.getComponentsAdjacencyMatrix();
     if (adjacencyMatrix.length === 0) {
       return null;
     }
 
-    let connectedComponents = Graph.getConnectedComponents(adjacencyMatrix);
-    let rings = Array();
+    const connectedComponents = Graph.getConnectedComponents(adjacencyMatrix);
+    const rings = [];
 
-    for (var i = 0; i < connectedComponents.length; i++) {
-      let connectedComponent = connectedComponents[i];
-      let ccAdjacencyMatrix = graph.getSubgraphAdjacencyMatrix([
+    for (let i = 0; i < connectedComponents.length; i++) {
+      const connectedComponent = connectedComponents[i];
+      const ccAdjacencyMatrix = graph.getSubgraphAdjacencyMatrix([
         ...connectedComponent,
       ]);
 
-      let arrBondCount = new Uint16Array(ccAdjacencyMatrix.length);
-      let arrRingCount = new Uint16Array(ccAdjacencyMatrix.length);
+      const arrBondCount = new Uint16Array(ccAdjacencyMatrix.length);
+      const arrRingCount = new Uint16Array(ccAdjacencyMatrix.length);
 
-      for (var j = 0; j < ccAdjacencyMatrix.length; j++) {
+      for (let j = 0; j < ccAdjacencyMatrix.length; j++) {
         arrRingCount[j] = 0;
         arrBondCount[j] = 0;
 
-        for (var k = 0; k < ccAdjacencyMatrix[j].length; k++) {
+        for (let k = 0; k < ccAdjacencyMatrix[j].length; k++) {
           arrBondCount[j] += ccAdjacencyMatrix[j][k];
         }
       }
@@ -39,8 +39,8 @@ export class SSSR {
       // Get the edge number and the theoretical number of rings in SSSR
       let nEdges = 0;
 
-      for (var j = 0; j < ccAdjacencyMatrix.length; j++) {
-        for (var k = j + 1; k < ccAdjacencyMatrix.length; k++) {
+      for (let j = 0; j < ccAdjacencyMatrix.length; j++) {
+        for (let k = j + 1; k < ccAdjacencyMatrix.length; k++) {
           nEdges += ccAdjacencyMatrix[j][k];
         }
       }
@@ -53,7 +53,7 @@ export class SSSR {
 
       // If all vertices have 3 incident edges, calculate with different formula (see Euler)
       let allThree = true;
-      for (var j = 0; j < arrBondCount.length; j++) {
+      for (let j = 0; j < arrBondCount.length; j++) {
         if (arrBondCount[j] !== 3) {
           allThree = false;
         }
@@ -73,10 +73,10 @@ export class SSSR {
         nSssr = 999;
       }
 
-      let { d, pe, pe_prime } =
+      const { d, pe, pe_prime } =
         SSSR.getPathIncludedDistanceMatrices(ccAdjacencyMatrix);
-      let c = SSSR.getRingCandidates(d, pe, pe_prime);
-      let sssr = SSSR.getSSSR(
+      const c = SSSR.getRingCandidates(d, pe, pe_prime);
+      const sssr = SSSR.getSSSR(
         c,
         d,
         ccAdjacencyMatrix,
@@ -87,11 +87,11 @@ export class SSSR {
         nSssr
       );
 
-      for (var j = 0; j < sssr.length; j++) {
-        let ring = Array(sssr[j].size);
+      for (let j = 0; j < sssr.length; j++) {
+        const ring = Array(sssr[j].size);
         let index = 0;
 
-        for (let val of sssr[j]) {
+        for (const val of sssr[j]) {
           // Get the original id of the vertex back
           ring[index++] = connectedComponent[val];
         }
@@ -115,8 +115,8 @@ export class SSSR {
   static matrixToString(matrix: any[][]) {
     let str = "";
 
-    for (var i = 0; i < matrix.length; i++) {
-      for (var j = 0; j < matrix[i].length; j++) {
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix[i].length; j++) {
         str += matrix[i][j] + " ";
       }
 
@@ -133,21 +133,21 @@ export class SSSR {
    * @returns {Object} The path-included distance matrices. { p1, p2 }
    */
   static getPathIncludedDistanceMatrices(adjacencyMatrix: any[][]) {
-    let length = adjacencyMatrix.length;
-    let d = Array(length);
-    let pe = Array(length);
-    let pe_prime = Array(length);
-    var l = 0;
-    var m = 0;
-    var n = 0;
+    const length = adjacencyMatrix.length;
+    const d = Array(length);
+    const pe = Array(length);
+    const pe_prime = Array(length);
+    let l = 0;
+    let m = 0;
+    let n = 0;
 
-    var i = length;
+    let i = length;
     while (i--) {
       d[i] = Array(length);
       pe[i] = Array(length);
       pe_prime[i] = Array(length);
 
-      var j = length;
+      let j = length;
       while (j--) {
         d[i][j] =
           i === j || adjacencyMatrix[i][j] === 1
@@ -157,25 +157,25 @@ export class SSSR {
         if (d[i][j] === 1) {
           pe[i][j] = [[[i, j]]];
         } else {
-          pe[i][j] = Array();
+          pe[i][j] = [];
         }
 
-        pe_prime[i][j] = Array();
+        pe_prime[i][j] = [];
       }
     }
 
-    var k = length;
-    var j: number;
+    let k = length;
+    // let j: number;
     while (k--) {
       i = length;
       while (i--) {
-        j = length;
+        let j = length;
         while (j--) {
           const previousPathLength = d[i][j];
           const newPathLength = d[i][k] + d[k][j];
 
           if (previousPathLength > newPathLength) {
-            var l: number, m: number, n: number;
+            // l: number, m: number, n: number;
             if (previousPathLength === newPathLength + 1) {
               pe_prime[i][j] = [pe[i][j].length];
               l = pe[i][j].length;
@@ -194,7 +194,7 @@ export class SSSR {
                 }
               }
             } else {
-              pe_prime[i][j] = Array();
+              pe_prime[i][j] = [];
             }
 
             d[i][j] = newPathLength;
@@ -212,9 +212,9 @@ export class SSSR {
             }
           } else if (previousPathLength === newPathLength) {
             if (pe[i][k].length && pe[k][j].length) {
-              var l: number;
+              // let l: number;
               if (pe[i][j].length) {
-                let tmp = Array();
+                const tmp = [];
 
                 l = pe[i][k][0].length;
                 while (l--) {
@@ -228,7 +228,7 @@ export class SSSR {
 
                 pe[i][j].push(tmp);
               } else {
-                let tmp = Array();
+                const tmp = [];
                 l = pe[i][k][0].length;
                 while (l--) {
                   tmp.push(pe[i][k][0][l]);
@@ -243,9 +243,9 @@ export class SSSR {
               }
             }
           } else if (previousPathLength === newPathLength - 1) {
-            var l: number;
+            // var l: number;
             if (pe_prime[i][j].length) {
-              let tmp = Array();
+              const tmp = [];
 
               l = pe[i][k][0].length;
               while (l--) {
@@ -259,7 +259,7 @@ export class SSSR {
 
               pe_prime[i][j].push(tmp);
             } else {
-              let tmp = Array();
+              const tmp = [];
 
               l = pe[i][k][0].length;
               while (l--) {
@@ -294,8 +294,8 @@ export class SSSR {
    * @returns {Array[]} The ring candidates.
    */
   static getRingCandidates(d: any[][], pe: any[][], pe_prime: any[][]) {
-    let length = d.length;
-    let candidates = Array();
+    const length = d.length;
+    const candidates = [];
     let c = 0;
 
     for (let i = 0; i < length; i++) {
@@ -348,23 +348,23 @@ export class SSSR {
     arrRingCount: Uint16Array,
     nsssr: number
   ) {
-    let cSssr = Array();
-    let allBonds = Array();
+    const cSssr = [];
+    let allBonds: any[] = [];
 
     for (let i = 0; i < c.length; i++) {
       if (c[i][0] % 2 !== 0) {
         for (let j = 0; j < c[i][2].length; j++) {
-          let bonds = c[i][1][0].concat(c[i][2][j]);
+          const bonds = c[i][1][0].concat(c[i][2][j]);
           // Some bonds are added twice, resulting in [[u, v], [u, v]] instead of [u, v].
           // TODO: This is a workaround, fix later. Probably should be a set rather than an array, however the computational overhead
           //       is probably bigger compared to leaving it like this.
-          for (var k = 0; k < bonds.length; k++) {
+          for (let k = 0; k < bonds.length; k++) {
             if (bonds[k][0].constructor === Array) {
               bonds[k] = bonds[k][0];
             }
           }
 
-          let atoms = SSSR.bondsToAtoms(bonds);
+          const atoms = SSSR.bondsToAtoms(bonds);
 
           if (
             SSSR.getBondCount(atoms, adjacencyMatrix) === atoms.size &&
@@ -387,17 +387,17 @@ export class SSSR {
         }
       } else {
         for (let j = 0; j < c[i][1].length - 1; j++) {
-          let bonds = c[i][1][j].concat(c[i][1][j + 1]);
+          const bonds = c[i][1][j].concat(c[i][1][j + 1]);
           // Some bonds are added twice, resulting in [[u, v], [u, v]] instead of [u, v].
           // TODO: This is a workaround, fix later. Probably should be a set rather than an array, however the computational overhead
           //       is probably bigger compared to leaving it like this.
-          for (var k = 0; k < bonds.length; k++) {
+          for (let k = 0; k < bonds.length; k++) {
             if (bonds[k][0].constructor === Array) {
               bonds[k] = bonds[k][0];
             }
           }
 
-          let atoms = SSSR.bondsToAtoms(bonds);
+          const atoms = SSSR.bondsToAtoms(bonds);
 
           if (
             SSSR.getBondCount(atoms, adjacencyMatrix) === atoms.size &&
@@ -432,11 +432,11 @@ export class SSSR {
    */
   static getEdgeCount(adjacencyMatrix: any[][]) {
     let edgeCount = 0;
-    let length = adjacencyMatrix.length;
+    const length = adjacencyMatrix.length;
 
-    var i = length - 1;
+    let i = length - 1;
     while (i--) {
-      var j = length;
+      let j = length;
       while (j--) {
         if (adjacencyMatrix[i][j] === 1) {
           edgeCount++;
@@ -454,12 +454,12 @@ export class SSSR {
    * @returns {Array[]} An edge list. E.g. [ [ 0, 1 ], ..., [ 16, 2 ] ]
    */
   static getEdgeList(adjacencyMatrix: any[][]) {
-    let length = adjacencyMatrix.length;
-    let edgeList = Array();
+    const length = adjacencyMatrix.length;
+    const edgeList = [];
 
-    var i = length - 1;
+    let i = length - 1;
     while (i--) {
-      var j = length;
+      let j = length;
       while (j--) {
         if (adjacencyMatrix[i][j] === 1) {
           edgeList.push([i, j]);
@@ -477,9 +477,9 @@ export class SSSR {
    * @returns {Set<Number>} An array of vertices.
    */
   static bondsToAtoms(bonds: any[]): Set<number> {
-    let atoms = new Set<number>();
+    const atoms = new Set<number>();
 
-    var i = bonds.length;
+    let i = bonds.length;
     while (i--) {
       atoms.add(bonds[i][0]);
       atoms.add(bonds[i][1]);
@@ -496,8 +496,8 @@ export class SSSR {
    */
   static getBondCount(atoms: Set<number>, adjacencyMatrix: any[][]) {
     let count = 0;
-    for (let u of atoms) {
-      for (let v of atoms) {
+    for (const u of atoms) {
+      for (const v of atoms) {
         if (u === v) {
           continue;
         }
@@ -527,7 +527,7 @@ export class SSSR {
     arrBondCount: Uint16Array,
     arrRingCount: Uint16Array
   ) {
-    var i = pathSets.length;
+    let i = pathSets.length;
     while (i--) {
       if (SSSR.isSupersetOf(pathSet, pathSets[i])) {
         return true;
@@ -548,7 +548,7 @@ export class SSSR {
     let allContained = false;
     i = bonds.length;
     while (i--) {
-      var j = allBonds.length;
+      let j = allBonds.length;
       while (j--) {
         if (
           (bonds[i][0] === allBonds[j][0] && bonds[i][1] === allBonds[j][1]) ||
@@ -567,7 +567,7 @@ export class SSSR {
     // check if there's one vertex with ringCount < bondCount
     let specialCase = false;
     if (allContained) {
-      for (let element of pathSet) {
+      for (const element of pathSet) {
         if (arrRingCount[element] < arrBondCount[element]) {
           specialCase = true;
           break;
@@ -580,7 +580,7 @@ export class SSSR {
     }
 
     // Update the ring counts for the vertices
-    for (let element of pathSet) {
+    for (const element of pathSet) {
       arrRingCount[element]++;
     }
 
@@ -599,7 +599,7 @@ export class SSSR {
       return false;
     }
 
-    for (let element of setA) {
+    for (const element of setA) {
       if (!setB.has(element)) {
         return false;
       }
@@ -616,7 +616,7 @@ export class SSSR {
    * @returns {Boolean} A boolean indicating whether or not setB is a superset of setA.
    */
   static isSupersetOf(setA: Set<number>, setB: Set<number>) {
-    for (var element of setB) {
+    for (const element of setB) {
       if (!setA.has(element)) {
         return false;
       }

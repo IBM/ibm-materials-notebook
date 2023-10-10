@@ -60,7 +60,7 @@ function mapBond(
   tokens: Token[],
   token: Token
 ) {
-  let nextToken = tokens.shift();
+  const nextToken = tokens.shift();
 
   if (!nextToken) {
     throw new BigSMILESError(`Bond cannot be at end of BigSMILES string`);
@@ -236,7 +236,7 @@ function tokensToObjects(constructor: BigSMILESConstructor, tokens: Token[]) {
       break;
     }
 
-    let func = map_tokens[token.kind];
+    const func = map_tokens[token.kind];
     func(constructor, tokens, token);
   }
   constructor.finalValidation();

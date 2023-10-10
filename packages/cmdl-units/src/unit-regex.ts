@@ -12,7 +12,7 @@ const unitRegex = Object.keys(units)
 
 const exponentRegex = "(?:\\^)?(?<exponent>[+|-]?\\d$)?";
 
-const boundaryRegex = "\\b|$";
+// const boundaryRegex = "\\b|$";
 
 const unitMatch =
   "(?<prefix>" + prefixRegex + ")?(?<base>" + unitRegex + ")" + exponentRegex;
@@ -27,15 +27,15 @@ interface ParsedUnit {
 }
 
 function parseUnit(unit: string): ParsedUnit {
-  let matches = unit.match(unitMatchRegex);
+  const matches = unit.match(unitMatchRegex);
 
   if (!matches || !matches?.groups?.base) {
     throw new Error(`Invalid unit string: ${unit}`);
   }
 
-  let fixedPrefix =
+  const fixedPrefix =
     matches?.groups?.prefix === undefined ? "base" : matches.groups.prefix;
-  let fixedExponent =
+  const fixedExponent =
     matches?.groups?.exponent !== undefined
       ? parseInt(matches.groups.exponent, 10)
       : 1;
@@ -44,7 +44,7 @@ function parseUnit(unit: string): ParsedUnit {
     throw new Error(`Invalid unit base: ${matches.groups.base}`);
   }
 
-  let type = units[matches.groups.base as UnitBases];
+  const type = units[matches.groups.base as UnitBases];
 
   return {
     prefix: fixedPrefix as UnitPrefixes,

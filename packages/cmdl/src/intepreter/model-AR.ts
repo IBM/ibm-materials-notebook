@@ -21,7 +21,7 @@ export class ModelActivationRecord {
    * @param value T - item to be merged into an array
    */
   public mergeArrayValue<T>(key: string, value: T) {
-    let arrayValues = this.properties.get(key);
+    const arrayValues = this.properties.get(key);
 
     if (Array.isArray(arrayValues)) {
       arrayValues.push(value);
@@ -217,7 +217,7 @@ export class ModelARManager {
    */
   private searchRecords<T>(key: string): NonNullable<T> | undefined {
     for (const record of this.records.values()) {
-      let value = record.getOptionalValue<T>(key);
+      const value = record.getOptionalValue<T>(key);
 
       if (value) {
         return value;
@@ -284,7 +284,7 @@ export class ModelARManager {
    * @returns T[]
    */
   public all<T>(): T[] {
-    let allValues: T[] = [];
+    const allValues: T[] = [];
 
     for (const record of this.records.values()) {
       for (const [key, value] of record.all()) {

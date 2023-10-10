@@ -1,15 +1,15 @@
-import { getChargeText } from "./UtilityFunctions";
+// import { getChargeText } from "./UtilityFunctions";
 import { Line } from "./Line";
 import { Vector2 } from "./Vector2";
 import { MathHelper } from "./MathHelper";
 import { Vertex } from "./Vertex";
 
 function makeid(length: any) {
-  var result = "";
-  var characters =
+  let result = "";
+  const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
@@ -111,14 +111,14 @@ export class SvgWrapper {
 
   constructSvg() {
     // TODO: add the defs element to put gradients in
-    let defs = document.createElementNS("http://www.w3.org/2000/svg", "defs"),
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs"),
       masks = document.createElementNS("http://www.w3.org/2000/svg", "mask"),
       highlights = document.createElementNS("http://www.w3.org/2000/svg", "g"),
       paths = document.createElementNS("http://www.w3.org/2000/svg", "g"),
       vertices = document.createElementNS("http://www.w3.org/2000/svg", "g"),
       pathChildNodes = this.paths;
 
-    let mask = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    const mask = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     mask.setAttributeNS(null, "x", String(this.minX));
     mask.setAttributeNS(null, "y", String(this.minY));
     mask.setAttributeNS(null, "width", String(this.maxX - this.minX));
@@ -130,20 +130,20 @@ export class SvgWrapper {
     // give the mask an id
     masks.setAttributeNS(null, "id", this.uid + "-text-mask");
 
-    for (let path of pathChildNodes) {
+    for (const path of pathChildNodes) {
       paths.appendChild(path);
     }
 
-    for (let highlight of this.highlights) {
+    for (const highlight of this.highlights) {
       highlights.appendChild(highlight);
     }
-    for (let vertex of this.vertices) {
+    for (const vertex of this.vertices) {
       vertices.appendChild(vertex);
     }
-    for (let mask of this.maskElements) {
+    for (const mask of this.maskElements) {
       masks.appendChild(mask);
     }
-    for (let gradient of this.gradients) {
+    for (const gradient of this.gradients) {
       defs.appendChild(gradient);
     }
 
@@ -173,7 +173,7 @@ export class SvgWrapper {
    */
   createGradient(line: Line) {
     // create the gradient and add it
-    let gradient = document.createElementNS(
+    const gradient = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "linearGradient"
       ),
@@ -192,7 +192,7 @@ export class SvgWrapper {
     gradient.setAttributeNS(null, "x2", String(toX));
     gradient.setAttributeNS(null, "y2", String(toY));
 
-    let firstStop = document.createElementNS(
+    const firstStop = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "stop"
     );
@@ -204,7 +204,7 @@ export class SvgWrapper {
     );
     firstStop.setAttributeNS(null, "offset", "20%");
 
-    let secondStop = document.createElementNS(
+    const secondStop = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "stop"
     );
@@ -233,7 +233,10 @@ export class SvgWrapper {
    * @param {String} shift the type of text, either 'sub', or 'super'
    */
   createSubSuperScripts(text: string, shift: string) {
-    let elem = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+    const elem = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "tspan"
+    );
     elem.setAttributeNS(null, "baseline-shift", shift);
     elem.appendChild(document.createTextNode(text));
     elem.setAttributeNS(null, "class", "sub");
@@ -267,12 +270,12 @@ export class SvgWrapper {
    * @param {Vertex[]} vertices An array of vertices containing the vertices associated with the current molecule.
    */
   determineDimensions(vertices: Vertex[]) {
-    for (var i = 0; i < vertices.length; i++) {
+    for (let i = 0; i < vertices.length; i++) {
       if (!vertices[i].value.isDrawn) {
         continue;
       }
 
-      let p = vertices[i].position;
+      const p = vertices[i].position;
 
       if (this.maxX < p.x) {
         this.maxX = p.x;
@@ -289,7 +292,7 @@ export class SvgWrapper {
     }
 
     // Add padding
-    let padding = this.opts.padding;
+    const padding = this.opts.padding;
     this.maxX += padding;
     this.maxY += padding;
     this.minX -= padding;
@@ -307,11 +310,11 @@ export class SvgWrapper {
 
     if (scale <= 0.0) {
       if (width > height) {
-        let diff = width - height;
+        const diff = width - height;
         height = width;
         y -= diff / 2.0;
       } else {
-        let diff = height - width;
+        const diff = height - width;
         width = height;
         x -= diff / 2.0;
       }
@@ -333,7 +336,7 @@ export class SvgWrapper {
    * @param {String} elementName The name of the element (single-letter).
    */
   drawBall(x: number, y: number, elementName: string) {
-    let r = this.opts.bondLength / 4.5;
+    const r = this.opts.bondLength / 4.5;
 
     if (x - r < this.minX) {
       this.minX = x - r;
@@ -351,7 +354,10 @@ export class SvgWrapper {
       this.maxY = y + r;
     }
 
-    let ball = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    const ball = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "circle"
+    );
     ball.setAttributeNS(null, "cx", String(x));
     ball.setAttributeNS(null, "cy", String(y));
     ball.setAttributeNS(null, "r", String(r));
@@ -364,15 +370,15 @@ export class SvgWrapper {
    * @param {Line} line the line object to create the wedge from
    */
   drawWedge(line: Line) {
-    let l = line.getLeftVector().clone(),
+    const l = line.getLeftVector().clone(),
       r = line.getRightVector().clone();
 
-    let normals = Vector2.normals(l, r);
+    const normals = Vector2.normals(l, r);
 
     normals[0].normalize();
     normals[1].normalize();
 
-    let isRightChiralCenter = line.getRightChiral();
+    const isRightChiralCenter = line.getRightChiral();
 
     let start = l,
       end = r;
@@ -382,7 +388,7 @@ export class SvgWrapper {
       end = l;
     }
 
-    let t = Vector2.add(
+    const t = Vector2.add(
         start,
         Vector2.multiplyScalar(normals[0], this.halfBondThickness)
       ),
@@ -399,7 +405,7 @@ export class SvgWrapper {
         Vector2.multiplyScalar(normals[1], this.halfBondThickness)
       );
 
-    let polygon = document.createElementNS(
+    const polygon = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "polygon"
       ),
@@ -421,7 +427,10 @@ export class SvgWrapper {
    *  @param {string} color The color of the highlight, default #03fc9d
    */
   drawAtomHighlight(x: number, y: number, color = "#03fc9d") {
-    let ball = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    const ball = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "circle"
+    );
     ball.setAttributeNS(null, "cx", String(x));
     ball.setAttributeNS(null, "cy", String(y));
     ball.setAttributeNS(null, "r", String(this.opts.bondLength / 3));
@@ -445,7 +454,7 @@ export class SvgWrapper {
       return;
     }
 
-    let l = line.getLeftVector().clone(),
+    const l = line.getLeftVector().clone(),
       r = line.getRightVector().clone(),
       normals = Vector2.normals(l, r);
 
@@ -464,21 +473,21 @@ export class SvgWrapper {
       end = r;
     }
 
-    let dir = Vector2.subtract(end, start).normalize(),
+    const dir = Vector2.subtract(end, start).normalize(),
       length = line.getLength(),
       step = 1.25 / (length / (this.opts.bondLength / 10.0)),
       changed = false;
 
-    let gradient = this.createGradient(line);
+    const gradient = this.createGradient(line);
 
     for (let t = 0.0; t < 1.0; t += step) {
-      let to = Vector2.multiplyScalar(dir, t * length),
+      const to = Vector2.multiplyScalar(dir, t * length),
         startDash = Vector2.add(start, to),
         width = (this.opts.fontSizeLarge / 2.0) * t,
         dashOffset = Vector2.multiplyScalar(normals[0], width);
 
       startDash.subtract(dashOffset);
-      let endDash = startDash.clone();
+      const endDash = startDash.clone();
       endDash.add(Vector2.multiplyScalar(dashOffset, 2.0));
 
       //@ts-ignore
@@ -495,7 +504,7 @@ export class SvgWrapper {
    * @param {String} [color='#f00'] A color in hex form.
    */
   drawDebugPoint(x: number, y: number, debugText = "", color = "#f00") {
-    let point = document.createElementNS(
+    const point = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "circle"
     );
@@ -515,7 +524,7 @@ export class SvgWrapper {
    * @param {String} text The debug text.
    */
   drawDebugText(x: number, y: number, text: string) {
-    let textElem = document.createElementNS(
+    const textElem = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "text"
     );
@@ -543,11 +552,11 @@ export class SvgWrapper {
    * @param {s} s The size of the ring.
    */
   drawRing(x: number, y: number, s: number) {
-    let circleElem = document.createElementNS(
+    const circleElem = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "circle"
     );
-    let radius = MathHelper.apothemFromSideLength(this.opts.bondLength, s);
+    const radius = MathHelper.apothemFromSideLength(this.opts.bondLength, s);
     circleElem.setAttributeNS(null, "cx", String(x));
     circleElem.setAttributeNS(null, "cy", String(y));
     circleElem.setAttributeNS(
@@ -574,7 +583,7 @@ export class SvgWrapper {
     gradient: string | null = null,
     linecap = "round"
   ) {
-    let opts = this.opts,
+    const opts = this.opts,
       stylesArr = [
         ["stroke-width", this.opts.bondThickness],
         ["stroke-linecap", linecap],
@@ -587,7 +596,7 @@ export class SvgWrapper {
       toX = r.x,
       toY = r.y;
 
-    let styles = stylesArr.map((sub) => sub.join(":")).join(";"),
+    const styles = stylesArr.map((sub) => sub.join(":")).join(";"),
       lineElem = document.createElementNS("http://www.w3.org/2000/svg", "line");
 
     lineElem.setAttributeNS(null, "x1", String(fromX));
@@ -612,7 +621,7 @@ export class SvgWrapper {
    * @param {String} elementName The name of the element (single-letter).
    */
   drawPoint(x: number, y: number, elementName: string) {
-    let r = 0.75;
+    const r = 0.75;
 
     if (x - r < this.minX) {
       this.minX = x - r;
@@ -631,7 +640,10 @@ export class SvgWrapper {
     }
 
     // first create a mask
-    let mask = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    const mask = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "circle"
+    );
     mask.setAttributeNS(null, "cx", String(x));
     mask.setAttributeNS(null, "cy", String(y));
     mask.setAttributeNS(null, "r", "1.5");
@@ -639,7 +651,7 @@ export class SvgWrapper {
     this.maskElements.push(mask);
 
     // now create the point
-    let point = document.createElementNS(
+    const point = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "circle"
     );
@@ -679,7 +691,7 @@ export class SvgWrapper {
     totalVertices: number,
     attachedPseudoElement: any = {}
   ) {
-    let text = [];
+    const text = [];
     let display = elementName;
 
     if (charge !== 0 && charge !== null) {
@@ -718,12 +730,12 @@ export class SvgWrapper {
       charge = 0;
     }
 
-    for (let key in attachedPseudoElement) {
+    for (const key in attachedPseudoElement) {
       if (!attachedPseudoElement.hasOwnProperty(key)) {
         continue;
       }
 
-      let pe = attachedPseudoElement[key];
+      const pe = attachedPseudoElement[key];
       let display = pe.element;
 
       if (pe.count > 1) {
@@ -751,7 +763,7 @@ export class SvgWrapper {
 
   write(text: any, direction: any, x: number, y: number, singleVertex: any) {
     // Measure element name only, without charge or isotope ...
-    let bbox = SvgWrapper.measureText(
+    const bbox = SvgWrapper.measureText(
       text[0][1],
       this.opts.fontSizeLarge,
       this.opts.fontFamily
@@ -815,16 +827,16 @@ export class SvgWrapper {
       }
     }
 
-    let cx = x;
-    let cy = y;
+    const cx = x;
+    const cy = y;
 
     // Draw the text
-    let textElem = document.createElementNS(
+    const textElem = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "text"
     );
     textElem.setAttributeNS(null, "class", "element");
-    let g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
     textElem.setAttributeNS(null, "fill", "#ffffff");
 
@@ -843,7 +855,7 @@ export class SvgWrapper {
     text.forEach((part: any, i: number) => {
       const display = part[0];
       const elementName = part[1];
-      let tspanElem = document.createElementNS(
+      const tspanElem = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "tspan"
       );
@@ -892,7 +904,10 @@ export class SvgWrapper {
       maskRadius = this.opts.fontSizeLarge * 1.1;
     }
 
-    let mask = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    const mask = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "circle"
+    );
     mask.setAttributeNS(null, "cx", String(cx));
     mask.setAttributeNS(null, "cy", String(cy));
     mask.setAttributeNS(null, "r", String(maskRadius));
@@ -912,7 +927,7 @@ export class SvgWrapper {
       canvas = document.getElementById(canvas);
     }
 
-    let image = new Image();
+    const image = new Image();
 
     image.onload = function () {
       canvas.width = width;
@@ -954,7 +969,7 @@ export class SvgWrapper {
   }
 
   static replaceNumbersWithSubscript(text: any) {
-    let subscriptNumbers = {
+    const subscriptNumbers = {
       0: "₀",
       1: "₁",
       2: "₂",
@@ -983,9 +998,9 @@ export class SvgWrapper {
     const element = document.createElement("canvas");
     const ctx: any = element.getContext("2d");
     ctx.font = `${fontSize}pt ${fontFamily}`;
-    let textMetrics = ctx.measureText(text);
+    const textMetrics = ctx.measureText(text);
 
-    let compWidth =
+    const compWidth =
       Math.abs(textMetrics.actualBoundingBoxLeft) +
       Math.abs(textMetrics.actualBoundingBoxRight);
     return {
@@ -1017,12 +1032,12 @@ export class SvgWrapper {
     svg.setAttributeNS(null, "width", width);
     svg.setAttributeNS(null, "height", height);
 
-    let image = new Image();
+    const image = new Image();
     image.onload = function () {
       canvas.width = width;
       canvas.height = height;
 
-      let context = canvas.getContext("2d");
+      const context = canvas.getContext("2d");
       context.imageSmoothingEnabled = false;
       context.drawImage(image, 0, 0, width, height);
 
@@ -1049,7 +1064,7 @@ export class SvgWrapper {
    * @param {Number} height
    */
   static svgToImg(svg: any, img: any, width: number, height: number) {
-    let canvas = document.createElement("canvas");
+    const canvas = document.createElement("canvas");
     this.svgToCanvas(svg, canvas, width, height, (result: any) => {
       img.src = canvas.toDataURL("image/png");
     });
@@ -1069,8 +1084,11 @@ export class SvgWrapper {
     fontFamily: string,
     maxWidth = Number.MAX_SAFE_INTEGER
   ) {
-    let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    let style = document.createElementNS("http://www.w3.org/2000/svg", "style");
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const style = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "style"
+    );
     style.appendChild(
       document.createTextNode(`
         .text {
@@ -1081,7 +1099,7 @@ export class SvgWrapper {
     );
     svg.appendChild(style);
 
-    let textElem = document.createElementNS(
+    const textElem = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "text"
     );
@@ -1090,18 +1108,18 @@ export class SvgWrapper {
     let maxLineWidth = 0.0;
     let totalHeight = 0.0;
 
-    let lines: any[] = [];
+    const lines: any[] = [];
 
     text.split("\n").forEach((line) => {
-      let dims = SvgWrapper.measureText(line, fontSize, fontFamily, 1.0);
+      const dims = SvgWrapper.measureText(line, fontSize, fontFamily, 1.0);
       if (dims.width >= maxWidth) {
         let totalWordsWidth = 0.0;
         let maxWordsHeight = 0.0;
-        let words = line.split(" ");
+        const words = line.split(" ");
         let offset = 0;
 
         for (let i = 0; i < words.length; i++) {
-          let wordDims = SvgWrapper.measureText(
+          const wordDims = SvgWrapper.measureText(
             words[i],
             fontSize,
             fontFamily,
@@ -1145,7 +1163,7 @@ export class SvgWrapper {
 
     lines.forEach((line, i) => {
       totalHeight += line.height;
-      let tspanElem = document.createElementNS(
+      const tspanElem = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "tspan"
       );

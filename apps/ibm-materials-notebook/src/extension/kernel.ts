@@ -54,7 +54,7 @@ export class MaterialsKernel {
     _controller: vscode.NotebookController
   ): void {
     logger.info("executing all cells");
-    for (let cell of cells) {
+    for (const cell of cells) {
       this._doExecution(cell);
     }
   }

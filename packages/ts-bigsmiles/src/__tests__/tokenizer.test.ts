@@ -2,8 +2,8 @@ import { tokenize, Token, TokenKind } from "../tokenizer";
 
 function testMapper(testArr: [string, TokenKind[]][]) {
   for (const test of testArr) {
-    let tokenizerResult = tokenize(test[0]);
-    let tokenizerResultKind = tokenizerResult.map((el) => el.kind);
+    const tokenizerResult = tokenize(test[0]);
+    const tokenizerResultKind = tokenizerResult.map((el) => el.kind);
     expect(tokenizerResultKind).toEqual(test[1]);
   }
 }

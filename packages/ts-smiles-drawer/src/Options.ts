@@ -3,19 +3,19 @@ export class Options {
    * A helper method to extend the default options with user supplied ones.
    */
   static extend() {
-    let that = this;
-    let extended: Record<string, any> = {};
+    const that = this;
+    const extended: Record<string, any> = {};
     let deep = false;
     let i = 0;
-    let length = arguments.length;
+    const length = arguments.length;
 
     if (Object.prototype.toString.call(arguments[0]) === "[object Boolean]") {
       deep = arguments[0];
       i++;
     }
 
-    let merge = function (obj: any) {
-      for (var prop in obj) {
+    const merge = function (obj: any) {
+      for (const prop in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, prop)) {
           if (
             deep &&
@@ -31,7 +31,7 @@ export class Options {
     };
 
     for (; i < length; i++) {
-      let obj = arguments[i];
+      const obj = arguments[i];
       merge(obj);
     }
 

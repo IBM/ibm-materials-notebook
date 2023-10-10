@@ -15,17 +15,14 @@
     "@ibm-materials/logger": "*"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.31.0",
-    "@typescript-eslint/parser": "^5.31.0",
-    "eslint": "^8.20.0",
-    "@ibm-materials/eslint-config-custom": "*",
+    "@ibm-materials/eslint-config": "*",
     "@ibm-materials/jest-config": "*",
     "@ibm-materials/ts-config": "*",
     "tsup": "^6.6.3"
   },
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts",
-    "lint": "eslint src --ext ts",
+    "lint": "eslint src --ext ts --fix",
     "test": "jest",
     "generate-types": "npx ts-node ./src/parser/language-type-generator.ts"
   },

@@ -2,7 +2,6 @@ import { ModelActivationRecord } from "./model-AR";
 import { BaseModel } from "./base-model";
 import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
 import { FragmentModel, PolymerGraphModel } from "./models";
-import { logger } from "../logger";
 
 /**
  * Model for creating polymer graph

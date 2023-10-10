@@ -106,8 +106,8 @@ export class PolymerEdge {
    * @returns string
    */
   public toCompressedString(maskMap: Map<string, string>): string {
-    let target = maskMap.get(this.targetName);
-    let source = maskMap.get(this.sourceName);
+    const target = maskMap.get(this.targetName);
+    const source = maskMap.get(this.sourceName);
 
     if (!target || !source) {
       // logger.warn(
@@ -126,8 +126,8 @@ export class PolymerEdge {
    * @returns string
    */
   public print(): string {
-    let source = this.sourcePath.join(".");
-    let target = this.targetPath.join(".");
+    const source = this.sourcePath.join(".");
+    const target = this.targetPath.join(".");
 
     return `<${source} => ${target}>: ${this.quantity};\n`;
   }

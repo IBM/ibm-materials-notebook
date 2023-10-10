@@ -72,8 +72,8 @@ export class DefaultExport implements ExportStrategy {
     this.reactions.push(rxnData);
   }
 
-  private processSolution(soln: any[]) {}
-  private processFlowReactions(flowRxns: any[]) {}
+  // private processSolution(soln: any[]) {}
+  // private processFlowReactions(flowRxns: any[]) {}
   private processResult(result: ResultModel) {
     const resultData = result.export();
     this.results.push(resultData);

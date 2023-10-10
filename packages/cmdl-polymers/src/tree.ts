@@ -38,7 +38,7 @@ export class PolymerTree {
       }
 
       for (const target of newTargets) {
-        let edge = new PolymerEdge({
+        const edge = new PolymerEdge({
           sourcePath: source,
           targetPath: target,
           weight: 1,
@@ -79,7 +79,7 @@ export class PolymerTree {
       );
     }
 
-    let queue: PolymerComponent[] = [this.root];
+    const queue: PolymerComponent[] = [this.root];
     let curr: PolymerComponent | undefined;
 
     while (queue.length) {
@@ -108,7 +108,7 @@ export class PolymerTree {
       throw new Error(`cannot visit an undefined polymer`);
     }
 
-    let queue: PolymerComponent[] = [this.root];
+    const queue: PolymerComponent[] = [this.root];
 
     this.root.children.forEach((el) => {
       queue.push(el);
@@ -138,7 +138,7 @@ export class PolymerTree {
       throw new Error(`cannot visit an undefined polymer`);
     }
 
-    let queue: PolymerComponent[] = [this.root];
+    const queue: PolymerComponent[] = [this.root];
     let curr: PolymerComponent | undefined;
 
     while (queue.length) {
@@ -166,7 +166,7 @@ export class PolymerTree {
       throw new Error(`cannot visit an undefined polymer`);
     }
 
-    let queue: PolymerComponent[] = [this.root];
+    const queue: PolymerComponent[] = [this.root];
     let curr: PolymerComponent | undefined;
 
     let smiles = "";
@@ -199,7 +199,7 @@ export class PolymerTree {
     }
     const containerMap = new Map<string, string[]>();
 
-    let queue: PolymerComponent[] = [this.root];
+    const queue: PolymerComponent[] = [this.root];
     let curr: PolymerComponent | undefined;
 
     while (queue.length) {
@@ -233,7 +233,7 @@ export class PolymerTree {
 
     let body = `Polymer Tree:\n******`;
 
-    let queue = [this.root];
+    const queue = [this.root];
     let curr: PolymerComponent | undefined;
 
     while (queue.length) {

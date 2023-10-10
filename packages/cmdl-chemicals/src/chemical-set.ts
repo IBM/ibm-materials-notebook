@@ -35,7 +35,7 @@ export default class ChemicalSet {
    * @param chem TYPES.ChemicalConfig
    */
   public insert(chem: TYPES.ChemicalConfig): void {
-    let chemical = this.chemicalFactory.create(chem);
+    const chemical = this.chemicalFactory.create(chem);
     this.merge(chemical);
   }
 
@@ -45,7 +45,7 @@ export default class ChemicalSet {
    */
   public insertMany(chemicals: TYPES.ChemicalConfig[]): void {
     for (const chemConfig of chemicals) {
-      let chemical = this.chemicalFactory.create(chemConfig);
+      const chemical = this.chemicalFactory.create(chemConfig);
       this.merge(chemical);
     }
   }
@@ -65,7 +65,7 @@ export default class ChemicalSet {
     }
 
     if (this.chemicalMap.has(chemical.name)) {
-      let chemObj = this.chemicalMap.get(chemical.name);
+      const chemObj = this.chemicalMap.get(chemical.name);
       chemObj?.merge(chemical);
     } else {
       this.chemicalMap.set(chemical.name, chemical);
@@ -114,7 +114,7 @@ export default class ChemicalSet {
   private computeRelativeRatios(): void {
     try {
       if (this.limiting) {
-        let limitingMoles = new Unit(
+        const limitingMoles = new Unit(
           this.limiting.getProperty(ChemPropKey.MOLES)
         );
         limitingMoles.scaleTo("base");
@@ -123,8 +123,8 @@ export default class ChemicalSet {
         let curr = Infinity;
 
         const baseMoles = this.chemicals.map((el) => {
-          let moles = el.getProperty(ChemPropKey.MOLES);
-          let molesUnit = new Unit(moles);
+          const moles = el.getProperty(ChemPropKey.MOLES);
+          const molesUnit = new Unit(moles);
           molesUnit.scaleTo("base");
           return molesUnit;
         });
@@ -178,7 +178,7 @@ export default class ChemicalSet {
       const solventUnitArray = this.chemicals
         .filter((item) => item.roles.includes(TAGS.SOLVENT))
         .map((el) => {
-          let unit = new Unit(el.getProperty(ChemPropKey.MASS));
+          const unit = new Unit(el.getProperty(ChemPropKey.MASS));
           return unit;
         });
       this.totalSolventMass = UnitOperator.sum(solventUnitArray, "k");
@@ -193,7 +193,7 @@ export default class ChemicalSet {
    */
   private computeTotalReactionVolume(): void {
     try {
-      let totalUnitArray = this.chemicals.map((item) => {
+      const totalUnitArray = this.chemicals.map((item) => {
         let volUnit: Unit;
         if (item.volume) {
           volUnit = new Unit(item.volume);
@@ -232,7 +232,7 @@ export default class ChemicalSet {
     const configs: TYPES.ChemicalConfig[] = [];
 
     for (const chem of this.chemicalMap.values()) {
-      let chemConfig = chem.getMolesByVolume(volume);
+      const chemConfig = chem.getMolesByVolume(volume);
       configs.push(chemConfig);
     }
 
@@ -246,7 +246,7 @@ export default class ChemicalSet {
     const configs: TYPES.ChemicalConfig[] = [];
 
     for (const chem of this.chemicalMap.values()) {
-      let chemConfig = chem.export();
+      const chemConfig = chem.export();
       configs.push(chemConfig);
     }
 

@@ -64,13 +64,13 @@ const connection: IProperty = {
   aliases: [],
 };
 
-const fragment: IProperty = {
-  description: "Create fragment elements for polymer graph",
-  detail: "Fragment for polymer graph",
-  name: PROPERTIES.CONNECTIONS,
-  type: PropertyTypes.REF_MULTI,
-  aliases: [],
-};
+// const fragment: IProperty = {
+//   description: "Create fragment elements for polymer graph",
+//   detail: "Fragment for polymer graph",
+//   name: PROPERTIES.CONNECTIONS,
+//   type: PropertyTypes.REF_MULTI,
+//   aliases: [],
+// };
 
 const file: IProperty = {
   description: "references an external file",

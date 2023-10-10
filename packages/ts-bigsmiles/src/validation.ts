@@ -7,7 +7,6 @@ import {
   Branch,
 } from "./components";
 import { BigSMILES } from "./bigsmiles";
-import { logger } from "./logger";
 
 export function runValidation(bigsmiles: BigSMILES) {
   checkRingClosure(bigsmiles);
@@ -77,7 +76,7 @@ function checkImplicitEndgroupsEnds(
     | null = null
 ) {
   for (let i = 0; i < obj.nodes.length; i++) {
-    let node = obj.nodes[i];
+    const node = obj.nodes[i];
     if (node instanceof StochasticObject) {
       if (
         node.end_group_left &&

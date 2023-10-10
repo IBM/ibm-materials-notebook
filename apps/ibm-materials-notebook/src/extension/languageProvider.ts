@@ -64,7 +64,7 @@ class ImportProvder implements vscode.CompletionItemProvider {
       return;
     }
 
-    let modules: string[] = [];
+    const modules: string[] = [];
     const libRegex = new RegExp("/lib/");
     for (const [key, value] of this.repository.getItems()) {
       if (libRegex.test(key)) {
@@ -147,10 +147,7 @@ class SymbolMemberProvider implements vscode.CompletionItemProvider {
       return;
     }
 
-    const range = document.getWordRangeAtPosition(
-      position,
-      /[@a-zA-Z0-9-_\.]+/
-    );
+    const range = document.getWordRangeAtPosition(position, /[@a-zA-Z0-9-_.]+/);
     const word = document.getText(range);
 
     const slicedWord = word.slice(1, -1);
@@ -228,8 +225,7 @@ export function registerLanguageProvider(repo: Repository): vscode.Disposable {
   const memberProvider = new SymbolMemberProvider(repo);
 
   vscode.languages.setLanguageConfiguration(selector.language, {
-    wordPattern:
-      /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
+    wordPattern: /(-?\d*\.\d\w*)|([^`~!@#%^&*()\-=+[{\]}\\|;:'",.<>/?\s]+)/g,
     brackets: [
       ["{", "}"],
       ["[", "]"],

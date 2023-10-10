@@ -1,4 +1,3 @@
-import { logger } from "../logger";
 import { ModelVisitor } from "../intepreter";
 import { AstVisitor } from "../symbols";
 import { BaseError } from "../errors";
@@ -35,7 +34,7 @@ export class CmdlTree {
    */
   public validate(): BaseError[] {
     for (const child of this.children) {
-      let childErrors = child.doValidation();
+      const childErrors = child.doValidation();
       this.errors = this.errors.concat(childErrors);
     }
     return this.errors;

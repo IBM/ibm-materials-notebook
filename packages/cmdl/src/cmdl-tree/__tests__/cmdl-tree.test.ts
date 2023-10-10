@@ -33,7 +33,7 @@ describe("Tests for compiler validation errors", () => {
           };
       }`;
 
-    let { parserErrors, recordTree } = compiler.parse(validText);
+    const { parserErrors, recordTree } = compiler.parse(validText);
     const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
@@ -105,7 +105,7 @@ describe("Tests for compiler validation errors", () => {
           };
       }`;
 
-    let { parserErrors, recordTree } = compiler.parse(invalidNestingText);
+    const { parserErrors, recordTree } = compiler.parse(invalidNestingText);
     const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
@@ -131,7 +131,7 @@ describe("Tests for compiler validation errors", () => {
         };
       }
     `;
-    let { parserErrors, recordTree } = compiler.parse(badListProp);
+    const { parserErrors, recordTree } = compiler.parse(badListProp);
     const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
@@ -149,7 +149,7 @@ describe("Tests for compiler validation errors", () => {
       }
     `;
 
-    let { parserErrors, recordTree } = compiler.parse(missingNameRef);
+    const { parserErrors, recordTree } = compiler.parse(missingNameRef);
     const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);
@@ -169,7 +169,7 @@ describe("Tests for compiler validation errors", () => {
         };
     }`;
 
-    let { parserErrors, recordTree } = compiler.parse(refErrorTxt);
+    const { parserErrors, recordTree } = compiler.parse(refErrorTxt);
     const errors = recordTree.validate();
 
     expect(parserErrors.length).toBe(0);

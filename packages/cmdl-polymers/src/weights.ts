@@ -151,7 +151,7 @@ export class PolymerWeight {
         const targetGroup = edge.getTargetGroup();
         this.setGroupItem(targetGroup, sourceGroupMap);
 
-        let targetCount = this.targetCountMap.get(edge.targetName);
+        const targetCount = this.targetCountMap.get(edge.targetName);
 
         if (targetCount) {
           this.targetCountMap.set(edge.targetName, targetCount + 1);
@@ -172,7 +172,7 @@ export class PolymerWeight {
    */
   public getAllEdges(sourceGroup: string, targetGroup: string): number {
     let count = 0;
-    for (const [key, value] of this.edgeMap.entries()) {
+    for (const value of this.edgeMap.values()) {
       for (const edge of value) {
         if (
           edge.getSourceGroup() === sourceGroup &&
@@ -237,7 +237,7 @@ export class PolymerWeight {
   ): void {
     this.setMultiplier(group, dp);
 
-    let otherGroups = this.findAllChildGroups(parentGroup);
+    const otherGroups = this.findAllChildGroups(parentGroup);
 
     for (const other of otherGroups) {
       if (other !== group) {
@@ -252,7 +252,7 @@ export class PolymerWeight {
    * @param dp number
    */
   private setMultiplier(group: string, dp: number): void {
-    let currentMultiplier = this.graftMultipliers.get(group);
+    const currentMultiplier = this.graftMultipliers.get(group);
 
     if (currentMultiplier) {
       this.graftMultipliers.set(group, dp * currentMultiplier);
@@ -268,13 +268,13 @@ export class PolymerWeight {
    * @returns string[]
    */
   private findAllChildGroups(parentGroup: string): string[] {
-    let parent = this.containerMap.get(parentGroup);
+    const parent = this.containerMap.get(parentGroup);
     if (!parent) {
       throw new Error(`parent group: ${parentGroup} does not exist`);
     }
 
-    let childContainers = [];
-    let queue = [...parent];
+    const childContainers = [];
+    const queue = [...parent];
     let curr: string | undefined;
 
     while (queue.length) {
@@ -284,7 +284,7 @@ export class PolymerWeight {
         break;
       }
 
-      let currChildren = this.containerMap.get(curr);
+      const currChildren = this.containerMap.get(curr);
 
       if (currChildren) {
         childContainers.push(curr);

@@ -46,13 +46,13 @@ export default (function () {
   peg$subclass(peg$SyntaxError, Error);
 
   peg$SyntaxError.buildMessage = function (expected: any, found: any) {
-    var DESCRIBE_EXPECTATION_FNS = {
+    const DESCRIBE_EXPECTATION_FNS = {
       literal: function (expectation: any) {
         return '"' + literalEscape(expectation.text) + '"';
       },
 
       class: function (expectation: any) {
-        var escapedParts = "",
+        let escapedParts = "",
           i;
 
         for (i = 0; i < expectation.parts.length; i++) {
@@ -124,7 +124,7 @@ export default (function () {
     }
 
     function describeExpected(expected: any) {
-      var descriptions = new Array(expected.length),
+      let descriptions = new Array(expected.length),
         i,
         j;
 
@@ -177,8 +177,8 @@ export default (function () {
     options = options !== void 0 ? options : {};
 
     // KEEP THIS WHEN REGENERATING THE PARSER !!
-    var nOpenParentheses = input.split("(").length - 1;
-    var nCloseParentheses = input.split(")").length - 1;
+    const nOpenParentheses = input.split("(").length - 1;
+    const nCloseParentheses = input.split(")").length - 1;
 
     if (nOpenParentheses !== nCloseParentheses) {
       throw peg$buildSimpleError(
@@ -188,21 +188,21 @@ export default (function () {
     }
     // KEEP THIS WHEN REGENERATING THE PARSER !!
 
-    var peg$FAILED = {},
+    let peg$FAILED = {},
       peg$startRuleFunctions = {
         chain: peg$parsechain,
       },
       peg$startRuleFunction = peg$parsechain,
       peg$c0 = function (s: any) {
-        var branches = [];
-        var rings = [];
+        const branches = [];
+        const rings = [];
 
         for (var i = 0; i < s[1].length; i++) {
           branches.push(s[1][i]);
         }
 
         for (var i = 0; i < s[2].length; i++) {
-          var bond = s[2][i][0] ? s[2][i][0] : "-";
+          const bond = s[2][i][0] ? s[2][i][0] : "-";
           rings.push({
             bond: bond,
             id: s[2][i][1],
@@ -234,7 +234,7 @@ export default (function () {
       peg$c3 = ")",
       peg$c4 = peg$literalExpectation(")", false),
       peg$c5 = function (b: any) {
-        var bond = b[1] ? b[1] : "-";
+        const bond = b[1] ? b[1] : "-";
         b[2].branchBond = bond;
         return b[2];
       },
@@ -477,7 +477,7 @@ export default (function () {
     }
 
     function peg$computePosDetails(pos: any) {
-      var details = peg$posDetailsCache[pos],
+      let details = peg$posDetailsCache[pos],
         p;
 
       if (details) {
@@ -511,7 +511,7 @@ export default (function () {
     }
 
     function peg$computeLocation(startPos: any, endPos: any) {
-      var startPosDetails = peg$computePosDetails(startPos),
+      const startPosDetails = peg$computePosDetails(startPos),
         endPosDetails = peg$computePosDetails(endPos);
 
       return {
@@ -561,7 +561,7 @@ export default (function () {
     }
 
     function peg$parsechain(): any {
-      var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
+      let s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
 
       s0 = peg$currPos;
       s1 = peg$currPos;
@@ -679,7 +679,7 @@ export default (function () {
     }
 
     function peg$parsebranch() {
-      var s0, s1, s2, s3, s4, s5;
+      let s0, s1, s2, s3, s4, s5;
 
       s0 = peg$currPos;
       s1 = peg$currPos;
@@ -738,7 +738,7 @@ export default (function () {
     }
 
     function peg$parseatom() {
-      var s0, s1;
+      let s0, s1;
 
       s0 = peg$currPos;
       s1 = peg$parseorganicsymbol();
@@ -761,7 +761,7 @@ export default (function () {
     }
 
     function peg$parsebond() {
-      var s0, s1;
+      let s0, s1;
       s0 = peg$currPos;
       if (peg$c7.test(input.charAt(peg$currPos))) {
         s1 = input.charAt(peg$currPos);
@@ -797,7 +797,7 @@ export default (function () {
     }
 
     function peg$parsebracketatom() {
-      var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
+      let s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
 
       s0 = peg$currPos;
       s1 = peg$currPos;
@@ -920,7 +920,7 @@ export default (function () {
     }
 
     function peg$parseorganicsymbol() {
-      var s0, s1, s2, s3;
+      let s0, s1, s2, s3;
 
       s0 = peg$currPos;
       s1 = peg$currPos;
@@ -1014,7 +1014,7 @@ export default (function () {
     }
 
     function peg$parsearomaticsymbol() {
-      var s0, s1;
+      let s0, s1;
 
       s0 = peg$currPos;
       if (peg$c30.test(input.charAt(peg$currPos))) {
@@ -1036,7 +1036,7 @@ export default (function () {
     }
 
     function peg$parsewildcard() {
-      var s0, s1;
+      let s0, s1;
 
       s0 = peg$currPos;
       if (input.charCodeAt(peg$currPos) === 42) {
@@ -1058,7 +1058,7 @@ export default (function () {
     }
 
     function peg$parseelementsymbol() {
-      var s0, s1, s2, s3;
+      let s0, s1, s2, s3;
 
       s0 = peg$currPos;
       s1 = peg$currPos;
@@ -1105,7 +1105,7 @@ export default (function () {
     }
 
     function peg$parsering() {
-      var s0, s1, s2, s3, s4;
+      let s0, s1, s2, s3, s4;
 
       s0 = peg$currPos;
       s1 = peg$currPos;
@@ -1174,7 +1174,7 @@ export default (function () {
     }
 
     function peg$parsechiral() {
-      var s0, s1, s2, s3, s4, s5, s6;
+      let s0, s1, s2, s3, s4, s5, s6;
 
       s0 = peg$currPos;
       s1 = peg$currPos;
@@ -1420,7 +1420,7 @@ export default (function () {
     }
 
     function peg$parsecharge() {
-      var s0, s1;
+      let s0, s1;
 
       s0 = peg$currPos;
       s1 = peg$parseposcharge();
@@ -1437,7 +1437,7 @@ export default (function () {
     }
 
     function peg$parseposcharge() {
-      var s0, s1, s2, s3, s4, s5;
+      let s0, s1, s2, s3, s4, s5;
 
       s0 = peg$currPos;
       s1 = peg$currPos;
@@ -1520,7 +1520,7 @@ export default (function () {
     }
 
     function peg$parsenegcharge() {
-      var s0, s1, s2, s3, s4, s5;
+      let s0, s1, s2, s3, s4, s5;
 
       s0 = peg$currPos;
       s1 = peg$currPos;
@@ -1603,7 +1603,7 @@ export default (function () {
     }
 
     function peg$parsehcount() {
-      var s0, s1, s2, s3;
+      let s0, s1, s2, s3;
 
       s0 = peg$currPos;
       s1 = peg$currPos;
@@ -1650,7 +1650,7 @@ export default (function () {
     }
 
     function peg$parseclass() {
-      var s0, s1, s2, s3, s4, s5, s6;
+      let s0, s1, s2, s3, s4, s5, s6;
 
       s0 = peg$currPos;
       s1 = peg$currPos;
@@ -1740,7 +1740,7 @@ export default (function () {
     }
 
     function peg$parseisotope() {
-      var s0, s1, s2, s3, s4;
+      let s0, s1, s2, s3, s4;
 
       s0 = peg$currPos;
       s1 = peg$currPos;

@@ -3,7 +3,6 @@ import { BaseError, InvalidGroupError } from "../errors";
 import { Group, Property, RecordNode } from "./base-components";
 import { IGroup } from "@ibm-materials/cmdl-types";
 import { CmdlTree } from "../cmdl-tree";
-import { GeneralGroup } from "./general-group";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
 import { typeManager } from "@ibm-materials/cmdl-types";
@@ -44,8 +43,8 @@ export class ReferenceGroup extends Group implements SymbolReference {
     const groupProps = typeManager.getGroup(this.parent.name);
 
     if (!groupProps) {
-      let msg = `${this.parent.name} is not a recognized container for reference ${this.name}`;
-      let err = new InvalidGroupError(msg, this.nameToken);
+      const msg = `${this.parent.name} is not a recognized container for reference ${this.name}`;
+      const err = new InvalidGroupError(msg, this.nameToken);
       this.errors.push(err);
     } else {
       this.parentGroupProps = groupProps;

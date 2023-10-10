@@ -46,9 +46,8 @@ export default class Solid extends BaseChemical {
       case PROPERTIES.MOLES:
         massUnit = typeManager.getMolToMass(qty.unit);
         volUnit = typeManager.getVolToMass(massUnit);
-        let massValue = qty.value.times(this.mw);
         this.mass = {
-          value: massValue,
+          value: qty.value.times(this.mw),
           unit: massUnit,
           uncertainty: null,
         };
@@ -57,7 +56,11 @@ export default class Solid extends BaseChemical {
           unit: qty.unit,
           uncertainty: null,
         };
-        this.solidVol = { unit: volUnit, value: massValue, uncertainty: null };
+        this.solidVol = {
+          unit: volUnit,
+          value: qty.value.times(this.mw),
+          uncertainty: null,
+        };
         break;
       default:
         throw new Error(`Invalid quantity type for ${this.name}: ${qty.name}`);

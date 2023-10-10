@@ -106,37 +106,37 @@ export class BigSMILESConstructor {
   }
 
   private _getAtomId() {
-    let currentId = this.atom_counter;
+    const currentId = this.atom_counter;
     this.atom_counter++;
     return currentId;
   }
 
   private _getBondId() {
-    let currentId = this.bond_counter;
+    const currentId = this.bond_counter;
     this.bond_counter++;
     return currentId;
   }
 
   private _getBondDescriptorAtomId() {
-    let currentId = this.bond_descriptor_atom;
+    const currentId = this.bond_descriptor_atom;
     this.bond_descriptor_atom++;
     return currentId;
   }
 
   private _getBranchId() {
-    let currentId = this.branch_counter;
+    const currentId = this.branch_counter;
     this.branch_counter++;
     return currentId;
   }
 
   private _getStochasticFragmentId() {
-    let currentId = this.stochastic_fragment;
+    const currentId = this.stochastic_fragment;
     this.stochastic_fragment++;
     return currentId;
   }
 
   private _getStochasticObjectId() {
-    let currentId = this.stochastic_object;
+    const currentId = this.stochastic_object;
     this.bond_counter++;
     return currentId;
   }
@@ -150,7 +150,7 @@ export class BigSMILESConstructor {
   }
 
   private _getBondingDescriptorAtom(bd_symbol: string): BondDescriptorAtom {
-    let bd = this._getBondingDescriptor(bd_symbol);
+    const bd = this._getBondingDescriptor(bd_symbol);
     return new BondDescriptorAtom(bd, this._getBondDescriptorAtomId());
   }
 
@@ -181,9 +181,9 @@ export class BigSMILESConstructor {
   private _getPriorAtom(
     obj: BigSMILES | StochasticObject | StochasticFragment | Branch
   ): Atom {
-    let nodesLength = obj.nodes.length - 1;
+    const nodesLength = obj.nodes.length - 1;
     for (let i = nodesLength; i >= 0; i--) {
-      let node = obj.nodes[i];
+      const node = obj.nodes[i];
       if (node instanceof Atom) {
         return node;
       }
@@ -199,9 +199,9 @@ export class BigSMILESConstructor {
   private _getPriorStochasticAtom(
     obj: BigSMILES | StochasticObject | StochasticFragment | Branch
   ) {
-    let nodesLength = obj.nodes.length - 1;
+    const nodesLength = obj.nodes.length - 1;
     for (let i = nodesLength; i >= 0; i--) {
-      let node = obj.nodes[i];
+      const node = obj.nodes[i];
       if (
         node instanceof Atom ||
         node instanceof BondDescriptorAtom ||
@@ -227,7 +227,7 @@ export class BigSMILESConstructor {
   }
 
   addRing(ring_id: number): Bond {
-    let ringParent = this._getRingParent();
+    const ringParent = this._getRingParent();
 
     //check if ring exists
     if (!ringParent) {
@@ -244,7 +244,7 @@ export class BigSMILESConstructor {
           );
         }
         const priorElement = this.stack.peek();
-        let priorRingAtom = this._getPriorAtom(priorElement);
+        const priorRingAtom = this._getPriorAtom(priorElement);
         ring.atom2 = priorRingAtom;
         addBondToConnectedObjects(ring);
         return ring;
@@ -252,9 +252,9 @@ export class BigSMILESConstructor {
     }
 
     //create new ring
-    let first = this.stack.peek();
-    let parentAtom = this._getPriorAtom(first);
-    let bond = new Bond("", parentAtom, null, this._getBondId(), ring_id);
+    const first = this.stack.peek();
+    const parentAtom = this._getPriorAtom(first);
+    const bond = new Bond("", parentAtom, null, this._getBondId(), ring_id);
     this.bigsmiles.bonds.push(bond);
     ringParent.rings.push(bond);
 

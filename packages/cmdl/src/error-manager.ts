@@ -11,7 +11,7 @@ export class DiagnosticManager {
     return documentErrors;
   }
   public create(namespace: string): ErrorTable {
-    let newTable = new ErrorTable();
+    const newTable = new ErrorTable();
     this._documents.set(namespace, newTable);
     return newTable;
   }
@@ -35,11 +35,11 @@ export class ErrorTable {
    * @param errors BaseError[]
    */
   public add(uri: string, errors: BaseError[]): void {
-    let currentErrs = this._expErrors.get(uri);
+    const currentErrs = this._expErrors.get(uri);
     if (!currentErrs) {
       this._expErrors.set(uri, errors);
     } else {
-      let newErrors = [...currentErrs, ...errors];
+      const newErrors = [...currentErrs, ...errors];
       this._expErrors.set(uri, newErrors);
     }
   }
@@ -50,7 +50,7 @@ export class ErrorTable {
    * @returns BaseError[]
    */
   public get(uri: string): BaseError[] {
-    let errors = this._expErrors.get(uri);
+    const errors = this._expErrors.get(uri);
 
     if (!errors) {
       return [];
@@ -85,7 +85,7 @@ export class ErrorTable {
    * @returns Record<string, BaseError[]>
    */
   public print(): Record<string, BaseError[]> {
-    let output: Record<string, BaseError[]> = {};
+    const output: Record<string, BaseError[]> = {};
 
     for (const [key, value] of this._expErrors.entries()) {
       output[key] = value;

@@ -31,8 +31,8 @@ export class EdgeWeightor implements PolymerTreeVisitor {
     if (edge.sourceName === edge.targetName && degreePoly === 1) {
       edge.weight = this.computeRepeatBaseCase();
     } else if (edge.sourceName === edge.targetName) {
-      let numSelf = this.getCopolymerEdges(edge.sourceName);
-      let graftMultiplier = this.weightor.graftMultipliers.get(sourceGroup);
+      const numSelf = this.getCopolymerEdges(edge.sourceName);
+      const graftMultiplier = this.weightor.graftMultipliers.get(sourceGroup);
       let finalDp = degreePoly;
       if (graftMultiplier) {
         finalDp = finalDp * graftMultiplier;
@@ -45,18 +45,18 @@ export class EdgeWeightor implements PolymerTreeVisitor {
     ) {
       const edgeGroup = this.weightor.getEdgeGroup(edge.sourceName);
       const numEdges = edgeGroup[targetGroup];
-      let graftMultiplier = this.weightor.graftMultipliers.get(sourceGroup);
+      const graftMultiplier = this.weightor.graftMultipliers.get(sourceGroup);
       edge.weight = this.computeNonRepeatWeight(numEdges, graftMultiplier);
     } else if (
       sourceGroup !== this.currentScope &&
       targetGroup === this.currentScope
     ) {
-      let graftMultiplier = this.weightor.graftMultipliers.get(sourceGroup);
+      const graftMultiplier = this.weightor.graftMultipliers.get(sourceGroup);
 
       if (graftMultiplier) {
         edge.weight = this.computeNonRepeatWeight(1, graftMultiplier);
       } else {
-        let numSources = this.weightor.targetCountMap.get(edge.targetName);
+        const numSources = this.weightor.targetCountMap.get(edge.targetName);
         edge.weight = this.computeNonRepeatWeight(numSources || 1);
       }
     } else if (
@@ -64,11 +64,11 @@ export class EdgeWeightor implements PolymerTreeVisitor {
       targetGroup !== this.currentScope &&
       sourceGroup !== targetGroup
     ) {
-      let total = this.weightor.getAllEdges(sourceGroup, targetGroup);
+      const total = this.weightor.getAllEdges(sourceGroup, targetGroup);
       edge.weight = this.computeNonRepeatWeight(total || 1);
     } else {
-      let numSelf = this.getCopolymerEdges(edge.sourceName);
-      let value = numSelf || 1;
+      const numSelf = this.getCopolymerEdges(edge.sourceName);
+      const value = numSelf || 1;
       if (degreePoly === 1) {
         edge.weight = this.computeRepeatWeight(degreePoly, 1);
       } else {
