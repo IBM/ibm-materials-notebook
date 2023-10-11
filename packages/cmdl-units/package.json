@@ -11,12 +11,13 @@
     "@ibm-materials/cmdl-types": "*"
   },
   "devDependencies": {
-    "@ibm-materials/eslint-config-custom": "*",
+    "@ibm-materials/eslint-config": "*",
     "@ibm-materials/ts-config": "*",
-    "@ibm-materials/jest-config": "*",
-    "tsup": "^6.6.3"
+    "@ibm-materials/jest-config": "*"
   },
   "scripts": {
+    "clean": "rm -rf ./dist",
+    "prepublish": "npm run clean && npm run build",
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "lint": "eslint src --ext ts",
     "test": "echo \"Passing with no tests...\" && exit 0"
@@ -25,6 +26,9 @@
     "type": "git",
     "url": "https://github.com/IBM/ibm-materials-notebook"
   },
+  "files": [
+    "dist/**/*"
+  ],
   "author": "npark",
   "license": "MIT"
 }

@@ -10,13 +10,17 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
-    "@ibm-materials/ts-config": "*",
-    "tsup": "^6.6.3"
+    "@ibm-materials/ts-config": "*"
   },
   "scripts": {
+    "clean": "rm -rf ./dist",
+    "prepublish": "npm run clean && npm run build",
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "test": "echo \"Passing with no tests...\" && exit 0"
   },
+  "files": [
+    "dist/**/*"
+  ],
   "author": "npark",
   "license": "MIT"
 }

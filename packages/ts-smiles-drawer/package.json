@@ -11,15 +11,20 @@
   "devDependencies": {
     "@ibm-materials/eslint-config": "*",
     "@ibm-materials/ts-config": "*",
-    "@ibm-materials/jest-config": "*",
-    "tsup": "^6.6.3"
+    "@ibm-materials/jest-config": "*"
   },
   "scripts": {
+    "clean": "rm -rf ./dist",
+    "prepublish": "npm run clean && npm run build",
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "lint": "eslint src --ext ts",
     "lint:fix": "eslint src --ext ts --fix",
     "test": "echo \"Passing with no tests...\" && exit 0"
   },
+  "files": [
+    "LISCENSE.md",
+    "dist/**/*"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/IBM/ibm-materials-notebook"

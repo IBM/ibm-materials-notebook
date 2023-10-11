@@ -20,10 +20,15 @@
   "devDependencies": {
     "@ibm-materials/eslint-config": "*",
     "@ibm-materials/jest-config": "*",
-    "@ibm-materials/ts-config": "*",
-    "tsup": "^6.6.3"
+    "@ibm-materials/ts-config": "*"
   },
+  "files": [
+    "LISCENSE.md",
+    "dist/**/*"
+  ],
   "scripts": {
+    "clean": "rm -rf ./dist",
+    "prepublish": "npm run clean && npm run build",
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "lint": "eslint src --ext ts --fix",
     "test": "jest",

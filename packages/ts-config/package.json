@@ -10,8 +10,5 @@
   },
   "files": [
     "base.json"
-  ],
-  "devDependencies": {
-    "typescript": "^5.2.2"
-  }
+  ]
 }
