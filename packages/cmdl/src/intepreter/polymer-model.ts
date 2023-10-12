@@ -34,9 +34,6 @@ export class Polymer extends BaseModel {
       polymerModel.embedNodeValues(treeValues);
     }
 
-    const state = this.modelAR.getValue<TYPES.ChemStates>("state");
-    polymerModel.add("state" as keyof TYPES.Polymer, state);
-
     for (const [name, value] of this.modelAR.all()) {
       polymerModel.add(
         name as keyof TYPES.Polymer,

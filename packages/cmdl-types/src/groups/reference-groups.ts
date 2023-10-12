@@ -1,9 +1,8 @@
-import { IGroup, GROUPS, GroupTypes, ModelType } from "./group-types";
+import { IGroup, GROUPS, ModelType } from "./group-types";
 import { PROPERTIES } from "../properties";
 
 const chemical: IGroup = {
   name: GROUPS.CHEMICAL,
-  type: GroupTypes.NAMED,
   modelType: ModelType.CHEMICAL,
   description: "Create a reference to a small-molecule chemical",
   detail: "Chemical reference",
@@ -16,7 +15,6 @@ const chemical: IGroup = {
     PROPERTIES.INCHI_KEY,
     PROPERTIES.MOL_WEIGHT,
     PROPERTIES.DENSITY,
-    PROPERTIES.STATE,
     PROPERTIES.TEMP_MELT,
     PROPERTIES.TEMP_BOILING,
     PROPERTIES.TEMP_SUBLIME,
@@ -26,7 +24,6 @@ const chemical: IGroup = {
 
 const polymer: IGroup = {
   name: GROUPS.POLYMER,
-  type: GroupTypes.NAMED,
   modelType: ModelType.POLYMER,
   description:
     "Defines a polymer reference for use within an experiment record.",
@@ -38,15 +35,12 @@ const polymer: IGroup = {
     PROPERTIES.MN_AVG,
     PROPERTIES.MW_AVG,
     PROPERTIES.DISPERSITY,
-    PROPERTIES.STATE,
-    //!?change to graph
     PROPERTIES.STRUCTURE,
   ],
 };
 
 const complex: IGroup = {
   name: GROUPS.COMPLEX,
-  type: GroupTypes.NAMED,
   modelType: ModelType.COMPLEX,
   description: `Describes a reference of a macromolecular complex for use in experiments and assays. May consist of both polymeric and small-molecule components.`,
   detail: "Polymer complex reference",
@@ -63,7 +57,6 @@ const complex: IGroup = {
 
 const component: IGroup = {
   name: GROUPS.COMPONENT,
-  type: GroupTypes.NAMED,
   modelType: ModelType.COMPONENT,
   description: "Create a reference to a physical reactor component",
   detail: "Reactor component",

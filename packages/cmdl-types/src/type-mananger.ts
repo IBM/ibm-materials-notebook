@@ -1,7 +1,6 @@
 import { IUnit, allUnits } from "./units";
 import { IProperty, allProperties } from "./properties";
 import { IGroup, allGroups } from "./groups";
-import { IAction, allActions } from "./actions";
 import { ITag, allTags } from "./tags";
 import { UNITS } from "./units";
 
@@ -14,7 +13,6 @@ export class TypeManager {
   private PROPERTIES = new Map<string, IProperty>();
   private GROUPS = new Map<string, IGroup>();
   private TAGS = new Map<string, ITag>();
-  private ACTIONS = new Map<string, IAction>();
 
   private readonly volumeQtyUnitMap = new Map<string, string>([
     [UNITS.PL, UNITS.NG],
@@ -48,14 +46,12 @@ export class TypeManager {
     units: IUnit[],
     props: IProperty[],
     groups: IGroup[],
-    tags: ITag[],
-    actions: IAction[]
+    tags: ITag[]
   ) {
     this.initializeUnits(units);
     this.initializeProperties(props);
     this.initializeGroups(groups);
     this.initializeTags(tags);
-    this.initializeActions(actions);
   }
 
   private initializeUnits(arr: IUnit[]) {
@@ -69,9 +65,6 @@ export class TypeManager {
   }
   private initializeTags(arr: ITag[]) {
     arr.forEach((prop) => this.TAGS.set(prop.name, prop));
-  }
-  private initializeActions(arr: IAction[]) {
-    arr.forEach((prop) => this.ACTIONS.set(prop.name, prop));
   }
 
   /**
@@ -186,7 +179,5 @@ export const typeManager = new TypeManager(
   allUnits,
   allProperties,
   allGroups,
-  allTags,
-  allActions
-  // allTemplates
+  allTags
 );

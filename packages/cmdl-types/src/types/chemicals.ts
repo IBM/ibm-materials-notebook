@@ -12,7 +12,6 @@ export interface Chemical extends BaseModel {
   [PROPERTIES.MOL_WEIGHT]: BigQty;
   [PROPERTIES.SMILES]: string;
   [PROPERTIES.DENSITY]?: BigQty;
-  [PROPERTIES.STATE]: ChemStates;
 }
 
 export type ChemicalReference = {
@@ -22,6 +21,7 @@ export type ChemicalReference = {
   [PROPERTIES.MOLES]?: BigQty;
   [PROPERTIES.VOLUME]?: BigQty;
   [PROPERTIES.PRESSURE]?: BigQty;
+  [PROPERTIES.STATE]?: ChemStates;
   [PROPERTIES.ROLES]: ReactionRoles[];
   [PROPERTIES.LIMITING]?: boolean;
 };

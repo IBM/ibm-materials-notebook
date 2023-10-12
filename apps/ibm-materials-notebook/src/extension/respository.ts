@@ -145,7 +145,7 @@ export class Repository {
             uri: file.newUri.toString(),
             fileName: this.extractFileName(file.newUri),
           };
-          this._controller.renameFile(oldFile, newFile);
+          // this._controller.renameFile(oldFile, newFile);
         }
       })
     );
@@ -183,6 +183,10 @@ export class Repository {
         }
       )
       .then((value) => {
+        if (!value) {
+          return;
+        }
+
         for (const uri of value) {
           vscode.workspace.openNotebookDocument(uri);
         }

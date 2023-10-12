@@ -10,6 +10,7 @@ export enum PropertyTypes {
   REF_SINGLE = "ref_single",
   REF_MULTI = "ref_multi",
   BOOLEAN = "boolean",
+  ASSIGNMENT = "assignment",
 }
 
 //TODO: improve specific typing of different properties
@@ -41,7 +42,6 @@ export enum PROPERTIES {
   //categorical
   NMR_NUCLEI = "nmr_nuclei",
   ROLES = "roles",
-  TEMPLATE = "template",
   TAGS = "tags",
 
   //equipment
@@ -90,7 +90,6 @@ export enum PROPERTIES {
   ALIASES = "aliases",
   NAME = "name",
   TITLE = "title",
-  OWNER = "owner",
   DOI = "doi",
   CITATION = "citation",
   DATE = "date",

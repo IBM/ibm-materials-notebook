@@ -12,7 +12,6 @@ export interface Exportable<T> {
 export type EntityConfigValues = {
   mw: Big;
   density?: Big;
-  state: TYPES.ChemStates;
 };
 
 export interface ChemicalEntity {

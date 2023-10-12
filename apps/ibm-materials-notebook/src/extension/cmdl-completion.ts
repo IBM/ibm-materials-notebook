@@ -5,6 +5,7 @@ import {
   CMDLAst,
   AstNodes,
 } from "@ibm-materials/cmdl";
+import { GROUPS } from "@ibm-materials/cmdl-types";
 
 /**
  * Assists in providing completion items for CMDL language
@@ -279,7 +280,7 @@ export class CmdlCompletions {
     arr: CMDLTypes.IGroup[]
   ): vscode.CompletionItem[] {
     return arr.map((item) => {
-      if (item.type === CMDLTypes.GroupTypes.NAMED) {
+      if (item.name !== GROUPS.FRAGMENTS && item.name !== GROUPS.META) {
         return this.createNamedGroupCompletion(item);
       } else {
         return this.createGeneralGroupCompletion(item);

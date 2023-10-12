@@ -125,17 +125,12 @@ export class PolymerModel
   }
 
   public getConfigValues(): EntityConfigValues {
-    if (!this.properties.state) {
-      throw new Error(`Mn or state is undefined on ${this.name}`);
-    }
-
     if (!this.properties.mn_avg) {
       logger.warn(`Mn is not defined for ${this.name}...returning value of 1`);
     }
 
     return {
       mw: this.properties.mn_avg?.value || Big(1),
-      state: this.properties.state,
     };
   }
 

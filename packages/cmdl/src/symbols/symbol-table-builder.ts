@@ -31,9 +31,7 @@ import {
   AssignmentProperty,
 } from "../cmdl-tree";
 import { CmdlStack } from "../cmdl-stack";
-// import { CmdlToken } from "../cmdl-ast";
 import { ErrorTable } from "../error-manager";
-// import { TYPES } from "@ibm-materials/cmdl-types";
 
 /**
  * Visits record tree and constructs symbol table for entire document

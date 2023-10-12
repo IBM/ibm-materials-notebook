@@ -22,13 +22,12 @@ export class ChemicalModel
   }
 
   public getConfigValues(): EntityConfigValues {
-    if (!this.properties.molecular_weight || !this.properties.state) {
+    if (!this.properties.molecular_weight) {
       throw new Error(`No molecular weight or state defined for ${this.name}`);
     }
     return {
       mw: this.properties.molecular_weight.value,
       density: this.properties.density?.value,
-      state: this.properties.state,
     };
   }
 }

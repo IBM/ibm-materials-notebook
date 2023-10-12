@@ -10,13 +10,16 @@ const nmrNuclei: IProperty = {
   categorical_values: [TAGS.H, TAGS.C, TAGS.F, TAGS.P, TAGS.N, TAGS.Si],
 };
 
+/**
+ * @deprecated
+ */
 const sourceType: IProperty = {
   description: "reference source type for experiments",
   type: PropertyTypes.CATEGORICAL_SINGLE,
   detail: "source type",
   name: PROPERTIES.SOURCE_TYPE,
   aliases: [],
-  categorical_values: [TAGS.JOURNAL, TAGS.NOTEBOOK],
+  categorical_values: [],
 };
 
 const roles = [
@@ -50,7 +53,7 @@ const rolesType = [
   TAGS.PRODUCT,
 ] as const;
 
-export type ReactionRoles = typeof rolesType[number];
+export type ReactionRoles = (typeof rolesType)[number];
 
 const physicalState: IProperty = {
   description: "Physical state of chemical or material",
@@ -85,22 +88,24 @@ const measurementTech: IProperty = {
   ],
 };
 
-const templateType: IProperty = {
-  description: "Type of reference within a record",
-  detail: "Reference type",
-  type: PropertyTypes.CATEGORICAL_SINGLE,
-  name: PROPERTIES.TEMPLATE,
-  aliases: [],
-  categorical_values: [
-    TAGS.SMALL_MOLECULE,
-    TAGS.MATERIAL,
-    TAGS.REACTOR,
-    TAGS.POLYMER_GRAPH,
-    TAGS.FLOW_EXPERIMENT,
-    TAGS.BATCH_EXPERIMENT,
-  ],
-};
-
+// const templateType: IProperty = {
+//   description: "Type of reference within a record",
+//   detail: "Reference type",
+//   type: PropertyTypes.CATEGORICAL_SINGLE,
+//   name: PROPERTIES.TEMPLATE,
+//   aliases: [],
+//   categorical_values: [
+//     TAGS.SMALL_MOLECULE,
+//     TAGS.MATERIAL,
+//     TAGS.REACTOR,
+//     TAGS.POLYMER_GRAPH,
+//     TAGS.FLOW_EXPERIMENT,
+//     TAGS.BATCH_EXPERIMENT,
+//   ],
+// };
+/**
+ * TODO: separate tags between material and experiment types
+ */
 const tags: IProperty = {
   description: "Type of reference within a record",
   detail: "Reference type",
@@ -108,7 +113,7 @@ const tags: IProperty = {
   name: PROPERTIES.TAGS,
   aliases: [],
   categorical_values: [
-    TAGS.POLYMERIZATION,
+    // TAGS.POLYMERIZATION,
     TAGS.HOMOPOLYMER,
     TAGS.BLOCK_COPOLYMER,
     TAGS.STAT_COPOLYMER,
@@ -148,7 +153,7 @@ export const categoricalProperties = [
   reactionRoles,
   physicalState,
   measurementTech,
-  templateType,
+  // templateType,
   sourceType,
   tags,
 ];

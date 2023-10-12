@@ -30,6 +30,8 @@ interface CompletionItem {
 
 /**
  * Controls CMDL functions for a given workspace
+ * TODO: rename compiler to parser
+ * TODO: create export manager
  */
 export class Controller {
   private readonly _compiler = new Compiler();

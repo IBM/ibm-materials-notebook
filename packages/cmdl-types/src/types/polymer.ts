@@ -11,7 +11,6 @@ export interface Polymer extends BaseModel {
   [PROPERTIES.MN_AVG]?: BigQty;
   [PROPERTIES.MW_AVG]?: BigQty;
   [PROPERTIES.DISPERSITY]?: StringQtyUnitless;
-  [PROPERTIES.STATE]: ChemStates;
   [PROPERTIES.STRUCTURE]?: Reference; //polymer graph representation reference
 }
 

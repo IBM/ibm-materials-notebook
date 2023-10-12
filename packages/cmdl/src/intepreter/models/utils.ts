@@ -56,11 +56,17 @@ export class ChemicalTranslator {
       const quantity = this.extractQuantity(chemical);
       const configValues = parentModel.getConfigValues();
 
+      const chemicalState = chemical?.state
+        ? chemical.state
+        : quantity.name === PROPERTIES.VOLUME || configValues?.density
+        ? TYPES.ChemStates.LIQUID
+        : TYPES.ChemStates.SOLID;
+
       const chemicalConfig: TYPES.ChemicalConfig = {
         name: chemical.name,
         mw: configValues.mw,
         density: configValues.density || null,
-        state: configValues.state,
+        state: chemicalState,
         roles: chemical.roles,
         temperature: params?.temperature || undefined,
         volume: params?.volume || undefined,

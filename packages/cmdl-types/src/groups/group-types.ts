@@ -1,8 +1,3 @@
-export enum GroupTypes {
-  NAMED = "NAMED",
-  UNAMED = "UNAMED",
-}
-
 export enum ModelType {
   CHAR_DATA = "char_data",
   CHEMICAL = "chemical",
@@ -22,10 +17,12 @@ export enum ModelType {
   GROUP = "group",
 }
 
+/**
+ * TODO: deprecate group types
+ */
 export interface IGroup {
   description: string;
   detail: string;
-  type: GroupTypes;
   name: string;
   aliases: string[];
   properties: string[];
@@ -40,7 +37,6 @@ export enum GROUPS {
   SOURCE = "source",
 
   //structure
-  STRUCTURE = "structure",
   POLYMER_GRAPH = "polymer_graph",
   CONTAINER = "container",
   FRAGMENTS = "fragments",
@@ -55,12 +51,8 @@ export enum GROUPS {
   SOLUTION = "solution",
   REACTION = "reaction",
   FLOW_REACTION = "flow_reaction",
-  ASSAY = "assay",
   CHEMICAL = "chemical",
   POLYMER = "polymer",
   COMPLEX = "complex",
-  ORGANISM = "organism",
-  REFERENCE = "reference",
-  POINT = "point",
   PROTOCOL = "protocol",
 }
