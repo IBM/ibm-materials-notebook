@@ -84,6 +84,7 @@ export class GeneralGroup extends Group {
 
   /**
    * Retrieves array of children for current group
+   * @deprecated
    * @returns RecordNode[]
    */
   public getSymbolRefs(): RecordNode[] {

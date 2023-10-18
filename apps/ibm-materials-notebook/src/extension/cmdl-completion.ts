@@ -1,17 +1,12 @@
 import * as vscode from "vscode";
-import {
-  CMDLCompiler,
-  CMDLTypes,
-  CMDLAst,
-  AstNodes,
-} from "@ibm-materials/cmdl";
+import { CmdlParser, CMDLTypes, CMDLAst, AstNodes } from "@ibm-materials/cmdl";
 import { GROUPS } from "@ibm-materials/cmdl-types";
 
 /**
  * Assists in providing completion items for CMDL language
  */
 export class CmdlCompletions {
-  private readonly compiler = new CMDLCompiler.Compiler();
+  private readonly compiler = new CmdlParser();
 
   static isStringProperty(propName: string) {
     const property = CMDLTypes.typeManager.getProperty(propName);

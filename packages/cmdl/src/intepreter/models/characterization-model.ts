@@ -1,14 +1,14 @@
-import { ModelActivationRecord } from "./model-AR";
+import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
 import {
-  ResultModel,
+  ResultEntity,
   CharDataModel,
-  PolymerModel,
-  ChemicalModel,
+  PolymerEntity,
+  ChemicalEntity,
   CharFileReader,
-} from "./models";
+} from "../entities";
 import { ModelType, PROPERTIES, TYPES } from "@ibm-materials/cmdl-types";
-import { logger } from "../logger";
+import { logger } from "../../logger";
 
 /**
  * Output model for characterization samples
@@ -17,13 +17,13 @@ import { logger } from "../logger";
 export class CharData extends BaseModel {
   constructor(
     name: string,
-    modelAR: ModelActivationRecord,
+    modelAR: ActivationRecord,
     type: ModelType.CHAR_DATA
   ) {
     super(name, modelAR, type);
   }
 
-  public execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ActivationRecord): void {
     try {
       const technique = this.modelAR.getValue<string>(PROPERTIES.TECHNIQUE);
       const sampleId = this.modelAR.getValue<string>(PROPERTIES.SAMPLE_ID);
@@ -52,15 +52,15 @@ export class CharData extends BaseModel {
 
       if (references) {
         for (const ref of references) {
-          let result = globalAR.getOptionalValue<ResultModel>(
+          let result = globalAR.getOptionalValue<ResultEntity>(
             `${ref.name}-${sampleId}`
           );
 
           if (!result) {
             const resultEntity = globalAR.getValue<
-              PolymerModel | ChemicalModel
+              PolymerEntity | ChemicalEntity
             >(ref.name);
-            result = new ResultModel(ref.name, "result", resultEntity);
+            result = new ResultEntity(ref.name, "result", resultEntity);
             result.add(PROPERTIES.TIME_POINT, timePoint || null);
             result.add(PROPERTIES.SAMPLE_ID, sampleId);
           }

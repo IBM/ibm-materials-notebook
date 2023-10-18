@@ -1,9 +1,9 @@
 import { ChemicalSet } from "@ibm-materials/cmdl-chemicals";
-import { ModelActivationRecord } from "./model-AR";
+import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
 import { PROPERTIES, TAGS, ModelType, TYPES } from "@ibm-materials/cmdl-types";
-import { ProtocolModel, ReactionModel } from "./models";
-import { logger } from "../logger";
+import { ProtocolEntity, ReactionEntity } from "../entities";
+import { logger } from "../../logger";
 
 /**
  * Interpreter model to compute reaction stoichiometry for an experiment
@@ -13,13 +13,13 @@ export class Reaction extends BaseModel {
 
   constructor(
     name: string,
-    modelAR: ModelActivationRecord,
+    modelAR: ActivationRecord,
     type: ModelType.REACTION
   ) {
     super(name, modelAR, type);
   }
 
-  public execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ActivationRecord): void {
     try {
       const chemicals =
         this.modelAR.getValue<TYPES.ChemicalReference[]>("references");
@@ -76,7 +76,7 @@ export class Reaction extends BaseModel {
         PROPERTIES.PROTOCOL
       );
 
-      const reactionModel = new ReactionModel(this.name, this.type);
+      const reactionModel = new ReactionEntity(this.name, this.type);
       reactionModel.add(PROPERTIES.TEMPERATURE, temperature);
       reactionModel.add(PROPERTIES.VOLUME, volume);
       reactionModel.add(PROPERTIES.REACTION_TIME, reaction_time);
@@ -84,7 +84,7 @@ export class Reaction extends BaseModel {
       reactionModel.insertChemicals(reactants, globalAR);
 
       if (protocol) {
-        const protocolModel = globalAR.getValue<ProtocolModel>(protocol.ref);
+        const protocolModel = globalAR.getValue<ProtocolEntity>(protocol.ref);
         const reactionOutput = reactionModel.getReactionValues();
         protocolModel.extractReferences(reactionOutput);
         const serializedProtocol = protocolModel.serializeProtocol();

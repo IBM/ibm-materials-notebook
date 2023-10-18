@@ -16,6 +16,9 @@ export type Product = {
   components?: ComplexComponents[];
 };
 
+/**
+ * TODO: add temperature
+ */
 export interface FlowRxn extends BaseModel {
   type: ModelType.FLOW_REACTION;
   reactions: ReactorGroupOutput[];

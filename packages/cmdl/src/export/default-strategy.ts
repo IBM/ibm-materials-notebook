@@ -1,18 +1,17 @@
 import { TYPES } from "@ibm-materials/cmdl-types";
 import { ExportStrategy } from "./base-template";
-import { Model } from "../intepreter";
+import { Entity } from "../intepreter";
 import {
   CharDataModel,
   CharFileReader,
-  ChemicalModel,
-  ComplexModel,
-  PolymerGraphModel,
-  PolymerModel,
-  ProtocolModel,
-  ReactionModel,
-  ReactorModel,
-  ResultModel,
-} from "../intepreter/models";
+  ChemicalEntity,
+  ComplexEntity,
+  PolymerGraphEntity,
+  PolymerEntity,
+  ReactionEntity,
+  ReactorEntity,
+  ResultEntity,
+} from "../intepreter/entities";
 import { logger } from "../logger";
 
 interface RecordMetadata {
@@ -22,26 +21,23 @@ interface RecordMetadata {
 }
 
 type EntityModels =
-  | ChemicalModel
-  | PolymerModel
-  | ReactorModel
-  | ComplexModel
-  | PolymerGraphModel;
+  | ChemicalEntity
+  | PolymerEntity
+  | ReactorEntity
+  | ComplexEntity
+  | PolymerGraphEntity;
 
 export class DefaultExport implements ExportStrategy {
   title?: string;
   tags: string[] = [];
-  metadata?: RecordMetadata;
-  entities: any[] = [];
+  metadata?: RecordMetadata; //? expand meta data
+  entities: unknown[] = [];
   reactions: TYPES.Reaction[] = [];
-  flowReactions: any[] = [];
-  solutions: any[] = [];
-  results: any[] = [];
-  charData: any[] = [];
-  files: any[] = [];
-  protocols: any[] = [];
+  results: TYPES.Result[] = [];
+  charData: TYPES.CharDataOutput[] = [];
+  files: { fileName: string; data: string[][] }[] = [];
 
-  private processMetadata(model: Model<TYPES.MetaData>) {
+  private processMetadata(model: Entity<TYPES.MetaData>) {
     if (this.metadata) {
       //should only have one metadata group per doc
       return;
@@ -67,20 +63,14 @@ export class DefaultExport implements ExportStrategy {
     this.entities.push(modelData);
   }
 
-  private processReaction(rxn: ReactionModel) {
+  private processReaction(rxn: ReactionEntity) {
     const rxnData = rxn.export();
     this.reactions.push(rxnData);
   }
 
-  // private processSolution(soln: any[]) {}
-  // private processFlowReactions(flowRxns: any[]) {}
-  private processResult(result: ResultModel) {
+  private processResult(result: ResultEntity) {
     const resultData = result.export();
     this.results.push(resultData);
-  }
-  private processProtocols(protocol: ProtocolModel) {
-    const data = protocol.export();
-    this.protocols.push(data);
   }
   private processCharData(charData: CharDataModel) {
     const data = charData.export();
@@ -91,28 +81,26 @@ export class DefaultExport implements ExportStrategy {
     this.files.push(data);
   }
 
-  public compile(modelArr: Model<unknown>[]): any {
+  public compile(modelArr: Entity<unknown>[]) {
     for (const model of modelArr) {
       if (
-        model instanceof ChemicalModel ||
-        model instanceof ReactorModel ||
-        model instanceof PolymerModel ||
-        model instanceof PolymerGraphModel ||
-        model instanceof ComplexModel
+        model instanceof ChemicalEntity ||
+        model instanceof ReactorEntity ||
+        model instanceof PolymerEntity ||
+        model instanceof PolymerGraphEntity ||
+        model instanceof ComplexEntity
       ) {
         this.processEntity(model);
-      } else if (model instanceof ReactionModel) {
+      } else if (model instanceof ReactionEntity) {
         this.processReaction(model);
-      } else if (model instanceof ResultModel) {
+      } else if (model instanceof ResultEntity) {
         this.processResult(model);
       } else if (model instanceof CharDataModel) {
         this.processCharData(model);
-      } else if (model instanceof ProtocolModel) {
-        this.processProtocols(model);
       } else if (model instanceof CharFileReader) {
         this.processFiles(model);
       } else if (model.name === "metadata") {
-        this.processMetadata(model as Model<TYPES.MetaData>);
+        this.processMetadata(model as Entity<TYPES.MetaData>);
       } else {
         logger.verbose(`skipping model: ${model.name}, ${model.type}`);
       }
@@ -123,12 +111,9 @@ export class DefaultExport implements ExportStrategy {
       metadata: this.metadata,
       entities: this.entities,
       reactions: this.reactions,
-      flowReactions: this.flowReactions,
-      solutions: this.solutions,
       results: this.results,
       charData: this.charData,
       files: this.files,
-      protocols: this.protocols,
     };
   }
 }

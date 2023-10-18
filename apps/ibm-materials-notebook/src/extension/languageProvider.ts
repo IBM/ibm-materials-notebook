@@ -13,9 +13,9 @@ class CompletionItemProvider implements vscode.CompletionItemProvider {
 
   public provideCompletionItems(
     document: vscode.TextDocument,
-    position: vscode.Position,
-    token: vscode.CancellationToken,
-    context: vscode.CompletionContext
+    position: vscode.Position
+    // token: vscode.CancellationToken,
+    // context: vscode.CompletionContext
   ): vscode.ProviderResult<
     vscode.CompletionItem[] | vscode.CompletionList<vscode.CompletionItem>
   > {
@@ -42,9 +42,9 @@ class ImportProvder implements vscode.CompletionItemProvider {
 
   public provideCompletionItems(
     document: vscode.TextDocument,
-    position: vscode.Position,
-    token: vscode.CancellationToken,
-    context: vscode.CompletionContext
+    position: vscode.Position
+    // token: vscode.CancellationToken,
+    // context: vscode.CompletionContext
   ): vscode.ProviderResult<
     vscode.CompletionItem[] | vscode.CompletionList<vscode.CompletionItem>
   > {
@@ -78,7 +78,7 @@ class ImportProvder implements vscode.CompletionItemProvider {
     );
 
     const completionItems: vscode.CompletionItem[] = matchingItems.map(
-      (item) => {
+      (item: any) => {
         const textSnippet = new vscode.SnippetString();
 
         textSnippet.appendText(`${item.name} from "./lib/${item.module}";`);
@@ -117,7 +117,7 @@ class SymbolProvider implements vscode.CompletionItemProvider {
     const symbols =
       this.repository._controller.getNamespaceDeclarations(namespace);
 
-    const results = symbols.map((el) => {
+    const results = symbols.map((el: any) => {
       return {
         label: el.name,
         kind: vscode.CompletionItemKind.Value,
@@ -162,7 +162,7 @@ class SymbolMemberProvider implements vscode.CompletionItemProvider {
       return;
     }
 
-    const results = symbols.map((el) => {
+    const results = symbols.map((el: any) => {
       return {
         label: el.name,
         kind: vscode.CompletionItemKind.Field,
@@ -181,8 +181,8 @@ class HoverProvider implements vscode.HoverProvider {
 
   public provideHover(
     document: vscode.TextDocument,
-    position: vscode.Position,
-    token: vscode.CancellationToken
+    position: vscode.Position
+    // token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.Hover> {
     const nodeGroup = this._completionProvider.provideHover(position, document);
     const range = document.getWordRangeAtPosition(position, /[@a-zA-Z0-9-_]+/);
@@ -208,8 +208,8 @@ class SemanticTokenProvider implements vscode.DocumentSemanticTokensProvider {
   private readonly _completionProvider = new CmdlCompletions();
 
   public provideDocumentSemanticTokens(
-    document: vscode.TextDocument,
-    token: vscode.CancellationToken
+    document: vscode.TextDocument
+    // token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.SemanticTokens> {
     const builder = this._completionProvider.provideSemanticTokens(document);
     if (!builder) {

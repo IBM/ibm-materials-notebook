@@ -1,14 +1,14 @@
-import { Model, ChemicalEntity, EntityConfigValues } from "./model";
+import { Entity, CMDLChemEntity, EntityConfigValues } from "./entity";
 import { TYPES, ModelType } from "@ibm-materials/cmdl-types";
 import { PolymerContainer } from "@ibm-materials/cmdl-polymers";
 import Big from "big.js";
 import { logger } from "../../logger";
 
-export class PolymerGraphModel extends Model<TYPES.PolymerGraph> {
+export class PolymerGraphEntity extends Entity<TYPES.PolymerGraph> {
   private graph = new PolymerContainer(this.name);
 
-  public clone(): PolymerGraphModel {
-    const clone = new PolymerGraphModel(this.name, this.type);
+  public clone(): PolymerGraphEntity {
+    const clone = new PolymerGraphEntity(this.name, this.type);
     clone.graph = this.graph.clone();
     return clone;
   }
@@ -84,16 +84,16 @@ export class PolymerGraphModel extends Model<TYPES.PolymerGraph> {
   }
 }
 
-export class ComplexModel extends Model<TYPES.Complex> {}
+export class ComplexEntity extends Entity<TYPES.Complex> {}
 
-export class PolymerModel
-  extends Model<TYPES.Polymer>
-  implements ChemicalEntity
+export class PolymerEntity
+  extends Entity<TYPES.Polymer>
+  implements CMDLChemEntity
 {
-  private graph?: PolymerGraphModel;
+  private graph?: PolymerGraphEntity;
 
   public clone() {
-    const clone = new PolymerModel(this.name, this.type);
+    const clone = new PolymerEntity(this.name, this.type);
     if (this.graph) {
       const cloneGraph = this.graph.clone();
       clone.addGraph(cloneGraph);
@@ -106,7 +106,7 @@ export class PolymerModel
     return clone;
   }
 
-  public addGraph(graph: PolymerGraphModel): void {
+  public addGraph(graph: PolymerGraphEntity): void {
     this.graph = graph;
   }
 

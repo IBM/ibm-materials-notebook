@@ -1,18 +1,21 @@
-import { Model, ChemicalEntity, EntityConfigValues } from "./model";
-import { PolymerModel } from "./polymer";
-import { ChemicalModel } from "./chemicals";
+import { Entity, CMDLChemEntity, EntityConfigValues } from "./entity";
+import { PolymerEntity } from "./polymer";
+import { ChemicalEntity } from "./chemicals";
 import { TYPES, TAGS, PROPERTIES } from "@ibm-materials/cmdl-types";
 import Big from "big.js";
 import { CharFileReader } from "./files";
 
-export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
-  private chemicalEntity: PolymerModel | ChemicalModel;
+export class ResultEntity
+  extends Entity<TYPES.Result>
+  implements CMDLChemEntity
+{
+  private chemicalEntity: PolymerEntity | ChemicalEntity;
   private files: CharFileReader[] = [];
 
   constructor(
     name: string,
     type: string,
-    entity: PolymerModel | ChemicalModel
+    entity: PolymerEntity | ChemicalEntity
   ) {
     super(name, type);
     this.chemicalEntity = entity;
@@ -41,7 +44,7 @@ export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
   }
 
   public getConfigValues(): EntityConfigValues {
-    if (this.chemicalEntity instanceof ChemicalModel) {
+    if (this.chemicalEntity instanceof ChemicalEntity) {
       return this.chemicalEntity.getConfigValues();
     }
 
@@ -82,7 +85,7 @@ export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
 
   public protocolExport() {
     if (
-      this.chemicalEntity instanceof PolymerModel &&
+      this.chemicalEntity instanceof PolymerEntity &&
       this.properties.degree_poly
     ) {
       const values = this.properties.degree_poly.map((el) => ({
@@ -100,11 +103,11 @@ export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
       name: this.name,
       charData: this.files.length ? this.files[0].export() : null,
       structure:
-        this.chemicalEntity instanceof PolymerModel
+        this.chemicalEntity instanceof PolymerEntity
           ? this.chemicalEntity.getGraphString()
           : this.chemicalEntity.getSMILES(),
     };
   }
 }
 
-export class CharDataModel extends Model<TYPES.CharDataOutput> {}
+export class CharDataModel extends Entity<TYPES.CharDataOutput> {}

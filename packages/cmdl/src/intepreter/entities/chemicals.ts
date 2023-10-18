@@ -1,7 +1,7 @@
-import { Model, EntityConfigValues, ChemicalEntity } from "./model";
+import { Entity, EntityConfigValues, CMDLChemEntity } from "./entity";
 import { TYPES } from "@ibm-materials/cmdl-types";
 
-export class FragmentModel extends Model<TYPES.Fragments> {
+export class FragmentsGroup extends Entity<TYPES.Fragments> {
   public getFragmentMap() {
     const fragmentMap: Record<string, string> = {};
 
@@ -13,9 +13,9 @@ export class FragmentModel extends Model<TYPES.Fragments> {
   }
 }
 
-export class ChemicalModel
-  extends Model<TYPES.Chemical>
-  implements ChemicalEntity
+export class ChemicalEntity
+  extends Entity<TYPES.Chemical>
+  implements CMDLChemEntity
 {
   public getSMILES() {
     return this.properties.smiles;

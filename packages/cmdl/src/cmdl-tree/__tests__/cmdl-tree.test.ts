@@ -5,11 +5,11 @@ import {
   InvalidPropertyError,
   RefError,
 } from "../../errors";
-import { Compiler } from "../../compiler";
+import { CmdlParser } from "../../cmdl-parser";
 import { CmdlTree } from "../cmdl-tree";
 import { logger } from "../../logger";
 
-const compiler = new Compiler();
+const compiler = new CmdlParser();
 
 describe("Tests for compiler validation errors", () => {
   it(`compiles a valid record`, () => {

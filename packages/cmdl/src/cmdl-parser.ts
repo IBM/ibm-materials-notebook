@@ -10,7 +10,7 @@ import { logger } from "./logger";
 /**
  * Compiler for TYPES. Lexes and parses CMDL syntax.
  */
-export class Compiler {
+export class CmdlParser {
   private readonly astVisitor = new CstVisitor();
   private readonly treeVisitor = new CstRecordVisitor();
 

@@ -1,7 +1,7 @@
 import { TAGS, TYPES } from "@ibm-materials/cmdl-types";
-import { Model } from "./model";
+import { Entity } from "./entity";
 
-export class ProtocolModel extends Model<any> {
+export class ProtocolEntity extends Entity<any> {
   private refMap: Record<string, string> = {}; //reverse mapping of references
   private references: Record<string, { name: string; value: string }> = {};
   private protocol: string[] = [];

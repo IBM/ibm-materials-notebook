@@ -1,6 +1,6 @@
 import { TYPES, PROPERTIES } from "@ibm-materials/cmdl-types";
-import { ModelActivationRecord } from "../model-AR";
-import { ChemicalEntity } from "./model";
+import { ActivationRecord } from "../model-AR";
+import { CMDLChemEntity } from "./entity";
 
 export class ChemicalTranslator {
   /**
@@ -46,12 +46,12 @@ export class ChemicalTranslator {
 
   static createChemicalConfigs(
     chemicals: TYPES.ChemicalReference[],
-    globalAR: ModelActivationRecord,
+    globalAR: ActivationRecord,
     params?: { volume?: TYPES.BigQty | null; temperature?: TYPES.BigQty | null }
   ): TYPES.ChemicalConfig[] {
     const configs: TYPES.ChemicalConfig[] = [];
     for (const chemical of chemicals) {
-      const parentModel = globalAR.getValue<ChemicalEntity>(chemical.name);
+      const parentModel = globalAR.getValue<CMDLChemEntity>(chemical.name);
 
       const quantity = this.extractQuantity(chemical);
       const configValues = parentModel.getConfigValues();

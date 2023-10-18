@@ -1,24 +1,24 @@
-import { ModelActivationRecord } from "./model-AR";
+import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
 import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
-import { ReactorModel } from "./models";
+import { ReactorEntity } from "../entities";
 
 export class Reactor extends BaseModel {
   constructor(
     name: string,
-    modelAR: ModelActivationRecord,
+    modelAR: ActivationRecord,
     type: ModelType.REACTOR_GRAPH
   ) {
     super(name, modelAR, type);
   }
 
-  public execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ActivationRecord): void {
     const nodes =
       this.modelAR.getValue<(TYPES.ReactorNode | TYPES.Reactor)[]>(
         "components"
       );
 
-    const reactorModel = new ReactorModel(this.name, this.type);
+    const reactorModel = new ReactorEntity(this.name, this.type);
     reactorModel.initializeReactor(nodes);
 
     globalAR.setValue(this.name, reactorModel);

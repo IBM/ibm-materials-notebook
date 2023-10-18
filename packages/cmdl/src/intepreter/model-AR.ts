@@ -1,32 +1,23 @@
-import { logger } from "../logger";
-
 /**
  * Activation record for managing computed model values and properties for each scope
  */
-export class ModelActivationRecord {
-  name: string;
-  type: string;
-  uri: string;
-  private properties = new Map<string, unknown>();
+export class ActivationRecord {
+  private properties = {} as Record<string, unknown>;
 
-  constructor(type: string, name: string, uri: string) {
-    this.type = type;
-    this.uri = uri;
-    this.name = name;
-  }
+  constructor(public name: string, public uri: string) {}
 
   /**
    * Method to compile values into an array on the AR. Creates an array if does not exist.
    * @param key string
    * @param value T - item to be merged into an array
    */
-  public mergeArrayValue<T>(key: string, value: T) {
-    const arrayValues = this.properties.get(key);
+  public mergeArrayValue(key: string, value: unknown) {
+    const arrayValues = this.properties[key];
 
     if (Array.isArray(arrayValues)) {
       arrayValues.push(value);
     } else {
-      this.properties.set(key, [value]);
+      this.properties[key] = [value];
     }
   }
 
@@ -35,21 +26,21 @@ export class ModelActivationRecord {
    * @param key string
    * @param value any
    */
-  public setValue(key: string, value: any) {
-    this.properties.set(key, value);
+  public setValue(key: string, value: unknown) {
+    this.properties[key] = value;
   }
 
   /**
    * Attempts to retrieve a property on the AR. Throws an error if undefined.
-   * @param key string
-   * @returns T
+   * @param key K
+   * @returns T[K]
    */
   public getValue<T>(key: string) {
-    const property = this.properties.get(key);
+    const property = this.properties[key];
 
     if (!property) {
       throw new Error(
-        `unable to locate ${key} on activation record ${this.name}`
+        `unable to locate ${key as string} on activation record ${this.name}`
       );
     }
 
@@ -59,10 +50,10 @@ export class ModelActivationRecord {
   /**
    * Attempts to retrieve a property on the AR. Returns undefined if not found.
    * @param key string
-   * @returns unknown
+   * @returns T[K]
    */
   public getOptionalValue<T>(key: string) {
-    const property = this.properties.get(key);
+    const property = this.properties[key];
 
     if (!property) {
       return undefined;
@@ -76,7 +67,7 @@ export class ModelActivationRecord {
    * @returns [IterableIterator]
    */
   public all() {
-    return this.properties.entries();
+    return Object.entries(this.properties);
   }
 
   /**
@@ -84,7 +75,7 @@ export class ModelActivationRecord {
    * @returns [IterableIterator]
    */
   public values() {
-    return this.properties.values();
+    return Object.values(this.properties);
   }
 
   /**
@@ -92,12 +83,15 @@ export class ModelActivationRecord {
    * @returns string
    */
   public print() {
-    const header = `Activation Record: ${this.name}\ntype:${this.type}\nURI: ${this.uri}\n------------`;
+    const header = `Activation Record: ${this.name}\nURI: ${this.uri}\n------------`;
 
     let body = ``;
 
-    for (const [key, value] of this.properties) {
-      body = body + "\n" + `${key}: ${JSON.stringify(value, null, 2)}`;
+    for (const key in this.properties) {
+      body =
+        body +
+        "\n" +
+        `${key}: ${JSON.stringify(this.properties[key], null, 2)}`;
     }
 
     return header + "\n" + body;
@@ -107,19 +101,14 @@ export class ModelActivationRecord {
 /**
  * Facade class for global memory which proxies all inherited methods to ModelARManager
  */
-class GlobalActivationRecord extends ModelActivationRecord {
-  manager: ModelARManager;
-  constructor(
-    type: string,
-    name: string,
-    uri: string,
-    manager: ModelARManager
-  ) {
-    super(type, name, uri);
+class GlobalActivationRecord extends ActivationRecord {
+  manager: ActivationRecordTable;
+  constructor(name: string, uri: string, manager: ActivationRecordTable) {
+    super(name, uri);
     this.manager = manager;
   }
 
-  public mergeArrayValue(key: string, value: any): void {
+  public mergeArrayValue(key: string, value: unknown): void {
     this.manager.mergeArrayValue(this.uri, key, value);
   }
 
@@ -131,45 +120,32 @@ class GlobalActivationRecord extends ModelActivationRecord {
     return this.manager.getOptionalValue<T>(key);
   }
 
-  public setValue(key: string, value: any): void {
+  public setValue(key: string, value: unknown): void {
     this.manager.setValue(this.uri, key, value);
   }
 
   public print(): string {
     return this.manager.print();
   }
-
-  public all() {
-    logger.warn(
-      `getting all values from globalAR! Returning empty iterator...`
-    );
-    return new Map().entries();
-  }
 }
 
 /**
- * Manages global AR for each cell. Creates a proxy class for use as global AR during model evaluation.
+ * Manages activation records for each document. Creates a proxy class for use as global AR during model evaluation.
  */
-export class ModelARManager {
-  private records = new Map<string, ModelActivationRecord>();
+export class ActivationRecordTable {
+  private records = new Map<string, ActivationRecord>();
 
   constructor(public namespace: string) {}
 
   /**
    * Creates global AR proxy to ModelARManager. Used as global memory during model tabulation/execution.
-   * @param cellUri string
+   * @param uri string
    * @returns GlobalActivationRecord
    */
-  public createGlobalAR(cellUri: string): GlobalActivationRecord {
-    const cellAR = new ModelActivationRecord("cellAR", "cellAR", cellUri);
-    this.records.set(cellUri, cellAR);
-
-    const globalAR = new GlobalActivationRecord(
-      "GLOBAL",
-      "GLOBAL",
-      cellUri,
-      this
-    );
+  public createGlobalAR(uri: string): GlobalActivationRecord {
+    const cellAR = new ActivationRecord("cellAR", uri);
+    this.records.set(uri, cellAR);
+    const globalAR = new GlobalActivationRecord("GLOBAL", uri, this);
 
     return globalAR;
   }
@@ -177,9 +153,9 @@ export class ModelARManager {
   /**
    * Retrieves an AR for a cell based on its URI string. Throws an error if undefined.
    * @param uri string
-   * @returns ModelActivationRecord
+   * @returns ActivationRecord
    */
-  public getRecord(uri: string): ModelActivationRecord {
+  public getRecord(uri: string): ActivationRecord {
     const record = this.records.get(uri);
 
     if (!record) {
@@ -235,7 +211,6 @@ export class ModelARManager {
     const value = this.searchRecords<T>(key);
 
     if (!value) {
-      logger.error(`Unable to locate ${key}`);
       throw new Error(`Unable to locate ${key}`);
     }
 
@@ -263,7 +238,7 @@ export class ModelARManager {
    * @param key string
    * @param values any
    */
-  public setValue(uri: string, key: string, values: any): void {
+  public setValue(uri: string, key: string, values: unknown): void {
     const record = this.getRecord(uri);
     record.setValue(key, values);
   }
@@ -274,7 +249,7 @@ export class ModelARManager {
    * @param key string
    * @param values any
    */
-  public mergeArrayValue(uri: string, key: string, values: any): void {
+  public mergeArrayValue(uri: string, key: string, values: unknown): void {
     const record = this.getRecord(uri);
     record.mergeArrayValue(key, values);
   }
@@ -287,7 +262,7 @@ export class ModelARManager {
     const allValues: T[] = [];
 
     for (const record of this.records.values()) {
-      for (const [key, value] of record.all()) {
+      for (const value of record.values()) {
         allValues.push(value as T);
       }
     }

@@ -1,13 +1,13 @@
 import { ModelVisitor, ModelARManager } from "../intepreter";
-import { Compiler } from "../compiler";
+import { CmdlParser } from "../cmdl-parser";
 import { SymbolTable, SymbolTableBuilder } from "../symbols";
 import { CmdlTree } from "../cmdl-tree";
 import { TYPES } from "@ibm-materials/cmdl-types";
 import { ErrorTable } from "../error-manager";
-import { Controller } from "../controller";
+import { CmdlCompiler } from "../cmdl-compiler";
 import { SymbolTableManager } from "../symbol-manager";
 
-const compiler = new Compiler();
+const compiler = new CmdlParser();
 const symbolManager = new SymbolTableManager();
 
 function evalutateText(text: string) {
@@ -33,7 +33,7 @@ function evalutateText(text: string) {
 }
 
 function evaluateModel(recordTree: CmdlTree) {
-  const controller = new Controller("/");
+  const controller = new CmdlCompiler("/");
   const uri = "test/uri";
   const cellUri = "test/uri/cell";
   const manager = new ModelARManager(uri);

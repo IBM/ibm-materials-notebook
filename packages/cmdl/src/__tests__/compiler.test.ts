@@ -1,10 +1,10 @@
 import { DuplicationError, ErrorCode } from "../errors";
-import { Compiler } from "../compiler";
+import { CmdlParser } from "../cmdl-parser";
 import { SymbolTable, SymbolTableBuilder } from "../symbols";
 import { ErrorTable } from "../error-manager";
 import { SymbolTableManager } from "../symbol-manager";
 
-const compiler = new Compiler();
+const compiler = new CmdlParser();
 const symbolManager = new SymbolTableManager();
 
 function evalutateText(text: string) {

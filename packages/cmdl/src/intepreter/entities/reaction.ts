@@ -1,20 +1,20 @@
 import { ChemicalSet } from "@ibm-materials/cmdl-chemicals";
-import { Model } from "./model";
+import { Entity } from "./entity";
 import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
 import {
   ReactorChemicals,
   ReactorContainer,
 } from "@ibm-materials/cmdl-reactors";
-import { ModelActivationRecord } from "../model-AR";
+import { ActivationRecord } from "../model-AR";
 import { ChemicalTranslator } from "./utils";
 import { logger } from "../../logger";
 
-export class ReactionModel extends Model<TYPES.Reaction> {
+export class ReactionEntity extends Entity<TYPES.Reaction> {
   private chemicals = new ChemicalSet();
 
   public insertChemicals(
     chemRefs: TYPES.ChemicalReference[],
-    globalAR: ModelActivationRecord
+    globalAR: ActivationRecord
   ) {
     const chemConfigs = ChemicalTranslator.createChemicalConfigs(
       chemRefs,
@@ -45,12 +45,12 @@ export class ReactionModel extends Model<TYPES.Reaction> {
   }
 }
 
-export class SolutionModel extends Model<TYPES.Solution> {
+export class SolutionEntity extends Entity<TYPES.Solution> {
   private chemicals = new ChemicalSet();
 
   public insertChemicals(
     chemRefs: TYPES.ChemicalReference[],
-    globalAR: ModelActivationRecord
+    globalAR: ActivationRecord
   ) {
     const chemConfigs = ChemicalTranslator.createChemicalConfigs(
       chemRefs,
@@ -74,7 +74,7 @@ export class SolutionModel extends Model<TYPES.Solution> {
   }
 }
 
-export class ReactorModel extends Model<TYPES.Reactor> {
+export class ReactorEntity extends Entity<TYPES.Reactor> {
   private reactor = new ReactorContainer();
 
   public initializeReactor(nodes: (TYPES.ReactorNode | TYPES.Reactor)[]): void {
@@ -101,10 +101,10 @@ export class ReactorModel extends Model<TYPES.Reactor> {
   }
 }
 
-export class FlowRxnModel extends Model<TYPES.FlowRxn> {
-  private reactorModel?: ReactorModel;
+export class FlowRxnEntity extends Entity<TYPES.FlowRxn> {
+  private reactorModel?: ReactorEntity;
 
-  public addReactor(model: ReactorModel): void {
+  public addReactor(model: ReactorEntity): void {
     this.reactorModel = model;
   }
 

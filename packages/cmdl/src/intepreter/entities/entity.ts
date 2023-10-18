@@ -14,11 +14,11 @@ export type EntityConfigValues = {
   density?: Big;
 };
 
-export interface ChemicalEntity {
+export interface CMDLChemEntity {
   getConfigValues(): EntityConfigValues;
 }
 
-export class Model<T> implements Clonable, Exportable<T> {
+export class Entity<T> implements Clonable, Exportable<T> {
   protected readonly properties: T = {} as T;
 
   constructor(public name: string, public type: string) {}

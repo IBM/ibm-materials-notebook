@@ -1,13 +1,13 @@
 import * as vscode from "vscode";
 import { NOTEBOOK } from "./languageProvider";
 import { logger } from "../logger";
-import { CMDLController } from "@ibm-materials/cmdl";
+import { CmdlCompiler } from "@ibm-materials/cmdl";
 
 /**
  * Manages all cmdl documents (.cmdnb & .cmdl) in workspace
  */
 export class Repository {
-  readonly _controller = new CMDLController.Controller(
+  readonly _controller = new CmdlCompiler(
     vscode.workspace.workspaceFolders
       ? vscode.workspace.workspaceFolders[0].uri.fsPath
       : ""
@@ -134,21 +134,21 @@ export class Repository {
       })
     );
 
-    this._disposables.push(
-      vscode.workspace.onDidRenameFiles((event) => {
-        for (const file of event.files) {
-          const oldFile = {
-            uri: file.oldUri.toString(),
-            fileName: this.extractFileName(file.oldUri),
-          };
-          const newFile = {
-            uri: file.newUri.toString(),
-            fileName: this.extractFileName(file.newUri),
-          };
-          // this._controller.renameFile(oldFile, newFile);
-        }
-      })
-    );
+    // this._disposables.push(
+    //   vscode.workspace.onDidRenameFiles((event) => {
+    //     for (const file of event.files) {
+    //       // const oldFile = {
+    //       //   uri: file.oldUri.toString(),
+    //       //   fileName: this.extractFileName(file.oldUri),
+    //       // };
+    //       // const newFile = {
+    //       //   uri: file.newUri.toString(),
+    //       //   fileName: this.extractFileName(file.newUri),
+    //       // };
+    //       // this._controller.renameFile(oldFile, newFile);
+    //     }
+    //   })
+    // );
 
     this._disposables.push(
       vscode.workspace.onDidDeleteFiles((event) => {

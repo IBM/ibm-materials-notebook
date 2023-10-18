@@ -15,25 +15,25 @@ import {
 import path from "path";
 import { AstVisitor } from "../symbols";
 import { ModelFactory } from "./model-factory";
-import { ModelActivationRecord } from "./model-AR";
+import { ActivationRecord } from "./model-AR";
 import { CmdlStack } from "../cmdl-stack";
 import { logger } from "../logger";
 import { typeManager, ModelType, GROUPS } from "@ibm-materials/cmdl-types";
-import { Controller } from "../controller";
-import { Clonable, CharFileReader, ProtocolModel } from "./models";
+import { CmdlCompiler } from "../cmdl-compiler";
+import { Clonable, CharFileReader, ProtocolEntity } from "./entities";
 
 /**
  * Visits record tree and executes different models on elements
  */
 export class ModelVisitor implements AstVisitor {
   uri: string;
-  private readonly controller: Controller;
-  private modelStack = new CmdlStack<ModelActivationRecord>();
+  private readonly controller: CmdlCompiler;
+  private modelStack = new CmdlStack<ActivationRecord>();
 
   constructor(
-    globalAR: ModelActivationRecord,
+    globalAR: ActivationRecord,
     uri: string,
-    controller: Controller
+    controller: CmdlCompiler
   ) {
     this.modelStack.push(globalAR);
     this.uri = uri;
@@ -55,7 +55,7 @@ export class ModelVisitor implements AstVisitor {
    */
   public visitModelNode(node: NamedGroup): void {
     const modelType = typeManager.getModel(node.name);
-    const modelAR = new ModelActivationRecord(modelType, node.name, this.uri);
+    const modelAR = new ActivationRecord(node.name, this.uri);
 
     this.modelStack.push(modelAR);
 
@@ -85,15 +85,9 @@ export class ModelVisitor implements AstVisitor {
    * @param node ReferenceGroup
    */
   public visitReferenceGroup(node: ReferenceGroup): void {
-    logger.verbose(`Starting model execution for reference ${node.name}`);
-
     const path = node.getPath();
 
-    const modelAR = new ModelActivationRecord(
-      ModelType.REFERENCE_GROUP,
-      node.name,
-      this.uri
-    );
+    const modelAR = new ActivationRecord(node.name, this.uri);
 
     this.modelStack.push(modelAR);
 
@@ -147,10 +141,9 @@ export class ModelVisitor implements AstVisitor {
    * @param node GeneralGroup
    */
   public visitGeneralGroup(node: GeneralGroup): void {
-    logger.verbose(`Starting model execution for general group ${node.name}`);
     const groupModel =
       node.name === GROUPS.FRAGMENTS ? ModelType.FRAGMENTS : ModelType.GROUP;
-    const modelAR = new ModelActivationRecord(groupModel, node.name, this.uri);
+    const modelAR = new ActivationRecord(node.name, this.uri);
 
     this.modelStack.push(modelAR);
 
@@ -162,7 +155,6 @@ export class ModelVisitor implements AstVisitor {
 
     this.modelStack.pop();
     model.execute(this.modelStack.peek());
-    logger.verbose(`...finished group model execution for ${node.name}`);
   }
 
   /**
@@ -176,8 +168,8 @@ export class ModelVisitor implements AstVisitor {
     const nodeName = node.aliasToken ? node.aliasToken.image : node.name;
 
     const sourceNamespace = path.basename(node.source);
-    const namespaceManager = this.controller.getNamespaceAR(sourceNamespace);
     const sourceSymbols = this.controller.getSymbolTable(sourceNamespace);
+    const namespaceRecord = this.controller.getNamespaceAR(sourceNamespace);
 
     try {
       sourceSymbols.get(node.name);
@@ -185,12 +177,12 @@ export class ModelVisitor implements AstVisitor {
       logger.warn(`No symbol found for ${node.name}, searching for results...`);
     }
 
-    let values = namespaceManager.getOptionalValue<Clonable>(node.name);
+    let values = namespaceRecord.getOptionalValue<Clonable>(node.name);
 
     if (!values) {
       try {
         this.controller.executeNamespace(sourceNamespace);
-        values = namespaceManager.getValue<Clonable>(node.name);
+        values = namespaceRecord.getValue<Clonable>(node.name);
       } catch (error) {
         logger.error(`Encountered error during import operation: ${error}`);
         throw new Error(`Unable to import ${node.name} from ${node.source}`);
@@ -199,6 +191,7 @@ export class ModelVisitor implements AstVisitor {
 
     const globalAR = this.modelStack.peek();
     globalAR.setValue(nodeName, values.clone());
+    logger.verbose(`completed import operation for ${nodeName}`);
   }
 
   public visitImportFileOp(node: ImportFileOp): void {
@@ -220,7 +213,7 @@ export class ModelVisitor implements AstVisitor {
   }
 
   public visitProtocolGroup(group: ProtocolGroup): void {
-    const protocolModel = new ProtocolModel(group.identifier, "protocol");
+    const protocolModel = new ProtocolEntity(group.identifier, "protocol");
     const { protocol, references } = group.export();
     protocolModel.initializeProtocol(protocol, references);
 
