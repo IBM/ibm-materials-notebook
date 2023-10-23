@@ -32,9 +32,9 @@ export class DefaultExport implements ExportStrategy {
   tags: string[] = [];
   metadata?: RecordMetadata; //? expand meta data
   entities: unknown[] = [];
-  reactions: TYPES.Reaction[] = [];
-  results: TYPES.Result[] = [];
-  charData: TYPES.CharDataOutput[] = [];
+  reactions: any[] = [];
+  results: any[] = [];
+  charData: any[] = [];
   files: { fileName: string; data: string[][] }[] = [];
 
   private processMetadata(model: Entity<TYPES.MetaData>) {
@@ -46,7 +46,6 @@ export class DefaultExport implements ExportStrategy {
     const metadata = model.export();
 
     const recordMetadata: RecordMetadata = {
-      record_id: metadata.record_id,
       date: metadata.date,
       notebookId: metadata.notebookId,
     };

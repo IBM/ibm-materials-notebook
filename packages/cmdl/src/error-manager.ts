@@ -1,10 +1,10 @@
 import { BaseError } from "./errors";
 
 export class DiagnosticManager {
-  private _documents = new Map<string, ErrorTable>();
+  private _tables = new Map<string, ErrorTable>();
 
   public get(uri: string) {
-    const documentErrors = this._documents.get(uri);
+    const documentErrors = this._tables.get(uri);
     if (!documentErrors) {
       throw new Error(`Error table not availabe for document: ${uri}`);
     }
@@ -12,14 +12,24 @@ export class DiagnosticManager {
   }
   public create(namespace: string): ErrorTable {
     const newTable = new ErrorTable();
-    this._documents.set(namespace, newTable);
+    this._tables.set(namespace, newTable);
     return newTable;
   }
 
   public delete(namespace: string) {
-    if (this._documents.has(namespace)) {
-      this._documents.delete(namespace);
+    if (this._tables.has(namespace)) {
+      this._tables.delete(namespace);
     }
+  }
+
+  public print() {
+    const header = `Error Tables\n---------------`;
+    let main = ``;
+    for (const table of this._tables.keys()) {
+      main = `${main}\n${table}`;
+    }
+
+    return `${header}${main}`;
   }
 }
 

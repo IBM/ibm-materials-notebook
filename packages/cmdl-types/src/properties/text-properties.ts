@@ -104,13 +104,13 @@ const inchiKey: IProperty = {
   aliases: [],
 };
 
-const recordId: IProperty = {
-  description: "Record Id",
-  detail: "Record Id",
-  name: PROPERTIES.RECORD_ID,
-  type: PropertyTypes.TEXT,
-  aliases: [],
-};
+// const recordId: IProperty = {
+//   description: "Record Id",
+//   detail: "Record Id",
+//   name: PROPERTIES.RECORD_ID,
+//   type: PropertyTypes.TEXT,
+//   aliases: [],
+// };
 
 const refId: IProperty = {
   description: "Reference Id",
@@ -140,7 +140,7 @@ export const textProperties = [
   citation,
   title,
   description,
-  recordId,
+  // recordId,
   limiting,
   refId,
   aliases,

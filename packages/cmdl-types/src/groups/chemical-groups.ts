@@ -18,6 +18,7 @@ export const reaction: IGroup = {
   ],
   subGroups: [],
   properties: [
+    PROPERTIES.DATE,
     PROPERTIES.TEMPERATURE,
     PROPERTIES.VOLUME,
     PROPERTIES.REACTION_TIME,
@@ -37,6 +38,7 @@ export const flowRection: IGroup = {
   referenceProps: [PROPERTIES.INPUT, PROPERTIES.FLOW_RATE, PROPERTIES.ROLES],
   subGroups: [],
   properties: [
+    PROPERTIES.DATE,
     PROPERTIES.REACTOR,
     PROPERTIES.TEMPERATURE,
     PROPERTIES.COLLECTION_TIME,

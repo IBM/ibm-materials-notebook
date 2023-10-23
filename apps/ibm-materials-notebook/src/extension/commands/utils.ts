@@ -40,10 +40,10 @@ export async function processRecordExport(
 
   return new Promise((resolve, reject) => {
     if (experiment) {
-      const cellArr = opened.getCells();
-      for (const cell of cellArr) {
-        // experiment.executeCell(cell.document.uri.toString());
-      }
+      // const cellArr = opened.getCells();
+      // for (const cell of cellArr) {
+      //   // experiment.executeCell(cell.document.uri.toString());
+      // }
 
       // let output = experiment.toJSON();
 

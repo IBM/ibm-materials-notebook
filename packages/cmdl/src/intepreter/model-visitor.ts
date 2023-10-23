@@ -104,7 +104,6 @@ export class ModelVisitor implements AstVisitor {
 
     this.modelStack.pop();
     model.execute(this.modelStack.peek());
-    logger.verbose(`...finished model execution for ${node.name}`);
   }
 
   /**
@@ -164,7 +163,6 @@ export class ModelVisitor implements AstVisitor {
    * @param node ImportOp
    */
   public visitImportOp(node: ImportOp): void {
-    logger.verbose(`Starting model execution for import ${node.name}`);
     const nodeName = node.aliasToken ? node.aliasToken.image : node.name;
 
     const sourceNamespace = path.basename(node.source);
@@ -191,14 +189,11 @@ export class ModelVisitor implements AstVisitor {
 
     const globalAR = this.modelStack.peek();
     globalAR.setValue(nodeName, values.clone());
-    logger.verbose(`completed import operation for ${nodeName}`);
   }
 
   public visitImportFileOp(node: ImportFileOp): void {
     const fileModel = new CharFileReader(node.source);
     fileModel.processFileData();
-
-    logger.verbose(`processed file data`, { meta: fileModel.data });
 
     const globalAR = this.modelStack.peek();
     globalAR.setValue(node.name, fileModel);

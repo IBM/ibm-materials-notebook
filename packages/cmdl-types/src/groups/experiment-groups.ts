@@ -16,7 +16,6 @@ const metadata: IGroup = {
     PROPERTIES.NAME,
     PROPERTIES.DATE,
     PROPERTIES.TAGS,
-    PROPERTIES.RECORD_ID,
     PROPERTIES.EXP_ID,
   ],
 };

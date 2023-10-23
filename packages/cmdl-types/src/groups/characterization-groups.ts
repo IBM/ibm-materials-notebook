@@ -213,6 +213,7 @@ const characteriztionGroup: IGroup = {
     PROPERTIES.TEMP_MELT,
   ],
   properties: [
+    PROPERTIES.DATE,
     PROPERTIES.SAMPLE_ID,
     PROPERTIES.TIME_POINT,
     PROPERTIES.FILE,

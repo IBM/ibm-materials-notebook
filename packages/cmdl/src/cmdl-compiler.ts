@@ -126,7 +126,13 @@ export class CmdlCompiler {
       this._documents.set(notebook.uri, notebook);
       this._documentNamespaces.set(doc.fileName, notebook.uri);
     } else {
-      const recordTree = this.parseDocument(doc, symbolTable, errTable);
+      const recordTree = this.parseCMDL({
+        text: doc.text,
+        uri: doc.uri,
+        fileName: doc.fileName,
+        symbols: symbolTable,
+        errs: errTable,
+      });
       const document = new TextDocument(doc, doc.version, recordTree);
       this._documents.set(doc.uri, document);
       this._documentNamespaces.set(doc.fileName, doc.uri);
@@ -141,13 +147,15 @@ export class CmdlCompiler {
    * @param notebookUri uri of notebook containing cell
    */
   public removeNotebookCell(cellUri: string, notebookUri: string) {
+    logger.info(`removing cell:\nnotebookUri:${notebookUri}\nuri: ${cellUri}`);
     const doc = this.getNotebook(notebookUri);
-
-    doc.removeCell(cellUri);
     const docSymbols = this._symbols.getTable(doc.fileName);
-    const docErrors = this._errors.get(notebookUri);
+    const docErrors = this._errors.get(doc.fileName);
+
     docSymbols.remove(cellUri);
     docErrors.delete(cellUri);
+    doc.removeCell(cellUri);
+    logger.info(`cell ${cellUri} has been removed`);
   }
 
   /**
@@ -163,12 +171,20 @@ export class CmdlCompiler {
     docSymbols.remove(cell.uri);
     docErrors.delete(cell.uri);
 
-    const parsedCell = this.parseCell(
-      cell,
-      doc.fileName,
-      docSymbols,
-      docErrors
-    );
+    const cellTree = this.parseCMDL({
+      text: cell.text,
+      uri: cell.uri,
+      fileName: doc.fileName,
+      symbols: docSymbols,
+      errs: docErrors,
+    });
+
+    const parsedCell = {
+      ...cell,
+      versionParsed: cell.version,
+      ast: cellTree,
+    };
+
     doc.updateCell(cell.uri, parsedCell);
   }
 
@@ -182,12 +198,19 @@ export class CmdlCompiler {
     const docSymbols = this._symbols.getTable(doc.fileName);
     const docErrors = this._errors.get(doc.fileName);
 
-    const parsedCell = this.parseCell(
-      cell,
-      doc.fileName,
-      docSymbols,
-      docErrors
-    );
+    const cellTree = this.parseCMDL({
+      text: cell.text,
+      uri: cell.uri,
+      fileName: doc.fileName,
+      symbols: docSymbols,
+      errs: docErrors,
+    });
+
+    const parsedCell = {
+      ...cell,
+      versionParsed: cell.version,
+      ast: cellTree,
+    };
 
     doc.insertCell(parsedCell);
   }
@@ -205,10 +228,12 @@ export class CmdlCompiler {
       );
     }
 
+    logger.notice(`Unregistering document: ${doc.fileName}`);
     this._symbols.remove(doc.fileName);
     this._errors.delete(uri);
     this._documentNamespaces.delete(doc.fileName);
     this._documents.delete(uri);
+    logger.notice(`Unregistration complete for ${doc.fileName}`);
   }
 
   /**
@@ -226,60 +251,47 @@ export class CmdlCompiler {
     const parsedCells: CMDLCell[] = [];
 
     for (const cell of doc.cells) {
-      const parsedCell = this.parseCell(cell, doc.fileName, symbols, errs);
+      const cellTree = this.parseCMDL({
+        text: cell.text,
+        uri: cell.uri,
+        fileName: doc.fileName,
+        symbols,
+        errs,
+      });
+
+      const parsedCell = {
+        ...cell,
+        versionParsed: cell.version,
+        ast: cellTree,
+      };
+
       parsedCells.push(parsedCell);
     }
 
     return parsedCells;
   }
 
-  /**
-   * TODO: merge to single parse function call
-   */
-  private parseCell(
-    cell: Cell, // -> change to string of text
-    fileName: string,
-    symbols: SymbolTable,
-    errs: ErrorTable
-  ): CMDLCell {
-    const results = this._parser.parse(cell.text);
-    const semanticErrors = results.recordTree.validate();
-    const builder = new SymbolTableBuilder(symbols, errs, fileName, cell.uri);
+  private parseCMDL({
+    text,
+    uri,
+    fileName,
+    symbols,
+    errs,
+  }: {
+    text: string;
+    uri: string;
+    fileName: string;
+    symbols: SymbolTable;
+    errs: ErrorTable;
+  }): CmdlTree {
+    const results = this._parser.parse(text);
+    const builder = new SymbolTableBuilder(symbols, errs, fileName, uri);
     results.recordTree.createSymbolTable(builder);
 
-    symbols.validate(errs);
-    errs.add(cell.uri, results.parserErrors);
-    errs.add(cell.uri, semanticErrors);
-
-    return {
-      ...cell,
-      versionParsed: cell.version,
-      ast: results.recordTree,
-    };
-  }
-
-  /**
-   * TODO: merge to single parse function call
-   */
-  private parseDocument(
-    doc: Text, // -> change to string of text to parse
-    symbols: SymbolTable,
-    errs: ErrorTable
-  ): CmdlTree {
-    const results = this._parser.parse(doc.text);
     const semanticErrors = results.recordTree.validate();
-    const builder = new SymbolTableBuilder(
-      symbols,
-      errs,
-      doc.fileName,
-      doc.uri
-    );
-
-    results.recordTree.createSymbolTable(builder);
-
     symbols.validate(errs);
-    errs.add(doc.uri, results.parserErrors);
-    errs.add(doc.uri, semanticErrors);
+    errs.add(uri, results.parserErrors);
+    errs.add(uri, semanticErrors);
 
     return results.recordTree;
   }
@@ -295,7 +307,13 @@ export class CmdlCompiler {
     const errTable = this._errors.get(doc.fileName);
     errTable.delete(doc.uri);
 
-    const recordTree = this.parseDocument(doc, symbolTable, errTable);
+    const recordTree = this.parseCMDL({
+      text: doc.text,
+      uri: doc.uri,
+      fileName: doc.fileName,
+      symbols: symbolTable,
+      errs: errTable,
+    });
     const document = new TextDocument(doc, doc.version, recordTree);
     this._documents.set(doc.uri, document);
   }

@@ -17,15 +17,8 @@ export class Repository {
     new vscode.EventEmitter<vscode.NotebookDocument>();
   readonly onDidInitializeNotebook = this._onDidInitializeNotebook.event;
 
-  private _onDidRemoveNotebook =
-    new vscode.EventEmitter<vscode.NotebookDocument>();
-  readonly onDidRemoveNotebook = this._onDidRemoveNotebook.event;
-
   private _onDidInitializeText = new vscode.EventEmitter<vscode.TextDocument>();
   readonly onDidInitializeText = this._onDidInitializeText.event;
-
-  private _onDidRemoveText = new vscode.EventEmitter<vscode.TextDocument>();
-  readonly onDidRemoveText = this._onDidRemoveText.event;
 
   private readonly _disposables: vscode.Disposable[] = [];
   private readonly _documents = new Map<
@@ -41,9 +34,7 @@ export class Repository {
         }
 
         const notebookUri = notebookDoc.uri.toString();
-        logger.silly(`Opening ${notebookUri}....`);
         if (notebookDoc.uri.fragment) {
-          logger.debug(`receiving ${notebookDoc.uri.scheme}`);
           return;
         }
 
@@ -59,26 +50,8 @@ export class Repository {
     );
 
     this._disposables.push(
-      vscode.workspace.onDidCloseNotebookDocument((notebook) => {
-        const notebookUri = notebook.uri.toString();
-        if (this._documents.has(notebookUri)) {
-          //? remove diagnostics
-          // this._controller.unregister(notebookUri);
-
-          this._onDidRemoveNotebook.fire(notebook);
-        }
-      })
-    );
-
-    this._disposables.push(
       vscode.workspace.onDidChangeNotebookDocument((event) => {
-        const doc = this.find(event.notebook.uri);
-
-        if (!doc) {
-          return;
-        }
-
-        const docUri = doc.uri.toString();
+        const docUri = event.notebook.uri.toString();
 
         if (event.contentChanges.length) {
           for (const change of event.contentChanges) {
@@ -125,30 +98,14 @@ export class Repository {
     );
 
     this._disposables.push(
-      vscode.workspace.onDidCloseTextDocument((doc) => {
-        if (doc.languageId !== "cmdl") {
-          return;
+      vscode.workspace.onDidRenameFiles((event) => {
+        for (const file of event.files) {
+          logger.info(`file renamed, unregistering ${file.oldUri.toString()}`);
+          this._documents.delete(file.oldUri.toString());
+          this._controller.unregister(file.oldUri.toString());
         }
-
-        this._onDidRemoveText.fire(doc);
       })
     );
-
-    // this._disposables.push(
-    //   vscode.workspace.onDidRenameFiles((event) => {
-    //     for (const file of event.files) {
-    //       // const oldFile = {
-    //       //   uri: file.oldUri.toString(),
-    //       //   fileName: this.extractFileName(file.oldUri),
-    //       // };
-    //       // const newFile = {
-    //       //   uri: file.newUri.toString(),
-    //       //   fileName: this.extractFileName(file.newUri),
-    //       // };
-    //       // this._controller.renameFile(oldFile, newFile);
-    //     }
-    //   })
-    // );
 
     this._disposables.push(
       vscode.workspace.onDidDeleteFiles((event) => {
@@ -156,7 +113,6 @@ export class Repository {
           const fileUri = uri.toString();
           this._documents.delete(fileUri);
           this._controller.unregister(fileUri);
-          //remove diagnostics
         }
       })
     );
@@ -247,6 +203,7 @@ export class Repository {
     uri: vscode.Uri
   ): vscode.NotebookDocument | vscode.TextDocument | undefined {
     const searchUri = uri.toString();
+
     for (const [documentUri, document] of this._documents) {
       if (documentUri === searchUri) {
         return document;

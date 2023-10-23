@@ -8,7 +8,6 @@ import {
   CharFileReader,
 } from "../entities";
 import { ModelType, PROPERTIES, TYPES } from "@ibm-materials/cmdl-types";
-import { logger } from "../../logger";
 
 /**
  * Output model for characterization samples
@@ -87,7 +86,6 @@ export class CharData extends BaseModel {
             result.addFile(fileModel);
           }
 
-          logger.debug(`setting result: ${result.resultName}`);
           globalAR.setValue(result.resultName, result);
         }
       }
