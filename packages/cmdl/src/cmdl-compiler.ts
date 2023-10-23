@@ -27,9 +27,6 @@ interface CompletionItem {
  * Controls CMDL functions for a given workspace
  * TODO: create export manager
  * TODO: simplify API interface => everything operates through controller
- * TODO: organize methods between those for language server
- * TODO: create priority queue for document registration and loading?
- * TODO: enable manifest files => modules
  * TODO: revise export methods => CMDL, JSON schema
  */
 export class CmdlCompiler {
@@ -91,21 +88,12 @@ export class CmdlCompiler {
   }
 
   /**
-   * TODO: read manifest file => build registration priority queue
-   */
-  //loadManifest {}
-
-  /**
-   * TODO: install/uninstall modules .cmdl-lib => predefined, shared entities
-   */
-  //loadPackage
-
-  /**
    * Method for registering a notebook or text document with the compiler.
    * Performs a parse of the document an constructs symbol and error tables
    * @param doc cmdl notebook or text file
    */
   public register(doc: Notebook | Text) {
+    //check manifest if all modules have been loaded
     if (doc.uri.split(":")[0] === "vscode-notebook-cell") {
       return;
     }
@@ -116,6 +104,7 @@ export class CmdlCompiler {
     }
 
     logger.notice(`Registering ${doc.fileName}`);
+
     const symbolTable = this._symbols.create(doc.fileName);
     const errTable = this._errors.create(doc.fileName);
     this._results.create(doc.fileName);
