@@ -1,7 +1,9 @@
 import { PROPERTIES } from "../properties";
 import { ModelType } from "../groups/group-types";
-import { BigQty, BigQtyUnitless, MeasuredProperty } from "./quantities";
-import { BaseModel } from "./reference";
+import { BigQty, BigQtyUnitless, Export, MeasuredProperty } from "./quantities";
+import { BaseModel, StripType } from "./reference";
+import { PolymerExport } from "./polymer";
+import { ChemicalExport } from "./chemicals";
 
 export type CharReference = {
   name: string;
@@ -61,7 +63,10 @@ export type Result = Partial<MeasuredDataArray> & {
   name: string;
   [PROPERTIES.TIME_POINT]: BigQty | null;
   [PROPERTIES.SAMPLE_ID]: string;
+  [PROPERTIES.SOURCE]?: string;
 };
+
+export type ResultExport = Result & { entity: PolymerExport | ChemicalExport };
 
 export type CharFile = {
   name: string;
@@ -69,10 +74,13 @@ export type CharFile = {
   data: string[][];
 };
 
-export interface CharDataOutput extends BaseModel {
+export interface CharData extends BaseModel {
   type: ModelType.CHAR_DATA;
   [PROPERTIES.TIME_POINT]: BigQty | null;
   [PROPERTIES.SAMPLE_ID]: string;
   [PROPERTIES.TECHNIQUE]: string;
   [PROPERTIES.FILE]: CharFile | null;
+  [PROPERTIES.SOURCE]?: string;
 }
+
+export type CharDataExport = StripType<Export<CharData>>;

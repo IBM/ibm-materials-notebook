@@ -40,6 +40,14 @@ const sources: IProperty = {
   aliases: [],
 };
 
+const source: IProperty = {
+  description: "Source of characterization data",
+  detail: "Characterization source",
+  name: PROPERTIES.SOURCE,
+  type: PropertyTypes.REF_SINGLE,
+  aliases: [],
+};
+
 const component: IProperty = {
   description: "Targets for current node in a graph",
   detail: "Node targets",
@@ -109,4 +117,5 @@ export const referenceProperties = [
   input,
   protocol,
   structure,
+  source,
 ];

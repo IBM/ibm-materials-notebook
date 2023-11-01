@@ -1,6 +1,6 @@
-import { Reference, ChemStates, BaseModel } from "./reference";
+import { Reference, BaseModel, StripType } from "./reference";
 import { PROPERTIES } from "../properties";
-import { BigQty, StringQtyUnitless } from "./quantities";
+import { BigQty, Export, StringQtyUnitless } from "./quantities";
 import { ModelType } from "../groups/group-types";
 
 /**
@@ -14,10 +14,10 @@ export interface Polymer extends BaseModel {
   [PROPERTIES.STRUCTURE]?: Reference; //polymer graph representation reference
 }
 
-export interface PolymerExport extends Polymer {
+export type PolymerExport = StripType<Export<Polymer>> & {
   [PROPERTIES.SMILES]?: string;
   graph_string?: string;
-}
+};
 
 /**
  * Values assigned to nodes in polymer graph

@@ -53,13 +53,6 @@ export function registerCommands(repo: Repository): vscode.Disposable {
 
   subscriptions.push(
     vscode.commands.registerCommand(
-      "ibm-materials-notebook.exportRecordProtocol",
-      () => exportCurrentNotebook(repo, "protocol")
-    )
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(
       "ibm-materials-notebook.exportWorkspace",
       () => exportCurrentWorkspace(repo)
     )

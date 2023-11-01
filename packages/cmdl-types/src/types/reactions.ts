@@ -2,7 +2,8 @@ import { PROPERTIES } from "../properties";
 import { BigQty, Export } from "./quantities";
 import { ModelType } from "../groups/group-types";
 import { ReactionRoles } from "../properties";
-import { BaseModel, Reference, StripType } from "./reference";
+import { BaseModel, Reference } from "./reference";
+import { ReactionChemicalOutput } from "./chemicals";
 import { ChemicalOutput } from "./chemicals";
 import { ReactorGroupOutput } from "./reactors";
 
@@ -33,9 +34,14 @@ export interface Reaction extends BaseModel {
   [PROPERTIES.VOLUME]?: BigQty;
   [PROPERTIES.REACTION_TIME]?: BigQty;
   [PROPERTIES.PROTOCOL]?: string;
+  [PROPERTIES.DATE]?: string;
 }
 
-export type ReactionExport = StripType<Export<Reaction>>;
+export type ReactionExport = Export<Reaction> & {
+  reactants: ReactionChemicalOutput[];
+};
+
+// export type ReactionExport = StripType<Export<Reaction>>;
 
 export type SolutionReference = {
   name: string;

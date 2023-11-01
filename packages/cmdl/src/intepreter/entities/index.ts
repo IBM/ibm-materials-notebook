@@ -1,4 +1,4 @@
-export { ResultEntity, CharDataModel } from "./charData";
+export { ResultEntity, CharDataEntity } from "./charData";
 export { ChemicalEntity, FragmentsGroup } from "./chemicals";
 export { PolymerGraphEntity, PolymerEntity, ComplexEntity } from "./polymer";
 export {

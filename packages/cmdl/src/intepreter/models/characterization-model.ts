@@ -2,7 +2,7 @@ import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
 import {
   ResultEntity,
-  CharDataModel,
+  CharDataEntity,
   PolymerEntity,
   ChemicalEntity,
   CharFileReader,
@@ -31,8 +31,13 @@ export class CharData extends BaseModel {
       );
       const references =
         this.modelAR.getOptionalValue<TYPES.CharReference[]>("references");
-      const file = this.modelAR.getOptionalValue<TYPES.Reference>("file");
-      const charModel = new CharDataModel(this.name, this.type);
+      const file = this.modelAR.getOptionalValue<TYPES.Reference>(
+        PROPERTIES.FILE
+      );
+      const source = this.modelAR.getOptionalValue<TYPES.Reference>(
+        PROPERTIES.SOURCE
+      );
+      const charModel = new CharDataEntity(this.name, this.type);
 
       let fileModel;
       if (file?.ref) {
@@ -48,6 +53,7 @@ export class CharData extends BaseModel {
       charModel.add(PROPERTIES.TIME_POINT, timePoint || null);
       charModel.add(PROPERTIES.TECHNIQUE, technique);
       charModel.add(PROPERTIES.SAMPLE_ID, sampleId);
+      charModel.add(PROPERTIES.SOURCE, source?.ref);
 
       if (references) {
         for (const ref of references) {
@@ -62,6 +68,7 @@ export class CharData extends BaseModel {
             result = new ResultEntity(ref.name, "result", resultEntity);
             result.add(PROPERTIES.TIME_POINT, timePoint || null);
             result.add(PROPERTIES.SAMPLE_ID, sampleId);
+            result.add(PROPERTIES.SOURCE, source?.ref);
           }
 
           for (const [key, value] of Object.entries(ref)) {

@@ -217,6 +217,7 @@ const characteriztionGroup: IGroup = {
     PROPERTIES.SAMPLE_ID,
     PROPERTIES.TIME_POINT,
     PROPERTIES.FILE,
+    PROPERTIES.SOURCE,
     PROPERTIES.TECHNIQUE,
   ],
 };

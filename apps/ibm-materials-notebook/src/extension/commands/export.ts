@@ -8,10 +8,7 @@ import { logger } from "../../logger";
  * Exports current notebook entities to a single JSON file
  * @param repo Repository
  */
-export async function exportCurrentNotebook(
-  repo: Repository,
-  strategy: "default" | "protocol" = "default"
-) {
+export async function exportCurrentNotebook(repo: Repository) {
   const activeNotebook = vscode.window.activeNotebookEditor;
 
   if (
@@ -43,14 +40,7 @@ export async function exportCurrentNotebook(
     `/lib/${fileName}_export.json`
   );
 
-  let recordExport;
-  if (strategy === "default") {
-    recordExport = repo._controller.exportRecord(experiment.uri.toString());
-  } else {
-    recordExport = repo._controller.exportProtocolProd(
-      experiment.uri.toString()
-    );
-  }
+  const recordExport = repo._controller.exportFile(experiment.uri.toString());
   const content = JSON.stringify(recordExport, null, 2);
 
   fs.writeFile(outputPath, content, (err) => {
@@ -94,7 +84,9 @@ export async function exportCurrentWorkspace(repo: Repository) {
 
   const repoOutput = repo._controller.exportRepository(documentUris);
 
-  const content = repoOutput.map((el: any) => JSON.stringify(el)).join("\n");
+  const content = repoOutput
+    .map((el: unknown) => JSON.stringify(el))
+    .join("\n");
 
   fs.writeFile(outputPath, content, (err) => {
     if (err) {

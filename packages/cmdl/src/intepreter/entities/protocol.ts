@@ -1,6 +1,10 @@
 import { TAGS, TYPES } from "@ibm-materials/cmdl-types";
 import { Entity } from "./entity";
 
+/**
+ * Represents protocol templates defined in CMDL notebooks
+ * TODO: update types for protocol
+ */
 export class ProtocolEntity extends Entity<any> {
   private refMap: Record<string, string> = {}; //reverse mapping of references
   private references: Record<string, { name: string; value: string }> = {};
@@ -22,6 +26,10 @@ export class ProtocolEntity extends Entity<any> {
     }
   }
 
+  /**
+   * TODO: only return serialized protocol?
+   * @returns
+   */
   public export() {
     return {
       protocol: [...this.protocol],

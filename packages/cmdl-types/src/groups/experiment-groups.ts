@@ -21,6 +21,7 @@ const metadata: IGroup = {
 };
 
 //TODO: available only in manifest file
+//?deprecated
 const source: IGroup = {
   name: GROUPS.SOURCE,
   description:

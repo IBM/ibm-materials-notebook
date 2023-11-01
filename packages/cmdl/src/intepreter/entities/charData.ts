@@ -1,16 +1,14 @@
-import { Entity, CMDLChemEntity, EntityConfigValues } from "./entity";
+import { Entity, EntityConfigValues, Exportable } from "./entity";
 import { PolymerEntity } from "./polymer";
 import { ChemicalEntity } from "./chemicals";
 import { TYPES, TAGS, PROPERTIES } from "@ibm-materials/cmdl-types";
 import Big from "big.js";
 import { CharFileReader } from "./files";
+import { convertQty } from "@ibm-materials/cmdl-units";
 
-export class ResultEntity
-  extends Entity<TYPES.Result>
-  implements CMDLChemEntity
-{
+export class ResultEntity extends Entity<TYPES.Result> implements Exportable {
   private chemicalEntity: PolymerEntity | ChemicalEntity;
-  private files: CharFileReader[] = [];
+  private files: CharFileReader[] = []; // !deprecated => move to char data instance
 
   constructor(
     name: string,
@@ -54,6 +52,7 @@ export class ResultEntity
     return { ...polymerValues, mw: measuredMn };
   }
 
+  //!deprecated => move to char
   public addFile(file: CharFileReader): void {
     this.files.push(file);
   }
@@ -83,7 +82,7 @@ export class ResultEntity
     }
   }
 
-  public protocolExport() {
+  public export(): TYPES.ResultExport {
     if (
       this.chemicalEntity instanceof PolymerEntity &&
       this.properties.degree_poly
@@ -99,15 +98,28 @@ export class ResultEntity
       }));
       this.chemicalEntity.embedNodeValues(values);
     }
+
+    const resultEntity = this.chemicalEntity.export();
+
     return {
+      ...this.properties,
       name: this.name,
-      charData: this.files.length ? this.files[0].export() : null,
-      structure:
-        this.chemicalEntity instanceof PolymerEntity
-          ? this.chemicalEntity.getGraphString()
-          : this.chemicalEntity.getSMILES(),
+      entity: resultEntity,
     };
   }
 }
 
-export class CharDataModel extends Entity<TYPES.CharDataOutput> {}
+export class CharDataEntity
+  extends Entity<TYPES.CharData>
+  implements Exportable
+{
+  public export(): TYPES.CharDataExport {
+    return {
+      ...this.properties,
+      name: this.name,
+      time_point: this.properties.time_point
+        ? convertQty(this.properties.time_point)
+        : null,
+    };
+  }
+}

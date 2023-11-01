@@ -4,6 +4,7 @@ import { PolymerWeight } from "./weights";
 import { PolymerNode } from "./node";
 import { Container } from "./tree-container";
 import { TYPES } from "@ibm-materials/cmdl-types";
+// import { logger } from "./logger";
 
 /**
  * Top level class for managing polymer tree and graph representations
@@ -90,9 +91,10 @@ export class PolymerContainer {
    * @param values CMDLPolymerTreeValue[] | RefResult[]
    */
   public addGraphValues(values: TYPES.PolymerTreeValue[]) {
-    const baseName = this.tree.getBaseName();
+    // const baseName = this.tree.getBaseName();
     for (const prop of values) {
-      const path = `${baseName}.${prop.path.join(".")}`;
+      const path = prop.path.join(".");
+      // logger.debug(`\nBase Name: ${baseName}\nPath: ${prop.path.join(".")}`);
 
       if ("degree_poly" in prop) {
         this.graph.setNodeProperty(path, {

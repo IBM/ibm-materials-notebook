@@ -1,6 +1,12 @@
 import { TYPES, PROPERTIES } from "@ibm-materials/cmdl-types";
-import { ActivationRecord } from "../model-AR";
-import { CMDLChemEntity } from "./entity";
+import { EntityConfigValues } from "./entity";
+
+type ChemConfigParams = {
+  chemical: TYPES.ChemicalReference;
+  configValues: EntityConfigValues;
+  volume?: TYPES.BigQty | null;
+  temperature?: TYPES.BigQty | null;
+};
 
 export class ChemicalTranslator {
   /**
@@ -44,58 +50,51 @@ export class ChemicalTranslator {
     }
   }
 
-  static createChemicalConfigs(
-    chemicals: TYPES.ChemicalReference[],
-    globalAR: ActivationRecord,
-    params?: { volume?: TYPES.BigQty | null; temperature?: TYPES.BigQty | null }
-  ): TYPES.ChemicalConfig[] {
-    const configs: TYPES.ChemicalConfig[] = [];
-    for (const chemical of chemicals) {
-      const parentModel = globalAR.getValue<CMDLChemEntity>(chemical.name);
+  static createChemicalConfig({
+    chemical,
+    configValues,
+    temperature,
+    volume,
+  }: ChemConfigParams): TYPES.ChemicalConfig {
+    const quantity = this.extractQuantity(chemical);
 
-      const quantity = this.extractQuantity(chemical);
-      const configValues = parentModel.getConfigValues();
+    const chemicalState = chemical?.state
+      ? chemical.state
+      : quantity.name === PROPERTIES.VOLUME || configValues?.density
+      ? TYPES.ChemStates.LIQUID
+      : TYPES.ChemStates.SOLID;
 
-      const chemicalState = chemical?.state
-        ? chemical.state
-        : quantity.name === PROPERTIES.VOLUME || configValues?.density
-        ? TYPES.ChemStates.LIQUID
-        : TYPES.ChemStates.SOLID;
+    const chemicalConfig: TYPES.ChemicalConfig = {
+      name: chemical.name,
+      mw: configValues.mw,
+      density: configValues.density || null,
+      state: chemicalState,
+      roles: chemical.roles,
+      temperature: temperature || undefined,
+      volume: volume || undefined,
+      limiting: chemical?.limiting ? true : false,
+      quantity,
+    };
 
-      const chemicalConfig: TYPES.ChemicalConfig = {
-        name: chemical.name,
-        mw: configValues.mw,
-        density: configValues.density || null,
-        state: chemicalState,
-        roles: chemical.roles,
-        temperature: params?.temperature || undefined,
-        volume: params?.volume || undefined,
-        limiting: chemical?.limiting ? true : false,
-        quantity,
-      };
-
-      if (
-        chemicalConfig.state === TYPES.ChemStates.LIQUID &&
-        !chemicalConfig.density &&
-        chemicalConfig.quantity.name === PROPERTIES.VOLUME
-      ) {
-        throw new Error(
-          `Liquid chemical: ${this.name} has invalid density and a volume quantity`
-        );
-      }
-
-      if (
-        chemicalConfig.state === TYPES.ChemStates.GAS &&
-        chemicalConfig.quantity.name !== PROPERTIES.PRESSURE
-      ) {
-        throw new Error(
-          `Pressure should be used as a quantity for gas reagent ${this.name}`
-        );
-      }
-
-      configs.push(chemicalConfig);
+    if (
+      chemicalConfig.state === TYPES.ChemStates.LIQUID &&
+      !chemicalConfig.density &&
+      chemicalConfig.quantity.name === PROPERTIES.VOLUME
+    ) {
+      throw new Error(
+        `Liquid chemical: ${this.name} has invalid density and a volume quantity`
+      );
     }
 
-    return configs;
+    if (
+      chemicalConfig.state === TYPES.ChemStates.GAS &&
+      chemicalConfig.quantity.name !== PROPERTIES.PRESSURE
+    ) {
+      throw new Error(
+        `Pressure should be used as a quantity for gas reagent ${this.name}`
+      );
+    }
+
+    return chemicalConfig;
   }
 }

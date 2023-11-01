@@ -52,10 +52,6 @@
       {
         "command": "ibm-materials-notebook.exportWorkspace",
         "title": "CMDL: Export Current Workspace"
-      },
-      {
-        "command": "ibm-materials-notebook.exportRecordProtocol",
-        "title": "CMDL: Export Current Record Protocol"
       }
     ],
     "configuration": {

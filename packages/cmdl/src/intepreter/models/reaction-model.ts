@@ -1,7 +1,7 @@
 import { ChemicalSet } from "@ibm-materials/cmdl-chemicals";
 import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
-import { PROPERTIES, TAGS, ModelType, TYPES } from "@ibm-materials/cmdl-types";
+import { PROPERTIES, ModelType, TYPES } from "@ibm-materials/cmdl-types";
 import { ProtocolEntity, ReactionEntity } from "../entities";
 
 /**
@@ -22,40 +22,6 @@ export class Reaction extends BaseModel {
     try {
       const chemicals =
         this.modelAR.getValue<TYPES.ChemicalReference[]>("references");
-      const products: TYPES.Product[] = chemicals
-        .filter(
-          (el: TYPES.ChemicalReference) =>
-            el?.roles && el.roles.includes(TAGS.PRODUCT)
-        )
-        .map((el: TYPES.ChemicalReference) => {
-          const product = globalAR.getValue<
-            TYPES.Chemical | TYPES.Complex | TYPES.Polymer
-          >(el.name);
-
-          if (product.type === ModelType.COMPLEX) {
-            return {
-              name: el.name,
-              roles: el.roles,
-              components: [
-                ...product.components.map(
-                  (comp: TYPES.ComplexPolymer | TYPES.ComplexChemical) => {
-                    return { name: comp.name };
-                  }
-                ),
-              ],
-            };
-          } else {
-            return {
-              name: el.name,
-              roles: el.roles,
-            };
-          }
-        });
-
-      const reactants = chemicals.filter(
-        (el: TYPES.ChemicalReference) =>
-          el?.roles && !el.roles.includes(TAGS.PRODUCT)
-      );
 
       const volume = this.modelAR.getOptionalValue<TYPES.BigQty>(
         PROPERTIES.VOLUME
@@ -67,6 +33,8 @@ export class Reaction extends BaseModel {
         PROPERTIES.REACTION_TIME
       );
 
+      const date = this.modelAR.getOptionalValue<string>(PROPERTIES.DATE);
+
       const protocol = this.modelAR.getOptionalValue<TYPES.Reference>(
         PROPERTIES.PROTOCOL
       );
@@ -75,8 +43,8 @@ export class Reaction extends BaseModel {
       reactionModel.add(PROPERTIES.TEMPERATURE, temperature);
       reactionModel.add(PROPERTIES.VOLUME, volume);
       reactionModel.add(PROPERTIES.REACTION_TIME, reaction_time);
-      reactionModel.add("products", products);
-      reactionModel.insertChemicals(reactants, globalAR);
+      reactionModel.add(PROPERTIES.DATE, date);
+      reactionModel.insertChemicals(chemicals, globalAR);
 
       if (protocol) {
         const protocolModel = globalAR.getValue<ProtocolEntity>(protocol.ref);

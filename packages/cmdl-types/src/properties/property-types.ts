@@ -93,8 +93,7 @@ export enum PROPERTIES {
   DOI = "doi",
   CITATION = "citation",
   DATE = "date",
-  EXP_ID = "exp_id",
-  // RECORD_ID = "record_id",
+  EXP_ID = "exp_id", //deprecated
   SAMPLE_ID = "sample_id",
   SMILES = "smiles",
   BIG_SMILES = "big_smiles",
@@ -125,6 +124,7 @@ export enum PROPERTIES {
   TARGET = "target",
   FRAGMENT = "fragment",
   SOURCES = "sources",
+  SOURCE = "source",
   COMPONENT = "component",
   COMPONENTS = "components",
   NODES = "nodes",
@@ -133,5 +133,5 @@ export enum PROPERTIES {
   REACTOR = "reactor",
   INPUT = "input",
   REF_ID = "ref_id",
-  SOURCE_TYPE = "type",
+  SOURCE_TYPE = "type", //?deprecated
 }

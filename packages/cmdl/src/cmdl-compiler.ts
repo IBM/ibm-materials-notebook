@@ -14,9 +14,14 @@ import { CmdlTree } from "./cmdl-tree";
 import { SymbolTable, SymbolTableBuilder } from "./symbols";
 import { logger } from "./logger";
 import { BaseError } from "./errors";
-import { CMDLExporter, ProtocolProductStrategy } from "./export";
-import { DefaultExport } from "./export/default-strategy";
-import { Entity } from "./intepreter";
+import { FullRecordExport } from "./export/full-export";
+import { Exportable } from "./intepreter";
+import { TYPES } from "@ibm-materials/cmdl-types";
+import {
+  CharDataEntity,
+  ReactionEntity,
+  ResultEntity,
+} from "./intepreter/entities";
 
 interface CompletionItem {
   name: string;
@@ -25,9 +30,6 @@ interface CompletionItem {
 
 /**
  * Controls CMDL functions for a given workspace
- * TODO: create export manager
- * TODO: simplify API interface => everything operates through controller
- * TODO: revise export methods => CMDL, JSON schema
  */
 export class CmdlCompiler {
   private readonly _parser = new CmdlParser();
@@ -310,7 +312,6 @@ export class CmdlCompiler {
   /**
    * Method to execute a document or notebook based on uri of
    * the file.
-   * TODO: parse uri to determine file type?
    * @param docUri uri of text document or notebook
    * @param uri uri of cell of notebook document to be executed
    * @returns unknown[]
@@ -419,81 +420,89 @@ export class CmdlCompiler {
   }
 
   /**
-   * TODO: Move to export manager
    * @param document
    * @param uri
    * @param strategy
    * @returns
    */
-  private createExport(
+  private getExportables(
     document: TextDocument | NotebookDocument,
-    uri: string,
-    strategy: "default" | "protocol" = "default"
+    uri: string
   ) {
+    let recordOutput: Exportable[] = [];
     if (document instanceof TextDocument) {
-      const recordOutput = this._results.getOutput(document.fileName, uri);
-      const exporter = new CMDLExporter(
-        strategy === "default"
-          ? new DefaultExport()
-          : new ProtocolProductStrategy()
-      );
-      const record = exporter.exportRecord(recordOutput as Entity<unknown>[]);
-      return record;
+      recordOutput = this._results.getRecordOutput(document.fileName, uri);
     } else {
-      let notebookResults: unknown[] = [];
       for (const cell of document.cells.values()) {
-        const cellResults = this._results.getOutput(
+        const cellResults = this._results.getRecordOutput(
           document.fileName,
           cell.uri
         );
-        notebookResults = notebookResults.concat(cellResults);
+        recordOutput = recordOutput.concat(cellResults);
       }
-      const exporter = new CMDLExporter(
-        strategy === "default"
-          ? new DefaultExport()
-          : new ProtocolProductStrategy()
-      );
-      const record = exporter.exportRecord(
-        notebookResults as Entity<unknown>[]
-      );
-      return record;
     }
+    return recordOutput;
   }
 
-  /**
-   * Export method for cmdl file
-   * TODO: convert to schema for injesting into export methods
-   * @param uri
-   * @returns
-   */
-  public exportProtocolProd(uri: string) {
-    const document = this.getDocument(uri);
-    return this.createExport(document, uri, "protocol");
+  private createExportRecords(entities: Exportable[]) {
+    const reactions: Record<string, FullRecordExport> = {};
+    const charData: Record<string, TYPES.CharDataExport[]> = {};
+    const resultData: Record<string, TYPES.ResultExport[]> = {};
+
+    for (const entity of entities) {
+      if (entity instanceof ReactionEntity) {
+        const rxnRecord = new FullRecordExport(entity.export());
+        reactions[entity.name] = rxnRecord;
+      } else if (entity instanceof CharDataEntity) {
+        const charItem = entity.export();
+        if (charItem.source) {
+          const charArr =
+            charItem.source in charData ? charData[charItem.source] : [];
+          charArr.push(charItem);
+          charData[charItem.source] = charArr;
+        }
+      } else if (entity instanceof ResultEntity) {
+        const result = entity.export();
+        if (result.source) {
+          const resultArr =
+            result.source in resultData ? resultData[result.source] : [];
+          resultArr.push(result);
+          resultData[result.source] = resultArr;
+        }
+      } else {
+        continue;
+      }
+    }
+
+    const output: unknown[] = [];
+    for (const rxnName in reactions) {
+      const rxn = reactions[rxnName];
+      rxn.results = rxn.results.concat(resultData[rxnName]);
+      rxn.charData = rxn.charData.concat(charData[rxnName]);
+      output.push(rxn.compile());
+    }
+    return output;
   }
 
-  /**
-   * Exports a record from a repository
-   * TODO: change to export file => each file defines a metadata object
-   * TODO: allow selection of export schema
-   * @param uri
-   * @returns
-   */
-  public exportRecord(uri: string) {
+  public exportFile(uri: string) {
     const document = this.getDocument(uri);
-    return this.createExport(document, uri);
+    const entities = this.getExportables(document, uri);
+    const documentOutput = this.createExportRecords(entities);
+    return documentOutput;
   }
 
   /**
    * Export a given repository of cmdl documents
-   * TODO: move to export manager
    * @param uris
    * @returns
    */
   public exportRepository(uris: string[]) {
-    const recordExports: unknown[] = [];
+    let recordExports: unknown[] = [];
     for (const documentUri of uris) {
-      const record = this.exportRecord(documentUri);
-      recordExports.push(record);
+      const document = this.getDocument(documentUri);
+      const entities = this.getExportables(document, documentUri);
+      const documentOutput = this.createExportRecords(entities);
+      recordExports = recordExports.concat(documentOutput);
     }
     return recordExports;
   }

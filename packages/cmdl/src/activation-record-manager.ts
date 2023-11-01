@@ -1,10 +1,12 @@
 import { CmdlCompiler } from "./cmdl-compiler";
+import { ModelVisitor, ActivationRecordTable, Exportable } from "./intepreter";
 import {
-  ModelVisitor,
-  ActivationRecordTable,
-  Entity,
-  Exportable,
-} from "./intepreter";
+  CharDataEntity,
+  ChemicalEntity,
+  PolymerEntity,
+  ReactionEntity,
+  ResultEntity,
+} from "./intepreter/entities";
 
 /**
  * Caches execution results for each namespace
@@ -39,13 +41,36 @@ export class ActivationRecordManager {
     return manager;
   }
 
-  public getOutput(namespace: string, uri: string): Exportable<unknown>[] {
+  public getOutput(namespace: string, uri: string): Exportable[] {
     const namespaceTable = this.get(namespace);
     const record = namespaceTable.getRecord(uri);
-    const finalOutput: Exportable<unknown>[] = [];
+    const finalOutput: Exportable[] = [];
 
     for (const value of record.values()) {
-      if (value instanceof Entity) {
+      if (
+        value instanceof ReactionEntity ||
+        value instanceof ResultEntity ||
+        value instanceof CharDataEntity ||
+        value instanceof PolymerEntity ||
+        value instanceof ChemicalEntity
+      ) {
+        finalOutput.push(value);
+      }
+    }
+    return finalOutput;
+  }
+
+  public getRecordOutput(namespace: string, uri: string): Exportable[] {
+    const namespaceTable = this.get(namespace);
+    const record = namespaceTable.getRecord(uri);
+    const finalOutput: Exportable[] = [];
+
+    for (const value of record.values()) {
+      if (
+        value instanceof ReactionEntity ||
+        value instanceof ResultEntity ||
+        value instanceof CharDataEntity
+      ) {
         finalOutput.push(value);
       }
     }

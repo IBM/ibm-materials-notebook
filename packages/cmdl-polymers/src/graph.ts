@@ -88,7 +88,11 @@ export class PolymerGraph {
    * @param property any
    */
   public setNodeProperty(nodePath: string, property: any): void {
-    logger.debug(`-${[...this.nodes.keys()].join("\n-")}`);
+    logger.debug(
+      `Node Property: ${property.name}\nPath: ${[...this.nodes.keys()].join(
+        ", "
+      )}`
+    );
     const node = this.nodes.get(nodePath);
 
     if (!node) {

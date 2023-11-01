@@ -14,7 +14,6 @@ export interface MetaData {
   [PROPERTIES.NAME]?: string;
   [PROPERTIES.DATE]?: string;
   [PROPERTIES.TAGS]?: TAGS[];
-  // [PROPERTIES.RECORD_ID]?: string;
   [PROPERTIES.EXP_ID]?: string;
   notebookId?: string; //assigned by extension automatically
 }

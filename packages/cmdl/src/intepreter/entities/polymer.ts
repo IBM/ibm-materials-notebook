@@ -1,8 +1,9 @@
-import { Entity, CMDLChemEntity, EntityConfigValues } from "./entity";
+import { Entity, EntityConfigValues, Exportable } from "./entity";
 import { TYPES, ModelType } from "@ibm-materials/cmdl-types";
 import { PolymerContainer } from "@ibm-materials/cmdl-polymers";
 import Big from "big.js";
 import { logger } from "../../logger";
+import { convertQty } from "@ibm-materials/cmdl-units";
 
 export class PolymerGraphEntity extends Entity<TYPES.PolymerGraph> {
   private graph = new PolymerContainer(this.name);
@@ -86,10 +87,7 @@ export class PolymerGraphEntity extends Entity<TYPES.PolymerGraph> {
 
 export class ComplexEntity extends Entity<TYPES.Complex> {}
 
-export class PolymerEntity
-  extends Entity<TYPES.Polymer>
-  implements CMDLChemEntity
-{
+export class PolymerEntity extends Entity<TYPES.Polymer> implements Exportable {
   private graph?: PolymerGraphEntity;
 
   public clone() {
@@ -138,7 +136,12 @@ export class PolymerEntity
     const polymerExport: TYPES.PolymerExport = {
       ...this.properties,
       name: this.name,
-      type: this.type as ModelType.POLYMER,
+      mn_avg: this.properties.mn_avg
+        ? convertQty(this.properties.mn_avg)
+        : undefined,
+      mw_avg: this.properties.mw_avg
+        ? convertQty(this.properties.mw_avg)
+        : undefined,
     };
 
     const graphExport = this.graph?.export();

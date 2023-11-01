@@ -1,4 +1,5 @@
-import { Entity, EntityConfigValues, CMDLChemEntity } from "./entity";
+import { convertQty } from "@ibm-materials/cmdl-units";
+import { Entity, EntityConfigValues, Exportable } from "./entity";
 import { TYPES } from "@ibm-materials/cmdl-types";
 
 export class FragmentsGroup extends Entity<TYPES.Fragments> {
@@ -15,7 +16,7 @@ export class FragmentsGroup extends Entity<TYPES.Fragments> {
 
 export class ChemicalEntity
   extends Entity<TYPES.Chemical>
-  implements CMDLChemEntity
+  implements Exportable
 {
   public getSMILES() {
     return this.properties.smiles;
@@ -28,6 +29,17 @@ export class ChemicalEntity
     return {
       mw: this.properties.molecular_weight.value,
       density: this.properties.density?.value,
+    };
+  }
+
+  public export(): TYPES.ChemicalExport {
+    return {
+      ...this.properties,
+      name: this.name,
+      density: this.properties.density
+        ? convertQty(this.properties.density)
+        : undefined,
+      molecular_weight: convertQty(this.properties.molecular_weight),
     };
   }
 }
