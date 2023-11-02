@@ -1,6 +1,6 @@
 {
   "name": "@ibm-materials/ts-smiles-drawer",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Typescript port of smiles-drawer javascript package for rendering SMILES strings",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

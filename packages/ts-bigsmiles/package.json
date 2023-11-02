@@ -1,6 +1,6 @@
 {
   "name": "@ibm-materials/ts-bigsmiles",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "TypeScript port of BigSMILES parser orignally written in python",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
