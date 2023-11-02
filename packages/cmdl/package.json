@@ -11,7 +11,7 @@
   "dependencies": {
     "chevrotain": "^10.3.0",
     "winston": "^3.11.0",
-    "@ibm-materials/ts-bigsmiles": "^0.0.1"
+    "@ibm-materials/ts-bigsmiles": "*"
   },
   "devDependencies": {
     "@ibm-materials/eslint-config": "*",
