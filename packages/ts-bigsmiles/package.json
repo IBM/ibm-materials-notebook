@@ -1,14 +1,17 @@
 {
   "name": "@ibm-materials/ts-bigsmiles",
   "version": "0.0.1",
-  "description": "Typescript port of BigSMILES parser orignally written in python",
-  "private": true,
+  "description": "TypeScript port of BigSMILES parser orignally written in python",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "dependencies": {
     "winston": "^3.11.0"
   },
+  "files": [
+    "LISCENSE.md",
+    "dist/**/*"
+  ],
   "devDependencies": {
     "@ibm-materials/eslint-config": "*",
     "@ibm-materials/ts-config": "*",
