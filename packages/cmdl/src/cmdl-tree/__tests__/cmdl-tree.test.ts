@@ -121,7 +121,6 @@ describe("Tests for compiler validation errors", () => {
       chemical THF {
         molecular_weight: 80.1 g/mol;
         density: 0.878 g/ml;
-        state: "liquid";
       }
 
       reaction XYZ {
@@ -145,7 +144,6 @@ describe("Tests for compiler validation errors", () => {
       chemical {
         molecular_weight: 80.1 g/mol;
         density: 0.878 g/ml;
-        state: "liquid";
       }
     `;
 
@@ -165,7 +163,7 @@ describe("Tests for compiler validation errors", () => {
         temperature: 100 degC;
         
         @THF {
-            mass: 200 g;
+          mass: 200 g;
         };
     }`;
 

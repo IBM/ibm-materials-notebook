@@ -2,7 +2,6 @@ import { ActivationRecord } from "../model-AR";
 import { GROUPS, ModelType, TYPES } from "@ibm-materials/cmdl-types";
 import { BaseModel } from "./base-model";
 import { Entity, ChemicalEntity, FragmentsGroup } from "../entities";
-import { logger } from "../../logger";
 
 /**
  * Model for reference groups. Tablulates child properties and merges into parent AR.
@@ -28,7 +27,6 @@ export class GroupModel extends BaseModel {
     } else if (this.type === ModelType.FRAGMENTS) {
       const fragmentModel = new FragmentsGroup(this.name, this.type);
       this.copyProperties<TYPES.Fragments>(fragmentModel);
-      logger.silly(`group name: ${this.name}, globalAR: ${globalAR.name}`);
       globalAR.setValue(this.name, fragmentModel);
     } else {
       throw new Error(`Invalid group model for ${this.type}`);
