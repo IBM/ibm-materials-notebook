@@ -140,8 +140,8 @@ const percentYield: IProperty = {
 };
 
 const reaction_time: IProperty = {
-  description: "full time duration of the batch reaction",
-  detail: "time of reaction",
+  description: "Full time duration of a reaction as measured experimentally.",
+  detail: "Time of reaction.",
   name: PROPERTIES.REACTION_TIME,
   type: PropertyTypes.NUMERICAL_UNIT,
   baseUnit: UNITS.SEC,
@@ -150,8 +150,8 @@ const reaction_time: IProperty = {
 };
 
 const time_point: IProperty = {
-  description: "full time duration of the batch reaction",
-  detail: "time of reaction",
+  description: "Time point from reaction for a sample",
+  detail: "Time point of sample which was taken for characterization",
   name: PROPERTIES.TIME_POINT,
   type: PropertyTypes.NUMERICAL_UNIT,
   baseUnit: UNITS.SEC,

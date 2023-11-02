@@ -239,7 +239,7 @@ const ComplexResult: FunctionComponent<{ result: any }> = ({ result }) => {
 };
 
 export const CharData: FunctionComponent<{
-  charData: TYPES.CharDataOutput;
+  charData: TYPES.CharData;
 }> = ({ charData }) => {
   const graphId = `${charData.name}-${charData.sample_id}-trace`;
 

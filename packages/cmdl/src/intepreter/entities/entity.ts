@@ -5,21 +5,20 @@ export interface Clonable {
   clone(): this;
 }
 
-export interface Exportable<T> {
-  export(): T;
+export interface Exportable {
+  export(): unknown;
+}
+
+export interface Renderable {
+  render(): unknown;
 }
 
 export type EntityConfigValues = {
   mw: Big;
   density?: Big;
-  state: TYPES.ChemStates;
 };
 
-export interface ChemicalEntity {
-  getConfigValues(): EntityConfigValues;
-}
-
-export class Model<T> implements Clonable, Exportable<T> {
+export class Entity<T> implements Clonable {
   protected readonly properties: T = {} as T;
 
   constructor(public name: string, public type: string) {}
@@ -31,10 +30,6 @@ export class Model<T> implements Clonable, Exportable<T> {
   public clone() {
     const clone = Object.create(this);
     return clone;
-  }
-
-  public export(): T {
-    return { ...this.properties, name: this.name, type: this.type };
   }
 
   protected convertToNumeric(qty: TYPES.BigQty): TYPES.NumericQty {

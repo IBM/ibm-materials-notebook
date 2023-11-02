@@ -9,19 +9,19 @@ import {
   CMDLCell,
   Cell,
 } from "./document";
-import { Compiler } from "./compiler";
+import { CmdlParser } from "./cmdl-parser";
 import { CmdlTree } from "./cmdl-tree";
 import { SymbolTable, SymbolTableBuilder } from "./symbols";
 import { logger } from "./logger";
 import { BaseError } from "./errors";
-import { CMDLExporter, ProtocolProductStrategy } from "./export";
-import { DefaultExport } from "./export/default-strategy";
-import { Model } from "./intepreter";
-
-// type FileUpdate = {
-//   uri: string;
-//   fileName: string;
-// };
+import { FullRecordExport } from "./export/full-export";
+import { Exportable } from "./intepreter";
+import { TYPES } from "@ibm-materials/cmdl-types";
+import {
+  CharDataEntity,
+  ReactionEntity,
+  ResultEntity,
+} from "./intepreter/entities";
 
 interface CompletionItem {
   name: string;
@@ -31,8 +31,8 @@ interface CompletionItem {
 /**
  * Controls CMDL functions for a given workspace
  */
-export class Controller {
-  private readonly _compiler = new Compiler();
+export class CmdlCompiler {
+  private readonly _parser = new CmdlParser();
   private readonly _errors = new DiagnosticManager();
   private readonly _symbols = new SymbolTableManager();
   private readonly _results = new ActivationRecordManager();
@@ -89,7 +89,13 @@ export class Controller {
     return this._results.get(namespace);
   }
 
+  /**
+   * Method for registering a notebook or text document with the compiler.
+   * Performs a parse of the document an constructs symbol and error tables
+   * @param doc cmdl notebook or text file
+   */
   public register(doc: Notebook | Text) {
+    //check manifest if all modules have been loaded
     if (doc.uri.split(":")[0] === "vscode-notebook-cell") {
       return;
     }
@@ -100,6 +106,7 @@ export class Controller {
     }
 
     logger.notice(`Registering ${doc.fileName}`);
+
     const symbolTable = this._symbols.create(doc.fileName);
     const errTable = this._errors.create(doc.fileName);
     this._results.create(doc.fileName);
@@ -110,7 +117,13 @@ export class Controller {
       this._documents.set(notebook.uri, notebook);
       this._documentNamespaces.set(doc.fileName, notebook.uri);
     } else {
-      const recordTree = this.parseDocument(doc, symbolTable, errTable);
+      const recordTree = this.parseCMDL({
+        text: doc.text,
+        uri: doc.uri,
+        fileName: doc.fileName,
+        symbols: symbolTable,
+        errs: errTable,
+      });
       const document = new TextDocument(doc, doc.version, recordTree);
       this._documents.set(doc.uri, document);
       this._documentNamespaces.set(doc.fileName, doc.uri);
@@ -119,16 +132,28 @@ export class Controller {
     logger.notice(`Registration complete for ${doc.fileName}`);
   }
 
+  /**
+   * Method to delete a cell from a CMDL notebook
+   * @param cellUri uri of cell to be deleted
+   * @param notebookUri uri of notebook containing cell
+   */
   public removeNotebookCell(cellUri: string, notebookUri: string) {
+    logger.info(`removing cell:\nnotebookUri:${notebookUri}\nuri: ${cellUri}`);
     const doc = this.getNotebook(notebookUri);
-
-    doc.removeCell(cellUri);
     const docSymbols = this._symbols.getTable(doc.fileName);
-    const docErrors = this._errors.get(notebookUri);
+    const docErrors = this._errors.get(doc.fileName);
+
     docSymbols.remove(cellUri);
     docErrors.delete(cellUri);
+    doc.removeCell(cellUri);
+    logger.info(`cell ${cellUri} has been removed`);
   }
 
+  /**
+   * Method for updating a existing cell in a CMDL notebook
+   * @param notebookUri uri of notebook containing cell
+   * @param cell cell to be updated in notebook
+   */
   public updateNotebookCell(notebookUri: string, cell: Cell) {
     const doc = this.getNotebook(notebookUri);
     const docSymbols = this._symbols.getTable(doc.fileName);
@@ -137,30 +162,54 @@ export class Controller {
     docSymbols.remove(cell.uri);
     docErrors.delete(cell.uri);
 
-    const parsedCell = this.parseCell(
-      cell,
-      doc.fileName,
-      docSymbols,
-      docErrors
-    );
+    const cellTree = this.parseCMDL({
+      text: cell.text,
+      uri: cell.uri,
+      fileName: doc.fileName,
+      symbols: docSymbols,
+      errs: docErrors,
+    });
+
+    const parsedCell = {
+      ...cell,
+      versionParsed: cell.version,
+      ast: cellTree,
+    };
+
     doc.updateCell(cell.uri, parsedCell);
   }
 
+  /**
+   * Adds a cell to existing notebook document in workspace
+   * @param notebookUri uri of notebook document
+   * @param cell cell to be added to notebook document
+   */
   public addNotebookCell(notebookUri: string, cell: Cell) {
     const doc = this.getNotebook(notebookUri);
     const docSymbols = this._symbols.getTable(doc.fileName);
     const docErrors = this._errors.get(doc.fileName);
 
-    const parsedCell = this.parseCell(
-      cell,
-      doc.fileName,
-      docSymbols,
-      docErrors
-    );
+    const cellTree = this.parseCMDL({
+      text: cell.text,
+      uri: cell.uri,
+      fileName: doc.fileName,
+      symbols: docSymbols,
+      errs: docErrors,
+    });
+
+    const parsedCell = {
+      ...cell,
+      versionParsed: cell.version,
+      ast: cellTree,
+    };
 
     doc.insertCell(parsedCell);
   }
 
+  /**
+   * Unregisters file and removes symbols, errors, results, etc.
+   * @param uri uri of file to delete from compiler
+   */
   public unregister(uri: string) {
     const doc = this._documents.get(uri);
 
@@ -170,17 +219,21 @@ export class Controller {
       );
     }
 
+    logger.notice(`Unregistering document: ${doc.fileName}`);
     this._symbols.remove(doc.fileName);
     this._errors.delete(uri);
     this._documentNamespaces.delete(doc.fileName);
     this._documents.delete(uri);
+    logger.notice(`Unregistration complete for ${doc.fileName}`);
   }
 
-  // public renameFile(oldFile: FileUpdate, newFile: FileUpdate) {
-  //   //find file
-  //   //rename file
-  // }
-
+  /**
+   * Method for parsing a notebook document
+   * @param doc notebook to parse
+   * @param symbols symbol table for document
+   * @param errs error table object
+   * @returns CmdlCell[]
+   */
   private parseNotebook(
     doc: Notebook,
     symbols: SymbolTable,
@@ -189,59 +242,55 @@ export class Controller {
     const parsedCells: CMDLCell[] = [];
 
     for (const cell of doc.cells) {
-      const parsedCell = this.parseCell(cell, doc.fileName, symbols, errs);
+      const cellTree = this.parseCMDL({
+        text: cell.text,
+        uri: cell.uri,
+        fileName: doc.fileName,
+        symbols,
+        errs,
+      });
+
+      const parsedCell = {
+        ...cell,
+        versionParsed: cell.version,
+        ast: cellTree,
+      };
+
       parsedCells.push(parsedCell);
     }
 
     return parsedCells;
   }
 
-  private parseCell(
-    cell: Cell,
-    fileName: string,
-    symbols: SymbolTable,
-    errs: ErrorTable
-  ): CMDLCell {
-    const results = this._compiler.parse(cell.text);
-    const semanticErrors = results.recordTree.validate();
-    const builder = new SymbolTableBuilder(symbols, errs, fileName, cell.uri);
-    results.recordTree.createSymbolTable(builder);
-    // logger.verbose(`current symbolTable:\n${symbols.print()}`);
-
-    symbols.validate(errs);
-    errs.add(cell.uri, results.parserErrors);
-    errs.add(cell.uri, semanticErrors);
-
-    return {
-      ...cell,
-      versionParsed: cell.version,
-      ast: results.recordTree,
-    };
-  }
-
-  private parseDocument(
-    doc: Text,
-    symbols: SymbolTable,
-    errs: ErrorTable
-  ): CmdlTree {
-    const results = this._compiler.parse(doc.text);
-    const semanticErrors = results.recordTree.validate();
-    const builder = new SymbolTableBuilder(
-      symbols,
-      errs,
-      doc.fileName,
-      doc.uri
-    );
-
+  private parseCMDL({
+    text,
+    uri,
+    fileName,
+    symbols,
+    errs,
+  }: {
+    text: string;
+    uri: string;
+    fileName: string;
+    symbols: SymbolTable;
+    errs: ErrorTable;
+  }): CmdlTree {
+    const results = this._parser.parse(text);
+    const builder = new SymbolTableBuilder(symbols, errs, fileName, uri);
     results.recordTree.createSymbolTable(builder);
 
+    const semanticErrors = results.recordTree.validate();
     symbols.validate(errs);
-    errs.add(doc.uri, results.parserErrors);
-    errs.add(doc.uri, semanticErrors);
+    errs.add(uri, results.parserErrors);
+    errs.add(uri, semanticErrors);
 
     return results.recordTree;
   }
 
+  /**
+   * Updates text document in response to user changes
+   * @param doc Text
+   */
   public updateDocument(doc: Text) {
     const symbolTable = this._symbols.getTable(doc.fileName);
     symbolTable.clear();
@@ -249,11 +298,24 @@ export class Controller {
     const errTable = this._errors.get(doc.fileName);
     errTable.delete(doc.uri);
 
-    const recordTree = this.parseDocument(doc, symbolTable, errTable);
+    const recordTree = this.parseCMDL({
+      text: doc.text,
+      uri: doc.uri,
+      fileName: doc.fileName,
+      symbols: symbolTable,
+      errs: errTable,
+    });
     const document = new TextDocument(doc, doc.version, recordTree);
     this._documents.set(doc.uri, document);
   }
 
+  /**
+   * Method to execute a document or notebook based on uri of
+   * the file.
+   * @param docUri uri of text document or notebook
+   * @param uri uri of cell of notebook document to be executed
+   * @returns unknown[]
+   */
   public execute(docUri: string, uri?: string) {
     const document = this.getDocument(docUri);
 
@@ -278,6 +340,13 @@ export class Controller {
     }
   }
 
+  /**
+   * Method to execute CMDL code for a notebook or text document for
+   * a given file.
+   * @param namespace filename to be executed
+   * @param uri uri of cell if file is a notebook document
+   * @returns unknown[]
+   */
   public executeNamespace(namespace: string, uri?: string) {
     const docUri = this.getUriByNamespace(namespace);
     return this.execute(docUri, uri);
@@ -290,12 +359,16 @@ export class Controller {
   ) {
     const visitor = this._results.createModelVisitor(fileName, this, uri);
     doc.ast.evaluate(visitor);
-    const results = this._results
-      .getOutput(fileName, uri)
-      .map((el) => el.export());
-    return results;
+    return this._results.getOutput(fileName, uri);
   }
 
+  /**
+   * Method to get errors from a notebook cell or text file. Note all errors
+   * for a text file are stored under a single uri in the error table.
+   * @param uri uri of file or cell to retrieve errors
+   * @param namespace name of file to retrieve errors
+   * @returns BaseError[]
+   */
   public getErrors(uri: string, namespace: string): BaseError[] {
     try {
       const notebookErrs = this._errors.get(namespace);
@@ -317,6 +390,12 @@ export class Controller {
     return keys.join("\n\t-");
   }
 
+  /**
+   * Provides import completions for a cmdl workspace
+   * @param namespaces files to provide completions for
+   * @param query user entered string query to searhc symbol tables
+   * @returns
+   */
   public provideImportCompletions(namespaces: string[], query: string) {
     const matchingItems: CompletionItem[] = [];
     for (const namespace of namespaces) {
@@ -337,54 +416,90 @@ export class Controller {
     return matchingItems;
   }
 
-  private createExport(
+  /**
+   * @param document
+   * @param uri
+   * @param strategy
+   * @returns
+   */
+  private getExportables(
     document: TextDocument | NotebookDocument,
-    uri: string,
-    strategy: "default" | "protocol" = "default"
+    uri: string
   ) {
+    let recordOutput: Exportable[] = [];
     if (document instanceof TextDocument) {
-      const recordOutput = this._results.getOutput(document.fileName, uri);
-      const exporter = new CMDLExporter(
-        strategy === "default"
-          ? new DefaultExport()
-          : new ProtocolProductStrategy()
-      );
-      const record = exporter.exportRecord(recordOutput as Model<unknown>[]);
-      return record;
+      recordOutput = this._results.getRecordOutput(document.fileName, uri);
     } else {
-      let notebookResults: unknown[] = [];
       for (const cell of document.cells.values()) {
-        const cellResults = this._results.getOutput(
+        const cellResults = this._results.getRecordOutput(
           document.fileName,
           cell.uri
         );
-        notebookResults = notebookResults.concat(cellResults);
+        recordOutput = recordOutput.concat(cellResults);
       }
-      const exporter = new CMDLExporter(
-        strategy === "default"
-          ? new DefaultExport()
-          : new ProtocolProductStrategy()
-      );
-      const record = exporter.exportRecord(notebookResults as Model<unknown>[]);
-      return record;
     }
+    return recordOutput;
   }
 
-  public exportProtocolProd(uri: string) {
+  private createExportRecords(entities: Exportable[]) {
+    const reactions: Record<string, FullRecordExport> = {};
+    const charData: Record<string, TYPES.CharDataExport[]> = {};
+    const resultData: Record<string, TYPES.ResultExport[]> = {};
+
+    for (const entity of entities) {
+      if (entity instanceof ReactionEntity) {
+        const rxnRecord = new FullRecordExport(entity.export());
+        reactions[entity.name] = rxnRecord;
+      } else if (entity instanceof CharDataEntity) {
+        const charItem = entity.export();
+        if (charItem.source) {
+          const charArr =
+            charItem.source in charData ? charData[charItem.source] : [];
+          charArr.push(charItem);
+          charData[charItem.source] = charArr;
+        }
+      } else if (entity instanceof ResultEntity) {
+        const result = entity.export();
+        if (result.source) {
+          const resultArr =
+            result.source in resultData ? resultData[result.source] : [];
+          resultArr.push(result);
+          resultData[result.source] = resultArr;
+        }
+      } else {
+        continue;
+      }
+    }
+
+    const output: unknown[] = [];
+    for (const rxnName in reactions) {
+      const rxn = reactions[rxnName];
+      rxn.results = rxn.results.concat(resultData[rxnName]);
+      rxn.charData = rxn.charData.concat(charData[rxnName]);
+      output.push(rxn.compile());
+    }
+    return output;
+  }
+
+  public exportFile(uri: string) {
     const document = this.getDocument(uri);
-    return this.createExport(document, uri, "protocol");
+    const entities = this.getExportables(document, uri);
+    const documentOutput = this.createExportRecords(entities);
+    return documentOutput;
   }
 
-  public exportRecord(uri: string) {
-    const document = this.getDocument(uri);
-    return this.createExport(document, uri);
-  }
-
+  /**
+   * Export a given repository of cmdl documents
+   * @param uris
+   * @returns
+   */
   public exportRepository(uris: string[]) {
-    const recordExports: any[] = [];
+    let recordExports: unknown[] = [];
     for (const documentUri of uris) {
-      const record = this.exportRecord(documentUri);
-      recordExports.push(record);
+      const document = this.getDocument(documentUri);
+      const entities = this.getExportables(document, documentUri);
+      const documentOutput = this.createExportRecords(entities);
+      recordExports = recordExports.concat(documentOutput);
     }
     return recordExports;
   }

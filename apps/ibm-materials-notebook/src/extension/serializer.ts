@@ -71,8 +71,8 @@ export class CMDLNotebookSerializer implements vscode.NotebookSerializer {
    * @returns Promise<vscode.NotebookData>
    */
   async deserializeNotebook(
-    content: Uint8Array,
-    _token: vscode.CancellationToken
+    content: Uint8Array
+    // _token: vscode.CancellationToken
   ): Promise<vscode.NotebookData> {
     const stringContent = new TextDecoder().decode(content);
 
@@ -112,8 +112,8 @@ export class CMDLNotebookSerializer implements vscode.NotebookSerializer {
    * @returns Promise<Uint8Array>
    */
   async serializeNotebook(
-    data: vscode.NotebookData,
-    _token: vscode.CancellationToken
+    data: vscode.NotebookData
+    // _token: vscode.CancellationToken
   ): Promise<Uint8Array> {
     const cellContents: RawNotebookCell[] = [];
 

@@ -1,14 +1,15 @@
-import { Model, ChemicalEntity, EntityConfigValues } from "./model";
+import { Entity, EntityConfigValues, Exportable, Renderable } from "./entity";
 import { TYPES, ModelType } from "@ibm-materials/cmdl-types";
 import { PolymerContainer } from "@ibm-materials/cmdl-polymers";
 import Big from "big.js";
 import { logger } from "../../logger";
+import { convertQty } from "@ibm-materials/cmdl-units";
 
-export class PolymerGraphModel extends Model<TYPES.PolymerGraph> {
+export class PolymerGraphEntity extends Entity<TYPES.PolymerGraph> {
   private graph = new PolymerContainer(this.name);
 
-  public clone(): PolymerGraphModel {
-    const clone = new PolymerGraphModel(this.name, this.type);
+  public clone(): PolymerGraphEntity {
+    const clone = new PolymerGraphEntity(this.name, this.type);
     clone.graph = this.graph.clone();
     return clone;
   }
@@ -84,16 +85,16 @@ export class PolymerGraphModel extends Model<TYPES.PolymerGraph> {
   }
 }
 
-export class ComplexModel extends Model<TYPES.Complex> {}
+export class ComplexEntity extends Entity<TYPES.Complex> {}
 
-export class PolymerModel
-  extends Model<TYPES.Polymer>
-  implements ChemicalEntity
+export class PolymerEntity
+  extends Entity<TYPES.Polymer>
+  implements Exportable, Renderable
 {
-  private graph?: PolymerGraphModel;
+  private graph?: PolymerGraphEntity;
 
   public clone() {
-    const clone = new PolymerModel(this.name, this.type);
+    const clone = new PolymerEntity(this.name, this.type);
     if (this.graph) {
       const cloneGraph = this.graph.clone();
       clone.addGraph(cloneGraph);
@@ -106,7 +107,7 @@ export class PolymerModel
     return clone;
   }
 
-  public addGraph(graph: PolymerGraphModel): void {
+  public addGraph(graph: PolymerGraphEntity): void {
     this.graph = graph;
   }
 
@@ -125,17 +126,12 @@ export class PolymerModel
   }
 
   public getConfigValues(): EntityConfigValues {
-    if (!this.properties.state) {
-      throw new Error(`Mn or state is undefined on ${this.name}`);
-    }
-
     if (!this.properties.mn_avg) {
       logger.warn(`Mn is not defined for ${this.name}...returning value of 1`);
     }
 
     return {
       mw: this.properties.mn_avg?.value || Big(1),
-      state: this.properties.state,
     };
   }
 
@@ -143,7 +139,12 @@ export class PolymerModel
     const polymerExport: TYPES.PolymerExport = {
       ...this.properties,
       name: this.name,
-      type: this.type as ModelType.POLYMER,
+      mn_avg: this.properties.mn_avg
+        ? convertQty(this.properties.mn_avg)
+        : undefined,
+      mw_avg: this.properties.mw_avg
+        ? convertQty(this.properties.mw_avg)
+        : undefined,
     };
 
     const graphExport = this.graph?.export();
@@ -154,5 +155,12 @@ export class PolymerModel
     }
 
     return polymerExport;
+  }
+
+  public render(): TYPES.PolymerRender {
+    return {
+      ...this.export(),
+      type: ModelType.POLYMER,
+    };
   }
 }

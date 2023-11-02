@@ -1,8 +1,8 @@
 import { PROPERTIES, ReactionRoles } from "../properties";
 import { ModelType } from "../groups/group-types";
-import { NumericQty, BigQty, NamedQty } from "./quantities";
-import { Polymer } from "./polymer";
-import { BaseModel, ChemStates } from "./reference";
+import { NumericQty, BigQty, NamedQty, Export } from "./quantities";
+import { Polymer, PolymerExport } from "./polymer";
+import { BaseModel, ChemStates, StripType } from "./reference";
 import Big from "big.js";
 
 export interface Chemical extends BaseModel {
@@ -12,8 +12,11 @@ export interface Chemical extends BaseModel {
   [PROPERTIES.MOL_WEIGHT]: BigQty;
   [PROPERTIES.SMILES]: string;
   [PROPERTIES.DENSITY]?: BigQty;
-  [PROPERTIES.STATE]: ChemStates;
+  [PROPERTIES.ALIASES]?: string[];
 }
+
+export type ChemicalExport = StripType<Export<Chemical>>;
+export type ChemicalRender = Export<Chemical>;
 
 export type ChemicalReference = {
   name: string;
@@ -22,6 +25,7 @@ export type ChemicalReference = {
   [PROPERTIES.MOLES]?: BigQty;
   [PROPERTIES.VOLUME]?: BigQty;
   [PROPERTIES.PRESSURE]?: BigQty;
+  [PROPERTIES.STATE]?: ChemStates;
   [PROPERTIES.ROLES]: ReactionRoles[];
   [PROPERTIES.LIMITING]?: boolean;
 };
@@ -70,6 +74,10 @@ export interface ChemicalOutput {
   moles_vol: NumericQty;
   limiting: boolean;
 }
+
+export type ReactionChemicalOutput = ChemicalOutput & {
+  entity: ChemicalExport | PolymerExport;
+};
 
 export interface ChemicalConfig {
   name: string;

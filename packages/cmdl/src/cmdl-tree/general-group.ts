@@ -1,7 +1,7 @@
 import { CmdlToken } from "../cmdl-ast";
 import { BaseError, InvalidGroupError, InvalidPropertyError } from "../errors";
 import { Group, Property, RecordNode } from "./base-components";
-import { GroupTypes, PROPERTIES } from "@ibm-materials/cmdl-types";
+import { GROUPS, PROPERTIES } from "@ibm-materials/cmdl-types";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
 import { AssignmentProperty } from "./assignment-property";
@@ -24,7 +24,7 @@ export class GeneralGroup extends Group {
       return;
     }
 
-    if (this.groupProps.type === GroupTypes.NAMED) {
+    if (this.name !== GROUPS.META && this.name !== GROUPS.FRAGMENTS) {
       const msg = `${this.name} is a named group and is missing an identifier`;
       const err = new InvalidGroupError(msg, this.nameToken);
       this.errors.push(err);
@@ -84,6 +84,7 @@ export class GeneralGroup extends Group {
 
   /**
    * Retrieves array of children for current group
+   * @deprecated
    * @returns RecordNode[]
    */
   public getSymbolRefs(): RecordNode[] {

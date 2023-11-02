@@ -31,8 +31,8 @@ const romp: ITag = {
   aliases: [],
 };
 const postPolyFunc: ITag = {
-  description: "Post polymerization modification",
-  detail: "Post polymerization modification",
+  description: "Post-polymerization modification",
+  detail: "Post-polymerization modification",
   name: TAGS.POST_POLY_FUNC,
   aliases: [],
 };

@@ -1,17 +1,17 @@
-import { ComponentModel } from "./component-model";
-import { ReferenceGroupModel } from "./reference-group-model";
-import { Complex } from "./complex-model";
-import { FlowReaction } from "./flow-model";
-import { Solution } from "./solution-model";
-import { ModelActivationRecord } from "./model-AR";
-import { PolymerGraph } from "./polymer-graph-model";
-import { Polymer } from "./polymer-model";
-import { Reaction } from "./reaction-model";
-import { Reactor } from "./reactor-model";
-import { CharData } from "./characterization-model";
+import { ComponentModel } from "./models/component-model";
+import { ReferenceGroupModel } from "./models/reference-group";
+import { Complex } from "./models/complex-model";
+import { FlowReaction } from "./models/flow-model";
+import { Solution } from "./models/solution";
+import { ActivationRecord } from "./model-AR";
+import { PolymerGraph } from "./models/polymer-graph-model";
+import { Polymer } from "./models/polymer-model";
+import { Reaction } from "./models/reaction-model";
+import { Reactor } from "./models/reactor";
+import { CharData } from "./models/characterization-model";
 import { ModelType } from "@ibm-materials/cmdl-types";
-import { GroupModel } from "./group-model";
-import { BaseModel } from "./base-model";
+import { GroupModel } from "./models/group-model";
+import { BaseModel } from "./models/base-model";
 
 /**
  * Factory class to create models based on record tree node type
@@ -29,7 +29,7 @@ export class ModelFactory {
   static createModel(
     name: string,
     type: string,
-    modelAR: ModelActivationRecord,
+    modelAR: ActivationRecord,
     path?: string[]
   ): BaseModel {
     switch (type) {

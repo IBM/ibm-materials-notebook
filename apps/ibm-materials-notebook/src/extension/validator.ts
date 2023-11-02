@@ -54,8 +54,24 @@ export class Validation {
     );
 
     this._disposables.push(
-      repository.onDidRemoveNotebook((exp) => {
-        this.clearDiagnostics(exp);
+      vscode.workspace.onDidRenameFiles((event) => {
+        for (const file of event.files) {
+          logger.info(
+            `clearing diagnostics for renamed file ${file.oldUri.toString()}`
+          );
+          this.clearDiagnostics(file.oldUri.toString());
+        }
+      })
+    );
+
+    this._disposables.push(
+      vscode.workspace.onDidDeleteFiles((event) => {
+        for (const uri of event.files) {
+          logger.info(
+            `clearing diagnostics for deleted file ${uri.toString()}`
+          );
+          this.clearDiagnostics(uri.toString());
+        }
       })
     );
   }
@@ -154,16 +170,13 @@ export class Validation {
 
   /**
    * Removes document diagnostics from diagnostics collection
-   * @param exp vscode.NotebookDocument | vscode.TextDocument
+   * @param exp string
    */
-  private clearDiagnostics(
-    exp: vscode.NotebookDocument | vscode.TextDocument
-  ): void {
-    const expUri = exp.uri.toString();
-    const diagnosticCollection = this._collections.get(expUri);
+  private clearDiagnostics(uri: string): void {
+    const diagnosticCollection = this._collections.get(uri);
     if (diagnosticCollection) {
       diagnosticCollection.dispose();
-      this._collections.delete(expUri);
+      this._collections.delete(uri);
     }
   }
 

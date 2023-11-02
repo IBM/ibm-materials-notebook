@@ -5,11 +5,11 @@ import {
   InvalidPropertyError,
   RefError,
 } from "../../errors";
-import { Compiler } from "../../compiler";
+import { CmdlParser } from "../../cmdl-parser";
 import { CmdlTree } from "../cmdl-tree";
 import { logger } from "../../logger";
 
-const compiler = new Compiler();
+const compiler = new CmdlParser();
 
 describe("Tests for compiler validation errors", () => {
   it(`compiles a valid record`, () => {
@@ -121,7 +121,6 @@ describe("Tests for compiler validation errors", () => {
       chemical THF {
         molecular_weight: 80.1 g/mol;
         density: 0.878 g/ml;
-        state: "liquid";
       }
 
       reaction XYZ {
@@ -145,7 +144,6 @@ describe("Tests for compiler validation errors", () => {
       chemical {
         molecular_weight: 80.1 g/mol;
         density: 0.878 g/ml;
-        state: "liquid";
       }
     `;
 
@@ -165,7 +163,7 @@ describe("Tests for compiler validation errors", () => {
         temperature: 100 degC;
         
         @THF {
-            mass: 200 g;
+          mass: 200 g;
         };
     }`;
 

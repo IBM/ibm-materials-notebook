@@ -1,4 +1,4 @@
-import { ModelActivationRecord } from "./model-AR";
+import { ActivationRecord } from "../model-AR";
 import { ModelType } from "@ibm-materials/cmdl-types";
 
 /**
@@ -8,7 +8,7 @@ import { ModelType } from "@ibm-materials/cmdl-types";
 export abstract class BaseModel {
   constructor(
     public name: string,
-    public modelAR: ModelActivationRecord,
+    public modelAR: ActivationRecord,
     public type: ModelType
   ) {}
 
@@ -17,5 +17,5 @@ export abstract class BaseModel {
    * Writes values to parent activation record.
    * @param globalAR ModelActivationRecord
    */
-  abstract execute(globalAR: ModelActivationRecord): void;
+  abstract execute(globalAR: ActivationRecord): void;
 }

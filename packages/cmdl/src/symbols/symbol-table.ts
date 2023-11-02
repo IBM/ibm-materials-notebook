@@ -559,9 +559,6 @@ export class SymbolTable {
 
       if (newPath.length) {
         //re-initiates path search if item found on global scope
-        logger.debug(
-          `Re-initializing path validation for ${symbol.name} on ${globalItemScope.scope}`
-        );
         return globalItemScope.validatePath(symbol, newPath, globalTable);
       } else {
         return;

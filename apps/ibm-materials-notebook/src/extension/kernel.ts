@@ -50,12 +50,12 @@ export class MaterialsKernel {
    */
   private _execute(
     cells: vscode.NotebookCell[],
-    _notebook: vscode.NotebookDocument,
-    _controller: vscode.NotebookController
+    _notebook: vscode.NotebookDocument
+    // _controller: vscode.NotebookController
   ): void {
     logger.info("executing all cells");
     for (const cell of cells) {
-      this._doExecution(cell);
+      this._doExecution(cell, _notebook);
     }
   }
 
@@ -63,22 +63,18 @@ export class MaterialsKernel {
    * Executes notebook cell
    * @param cell vscode.NotebookCell
    */
-  private async _doExecution(cell: vscode.NotebookCell): Promise<void> {
-    logger.info("executing single cell");
-
-    const doc = await vscode.workspace.openTextDocument(cell.document.uri);
-    const cellUri = doc.uri.toString();
-    const notebook = this.repository.find(doc.uri);
-
-    if (!notebook || !("notebookType" in notebook)) {
-      throw new Error(`unable to find notebook containing cell: ${cellUri}`);
-    }
+  private async _doExecution(
+    cell: vscode.NotebookCell,
+    notebook: vscode.NotebookDocument
+  ): Promise<void> {
+    logger.info(`executing cell: ${cell.kind}`);
 
     const execution = this._controller.createNotebookCellExecution(cell);
     execution.executionOrder = ++this._executionOrder;
     execution.start(Date.now());
 
     try {
+      const cellUri = cell.document.uri.toString();
       const cellOutput = this.repository._controller.execute(
         notebook.uri.toString(),
         cellUri
@@ -104,11 +100,11 @@ export class MaterialsKernel {
 
       execution.replaceOutput([
         new vscode.NotebookCellOutput([
-          vscode.NotebookCellOutputItem.json(cellOutput),
           vscode.NotebookCellOutputItem.json(
             fullOutput,
             "x-application/ibm-materials-notebook"
           ),
+          vscode.NotebookCellOutputItem.json(cellOutput),
         ]),
       ]);
 

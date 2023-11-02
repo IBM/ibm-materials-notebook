@@ -21,7 +21,7 @@ const chartConfig = {
 };
 
 export default class LineChart extends BaseChart {
-  private data: number[][];
+  private data: [number, number][];
   private xMin: number | undefined;
   private xMax: number | undefined;
   private yMin: number | undefined;
@@ -38,7 +38,7 @@ export default class LineChart extends BaseChart {
 
   set values(lineData: string[][]) {
     this.data = lineData.map((item) => {
-      const updatedItem = [Number(item[0]), Number(item[1])];
+      const updatedItem: [number, number] = [Number(item[0]), Number(item[1])];
       return updatedItem;
     });
   }
@@ -56,7 +56,10 @@ export default class LineChart extends BaseChart {
     this.yMin = min(this.data, (d) => d[1]);
     this.yMax = max(this.data, (d) => d[1]);
     const ymaxValue = this.yMax ? this.yMax : 100;
-    this.yScale = scaleLinear().domain([0, ymaxValue]).range([this.height, 0]);
+    const yminValue = this.yMin ? this.yMin : 0;
+    this.yScale = scaleLinear()
+      .domain([yminValue, ymaxValue])
+      .range([this.height, 0]);
   }
 
   private appendScales() {

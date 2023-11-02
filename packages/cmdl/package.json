@@ -1,6 +1,6 @@
 {
   "name": "@ibm-materials/cmdl",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "CMDL language package",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

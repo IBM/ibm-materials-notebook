@@ -1,18 +1,20 @@
-import { Model, ChemicalEntity, EntityConfigValues } from "./model";
-import { PolymerModel } from "./polymer";
-import { ChemicalModel } from "./chemicals";
-import { TYPES, TAGS, PROPERTIES } from "@ibm-materials/cmdl-types";
+import { Entity, EntityConfigValues, Exportable, Renderable } from "./entity";
+import { PolymerEntity } from "./polymer";
+import { ChemicalEntity } from "./chemicals";
+import { TYPES, TAGS, PROPERTIES, ModelType } from "@ibm-materials/cmdl-types";
 import Big from "big.js";
-import { CharFileReader } from "./files";
+import { convertQty } from "@ibm-materials/cmdl-units";
 
-export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
-  private chemicalEntity: PolymerModel | ChemicalModel;
-  private files: CharFileReader[] = [];
+export class ResultEntity
+  extends Entity<TYPES.Result>
+  implements Exportable, Renderable
+{
+  private chemicalEntity: PolymerEntity | ChemicalEntity;
 
   constructor(
     name: string,
     type: string,
-    entity: PolymerModel | ChemicalModel
+    entity: PolymerEntity | ChemicalEntity
   ) {
     super(name, type);
     this.chemicalEntity = entity;
@@ -41,7 +43,7 @@ export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
   }
 
   public getConfigValues(): EntityConfigValues {
-    if (this.chemicalEntity instanceof ChemicalModel) {
+    if (this.chemicalEntity instanceof ChemicalEntity) {
       return this.chemicalEntity.getConfigValues();
     }
 
@@ -49,10 +51,6 @@ export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
     const measuredMn = this.selectPolymerMn();
 
     return { ...polymerValues, mw: measuredMn };
-  }
-
-  public addFile(file: CharFileReader): void {
-    this.files.push(file);
   }
 
   private selectPolymerMn(): Big {
@@ -80,9 +78,9 @@ export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
     }
   }
 
-  public protocolExport() {
+  public export(): TYPES.ResultExport {
     if (
-      this.chemicalEntity instanceof PolymerModel &&
+      this.chemicalEntity instanceof PolymerEntity &&
       this.properties.degree_poly
     ) {
       const values = this.properties.degree_poly.map((el) => ({
@@ -96,15 +94,42 @@ export class ResultModel extends Model<TYPES.Result> implements ChemicalEntity {
       }));
       this.chemicalEntity.embedNodeValues(values);
     }
+
+    const resultEntity = this.chemicalEntity.export();
+
     return {
+      ...this.properties,
       name: this.name,
-      charData: this.files.length ? this.files[0].export() : null,
-      structure:
-        this.chemicalEntity instanceof PolymerModel
-          ? this.chemicalEntity.getGraphString()
-          : this.chemicalEntity.getSMILES(),
+      entity: resultEntity,
+    };
+  }
+
+  public render(): TYPES.ResultRender {
+    return {
+      ...this.export(),
+      type: "result",
     };
   }
 }
 
-export class CharDataModel extends Model<TYPES.CharDataOutput> {}
+export class CharDataEntity
+  extends Entity<TYPES.CharData>
+  implements Exportable, Renderable
+{
+  public export(): TYPES.CharDataExport {
+    return {
+      ...this.properties,
+      name: this.name,
+      time_point: this.properties.time_point
+        ? convertQty(this.properties.time_point)
+        : null,
+    };
+  }
+
+  public render(): TYPES.CharDataRender {
+    return {
+      ...this.export(),
+      type: ModelType.CHAR_DATA,
+    };
+  }
+}

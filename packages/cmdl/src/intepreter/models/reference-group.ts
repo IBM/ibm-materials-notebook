@@ -1,15 +1,16 @@
-import { ModelActivationRecord } from "./model-AR";
+import { ActivationRecord } from "../model-AR";
 import { ModelType } from "@ibm-materials/cmdl-types";
 import { BaseModel } from "./base-model";
 
 /**
  * Model for reference groups. Tablulates child properties and merges into parent AR.
+ * TODO: copy properties directly to model AR?
  */
 export class ReferenceGroupModel extends BaseModel {
   private path: string[];
   constructor(
     name: string,
-    modelAR: ModelActivationRecord,
+    modelAR: ActivationRecord,
     type: ModelType.REFERENCE_GROUP,
     path: string[] = []
   ) {
@@ -17,7 +18,7 @@ export class ReferenceGroupModel extends BaseModel {
     this.path = path;
   }
 
-  public execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ActivationRecord): void {
     const properties: Record<string, any> = {
       name: this.name.slice(1),
       path: this.path,

@@ -1,4 +1,4 @@
-import { IGroup, GroupTypes, GROUPS, ModelType } from "./group-types";
+import { IGroup, GROUPS, ModelType } from "./group-types";
 import { PROPERTIES } from "../properties";
 
 //TODO: simplify characterization data references
@@ -187,7 +187,6 @@ import { PROPERTIES } from "../properties";
 
 const characteriztionGroup: IGroup = {
   name: GROUPS.CHAR_DATA,
-  type: GroupTypes.NAMED,
   modelType: ModelType.CHAR_DATA,
   description: "Characterization data for experiment, reaction, or compound",
   detail: "Characterization data",
@@ -214,9 +213,11 @@ const characteriztionGroup: IGroup = {
     PROPERTIES.TEMP_MELT,
   ],
   properties: [
+    PROPERTIES.DATE,
     PROPERTIES.SAMPLE_ID,
     PROPERTIES.TIME_POINT,
     PROPERTIES.FILE,
+    PROPERTIES.SOURCE,
     PROPERTIES.TECHNIQUE,
   ],
 };

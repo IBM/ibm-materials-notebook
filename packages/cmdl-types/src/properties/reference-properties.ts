@@ -40,6 +40,14 @@ const sources: IProperty = {
   aliases: [],
 };
 
+const source: IProperty = {
+  description: "Source of characterization data",
+  detail: "Characterization source",
+  name: PROPERTIES.SOURCE,
+  type: PropertyTypes.REF_SINGLE,
+  aliases: [],
+};
+
 const component: IProperty = {
   description: "Targets for current node in a graph",
   detail: "Node targets",
@@ -64,13 +72,13 @@ const connection: IProperty = {
   aliases: [],
 };
 
-// const fragment: IProperty = {
-//   description: "Create fragment elements for polymer graph",
-//   detail: "Fragment for polymer graph",
-//   name: PROPERTIES.CONNECTIONS,
-//   type: PropertyTypes.REF_MULTI,
-//   aliases: [],
-// };
+const fragment: IProperty = {
+  description: "Create fragment elements for polymer graph",
+  detail: "Fragment for polymer graph",
+  name: PROPERTIES.FRAGMENT,
+  type: PropertyTypes.ASSIGNMENT,
+  aliases: [],
+};
 
 const file: IProperty = {
   description: "references an external file",
@@ -104,8 +112,10 @@ export const referenceProperties = [
   connection,
   components,
   file,
+  fragment,
   reactor,
   input,
   protocol,
   structure,
+  source,
 ];

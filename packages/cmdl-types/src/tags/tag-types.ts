@@ -21,11 +21,11 @@ export enum TAGS {
   RAMAN = "raman",
   UV_VIS = "uv_vis",
   GPC = "gpc",
-  MCPLATE = "microplate_reader",
+  MCPLATE = "microplate reader",
   FLUOR = "fluorescence",
   DLS = "dls",
   HPLC = "hplc",
-  ANALYTICAL_BAL = "analytical_balance",
+  ANALYTICAL_BAL = "analytical balance",
   MALDI = "maldi",
 
   SOLID = "solid",
@@ -37,7 +37,13 @@ export enum TAGS {
   REACTOR = "reactor",
   ORGANISM = "organism",
 
+  /**
+   * @deprecated
+   **/
   NOTEBOOK = "notebook",
+  /**
+   * @deprecated
+   **/
   JOURNAL = "journal",
 
   ATMOSPHERE = "atmosphere",
@@ -75,22 +81,15 @@ export enum TAGS {
   POLYLACTIDE = "polylactide",
   POLYVINYLPYRIDINE = "poly(vinylpyridine)",
 
-  //? deprecate polymerization
+  /**
+   * @deprecated
+   **/
   POLYMERIZATION = "polymerization",
-  BULK_POLYMERIZATION = "bulk_polymerization",
-  ROP = "ring-opening_polymerization",
-  ZROP = "zwitterionic_rop",
+  BULK_POLYMERIZATION = "bulk polymerization",
+  ROP = "ring-opening polymerization",
+  ZROP = "zwitterionic ring-opening polymerization",
   ROMP = "ROMP",
-  POST_POLY_FUNC = "post-polymerization_modification",
-  CHAIN_EXTENSION = "chain_extension",
+  POST_POLY_FUNC = "post-polymerization modification",
+  CHAIN_EXTENSION = "chain extension",
   COMPLEXATION = "complexation",
-
-  //!templates => deprecated
-  REFERENCE = "reference",
-  BATCH_EXPERIMENT = "batch_experiment",
-  FLOW_EXPERIMENT = "flow_experiment",
-  ASSAY = "assay",
-  FORMULATION = "formulation",
-  POLYMER_GRAPH = "polymer_graph",
-  FRAGMENT = "fragment",
 }

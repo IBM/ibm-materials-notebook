@@ -1,25 +1,25 @@
-import { ModelActivationRecord } from "./model-AR";
+import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
 import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
 import { PROPERTIES } from "@ibm-materials/cmdl-types";
-import { PolymerModel, PolymerGraphModel } from "./models";
+import { PolymerGraphEntity, PolymerEntity } from "../entities";
 
 export class Polymer extends BaseModel {
   constructor(
     name: string,
-    modelAR: ModelActivationRecord,
+    modelAR: ActivationRecord,
     type: ModelType.POLYMER
   ) {
     super(name, modelAR, type);
   }
 
-  public execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ActivationRecord): void {
     const treeRef = this.modelAR.getValue<TYPES.Reference>(
       PROPERTIES.STRUCTURE
     );
     const treeValues =
       this.modelAR.getOptionalValue<TYPES.PolymerTreeValue[]>("references");
-    const polymerGraph = globalAR.getOptionalValue<PolymerGraphModel>(
+    const polymerGraph = globalAR.getOptionalValue<PolymerGraphEntity>(
       treeRef.ref
     );
 
@@ -27,15 +27,12 @@ export class Polymer extends BaseModel {
       throw new Error(`Polymer graph for ${treeRef.ref} is undefined!`);
     }
 
-    const polymerModel = new PolymerModel(this.name, this.type);
+    const polymerModel = new PolymerEntity(this.name, this.type);
     polymerModel.addGraph(polymerGraph);
 
     if (treeValues) {
       polymerModel.embedNodeValues(treeValues);
     }
-
-    const state = this.modelAR.getValue<TYPES.ChemStates>("state");
-    polymerModel.add("state" as keyof TYPES.Polymer, state);
 
     for (const [name, value] of this.modelAR.all()) {
       polymerModel.add(

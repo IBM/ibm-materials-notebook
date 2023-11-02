@@ -1,13 +1,13 @@
 import * as vscode from "vscode";
 import { NOTEBOOK } from "./languageProvider";
 import { logger } from "../logger";
-import { CMDLController } from "@ibm-materials/cmdl";
+import { CmdlCompiler } from "@ibm-materials/cmdl";
 
 /**
  * Manages all cmdl documents (.cmdnb & .cmdl) in workspace
  */
 export class Repository {
-  readonly _controller = new CMDLController.Controller(
+  readonly _controller = new CmdlCompiler(
     vscode.workspace.workspaceFolders
       ? vscode.workspace.workspaceFolders[0].uri.fsPath
       : ""
@@ -17,15 +17,8 @@ export class Repository {
     new vscode.EventEmitter<vscode.NotebookDocument>();
   readonly onDidInitializeNotebook = this._onDidInitializeNotebook.event;
 
-  private _onDidRemoveNotebook =
-    new vscode.EventEmitter<vscode.NotebookDocument>();
-  readonly onDidRemoveNotebook = this._onDidRemoveNotebook.event;
-
   private _onDidInitializeText = new vscode.EventEmitter<vscode.TextDocument>();
   readonly onDidInitializeText = this._onDidInitializeText.event;
-
-  private _onDidRemoveText = new vscode.EventEmitter<vscode.TextDocument>();
-  readonly onDidRemoveText = this._onDidRemoveText.event;
 
   private readonly _disposables: vscode.Disposable[] = [];
   private readonly _documents = new Map<
@@ -34,51 +27,31 @@ export class Repository {
   >();
 
   constructor() {
-    this._disposables.push(
-      vscode.workspace.onDidOpenNotebookDocument((notebookDoc) => {
-        if (notebookDoc.notebookType !== NOTEBOOK) {
-          return;
-        }
+    // this._disposables.push(
+    //   vscode.workspace.onDidOpenNotebookDocument((notebookDoc) => {
+    //     if (notebookDoc.notebookType !== NOTEBOOK) {
+    //       return;
+    //     }
 
-        const notebookUri = notebookDoc.uri.toString();
-        logger.silly(`Opening ${notebookUri}....`);
-        if (notebookDoc.uri.fragment) {
-          logger.debug(`receiving ${notebookDoc.uri.scheme}`);
-          return;
-        }
+    //     const notebookUri = notebookDoc.uri.toString();
+    //     if (notebookDoc.uri.fragment) {
+    //       return;
+    //     }
 
-        if (this._documents.has(notebookUri)) {
-          logger.info(`notebook: ${notebookUri} is already registered`);
-          return;
-        }
-        const formattedDoc = this.formatNotebook(notebookDoc);
-        this._controller.register(formattedDoc);
-        this._documents.set(notebookUri, notebookDoc);
-        this._onDidInitializeNotebook.fire(notebookDoc);
-      })
-    );
-
-    this._disposables.push(
-      vscode.workspace.onDidCloseNotebookDocument((notebook) => {
-        const notebookUri = notebook.uri.toString();
-        if (this._documents.has(notebookUri)) {
-          //? remove diagnostics
-          // this._controller.unregister(notebookUri);
-
-          this._onDidRemoveNotebook.fire(notebook);
-        }
-      })
-    );
+    //     if (this._documents.has(notebookUri)) {
+    //       logger.info(`notebook: ${notebookUri} is already registered`);
+    //       return;
+    //     }
+    //     const formattedDoc = this.formatNotebook(notebookDoc);
+    //     this._controller.register(formattedDoc);
+    //     this._documents.set(notebookUri, notebookDoc);
+    //     this._onDidInitializeNotebook.fire(notebookDoc);
+    //   })
+    // );
 
     this._disposables.push(
       vscode.workspace.onDidChangeNotebookDocument((event) => {
-        const doc = this.find(event.notebook.uri);
-
-        if (!doc) {
-          return;
-        }
-
-        const docUri = doc.uri.toString();
+        const docUri = event.notebook.uri.toString();
 
         if (event.contentChanges.length) {
           for (const change of event.contentChanges) {
@@ -100,52 +73,36 @@ export class Repository {
       })
     );
 
-    this._disposables.push(
-      vscode.workspace.onDidOpenTextDocument((doc) => {
-        if (doc.languageId !== "cmdl") {
-          return;
-        }
+    // this._disposables.push(
+    //   vscode.workspace.onDidOpenTextDocument((doc) => {
+    //     if (doc.languageId !== "cmdl") {
+    //       return;
+    //     }
 
-        const docUri = doc.uri.toString();
+    //     const docUri = doc.uri.toString();
 
-        if (this._documents.has(docUri)) {
-          logger.info(`${docUri} is already registered`);
-          return;
-        }
+    //     if (this._documents.has(docUri)) {
+    //       logger.info(`${docUri} is already registered`);
+    //       return;
+    //     }
 
-        if (doc.uri.fragment.length) {
-          return;
-        }
+    //     if (doc.uri.fragment.length) {
+    //       return;
+    //     }
 
-        const textDoc = this.formatTextDocument(doc);
-        this._controller.register(textDoc);
-        this._documents.set(docUri, doc);
-        this._onDidInitializeText.fire(doc);
-      })
-    );
-
-    this._disposables.push(
-      vscode.workspace.onDidCloseTextDocument((doc) => {
-        if (doc.languageId !== "cmdl") {
-          return;
-        }
-
-        this._onDidRemoveText.fire(doc);
-      })
-    );
+    //     const textDoc = this.formatTextDocument(doc);
+    //     this._controller.register(textDoc);
+    //     this._documents.set(docUri, doc);
+    //     this._onDidInitializeText.fire(doc);
+    //   })
+    // );
 
     this._disposables.push(
       vscode.workspace.onDidRenameFiles((event) => {
         for (const file of event.files) {
-          const oldFile = {
-            uri: file.oldUri.toString(),
-            fileName: this.extractFileName(file.oldUri),
-          };
-          const newFile = {
-            uri: file.newUri.toString(),
-            fileName: this.extractFileName(file.newUri),
-          };
-          this._controller.renameFile(oldFile, newFile);
+          logger.info(`file renamed, unregistering ${file.oldUri.toString()}`);
+          this._documents.delete(file.oldUri.toString());
+          this._controller.unregister(file.oldUri.toString());
         }
       })
     );
@@ -156,7 +113,6 @@ export class Repository {
           const fileUri = uri.toString();
           this._documents.delete(fileUri);
           this._controller.unregister(fileUri);
-          //remove diagnostics
         }
       })
     );
@@ -164,28 +120,30 @@ export class Repository {
 
   public initialize() {
     vscode.workspace
-      .findFiles("**/*.{cmdl,cmdnb}")
+      .findFiles("**/lib/*.cmdl")
       .then(
         (files) => {
-          const libFiles = files.filter(
-            (el) => el.path.includes("/lib") && el.path.includes(".cmdl")
-          );
-          const nbFiles = files.filter((el) => el.path.includes(".cmdnb"));
-
-          for (const uri of libFiles) {
-            vscode.workspace.openTextDocument(uri);
+          logger.verbose(`loading cmdl documents: ${files.length}`);
+          for (const uri of files) {
+            logger.debug(`Opening uri ${uri.fsPath}`);
+            vscode.workspace
+              .openTextDocument(uri)
+              .then((doc) => this.registerCMDLText(doc));
           }
-
-          return nbFiles;
         },
         () => {
           logger.info(`no cmdl files found during initialization`);
         }
       )
-      .then((value) => {
-        for (const uri of value) {
-          vscode.workspace.openNotebookDocument(uri);
-        }
+      .then(() => {
+        vscode.workspace.findFiles("**/*.cmdnb").then((files) => {
+          logger.verbose(`loading notebook documents...`);
+          for (const uri of files) {
+            vscode.workspace
+              .openNotebookDocument(uri)
+              .then((doc) => this.registerCMDLNotebook(doc));
+          }
+        });
       });
   }
 
@@ -243,6 +201,7 @@ export class Repository {
     uri: vscode.Uri
   ): vscode.NotebookDocument | vscode.TextDocument | undefined {
     const searchUri = uri.toString();
+
     for (const [documentUri, document] of this._documents) {
       if (documentUri === searchUri) {
         return document;
@@ -256,6 +215,42 @@ export class Repository {
         }
       }
     }
+  }
+
+  private registerCMDLText(doc: vscode.TextDocument) {
+    if (doc.languageId !== "cmdl") {
+      return;
+    }
+    const docUri = doc.uri.toString();
+    if (this._documents.has(docUri)) {
+      logger.info(`${docUri} is already registered`);
+      return;
+    }
+    if (doc.uri.fragment.length) {
+      return;
+    }
+    const textDoc = this.formatTextDocument(doc);
+    this._controller.register(textDoc);
+    this._documents.set(docUri, doc);
+    this._onDidInitializeText.fire(doc);
+  }
+
+  private registerCMDLNotebook(doc: vscode.NotebookDocument) {
+    if (doc.notebookType !== NOTEBOOK) {
+      return;
+    }
+    const notebookUri = doc.uri.toString();
+    if (doc.uri.fragment) {
+      return;
+    }
+    if (this._documents.has(notebookUri)) {
+      logger.info(`notebook: ${notebookUri} is already registered`);
+      return;
+    }
+    const formattedDoc = this.formatNotebook(doc);
+    this._controller.register(formattedDoc);
+    this._documents.set(notebookUri, doc);
+    this._onDidInitializeNotebook.fire(doc);
   }
 
   /**

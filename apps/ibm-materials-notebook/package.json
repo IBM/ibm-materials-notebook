@@ -9,7 +9,7 @@
   "repository": {
     "url": "https://github.com/IBM/ibm-materials-notebook"
   },
-  "version": "0.1.7",
+  "version": "0.1.8",
   "engines": {
     "vscode": "^1.81.1"
   },
@@ -52,10 +52,6 @@
       {
         "command": "ibm-materials-notebook.exportWorkspace",
         "title": "CMDL: Export Current Workspace"
-      },
-      {
-        "command": "ibm-materials-notebook.exportRecordProtocol",
-        "title": "CMDL: Export Current Record Protocol"
       }
     ],
     "configuration": {

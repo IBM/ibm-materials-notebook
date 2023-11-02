@@ -1,19 +1,19 @@
-import { ModelActivationRecord } from "./model-AR";
+import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
-import { FlowRxnModel, ReactorModel, SolutionModel } from "./models";
+import { FlowRxnEntity, ReactorEntity, SolutionEntity } from "../entities";
 import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
 import { ReactorChemicals } from "@ibm-materials/cmdl-reactors";
 
 export class FlowReaction extends BaseModel {
   constructor(
     name: string,
-    modelAR: ModelActivationRecord,
+    modelAR: ActivationRecord,
     type: ModelType.FLOW_REACTION
   ) {
     super(name, modelAR, type);
   }
 
-  public execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ActivationRecord): void {
     const reactorRef = this.modelAR.getValue<TYPES.Reference>("reactor");
     const references =
       this.modelAR.getValue<
@@ -31,13 +31,13 @@ export class FlowReaction extends BaseModel {
       }
     );
 
-    const reactorModel = globalAR.getValue<ReactorModel>(reactorRef.ref);
-    const flowModel = new FlowRxnModel(this.name, this.type);
+    const reactorModel = globalAR.getValue<ReactorEntity>(reactorRef.ref);
+    const flowModel = new FlowRxnEntity(this.name, this.type);
     flowModel.addReactor(reactorModel);
     flowModel.add("products", finalProducts);
 
     for (const solution of solutions) {
-      const solutionModel = globalAR.getValue<SolutionModel>(solution.name);
+      const solutionModel = globalAR.getValue<SolutionEntity>(solution.name);
 
       const solutionChemicals = new ReactorChemicals(solution.flow_rate);
       solutionChemicals.setChemicals(solutionModel.getChemicalConfigs());

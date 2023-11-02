@@ -81,7 +81,7 @@ export async function parseVariableCSV(repo: Repository) {
     }
   });
 
-  const templateNotebookId = headers[1];
+  // const templateNotebookId = headers[1];
   const templateNotebookFileName = headers[3];
 
   const files = await vscode.workspace.findFiles(templateNotebookFileName);

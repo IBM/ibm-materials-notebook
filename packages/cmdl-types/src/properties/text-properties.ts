@@ -32,14 +32,6 @@ const title: IProperty = {
   aliases: [],
 };
 
-const owner: IProperty = {
-  description: "Owner of experiment or record",
-  detail: "owner",
-  name: PROPERTIES.OWNER,
-  type: PropertyTypes.TEXT,
-  aliases: [],
-};
-
 const doi: IProperty = {
   description: "Digitial object identifier",
   detail: "doi",
@@ -112,13 +104,13 @@ const inchiKey: IProperty = {
   aliases: [],
 };
 
-const recordId: IProperty = {
-  description: "Record Id",
-  detail: "Record Id",
-  name: PROPERTIES.RECORD_ID,
-  type: PropertyTypes.TEXT,
-  aliases: [],
-};
+// const recordId: IProperty = {
+//   description: "Record Id",
+//   detail: "Record Id",
+//   name: PROPERTIES.RECORD_ID,
+//   type: PropertyTypes.TEXT,
+//   aliases: [],
+// };
 
 const refId: IProperty = {
   description: "Reference Id",
@@ -147,9 +139,8 @@ export const textProperties = [
   doi,
   citation,
   title,
-  owner,
   description,
-  recordId,
+  // recordId,
   limiting,
   refId,
   aliases,

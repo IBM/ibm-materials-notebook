@@ -1,10 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
-import { Exportable } from "./model";
+import { Exportable } from "./entity";
 
-export class CharFileReader
-  implements Exportable<{ fileName: string; data: string[][] }>
-{
+export class CharFileReader implements Exportable {
   private fileName: string;
   private extension: string;
   private fullPath: string;

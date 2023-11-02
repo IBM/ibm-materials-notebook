@@ -1,7 +1,7 @@
-import { ModelActivationRecord } from "./model-AR";
+import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
 import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
-import { FragmentModel, PolymerGraphModel } from "./models";
+import { FragmentsGroup, PolymerGraphEntity } from "../entities";
 
 /**
  * Model for creating polymer graph
@@ -9,18 +9,15 @@ import { FragmentModel, PolymerGraphModel } from "./models";
 export class PolymerGraph extends BaseModel {
   constructor(
     name: string,
-    modelAR: ModelActivationRecord,
+    modelAR: ActivationRecord,
     type: ModelType.POLYMER_GRAPH
   ) {
     super(name, modelAR, type);
   }
 
-  public execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ActivationRecord): void {
     try {
-      const fragmentModel =
-        globalAR.getOptionalValue<FragmentModel>("fragments");
-      const localFragments =
-        this.modelAR.getOptionalValue<TYPES.Fragment[]>("fragments");
+      const fragmentModel = globalAR.getValue<FragmentsGroup>("fragments");
 
       let fragmentMap: Record<string, string> = {};
 
@@ -30,19 +27,13 @@ export class PolymerGraph extends BaseModel {
         fragmentMap = { ...fragmentMap, ...modelMap };
       }
 
-      if (localFragments?.length) {
-        for (const fragment of localFragments) {
-          fragmentMap[fragment.name] = fragment.value;
-        }
-      }
-
       const nodes = this.modelAR.getValue<TYPES.Reference[]>("nodes");
       const connections =
         this.modelAR.getOptionalValue<TYPES.PolymerConnection[]>("connections");
       const containers =
         this.modelAR.getOptionalValue<TYPES.PolymerContainer[]>("components");
 
-      const polymerGraph = new PolymerGraphModel(this.name, this.type);
+      const polymerGraph = new PolymerGraphEntity(this.name, this.type);
 
       const treeConfig = {
         name: this.name,

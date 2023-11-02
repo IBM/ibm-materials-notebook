@@ -1,30 +1,37 @@
-import { Controller } from "./controller";
-import { ModelVisitor, ModelARManager, Model, Exportable } from "./intepreter";
+import { CmdlCompiler } from "./cmdl-compiler";
+import { ModelVisitor, ActivationRecordTable, Exportable } from "./intepreter";
+import {
+  CharDataEntity,
+  ChemicalEntity,
+  PolymerEntity,
+  ReactionEntity,
+  ResultEntity,
+} from "./intepreter/entities";
+
 /**
  * Caches execution results for each namespace
  */
 export class ActivationRecordManager {
-  private readonly _records = new Map<string, ModelARManager>();
+  private readonly _tables = new Map<string, ActivationRecordTable>();
 
   public create(namespace: string) {
-    const manager = new ModelARManager(namespace);
-    this._records.set(namespace, manager);
+    const namespaceAR = new ActivationRecordTable(namespace);
+    this._tables.set(namespace, namespaceAR);
   }
 
   public createModelVisitor(
     namespace: string,
-    controller: Controller,
+    controller: CmdlCompiler,
     uri: string
   ): ModelVisitor {
-    const manager = this.get(namespace);
-
-    const documentAR = manager.createGlobalAR(uri);
-    const modelVisitor = new ModelVisitor(documentAR, namespace, controller);
+    const namespaceTable = this.get(namespace);
+    const namespaceAR = namespaceTable.createGlobalAR(uri);
+    const modelVisitor = new ModelVisitor(namespaceAR, namespace, controller);
     return modelVisitor;
   }
 
   public get(namespace: string) {
-    const manager = this._records.get(namespace);
+    const manager = this._tables.get(namespace);
 
     if (!manager) {
       throw new Error(
@@ -34,13 +41,36 @@ export class ActivationRecordManager {
     return manager;
   }
 
-  public getOutput(namespace: string, uri: string): Exportable<unknown>[] {
-    const manager = this.get(namespace);
-    const arValues = manager.getRecord(uri);
-    const finalOutput: Exportable<unknown>[] = [];
+  public getOutput(namespace: string, uri: string): unknown[] {
+    const namespaceTable = this.get(namespace);
+    const record = namespaceTable.getRecord(uri);
+    const finalOutput: unknown[] = [];
 
-    for (const value of arValues.values()) {
-      if (value instanceof Model) {
+    for (const value of record.values()) {
+      if (
+        value instanceof ReactionEntity ||
+        value instanceof ResultEntity ||
+        value instanceof CharDataEntity ||
+        value instanceof PolymerEntity ||
+        value instanceof ChemicalEntity
+      ) {
+        finalOutput.push(value.render());
+      }
+    }
+    return finalOutput;
+  }
+
+  public getRecordOutput(namespace: string, uri: string): Exportable[] {
+    const namespaceTable = this.get(namespace);
+    const record = namespaceTable.getRecord(uri);
+    const finalOutput: Exportable[] = [];
+
+    for (const value of record.values()) {
+      if (
+        value instanceof ReactionEntity ||
+        value instanceof ResultEntity ||
+        value instanceof CharDataEntity
+      ) {
         finalOutput.push(value);
       }
     }

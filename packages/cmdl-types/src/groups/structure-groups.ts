@@ -1,9 +1,11 @@
-import { IGroup, GROUPS, GroupTypes, ModelType } from "./group-types";
+import { IGroup, GROUPS, ModelType } from "./group-types";
 import { PROPERTIES } from "../properties";
 
+/**
+ * ?: Assignment properties will move to global scope for file
+ */
 const polymerFragment: IGroup = {
   name: GROUPS.FRAGMENTS,
-  type: GroupTypes.UNAMED,
   modelType: ModelType.FRAGMENTS,
   description: "SMILES fragments for polymer graph",
   detail: "Polymer graph fragments",
@@ -15,7 +17,6 @@ const polymerFragment: IGroup = {
 
 const polymerContainer: IGroup = {
   name: GROUPS.CONTAINER,
-  type: GroupTypes.NAMED,
   modelType: ModelType.CONTAINER,
   description: "Polymer graph",
   detail: "Polymer graph",
@@ -27,24 +28,17 @@ const polymerContainer: IGroup = {
 
 const polymerGraph: IGroup = {
   name: GROUPS.POLYMER_GRAPH,
-  type: GroupTypes.NAMED,
   modelType: ModelType.POLYMER_GRAPH,
   description: "Contains base structural information for a given polymer type",
   detail: "Polymer structure group",
   aliases: [],
   referenceProps: [],
   subGroups: [GROUPS.CONTAINER],
-  properties: [
-    PROPERTIES.BIG_SMILES,
-    PROPERTIES.NODES,
-    PROPERTIES.CONNECTIONS,
-    PROPERTIES.FRAGMENT,
-  ],
+  properties: [PROPERTIES.BIG_SMILES, PROPERTIES.NODES, PROPERTIES.CONNECTIONS],
 };
 
 const reactorGraph: IGroup = {
   name: GROUPS.REACTOR_GRAPH,
-  type: GroupTypes.NAMED,
   modelType: ModelType.REACTOR_GRAPH,
   description: "Container defining the reactor graph",
   detail: "Reactor graph",
@@ -56,7 +50,6 @@ const reactorGraph: IGroup = {
 
 const reactorGraphNode: IGroup = {
   name: GROUPS.REACTOR,
-  type: GroupTypes.NAMED,
   modelType: ModelType.REACTOR,
   description:
     "hypernode in a reactor graph to define a set of components constituting one reactor",
@@ -73,5 +66,4 @@ export const structureGroups = [
   polymerContainer,
   polymerFragment,
   polymerGraph,
-  // connectionPoint,
 ];

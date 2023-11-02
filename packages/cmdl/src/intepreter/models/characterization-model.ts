@@ -1,14 +1,13 @@
-import { ModelActivationRecord } from "./model-AR";
+import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
 import {
-  ResultModel,
-  CharDataModel,
-  PolymerModel,
-  ChemicalModel,
+  ResultEntity,
+  CharDataEntity,
+  PolymerEntity,
+  ChemicalEntity,
   CharFileReader,
-} from "./models";
+} from "../entities";
 import { ModelType, PROPERTIES, TYPES } from "@ibm-materials/cmdl-types";
-import { logger } from "../logger";
 
 /**
  * Output model for characterization samples
@@ -17,13 +16,13 @@ import { logger } from "../logger";
 export class CharData extends BaseModel {
   constructor(
     name: string,
-    modelAR: ModelActivationRecord,
+    modelAR: ActivationRecord,
     type: ModelType.CHAR_DATA
   ) {
     super(name, modelAR, type);
   }
 
-  public execute(globalAR: ModelActivationRecord): void {
+  public execute(globalAR: ActivationRecord): void {
     try {
       const technique = this.modelAR.getValue<string>(PROPERTIES.TECHNIQUE);
       const sampleId = this.modelAR.getValue<string>(PROPERTIES.SAMPLE_ID);
@@ -32,8 +31,13 @@ export class CharData extends BaseModel {
       );
       const references =
         this.modelAR.getOptionalValue<TYPES.CharReference[]>("references");
-      const file = this.modelAR.getOptionalValue<TYPES.Reference>("file");
-      const charModel = new CharDataModel(this.name, this.type);
+      const file = this.modelAR.getOptionalValue<TYPES.Reference>(
+        PROPERTIES.FILE
+      );
+      const source = this.modelAR.getOptionalValue<TYPES.Reference>(
+        PROPERTIES.SOURCE
+      );
+      const charModel = new CharDataEntity(this.name, this.type);
 
       let fileModel;
       if (file?.ref) {
@@ -49,20 +53,22 @@ export class CharData extends BaseModel {
       charModel.add(PROPERTIES.TIME_POINT, timePoint || null);
       charModel.add(PROPERTIES.TECHNIQUE, technique);
       charModel.add(PROPERTIES.SAMPLE_ID, sampleId);
+      charModel.add(PROPERTIES.SOURCE, source?.ref);
 
       if (references) {
         for (const ref of references) {
-          let result = globalAR.getOptionalValue<ResultModel>(
+          let result = globalAR.getOptionalValue<ResultEntity>(
             `${ref.name}-${sampleId}`
           );
 
           if (!result) {
             const resultEntity = globalAR.getValue<
-              PolymerModel | ChemicalModel
+              PolymerEntity | ChemicalEntity
             >(ref.name);
-            result = new ResultModel(ref.name, "result", resultEntity);
+            result = new ResultEntity(ref.name, "result", resultEntity);
             result.add(PROPERTIES.TIME_POINT, timePoint || null);
             result.add(PROPERTIES.SAMPLE_ID, sampleId);
+            result.add(PROPERTIES.SOURCE, source?.ref);
           }
 
           for (const [key, value] of Object.entries(ref)) {
@@ -83,11 +89,6 @@ export class CharData extends BaseModel {
             }
           }
 
-          if (fileModel) {
-            result.addFile(fileModel);
-          }
-
-          logger.debug(`setting result: ${result.resultName}`);
           globalAR.setValue(result.resultName, result);
         }
       }
