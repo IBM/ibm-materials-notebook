@@ -18,6 +18,10 @@ export type PolymerExport = StripType<Export<Polymer>> & {
   [PROPERTIES.SMILES]?: string;
   graph_string?: string;
 };
+export type PolymerRender = Export<Polymer> & {
+  [PROPERTIES.SMILES]?: string;
+  graph_string?: string;
+};
 
 /**
  * Values assigned to nodes in polymer graph

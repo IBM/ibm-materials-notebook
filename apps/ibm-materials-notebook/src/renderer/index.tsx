@@ -88,7 +88,7 @@ const App: FunctionComponent<{ data: any[]; theme: "light" | "dark" }> = ({
 // rendering logic inside of the `render()` function.
 // ----------------------------------------------------------------------------
 
-export const activate: ActivationFunction = (context) => {
+export const activate: ActivationFunction = () => {
   return {
     renderOutputItem(data, element) {
       const output = data.json();

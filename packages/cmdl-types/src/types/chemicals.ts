@@ -16,6 +16,7 @@ export interface Chemical extends BaseModel {
 }
 
 export type ChemicalExport = StripType<Export<Chemical>>;
+export type ChemicalRender = Export<Chemical>;
 
 export type ChemicalReference = {
   name: string;

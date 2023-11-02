@@ -41,10 +41,10 @@ export class ActivationRecordManager {
     return manager;
   }
 
-  public getOutput(namespace: string, uri: string): Exportable[] {
+  public getOutput(namespace: string, uri: string): unknown[] {
     const namespaceTable = this.get(namespace);
     const record = namespaceTable.getRecord(uri);
-    const finalOutput: Exportable[] = [];
+    const finalOutput: unknown[] = [];
 
     for (const value of record.values()) {
       if (
@@ -54,7 +54,7 @@ export class ActivationRecordManager {
         value instanceof PolymerEntity ||
         value instanceof ChemicalEntity
       ) {
-        finalOutput.push(value);
+        finalOutput.push(value.render());
       }
     }
     return finalOutput;

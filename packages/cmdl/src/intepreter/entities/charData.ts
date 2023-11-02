@@ -1,14 +1,15 @@
-import { Entity, EntityConfigValues, Exportable } from "./entity";
+import { Entity, EntityConfigValues, Exportable, Renderable } from "./entity";
 import { PolymerEntity } from "./polymer";
 import { ChemicalEntity } from "./chemicals";
-import { TYPES, TAGS, PROPERTIES } from "@ibm-materials/cmdl-types";
+import { TYPES, TAGS, PROPERTIES, ModelType } from "@ibm-materials/cmdl-types";
 import Big from "big.js";
-import { CharFileReader } from "./files";
 import { convertQty } from "@ibm-materials/cmdl-units";
 
-export class ResultEntity extends Entity<TYPES.Result> implements Exportable {
+export class ResultEntity
+  extends Entity<TYPES.Result>
+  implements Exportable, Renderable
+{
   private chemicalEntity: PolymerEntity | ChemicalEntity;
-  private files: CharFileReader[] = []; // !deprecated => move to char data instance
 
   constructor(
     name: string,
@@ -50,11 +51,6 @@ export class ResultEntity extends Entity<TYPES.Result> implements Exportable {
     const measuredMn = this.selectPolymerMn();
 
     return { ...polymerValues, mw: measuredMn };
-  }
-
-  //!deprecated => move to char
-  public addFile(file: CharFileReader): void {
-    this.files.push(file);
   }
 
   private selectPolymerMn(): Big {
@@ -107,11 +103,18 @@ export class ResultEntity extends Entity<TYPES.Result> implements Exportable {
       entity: resultEntity,
     };
   }
+
+  public render(): TYPES.ResultRender {
+    return {
+      ...this.export(),
+      type: "result",
+    };
+  }
 }
 
 export class CharDataEntity
   extends Entity<TYPES.CharData>
-  implements Exportable
+  implements Exportable, Renderable
 {
   public export(): TYPES.CharDataExport {
     return {
@@ -120,6 +123,13 @@ export class CharDataEntity
       time_point: this.properties.time_point
         ? convertQty(this.properties.time_point)
         : null,
+    };
+  }
+
+  public render(): TYPES.CharDataRender {
+    return {
+      ...this.export(),
+      type: ModelType.CHAR_DATA,
     };
   }
 }

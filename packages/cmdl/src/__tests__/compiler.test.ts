@@ -15,6 +15,21 @@ function evaluateModel(text: string) {
   return { errs, result };
 }
 
+function exportTest(text: string) {
+  const document = {
+    uri: "cmdl/test/uri",
+    fileName: "cmdlTest.cmdl",
+    version: 1,
+    text,
+  };
+  const controller = new CmdlCompiler("/");
+  controller.register(document);
+  const errs = controller.getErrors(document.uri, document.fileName);
+  controller.execute(document.uri);
+  const output = controller.exportFile(document.uri);
+  return { errs, output };
+}
+
 describe("Test model evaluation with compiler", () => {
   it("evaluates a chemical model", () => {
     const chemical = `
@@ -66,6 +81,48 @@ describe("Test model evaluation with compiler", () => {
     const { errs, result } = evaluateModel(reaction);
     console.log(JSON.stringify(result, null, 2));
     expect(errs.length).toBe(0);
+  });
+
+  it("exports a basic record", () => {
+    const reaction = `
+      chemical THF {
+        molecular_weight: 80.1 g/mol;
+        density: 0.878 g/ml;
+      }
+
+      chemical KOME {
+        molecular_weight: 70.132 g/mol;
+      }
+
+      chemical lLac {
+        molecular_weight: 144.12 g/mol;
+      }
+
+
+      reaction TestReaction {
+        temperature: 22 degC;
+
+        @KOME {
+          mass: 0.70 mg;
+          roles: ["catalyst"];
+        };
+
+        @lLac {
+          mass: 144 mg;
+          roles: ["monomer"];
+        };
+
+        @THF {
+          volume: 1 ml;
+          roles: ["solvent"];
+        };
+      }`;
+
+    const { errs, output } = exportTest(reaction);
+    expect(errs.length).toBe(0);
+    expect(output[0]).toHaveProperty("chemicals");
+    expect(output[0]).toHaveProperty("temperature.value", 22);
+    expect(output[0]).toHaveProperty("temperature.unit", "degC");
   });
 
   it("evaluates a solution model", () => {

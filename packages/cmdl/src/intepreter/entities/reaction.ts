@@ -1,5 +1,5 @@
 import { ChemicalSet } from "@ibm-materials/cmdl-chemicals";
-import { Entity, Exportable } from "./entity";
+import { Entity, Exportable, Renderable } from "./entity";
 import { ModelType, TAGS, TYPES } from "@ibm-materials/cmdl-types";
 import {
   ReactorChemicals,
@@ -17,7 +17,7 @@ interface ChemicalContainer {
 
 export class ReactionEntity
   extends Entity<TYPES.Reaction>
-  implements ChemicalContainer, Exportable
+  implements ChemicalContainer, Exportable, Renderable
 {
   private chemicals = new ChemicalSet();
   entities = {} as Record<string, ChemicalEntity | PolymerEntity>;
@@ -81,8 +81,14 @@ export class ReactionEntity
         ? convertQty(this.properties.reaction_time)
         : undefined,
       name: this.name,
-      type: ModelType.REACTION,
       reactants: chemOutput,
+    };
+  }
+
+  public render(): TYPES.ReactionRender {
+    return {
+      ...this.export(),
+      type: ModelType.REACTION,
     };
   }
 }

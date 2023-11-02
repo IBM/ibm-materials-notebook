@@ -100,11 +100,11 @@ export class MaterialsKernel {
 
       execution.replaceOutput([
         new vscode.NotebookCellOutput([
-          vscode.NotebookCellOutputItem.json(cellOutput),
           vscode.NotebookCellOutputItem.json(
             fullOutput,
             "x-application/ibm-materials-notebook"
           ),
+          vscode.NotebookCellOutputItem.json(cellOutput),
         ]),
       ]);
 

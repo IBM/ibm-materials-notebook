@@ -9,6 +9,10 @@ export interface Exportable {
   export(): unknown;
 }
 
+export interface Renderable {
+  render(): unknown;
+}
+
 export type EntityConfigValues = {
   mw: Big;
   density?: Big;

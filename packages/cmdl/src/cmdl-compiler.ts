@@ -359,10 +359,7 @@ export class CmdlCompiler {
   ) {
     const visitor = this._results.createModelVisitor(fileName, this, uri);
     doc.ast.evaluate(visitor);
-    const results = this._results
-      .getOutput(fileName, uri)
-      .map((el) => el.export());
-    return results;
+    return this._results.getOutput(fileName, uri);
   }
 
   /**

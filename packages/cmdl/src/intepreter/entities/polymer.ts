@@ -1,4 +1,4 @@
-import { Entity, EntityConfigValues, Exportable } from "./entity";
+import { Entity, EntityConfigValues, Exportable, Renderable } from "./entity";
 import { TYPES, ModelType } from "@ibm-materials/cmdl-types";
 import { PolymerContainer } from "@ibm-materials/cmdl-polymers";
 import Big from "big.js";
@@ -87,7 +87,10 @@ export class PolymerGraphEntity extends Entity<TYPES.PolymerGraph> {
 
 export class ComplexEntity extends Entity<TYPES.Complex> {}
 
-export class PolymerEntity extends Entity<TYPES.Polymer> implements Exportable {
+export class PolymerEntity
+  extends Entity<TYPES.Polymer>
+  implements Exportable, Renderable
+{
   private graph?: PolymerGraphEntity;
 
   public clone() {
@@ -152,5 +155,12 @@ export class PolymerEntity extends Entity<TYPES.Polymer> implements Exportable {
     }
 
     return polymerExport;
+  }
+
+  public render(): TYPES.PolymerRender {
+    return {
+      ...this.export(),
+      type: ModelType.POLYMER,
+    };
   }
 }

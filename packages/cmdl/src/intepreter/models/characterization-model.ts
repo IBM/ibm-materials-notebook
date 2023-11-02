@@ -89,10 +89,6 @@ export class CharData extends BaseModel {
             }
           }
 
-          if (fileModel) {
-            result.addFile(fileModel);
-          }
-
           globalAR.setValue(result.resultName, result);
         }
       }

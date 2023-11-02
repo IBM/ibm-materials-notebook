@@ -9,7 +9,7 @@
   "repository": {
     "url": "https://github.com/IBM/ibm-materials-notebook"
   },
-  "version": "0.1.7",
+  "version": "0.1.8",
   "engines": {
     "vscode": "^1.81.1"
   },

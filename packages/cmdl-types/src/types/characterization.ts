@@ -67,6 +67,7 @@ export type Result = Partial<MeasuredDataArray> & {
 };
 
 export type ResultExport = Result & { entity: PolymerExport | ChemicalExport };
+export type ResultRender = ResultExport & { type: "result" };
 
 export type CharFile = {
   name: string;
@@ -84,3 +85,4 @@ export interface CharData extends BaseModel {
 }
 
 export type CharDataExport = StripType<Export<CharData>>;
+export type CharDataRender = Export<CharData>;

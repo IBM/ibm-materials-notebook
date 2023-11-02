@@ -1,4 +1,4 @@
-import { select } from "d3";
+import { select, Selection } from "d3";
 
 interface SVGMargin {
   left: number;
@@ -15,7 +15,7 @@ interface ChartConfig {
 
 export default abstract class BaseChart {
   _id: string;
-  svg?: any;
+  svg: Selection<SVGGElement, unknown, HTMLElement, any>;
   _width: number;
   _height: number;
   _margin: SVGMargin;
@@ -25,6 +25,12 @@ export default abstract class BaseChart {
     this._height = height;
     this._margin = margin;
     this._id = id;
+    this.svg = select(this.id)
+      .append("svg")
+      .attr("width", this.svgWidth)
+      .attr("height", this.svgHeight)
+      .append("g")
+      .attr("transform", `translate(${this.marginLeft}, ${this.marginTop})`);
   }
 
   get id() {
@@ -73,10 +79,10 @@ export default abstract class BaseChart {
       .attr("transform", `translate(${this.marginLeft}, ${this.marginTop})`);
   }
 
-  initializeSvgViewBox() {
-    this.svg = select(this.id)
-      .append("svg")
-      .attr("viewBox", `0 0 ${this.svgWidth}, ${this.svgHeight}`)
-      .attr("style", "max-width: 100%; height: auto;");
-  }
+  // initializeSvgViewBox() {
+  //   this.svg = select(this.id)
+  //     .append("svg")
+  //     .attr("viewBox", `0 0 ${this.svgWidth}, ${this.svgHeight}`)
+  //     .attr("style", "max-width: 100%; height: auto;");
+  // }
 }

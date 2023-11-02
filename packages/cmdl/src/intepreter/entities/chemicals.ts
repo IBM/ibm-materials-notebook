@@ -1,6 +1,6 @@
 import { convertQty } from "@ibm-materials/cmdl-units";
 import { Entity, EntityConfigValues, Exportable } from "./entity";
-import { TYPES } from "@ibm-materials/cmdl-types";
+import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
 
 export class FragmentsGroup extends Entity<TYPES.Fragments> {
   public getFragmentMap() {
@@ -40,6 +40,13 @@ export class ChemicalEntity
         ? convertQty(this.properties.density)
         : undefined,
       molecular_weight: convertQty(this.properties.molecular_weight),
+    };
+  }
+
+  public render(): TYPES.ChemicalRender {
+    return {
+      ...this.export(),
+      type: ModelType.CHEMICAL,
     };
   }
 }
