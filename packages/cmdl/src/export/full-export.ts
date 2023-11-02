@@ -1,4 +1,4 @@
-import { TYPES } from "@ibm-materials/cmdl-types";
+import { TYPES } from "../cmdl-types";
 
 /**
  * Material strategy
