@@ -8,6 +8,9 @@
   "dependencies": {
     "winston": "^3.11.0"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "LISCENSE.md",
     "dist/**/*"
