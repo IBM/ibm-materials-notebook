@@ -1,8 +1,8 @@
 import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
 import { FlowRxnEntity, ReactorEntity, SolutionEntity } from "../entities";
-import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
-import { ReactorChemicals } from "@ibm-materials/cmdl-reactors";
+import { ModelType, TYPES } from "../../cmdl-types";
+import { ReactorChemicals } from "../../cmdl-reactors";
 
 export class FlowReaction extends BaseModel {
   constructor(

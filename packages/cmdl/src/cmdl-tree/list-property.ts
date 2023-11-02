@@ -3,7 +3,7 @@ import { BaseError, InvalidPropertyError } from "../errors";
 import { parseStringImage } from "./utils";
 import { Property } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
-import { PropertyTypes, TAGS } from "@ibm-materials/cmdl-types";
+import { PropertyTypes, TAGS } from "../cmdl-types";
 import { ModelVisitor } from "../intepreter";
 
 /**

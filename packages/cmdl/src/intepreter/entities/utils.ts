@@ -1,4 +1,4 @@
-import { TYPES, PROPERTIES } from "@ibm-materials/cmdl-types";
+import { TYPES, PROPERTIES } from "../../cmdl-types";
 import { EntityConfigValues } from "./entity";
 
 type ChemConfigParams = {

@@ -16,7 +16,7 @@ import { logger } from "./logger";
 import { BaseError } from "./errors";
 import { FullRecordExport } from "./export/full-export";
 import { Exportable } from "./intepreter";
-import { TYPES } from "@ibm-materials/cmdl-types";
+import { TYPES } from "./cmdl-types";
 import {
   CharDataEntity,
   ReactionEntity,

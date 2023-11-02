@@ -5,5 +5,6 @@ module.exports = {
     "@typescript-eslint/semi": "warn",
     "@typescript-eslint/ban-ts-comment": "warn",
     "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": "warn",
   },
 };

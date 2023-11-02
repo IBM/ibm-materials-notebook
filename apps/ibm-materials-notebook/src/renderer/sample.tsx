@@ -2,7 +2,7 @@ import { h, FunctionComponent } from "preact";
 import { useEffect } from "preact/hooks";
 import { ChemicalStructure } from "./chemicals";
 import { StructureTheme } from ".";
-import { TYPES } from "@ibm-materials/cmdl-types";
+import { CMDLTypes } from "@ibm-materials/cmdl";
 import LineChart from "./lineChart";
 
 function formatName(name: string) {
@@ -239,7 +239,7 @@ const ComplexResult: FunctionComponent<{ result: any }> = ({ result }) => {
 };
 
 export const CharData: FunctionComponent<{
-  charData: TYPES.CharData;
+  charData: CMDLTypes.TYPES.CharData;
 }> = ({ charData }) => {
   const graphId = `${charData.name}-${charData.sample_id}-trace`;
 

@@ -1,9 +1,9 @@
 import { Entity, EntityConfigValues, Exportable, Renderable } from "./entity";
 import { PolymerEntity } from "./polymer";
 import { ChemicalEntity } from "./chemicals";
-import { TYPES, TAGS, PROPERTIES, ModelType } from "@ibm-materials/cmdl-types";
+import { TYPES, TAGS, PROPERTIES, ModelType } from "../../cmdl-types";
 import Big from "big.js";
-import { convertQty } from "@ibm-materials/cmdl-units";
+import { convertQty } from "../../cmdl-units";
 
 export class ResultEntity
   extends Entity<TYPES.Result>

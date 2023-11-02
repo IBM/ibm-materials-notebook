@@ -3,7 +3,7 @@ import { parseStringImage } from "./utils";
 import { Property } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
-import { PROPERTIES, PropertyTypes } from "@ibm-materials/cmdl-types";
+import { PROPERTIES, PropertyTypes } from "../cmdl-types";
 import { BaseError, InvalidPropertyError } from "../errors";
 import { BigSMILES } from "@ibm-materials/ts-bigsmiles";
 

@@ -1,6 +1,6 @@
-import { convertQty } from "@ibm-materials/cmdl-units";
+import { convertQty } from "../../cmdl-units";
 import { Entity, EntityConfigValues, Exportable } from "./entity";
-import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
+import { ModelType, TYPES } from "../../cmdl-types";
 
 export class FragmentsGroup extends Entity<TYPES.Fragments> {
   public getFragmentMap() {

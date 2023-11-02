@@ -12,7 +12,7 @@ import {
   ImportSymbol,
 } from "./cmdl-symbol-base";
 import { BaseError, DuplicationError, RefError } from "../errors";
-import { ModelType, typeManager } from "@ibm-materials/cmdl-types";
+import { ModelType, typeManager } from "../cmdl-types";
 import {
   AngleProperty,
   NamedGroup,

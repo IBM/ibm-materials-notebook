@@ -6,6 +6,9 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "dependencies": {
+    "winston": "^3.11.0"
+  },
   "devDependencies": {
     "@ibm-materials/eslint-config": "*",
     "@ibm-materials/ts-config": "*",

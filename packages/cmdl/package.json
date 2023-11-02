@@ -1,6 +1,6 @@
 {
   "name": "@ibm-materials/cmdl",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "CMDL language package",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -10,12 +10,7 @@
   },
   "dependencies": {
     "chevrotain": "^10.3.0",
-    "@ibm-materials/cmdl-types": "*",
-    "@ibm-materials/cmdl-chemicals": "*",
-    "@ibm-materials/cmdl-polymers": "*",
-    "@ibm-materials/cmdl-reactors": "*",
-    "@ibm-materials/cmdl-units": "*",
-    "@ibm-materials/logger": "*"
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "@ibm-materials/eslint-config": "*",

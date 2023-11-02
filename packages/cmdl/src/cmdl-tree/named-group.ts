@@ -6,7 +6,7 @@ import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
 import { AngleProperty } from "./angle-property";
 import { AssignmentProperty } from "./assignment-property";
-import { PROPERTIES } from "@ibm-materials/cmdl-types";
+import { PROPERTIES } from "../cmdl-types";
 
 /**
  * Handles named groups in the CMDL record trees

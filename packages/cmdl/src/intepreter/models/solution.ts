@@ -1,6 +1,6 @@
 import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
+import { ModelType, TYPES } from "../../cmdl-types";
 import { SolutionEntity } from "../entities";
 
 export class Solution extends BaseModel {

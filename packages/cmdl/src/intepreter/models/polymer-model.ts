@@ -1,7 +1,7 @@
 import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
-import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
-import { PROPERTIES } from "@ibm-materials/cmdl-types";
+import { ModelType, TYPES } from "../../cmdl-types";
+import { PROPERTIES } from "../../cmdl-types";
 import { PolymerGraphEntity, PolymerEntity } from "../entities";
 
 export class Polymer extends BaseModel {

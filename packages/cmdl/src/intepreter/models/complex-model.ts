@@ -1,7 +1,7 @@
 import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
 import { ComplexEntity } from "../entities";
-import { ModelType, TYPES } from "@ibm-materials/cmdl-types";
+import { ModelType, TYPES } from "../../cmdl-types";
 
 export class Complex extends BaseModel {
   constructor(

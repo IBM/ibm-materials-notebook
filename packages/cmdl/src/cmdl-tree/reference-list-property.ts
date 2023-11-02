@@ -4,7 +4,7 @@ import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
 import { SymbolReference } from "./reference-group";
 import { BaseError } from "../errors";
-import { TYPES } from "@ibm-materials/cmdl-types";
+import { TYPES } from "../cmdl-types";
 
 /**
  * Represents individual references within a reference list property

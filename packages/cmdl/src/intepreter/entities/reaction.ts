@@ -1,15 +1,12 @@
-import { ChemicalSet } from "@ibm-materials/cmdl-chemicals";
+import { ChemicalSet } from "../../cmdl-chemicals";
 import { Entity, Exportable, Renderable } from "./entity";
-import { ModelType, TAGS, TYPES } from "@ibm-materials/cmdl-types";
-import {
-  ReactorChemicals,
-  ReactorContainer,
-} from "@ibm-materials/cmdl-reactors";
+import { ModelType, TAGS, TYPES } from "../../cmdl-types";
+import { ReactorChemicals, ReactorContainer } from "../../cmdl-reactors";
 import { ActivationRecord } from "../model-AR";
 import { ChemicalTranslator } from "./utils";
 import { ChemicalEntity } from "./chemicals";
 import { PolymerEntity } from "./polymer";
-import { convertQty } from "@ibm-materials/cmdl-units";
+import { convertQty } from "../../cmdl-units";
 
 interface ChemicalContainer {
   entities: Record<string, ChemicalEntity | PolymerEntity>;

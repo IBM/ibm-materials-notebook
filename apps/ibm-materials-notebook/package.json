@@ -153,10 +153,9 @@
     "@ibm-materials/cmdl": "*",
     "chevrotain": "^10.3.0",
     "d3": "^7.8.5",
-    "@ibm-materials/logger": "*",
     "@ibm-materials/ts-bigsmiles": "*",
     "@ibm-materials/ts-smiles-drawer": "*",
     "preact": "^10.16.0",
-    "winston": "^3.8.2"
+    "winston": "^3.11.0"
   }
 }

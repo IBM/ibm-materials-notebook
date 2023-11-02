@@ -7,7 +7,7 @@ import {
   ChemicalEntity,
   CharFileReader,
 } from "../entities";
-import { ModelType, PROPERTIES, TYPES } from "@ibm-materials/cmdl-types";
+import { ModelType, PROPERTIES, TYPES } from "../../cmdl-types";
 
 /**
  * Output model for characterization samples

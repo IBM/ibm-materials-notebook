@@ -6,7 +6,7 @@ import { Solution } from "./flowRxn";
 import { FlowRun } from "./flowRxn";
 import { CharData } from "./sample";
 import "./style.css";
-import { ModelType } from "@ibm-materials/cmdl-types";
+import { CMDLTypes } from "@ibm-materials/cmdl";
 
 export const StructureTheme = createContext<"light" | "dark">("dark");
 
@@ -69,7 +69,7 @@ const App: FunctionComponent<{ data: any[]; theme: "light" | "dark" }> = ({
               return <FlowRun key={`flow-run-${index}`} run={item} />;
             } else if (item.type === "solution") {
               return <Solution key={`solution-${index}`} solution={item} />;
-            } else if (item.type === ModelType.CHAR_DATA) {
+            } else if (item.type === CMDLTypes.ModelType.CHAR_DATA) {
               return <CharData key={`charaData-${index}`} charData={item} />;
             } else {
               return <div></div>;

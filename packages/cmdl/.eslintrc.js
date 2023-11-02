@@ -4,5 +4,6 @@ module.exports = {
     "@typescript-eslint/naming-convention": "off",
     "@typescript-eslint/semi": "warn",
     "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": "warn",
   },
 };

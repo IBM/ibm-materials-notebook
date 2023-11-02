@@ -9,7 +9,7 @@ import { Polymer } from "./models/polymer-model";
 import { Reaction } from "./models/reaction-model";
 import { Reactor } from "./models/reactor";
 import { CharData } from "./models/characterization-model";
-import { ModelType } from "@ibm-materials/cmdl-types";
+import { ModelType } from "../cmdl-types";
 import { GroupModel } from "./models/group-model";
 import { BaseModel } from "./models/base-model";
 

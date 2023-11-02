@@ -1,9 +1,9 @@
 import { Entity, EntityConfigValues, Exportable, Renderable } from "./entity";
-import { TYPES, ModelType } from "@ibm-materials/cmdl-types";
-import { PolymerContainer } from "@ibm-materials/cmdl-polymers";
+import { TYPES, ModelType } from "../../cmdl-types";
+import { PolymerContainer } from "../../cmdl-polymers";
 import Big from "big.js";
 import { logger } from "../../logger";
-import { convertQty } from "@ibm-materials/cmdl-units";
+import { convertQty } from "../../cmdl-units";
 
 export class PolymerGraphEntity extends Entity<TYPES.PolymerGraph> {
   private graph = new PolymerContainer(this.name);
