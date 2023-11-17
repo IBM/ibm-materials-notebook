@@ -1,7 +1,6 @@
 import { h, FunctionComponent } from "preact";
 import { ChemicalStructure } from "./chemicals";
 import { StructureTheme } from ".";
-import { CMDLTypes } from "@ibm-materials/cmdl";
 
 export function formatTemp(unit: string) {
   if (unit === "degC") {
@@ -127,7 +126,7 @@ export const ReactionChemicals: FunctionComponent<{
 };
 
 export const BatchReactionTableHeader: FunctionComponent<{
-  reaction: CMDLTypes.TYPES.Reaction;
+  reaction: any;
 }> = ({ reaction }) => {
   return (
     <div>
@@ -155,7 +154,7 @@ export const BatchReactionTableHeader: FunctionComponent<{
 };
 
 export const Reaction: FunctionComponent<{
-  reaction: CMDLTypes.TYPES.Reaction;
+  reaction: any;
 }> = ({ reaction }) => {
   return (
     <div>
