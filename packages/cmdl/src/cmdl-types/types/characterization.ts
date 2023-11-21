@@ -72,7 +72,7 @@ export type ResultRender = ResultExport & { type: "result" };
 export type CharFile = {
   name: string;
   fileName: string;
-  data: string[][];
+  filePath: string;
 };
 
 export interface CharData extends BaseModel {
