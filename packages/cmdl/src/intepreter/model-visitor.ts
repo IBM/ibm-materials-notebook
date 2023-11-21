@@ -193,7 +193,6 @@ export class ModelVisitor implements AstVisitor {
 
   public visitImportFileOp(node: ImportFileOp): void {
     const fileModel = new CharFileReader(node.source);
-    fileModel.processFileData();
 
     const globalAR = this.modelStack.peek();
     globalAR.setValue(node.name, fileModel);

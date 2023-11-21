@@ -1,8 +1,7 @@
 import { h, FunctionComponent } from "preact";
-import { useEffect } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { ChemicalStructure } from "./chemicals";
 import { StructureTheme } from ".";
-import { CMDLTypes } from "@ibm-materials/cmdl";
 import LineChart from "./lineChart";
 
 function formatName(name: string) {
@@ -238,18 +237,45 @@ const ComplexResult: FunctionComponent<{ result: any }> = ({ result }) => {
   );
 };
 
+async function proccessGPCCsv(filePath: string) {
+  try {
+    const fileResponse = await fetch(filePath);
+    const text = await fileResponse.text();
+    const rows = text.split("\n");
+    const rowArray: string[][] = rows.map((row) => {
+      const values = row.split(",").map((item) => item.replace(/[/\r]/g, ""));
+      return values;
+    });
+    return rowArray;
+  } catch (error) {
+    console.warn(`Could not get file...`);
+    return undefined;
+  }
+}
+
 export const CharData: FunctionComponent<{
-  charData: CMDLTypes.TYPES.CharData;
+  charData: any;
 }> = ({ charData }) => {
+  const [lineData, setLineData] = useState<string[][]>([]);
   const graphId = `${charData.name}-${charData.sample_id}-trace`;
 
   useEffect(() => {
     try {
       if (charData.file) {
-        const graph = new LineChart(graphId);
-        graph.values = charData.file.data;
+        proccessGPCCsv(charData.file.filePath)
+          .then((data) => {
+            if (data) {
+              setLineData(data);
+            }
+          })
+          .catch((err) => {
+            console.warn(err);
+          });
+      }
 
-        console.log(graph.values);
+      if (lineData.length) {
+        const graph = new LineChart(graphId);
+        graph.values = lineData;
         graph.plot();
       }
     } catch (error) {
