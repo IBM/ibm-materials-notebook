@@ -5,3 +5,4 @@ export { AstNodes } from "./cst-visitor";
 export { CmdlTree } from "./cmdl-tree";
 export * as CMDLTypes from "./cmdl-types";
 export * as CMDLAst from "./cmdl-ast";
+export { CellRenderOutput } from "./activation-record-manager";

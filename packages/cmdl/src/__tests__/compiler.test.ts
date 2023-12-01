@@ -1,3 +1,4 @@
+import { CellRenderOutput } from "../activation-record-manager";
 import { CmdlCompiler } from "../cmdl-compiler";
 
 function evaluateModel(text: string) {
@@ -7,7 +8,7 @@ function evaluateModel(text: string) {
     version: 1,
     text,
   };
-  const controller = new CmdlCompiler("/");
+  const controller = new CmdlCompiler();
   controller.register(document);
   const errs = controller.getErrors(document.uri, document.fileName);
   const result = controller.execute(document.uri);
@@ -22,7 +23,7 @@ function exportTest(text: string) {
     version: 1,
     text,
   };
-  const controller = new CmdlCompiler("/");
+  const controller = new CmdlCompiler();
   controller.register(document);
   const errs = controller.getErrors(document.uri, document.fileName);
   controller.execute(document.uri);
@@ -40,7 +41,8 @@ describe("Test model evaluation with compiler", () => {
 
     const { errs, result } = evaluateModel(chemical);
     expect(errs.length).toBe(0);
-    expect(result.length).toBe(1);
+    expect(result).toHaveProperty("chemicals");
+    expect((result as CellRenderOutput).chemicals.length).toBe(1);
   });
 
   it("evaluates a reaction model", () => {

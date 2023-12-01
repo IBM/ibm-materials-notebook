@@ -2,27 +2,23 @@ import { h, render, FunctionComponent, createContext } from "preact";
 import type { ActivationFunction } from "vscode-notebook-renderer";
 import { ChemicalRef, ComplexRef, PolymerlRef } from "./chemicals";
 import { Reaction } from "./reaction";
-import { Solution } from "./flowRxn";
-import { FlowRun } from "./flowRxn";
+// import { Solution } from "./flowRxn";
+// import { FlowRun } from "./flowRxn";
 import { CharData } from "./sample";
 import "./style.css";
+import { CellRenderOutput } from "@ibm-materials/cmdl";
+
+/**
+ * TODO: update render method
+ */
 
 export const StructureTheme = createContext<"light" | "dark">("dark");
 
-const App: FunctionComponent<{ data: any[]; theme: "light" | "dark" }> = ({
-  data,
-  theme,
-}: {
-  data: any[];
+const App: FunctionComponent<{
+  data: CellRenderOutput;
   theme: "light" | "dark";
-}) => {
-  const chemicals = data.filter(
-    (el) =>
-      el.type === "chemical" ||
-      el.type === "fragment" ||
-      el.type === "polymer" ||
-      el.type === "complex"
-  );
+}> = ({ data, theme }: { data: CellRenderOutput; theme: "light" | "dark" }) => {
+  const { chemicals, reactions, charData } = data;
 
   return (
     <StructureTheme.Provider value={theme}>
@@ -30,7 +26,7 @@ const App: FunctionComponent<{ data: any[]; theme: "light" | "dark" }> = ({
         {chemicals.length ? (
           <div className="display-main">
             {chemicals.map((item: any, index: number) => {
-              if (item.type === "chemical" || item.type === "fragment") {
+              if (item.type === "chemical") {
                 return (
                   <ChemicalRef
                     key={`${item.name}-${index}`}
@@ -61,7 +57,17 @@ const App: FunctionComponent<{ data: any[]; theme: "light" | "dark" }> = ({
           </div>
         ) : null}
         <div>
-          {data.map((item: any, index: number) => {
+          {reactions.length
+            ? reactions.map((item, index) => (
+                <Reaction key={`reaction-${index}`} reaction={item} />
+              ))
+            : null}
+          {charData.length
+            ? charData.map((item, index) => (
+                <CharData key={`charaData-${index}`} charData={item} />
+              ))
+            : null}
+          {/* {data.map((item: any, index: number) => {
             if (item.type === "reaction") {
               return <Reaction key={`reaction-${index}`} reaction={item} />;
             } else if (item.type === "flow_reaction") {
@@ -73,7 +79,7 @@ const App: FunctionComponent<{ data: any[]; theme: "light" | "dark" }> = ({
             } else {
               return <div></div>;
             }
-          })}
+          })} */}
         </div>
       </div>
     </StructureTheme.Provider>

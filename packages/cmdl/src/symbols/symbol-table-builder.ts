@@ -39,16 +39,16 @@ import { ErrorTable } from "../error-manager";
 export class SymbolTableBuilder implements AstVisitor {
   private tableStack = new CmdlStack<SymbolTable>();
   errors: ErrorTable;
-  namespace: string;
+  fileName: string;
   uri: string;
 
   constructor(
     global: SymbolTable,
     errors: ErrorTable,
-    namespace: string,
+    fileName: string,
     uri: string
   ) {
-    this.namespace = namespace;
+    this.fileName = fileName;
     this.uri = uri;
     this.errors = errors;
     this.tableStack.push(global);

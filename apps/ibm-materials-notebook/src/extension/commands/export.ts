@@ -40,7 +40,7 @@ export async function exportCurrentNotebook(repo: Repository) {
     `/lib/${fileName}_export.json`
   );
 
-  const recordExport = repo._controller.exportFile(experiment.uri.toString());
+  const recordExport = repo.compiler.exportFile(experiment.uri.toString());
   const content = JSON.stringify(recordExport, null, 2);
 
   fs.writeFile(outputPath, content, (err) => {
@@ -82,7 +82,7 @@ export async function exportCurrentWorkspace(repo: Repository) {
 
   const documentUris = documents.map((el) => el.toString());
 
-  const repoOutput = repo._controller.exportRepository(documentUris);
+  const repoOutput = repo.compiler.exportRepository(documentUris);
 
   const content = repoOutput
     .map((el: unknown) => JSON.stringify(el))

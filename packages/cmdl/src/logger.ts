@@ -44,5 +44,5 @@ export const logger = createLogger({
     }),
   ],
   levels: LEVELS,
-  level: "info",
+  level: "debug",
 });

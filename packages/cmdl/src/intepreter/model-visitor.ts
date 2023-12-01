@@ -165,9 +165,9 @@ export class ModelVisitor implements AstVisitor {
   public visitImportOp(node: ImportOp): void {
     const nodeName = node.aliasToken ? node.aliasToken.image : node.name;
 
-    const sourceNamespace = path.basename(node.source);
-    const sourceSymbols = this.controller.getSymbolTable(sourceNamespace);
-    const namespaceRecord = this.controller.getNamespaceAR(sourceNamespace);
+    const sourceFileName = path.basename(node.source);
+    const sourceSymbols = this.controller.getSymbolTable(sourceFileName);
+    const fileRecord = this.controller.getFileAR(sourceFileName);
 
     try {
       sourceSymbols.get(node.name);
@@ -175,12 +175,12 @@ export class ModelVisitor implements AstVisitor {
       logger.warn(`No symbol found for ${node.name}, searching for results...`);
     }
 
-    let values = namespaceRecord.getOptionalValue<Clonable>(node.name);
+    let values = fileRecord.getOptionalValue<Clonable>(node.name);
 
     if (!values) {
       try {
-        this.controller.executeNamespace(sourceNamespace);
-        values = namespaceRecord.getValue<Clonable>(node.name);
+        this.controller.executeFile(sourceFileName);
+        values = fileRecord.getValue<Clonable>(node.name);
       } catch (error) {
         logger.error(`Encountered error during import operation: ${error}`);
         throw new Error(`Unable to import ${node.name} from ${node.source}`);

@@ -1,4 +1,11 @@
 import { CmdlCompiler } from "./cmdl-compiler";
+import {
+  CharDataRender,
+  ChemicalRender,
+  PolymerRender,
+  ReactionRender,
+  ResultRender,
+} from "./cmdl-types/types";
 import { ModelVisitor, ActivationRecordTable, Exportable } from "./intepreter";
 import {
   CharDataEntity,
@@ -8,61 +15,108 @@ import {
   ResultEntity,
 } from "./intepreter/entities";
 
+export type CellRenderOutput = {
+  reactions: ReactionRender[];
+  chemicals: ChemicalRender[];
+  polymers: PolymerRender[];
+  charData: CharDataRender[];
+  results: ResultRender[];
+};
+
 /**
- * Caches execution results for each namespace
+ * Caches execution results for each file
  */
 export class ActivationRecordManager {
   private readonly _tables = new Map<string, ActivationRecordTable>();
 
-  public create(namespace: string) {
-    const namespaceAR = new ActivationRecordTable(namespace);
-    this._tables.set(namespace, namespaceAR);
+  /**
+   * Method to create AR for a given file
+   * @param fileName name of file for the AR
+   */
+  public create(fileName: string): void {
+    const fileAR = new ActivationRecordTable(fileName);
+    this._tables.set(fileName, fileAR);
   }
 
+  /**
+   * Method for creating a model visitor to perform execution on the CMDL
+   * AST and cache results in the activation record
+   * @param fileName name of file
+   * @param compiler reference to the compiler
+   * @param uri uri of document
+   * @returns ModelVistor
+   */
   public createModelVisitor(
-    namespace: string,
-    controller: CmdlCompiler,
+    fileName: string,
+    compiler: CmdlCompiler,
     uri: string
   ): ModelVisitor {
-    const namespaceTable = this.get(namespace);
-    const namespaceAR = namespaceTable.createGlobalAR(uri);
-    const modelVisitor = new ModelVisitor(namespaceAR, namespace, controller);
+    const fileARTable = this.get(fileName);
+    const fileGlobalAR = fileARTable.createGlobalAR(uri);
+    const modelVisitor = new ModelVisitor(fileGlobalAR, fileName, compiler);
     return modelVisitor;
   }
 
-  public get(namespace: string) {
-    const manager = this._tables.get(namespace);
+  /**
+   * Method for getting AR for file. Throws an error if
+   * it does not exist.
+   * @param fileName
+   * @returns ActivationRecordTable
+   */
+  public get(fileName: string): ActivationRecordTable {
+    const manager = this._tables.get(fileName);
 
     if (!manager) {
-      throw new Error(
-        `no activation record manager for namespace ${namespace}!`
-      );
+      throw new Error(`no activation record manager for file ${fileName}!`);
     }
     return manager;
   }
 
-  public getOutput(namespace: string, uri: string): unknown[] {
-    const namespaceTable = this.get(namespace);
-    const record = namespaceTable.getRecord(uri);
-    const finalOutput: unknown[] = [];
+  /**
+   * Method for retrieving execution results from the AR
+   * @todo update type scheme to elimnate unknown type
+   * @param fileName name of file to retrieve AR from
+   * @param uri uri of text document or cell to retrieve output for
+   * @returns unknown[]
+   */
+  public getOutput(fileName: string, uri: string): CellRenderOutput {
+    const outputRecord: CellRenderOutput = {
+      reactions: [],
+      results: [],
+      polymers: [],
+      chemicals: [],
+      charData: [],
+    };
+    const fileTable = this.get(fileName);
+    const record = fileTable.getRecord(uri);
 
     for (const value of record.values()) {
-      if (
-        value instanceof ReactionEntity ||
-        value instanceof ResultEntity ||
-        value instanceof CharDataEntity ||
-        value instanceof PolymerEntity ||
-        value instanceof ChemicalEntity
-      ) {
-        finalOutput.push(value.render());
+      if (value instanceof ReactionEntity) {
+        outputRecord.reactions.push(value.render());
+      } else if (value instanceof ResultEntity) {
+        outputRecord.results.push(value.render());
+      } else if (value instanceof CharDataEntity) {
+        outputRecord.charData.push(value.render());
+      } else if (value instanceof PolymerEntity) {
+        outputRecord.polymers.push(value.render());
+      } else if (value instanceof ChemicalEntity) {
+        outputRecord.chemicals.push(value.render());
+      } else {
+        continue;
       }
     }
-    return finalOutput;
+    return outputRecord;
   }
 
-  public getRecordOutput(namespace: string, uri: string): Exportable[] {
-    const namespaceTable = this.get(namespace);
-    const record = namespaceTable.getRecord(uri);
+  /**
+   * Method for getting output of
+   * @param fileName filename of records to be retrieved
+   * @param uri uri of text document or cell to get output from
+   * @returns Exportable[]
+   */
+  public getRecordOutput(fileName: string, uri: string): Exportable[] {
+    const fileTable = this.get(fileName);
+    const record = fileTable.getRecord(uri);
     const finalOutput: Exportable[] = [];
 
     for (const value of record.values()) {

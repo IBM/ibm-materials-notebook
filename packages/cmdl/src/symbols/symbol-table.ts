@@ -191,8 +191,8 @@ export class SymbolTable {
 
     if (symbol.type === SymbolType.IMPORT) {
       const sourcePath = (symbol as ImportSymbol).source.split("/");
-      const namespace = sourcePath[sourcePath.length - 1];
-      return this.manager.lookupMembers(namespace, path);
+      const fileName = sourcePath[sourcePath.length - 1];
+      return this.manager.lookupMembers(fileName, path);
     }
 
     const scope = this.nestedScopes.find((el) => el.scope === currentScope);
@@ -535,7 +535,7 @@ export class SymbolTable {
 
       if (globalItem && !globalItemScope) {
         const sourcePath = (globalItem as ImportSymbol).source.split("/");
-        const namespace = sourcePath[sourcePath.length - 1];
+        const fileName = sourcePath[sourcePath.length - 1];
 
         const newRef = new ReferenceSymbol(
           {
@@ -547,7 +547,7 @@ export class SymbolTable {
           globalItem.name,
           newPath
         );
-        return this.manager.lookupReference(namespace, newRef);
+        return this.manager.lookupReference(fileName, newRef);
       }
 
       if (!globalItem || !globalItemScope) {

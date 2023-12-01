@@ -3,26 +3,46 @@ import { BaseError } from "./errors";
 export class DiagnosticManager {
   private _tables = new Map<string, ErrorTable>();
 
-  public get(uri: string) {
-    const documentErrors = this._tables.get(uri);
+  /**
+   * Method to get error table for a file. Throws an
+   * error if it does not exist.
+   * @param fileName filename of error table to get
+   * @returns
+   */
+  public get(fileName: string) {
+    const documentErrors = this._tables.get(fileName);
     if (!documentErrors) {
-      throw new Error(`Error table not availabe for document: ${uri}`);
+      throw new Error(`Error table not availabe for document: ${fileName}`);
     }
     return documentErrors;
   }
-  public create(namespace: string): ErrorTable {
+
+  /**
+   * Method for creating error table for a file.
+   * @param fileName filename associated with error table
+   * @returns
+   */
+  public create(fileName: string): ErrorTable {
     const newTable = new ErrorTable();
-    this._tables.set(namespace, newTable);
+    this._tables.set(fileName, newTable);
     return newTable;
   }
 
-  public delete(namespace: string) {
-    if (this._tables.has(namespace)) {
-      this._tables.delete(namespace);
+  /**
+   * Method for removing error tables
+   * @param fileName name of error table to delete
+   */
+  public delete(fileName: string) {
+    if (this._tables.has(fileName)) {
+      this._tables.delete(fileName);
     }
   }
 
-  public print() {
+  /**
+   * Method for printing current error tables
+   * @returns string
+   */
+  public print(): string {
     const header = `Error Tables\n---------------`;
     let main = ``;
     for (const table of this._tables.keys()) {
@@ -40,8 +60,8 @@ export class ErrorTable {
   private _expErrors = new Map<string, BaseError[]>();
 
   /**
-   * Adds an error for a given cell
-   * @param uri string - cell uri
+   * Adds errors for a given cell or text document
+   * @param uri uri of cell or text document for errors
    * @param errors BaseError[]
    */
   public add(uri: string, errors: BaseError[]): void {
@@ -56,7 +76,7 @@ export class ErrorTable {
 
   /**
    * Gets errors for a given cell, returns an empty array if none.
-   * @param uri string - cell uri
+   * @param uri uri of cell or text document
    * @returns BaseError[]
    */
   public get(uri: string): BaseError[] {
@@ -71,7 +91,7 @@ export class ErrorTable {
 
   /**
    * Deletes all errors for a given cell.
-   * @param uri string - cell uri
+   * @param uri uri of cell or text document
    */
   public delete(uri: string): void {
     this._expErrors.delete(uri);
@@ -92,6 +112,7 @@ export class ErrorTable {
 
   /**
    * Serializes error table to an object for logging.
+   * TODO: convert method to return a string instead of dict
    * @returns Record<string, BaseError[]>
    */
   public print(): Record<string, BaseError[]> {

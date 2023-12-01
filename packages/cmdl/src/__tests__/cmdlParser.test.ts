@@ -8,11 +8,11 @@ const compiler = new CmdlParser();
 const symbolManager = new SymbolTableManager();
 
 function evalutateText(text: string) {
-  const namespace = "test";
+  const fileName = "test";
   const uri = "test/uri";
   const errors = new ErrorTable();
   const globalTable = new SymbolTable("GLOBAL", symbolManager);
-  const builder = new SymbolTableBuilder(globalTable, errors, namespace, uri);
+  const builder = new SymbolTableBuilder(globalTable, errors, fileName, uri);
 
   const { parserErrors, recordTree } = compiler.parse(text);
   const semanticErrors = recordTree.validate();

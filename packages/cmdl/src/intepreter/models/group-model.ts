@@ -29,7 +29,7 @@ export class GroupModel extends BaseModel {
       this.copyProperties<TYPES.Fragments>(fragmentModel);
       globalAR.setValue(this.name, fragmentModel);
     } else {
-      throw new Error(`Invalid group model for ${this.type}`);
+      throw new Error(`Invalid group model for ${this.name}: ${this.type}`);
     }
   }
 

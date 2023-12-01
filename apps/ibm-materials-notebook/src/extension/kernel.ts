@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { logger } from "../logger";
 import { Repository } from "./respository";
-import { NOTEBOOK, LANGUAGE } from "./languageProvider";
+import { NOTEBOOK, LANGUAGE, MD_LANGUAGE } from "./languageProvider";
 
 /**
  * Kernel for executiing CMDL in notebook applications
@@ -11,7 +11,7 @@ export class MaterialsKernel {
   readonly controllerId = "materials-notebook-kernel";
   readonly notebookType = NOTEBOOK;
   readonly label = "CMDL";
-  readonly supportedLanguages = [LANGUAGE];
+  readonly supportedLanguages = [LANGUAGE, MD_LANGUAGE];
   readonly theme = vscode.workspace
     .getConfiguration("ibm-materials-notebook")
     .get("structure-theme");
@@ -63,53 +63,70 @@ export class MaterialsKernel {
    * Executes notebook cell
    * @param cell vscode.NotebookCell
    */
-  private async _doExecution(
+  private _doExecution(
     cell: vscode.NotebookCell,
     notebook: vscode.NotebookDocument
-  ): Promise<void> {
+  ): void {
     logger.info(`executing cell: ${cell.kind}`);
 
     const execution = this._controller.createNotebookCellExecution(cell);
     execution.executionOrder = ++this._executionOrder;
     execution.start(Date.now());
+    const cellUri = cell.document.uri.toString();
 
     try {
-      const cellUri = cell.document.uri.toString();
-      const cellOutput = this.repository._controller.execute(
-        notebook.uri.toString(),
-        cellUri
-      );
+      if (cell.document.languageId === MD_LANGUAGE) {
+        const cmdpCellOutput = this.repository.compiler.execute(
+          notebook.uri.toString(),
+          cellUri
+        );
+        execution.replaceOutput(
+          new vscode.NotebookCellOutput([
+            vscode.NotebookCellOutputItem.text(
+              cmdpCellOutput as string,
+              "text/html"
+            ),
+          ])
+        );
+        execution.end(true, Date.now());
+        return;
+      } else {
+        const cellOutput = this.repository.compiler.execute(
+          notebook.uri.toString(),
+          cellUri
+        );
 
-      const fileName = this.repository.extractFileName(notebook.uri);
-      const errors = this.repository._controller.getErrors(cellUri, fileName);
+        const fileName = this.repository.extractFileName(notebook.uri);
+        const errors = this.repository.compiler.getErrors(cellUri, fileName);
 
-      if (errors.length) {
+        if (errors.length) {
+          execution.replaceOutput([
+            new vscode.NotebookCellOutput([
+              vscode.NotebookCellOutputItem.json(errors),
+            ]),
+          ]);
+          logger.verbose(`...finished cell execution`);
+          execution.end(false, Date.now());
+        }
+
+        const fullOutput = {
+          structureTheme: this.theme,
+          cellOutput,
+        };
+
         execution.replaceOutput([
           new vscode.NotebookCellOutput([
-            vscode.NotebookCellOutputItem.json(errors),
+            vscode.NotebookCellOutputItem.json(
+              fullOutput,
+              "x-application/ibm-materials-notebook"
+            ),
+            vscode.NotebookCellOutputItem.json(cellOutput),
           ]),
         ]);
+
         logger.verbose(`...finished cell execution`);
-        execution.end(false, Date.now());
+        execution.end(true, Date.now());
       }
-
-      const fullOutput = {
-        structureTheme: this.theme,
-        cellOutput,
-      };
-
-      execution.replaceOutput([
-        new vscode.NotebookCellOutput([
-          vscode.NotebookCellOutputItem.json(
-            fullOutput,
-            "x-application/ibm-materials-notebook"
-          ),
-          vscode.NotebookCellOutputItem.json(cellOutput),
-        ]),
-      ]);
-
-      logger.verbose(`...finished cell execution`);
-      execution.end(true, Date.now());
     } catch (error) {
       execution.replaceOutput([
         new vscode.NotebookCellOutput([

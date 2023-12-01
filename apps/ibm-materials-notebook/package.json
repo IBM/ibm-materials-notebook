@@ -102,6 +102,13 @@
           "Chemical Markdown Language",
           "CMDL"
         ]
+      },
+      {
+        "id": "cmdp",
+        "aliases": [
+          "Chemical Markdown Protocol",
+          "CMDP"
+        ]
       }
     ],
     "grammars": [
@@ -125,6 +132,9 @@
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
+    "@ibm-materials/eslint-config": "*",
+    "@ibm-materials/jest-config": "*",
+    "@ibm-materials/ts-config": "*",
     "@types/big.js": "^6.1.5",
     "@types/d3": "^7.4.0",
     "@types/glob": "^7.2.0",
@@ -135,12 +145,9 @@
     "@vscode/test-electron": "^2.1.5",
     "@vscode/vsce": "^2.16.0",
     "css-loader": "^6.7.1",
-    "@ibm-materials/eslint-config": "*",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
     "style-loader": "^3.3.1",
-    "@ibm-materials/ts-config": "*",
-    "@ibm-materials/jest-config": "*",
     "ts-loader": "^9.3.1",
     "ts-node": "^10.9.1",
     "vscode-notebook-error-overlay": "^1.0.1",
@@ -149,11 +156,12 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "big.js": "^6.2.1",
     "@ibm-materials/cmdl": "*",
+    "@ibm-materials/ts-smiles-drawer": "*",
+    "big.js": "^6.2.1",
     "chevrotain": "^10.3.0",
     "d3": "^7.8.5",
-    "@ibm-materials/ts-smiles-drawer": "*",
+    "marked": "^10.0.0",
     "preact": "^10.16.0",
     "winston": "^3.11.0"
   }

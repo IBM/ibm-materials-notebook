@@ -3,7 +3,10 @@
 import * as vscode from "vscode";
 import { CMDLNotebookSerializer } from "./serializer";
 import { MaterialsKernel } from "./kernel";
-import { registerLanguageProvider } from "./languageProvider";
+import {
+  registerLanguageProvider,
+  registerMarkdownLanguageProvider,
+} from "./languageProvider";
 import { Repository } from "./respository";
 import { NOTEBOOK } from "./languageProvider";
 import { logger } from "../logger";
@@ -36,6 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(registerLanguageProvider(repository));
   context.subscriptions.push(registerCommands(repository));
+  context.subscriptions.push(registerMarkdownLanguageProvider(repository));
 }
 
 // this method is called when your extension is deactivated

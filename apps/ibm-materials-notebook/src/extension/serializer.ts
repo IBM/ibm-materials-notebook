@@ -32,9 +32,13 @@ export class CMDLNotebookSerializer implements vscode.NotebookSerializer {
     const results: vscode.NotebookCellOutputItem[] = [];
 
     for (const output of raw.outputs) {
-      const data = new TextEncoder().encode(
-        JSON.stringify(output.value, null, 2)
-      );
+      let data;
+      if (raw.language == "cmdp") {
+        data = new TextEncoder().encode(`${output.value}`);
+      } else {
+        data = new TextEncoder().encode(JSON.stringify(output.value, null, 2));
+      }
+
       results.push(new vscode.NotebookCellOutputItem(data, output.mime));
     }
 
@@ -53,11 +57,21 @@ export class CMDLNotebookSerializer implements vscode.NotebookSerializer {
 
     const results: RawCellOutput[] = [];
 
-    for (const output of cell.outputs) {
-      for (const item of output.items) {
-        const outputContents = new TextDecoder().decode(item.data);
-        const outputData = JSON.parse(outputContents);
-        results.push({ mime: item.mime, value: outputData });
+    if (cell.languageId === "cmdl") {
+      for (const output of cell.outputs) {
+        for (const item of output.items) {
+          const outputContents = new TextDecoder().decode(item.data);
+          const outputData = JSON.parse(outputContents);
+          results.push({ mime: item.mime, value: outputData });
+        }
+      }
+    } else {
+      for (const output of cell.outputs) {
+        for (const item of output.items) {
+          const outputContents = new TextDecoder().decode(item.data);
+          const outputData = outputContents.slice(0, outputContents.length - 1);
+          results.push({ mime: item.mime, value: outputData });
+        }
       }
     }
 

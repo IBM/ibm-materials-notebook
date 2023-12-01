@@ -7,11 +7,7 @@ import { CmdlCompiler } from "@ibm-materials/cmdl";
  * Manages all cmdl documents (.cmdnb & .cmdl) in workspace
  */
 export class Repository {
-  readonly _controller = new CmdlCompiler(
-    vscode.workspace.workspaceFolders
-      ? vscode.workspace.workspaceFolders[0].uri.fsPath
-      : ""
-  );
+  readonly compiler = new CmdlCompiler();
 
   private _onDidInitializeNotebook =
     new vscode.EventEmitter<vscode.NotebookDocument>();
@@ -27,28 +23,6 @@ export class Repository {
   >();
 
   constructor() {
-    // this._disposables.push(
-    //   vscode.workspace.onDidOpenNotebookDocument((notebookDoc) => {
-    //     if (notebookDoc.notebookType !== NOTEBOOK) {
-    //       return;
-    //     }
-
-    //     const notebookUri = notebookDoc.uri.toString();
-    //     if (notebookDoc.uri.fragment) {
-    //       return;
-    //     }
-
-    //     if (this._documents.has(notebookUri)) {
-    //       logger.info(`notebook: ${notebookUri} is already registered`);
-    //       return;
-    //     }
-    //     const formattedDoc = this.formatNotebook(notebookDoc);
-    //     this._controller.register(formattedDoc);
-    //     this._documents.set(notebookUri, notebookDoc);
-    //     this._onDidInitializeNotebook.fire(notebookDoc);
-    //   })
-    // );
-
     this._disposables.push(
       vscode.workspace.onDidChangeNotebookDocument((event) => {
         const docUri = event.notebook.uri.toString();
@@ -56,7 +30,7 @@ export class Repository {
         if (event.contentChanges.length) {
           for (const change of event.contentChanges) {
             for (const cell of change.removedCells) {
-              this._controller.removeNotebookCell(
+              this.compiler.removeNotebookCell(
                 cell.document.uri.toString(),
                 docUri
               );
@@ -65,7 +39,7 @@ export class Repository {
             for (const cell of change.addedCells) {
               if (cell.kind === vscode.NotebookCellKind.Code) {
                 const newCell = this.formatCell(cell);
-                this._controller.addNotebookCell(docUri, newCell);
+                this.compiler.addNotebookCell(docUri, newCell);
               }
             }
           }
@@ -73,36 +47,12 @@ export class Repository {
       })
     );
 
-    // this._disposables.push(
-    //   vscode.workspace.onDidOpenTextDocument((doc) => {
-    //     if (doc.languageId !== "cmdl") {
-    //       return;
-    //     }
-
-    //     const docUri = doc.uri.toString();
-
-    //     if (this._documents.has(docUri)) {
-    //       logger.info(`${docUri} is already registered`);
-    //       return;
-    //     }
-
-    //     if (doc.uri.fragment.length) {
-    //       return;
-    //     }
-
-    //     const textDoc = this.formatTextDocument(doc);
-    //     this._controller.register(textDoc);
-    //     this._documents.set(docUri, doc);
-    //     this._onDidInitializeText.fire(doc);
-    //   })
-    // );
-
     this._disposables.push(
       vscode.workspace.onDidRenameFiles((event) => {
         for (const file of event.files) {
           logger.info(`file renamed, unregistering ${file.oldUri.toString()}`);
           this._documents.delete(file.oldUri.toString());
-          this._controller.unregister(file.oldUri.toString());
+          this.compiler.unregister(file.oldUri.toString());
         }
       })
     );
@@ -112,7 +62,7 @@ export class Repository {
         for (const uri of event.files) {
           const fileUri = uri.toString();
           this._documents.delete(fileUri);
-          this._controller.unregister(fileUri);
+          this.compiler.unregister(fileUri);
         }
       })
     );
@@ -182,6 +132,7 @@ export class Repository {
   public formatCell(cell: vscode.NotebookCell) {
     return {
       uri: cell.document.uri.toString(),
+      language: cell.document.languageId,
       text: cell.document.getText(),
       version: cell.document.version,
     };
@@ -230,7 +181,7 @@ export class Repository {
       return;
     }
     const textDoc = this.formatTextDocument(doc);
-    this._controller.register(textDoc);
+    this.compiler.register(textDoc);
     this._documents.set(docUri, doc);
     this._onDidInitializeText.fire(doc);
   }
@@ -248,7 +199,7 @@ export class Repository {
       return;
     }
     const formattedDoc = this.formatNotebook(doc);
-    this._controller.register(formattedDoc);
+    this.compiler.register(formattedDoc);
     this._documents.set(notebookUri, doc);
     this._onDidInitializeNotebook.fire(doc);
   }

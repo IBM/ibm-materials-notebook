@@ -17,7 +17,7 @@ import { TYPES } from "../cmdl-types";
  * charData: charData[] => technique, file reference, sampleId, date, time, etc.
  */
 
-type CompiledRecord = {
+export type CompiledRecord = {
   date: string | null;
   name: string;
   temperature: TYPES.NumericQty | null;
@@ -26,6 +26,14 @@ type CompiledRecord = {
   protocol: string | null;
   results: TYPES.ResultExport[];
   charData: TYPES.CharDataExport[];
+  repository: {
+    name?: string;
+    commitSha?: string;
+    fileSha?: string;
+    filename: string;
+    dateCreated: string;
+    fileuri: string;
+  };
 };
 
 /**
@@ -35,9 +43,13 @@ export class FullRecordExport {
   reaction: TYPES.ReactionExport;
   results: TYPES.ResultExport[] = [];
   charData: TYPES.CharDataExport[] = [];
+  filename: string;
+  uri: string;
 
-  constructor(rxn: TYPES.ReactionExport) {
+  constructor(rxn: TYPES.ReactionExport, filename: string, uri: string) {
     this.reaction = rxn;
+    this.filename = filename;
+    this.uri = uri;
   }
 
   public compile(): CompiledRecord {
@@ -50,6 +62,11 @@ export class FullRecordExport {
       protocol: this.reaction.protocol || null,
       results: this.results,
       charData: this.charData,
+      repository: {
+        filename: this.filename,
+        fileuri: this.uri,
+        dateCreated: new Date(Date.now()).toISOString(),
+      },
     };
   }
 }

@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { logger } from "../logger";
 import { Repository } from "./respository";
+import { MD_LANGUAGE } from "./languageProvider";
 
 export const LANGUAGE = "cmdl";
 export const NOTEBOOK = "ibm-materials-notebook";
@@ -34,7 +35,10 @@ export class Validation {
 
     this._disposables.push(
       vscode.workspace.onDidChangeTextDocument((doc) => {
-        if (vscode.languages.match(LANGUAGE, doc.document)) {
+        if (
+          vscode.languages.match(LANGUAGE, doc.document) ||
+          vscode.languages.match(MD_LANGUAGE, doc.document)
+        ) {
           clearTimeout(handle);
           handle = setTimeout(() => this.validateChange(doc.document), 500);
         }
@@ -91,6 +95,19 @@ export class Validation {
     }
 
     const expUri = exp.uri.toString();
+
+    if (document.languageId === "cmdp") {
+      logger.verbose(`updating chemical markdown cell...`);
+      const doc = {
+        uri: document.uri.toString(),
+        language: "cmdp",
+        fileName: this.repository.extractFileName(exp.uri),
+        version: document.version,
+        text: document.getText(),
+      };
+      this.repository.compiler.updateNotebookCell(expUri, doc);
+    }
+
     let collection = this._collections.get(expUri);
 
     if (!collection) {
@@ -100,18 +117,19 @@ export class Validation {
 
     const doc = {
       uri: document.uri.toString(),
+      language: "cmdl",
       fileName: this.repository.extractFileName(exp.uri),
       version: document.version,
       text: document.getText(),
     };
 
     if ("notebookType" in exp) {
-      this.repository._controller.updateNotebookCell(expUri, doc);
+      this.repository.compiler.updateNotebookCell(expUri, doc);
     } else {
-      this.repository._controller.updateDocument(doc);
+      this.repository.compiler.updateDocument(doc);
     }
 
-    const errors = this.repository._controller.getErrors(doc.uri, doc.fileName);
+    const errors = this.repository.compiler.getErrors(doc.uri, doc.fileName);
     const diagnostics = this.createDiagnostics(errors, document);
     collection.set(document.uri, diagnostics);
   }
@@ -143,13 +161,15 @@ export class Validation {
     const cells = notebook.getCells();
 
     for (const { document } of cells) {
-      const cellUri = document.uri.toString();
-      const errors = this.repository._controller.getErrors(
-        cellUri,
-        notebookFileName
-      );
-      const diagnostics = this.createDiagnostics(errors, document);
-      collection.set(document.uri, diagnostics);
+      if (document.languageId === "cmdl") {
+        const cellUri = document.uri.toString();
+        const errors = this.repository.compiler.getErrors(
+          cellUri,
+          notebookFileName
+        );
+        const diagnostics = this.createDiagnostics(errors, document);
+        collection.set(document.uri, diagnostics);
+      }
     }
   }
 
@@ -163,7 +183,7 @@ export class Validation {
       collection = vscode.languages.createDiagnosticCollection();
       this._collections.set(documentUri, collection);
     }
-    const errors = this.repository._controller.getErrors(documentUri, fileName);
+    const errors = this.repository.compiler.getErrors(documentUri, fileName);
     const diagnostics = this.createDiagnostics(errors, document);
     collection.set(document.uri, diagnostics);
   }

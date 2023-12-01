@@ -2,8 +2,10 @@ import * as vscode from "vscode";
 import { CmdlCompletions } from "./cmdl-completion";
 import { Repository } from "./respository";
 import { Validation } from "./validator";
+import { logger } from "../logger";
 
 export const LANGUAGE = "cmdl";
+export const MD_LANGUAGE = "cmdp";
 export const NOTEBOOK = "ibm-materials-notebook";
 
 const selector = { language: LANGUAGE };
@@ -72,7 +74,7 @@ class ImportProvder implements vscode.CompletionItemProvider {
       }
     }
 
-    const matchingItems = this.repository._controller.provideImportCompletions(
+    const matchingItems = this.repository.compiler.provideImportCompletions(
       modules,
       wordArr[1]
     );
@@ -109,13 +111,13 @@ class SymbolProvider implements vscode.CompletionItemProvider {
   ): vscode.ProviderResult<
     vscode.CompletionItem[] | vscode.CompletionList<vscode.CompletionItem>
   > {
+    logger.debug(`getting symbol completions: ${context.triggerKind}`);
     if (context.triggerKind === vscode.CompletionTriggerKind.Invoke) {
       return;
     }
 
-    const namespace = this.repository.extractFileName(document.uri);
-    const symbols =
-      this.repository._controller.getNamespaceDeclarations(namespace);
+    const fileName = this.repository.extractFileName(document.uri);
+    const symbols = this.repository.compiler.getFileDeclarations(fileName);
 
     const results = symbols.map((el: any) => {
       return {
@@ -152,9 +154,9 @@ class SymbolMemberProvider implements vscode.CompletionItemProvider {
 
     const slicedWord = word.slice(1, -1);
 
-    const namespace = this.repository.extractFileName(document.uri);
-    const symbols = this.repository._controller.getNamespaceSymbolMembers(
-      namespace,
+    const fileName = this.repository.extractFileName(document.uri);
+    const symbols = this.repository.compiler.getFileSymbolMembers(
+      fileName,
       slicedWord
     );
 
@@ -219,7 +221,33 @@ class SemanticTokenProvider implements vscode.DocumentSemanticTokensProvider {
   }
 }
 
+export function registerMarkdownLanguageProvider(
+  repo: Repository
+): vscode.Disposable {
+  logger.debug("registering markdown provider");
+  const disposables: vscode.Disposable[] = [];
+  const symbolProvider = new SymbolProvider(repo);
+
+  vscode.languages.setLanguageConfiguration(MD_LANGUAGE, {
+    brackets: [
+      ["{{", "}}"],
+      ["[[", "]]"],
+    ],
+  });
+
+  disposables.push(
+    vscode.languages.registerCompletionItemProvider(
+      { language: MD_LANGUAGE },
+      symbolProvider,
+      ...SymbolProvider.triggerCharacters
+    )
+  );
+
+  return vscode.Disposable.from(...disposables);
+}
+
 export function registerLanguageProvider(repo: Repository): vscode.Disposable {
+  logger.debug("registering cmdl provider");
   const disposables: vscode.Disposable[] = [];
   const symbolProvider = new SymbolProvider(repo);
   const memberProvider = new SymbolMemberProvider(repo);
