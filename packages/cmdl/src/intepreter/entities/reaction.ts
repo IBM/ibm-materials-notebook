@@ -45,7 +45,8 @@ export class ReactionEntity
         });
         this.chemicals.insert(chemConfig);
       } else {
-        products.push(chemRef);
+        const smiles = parentEntity.getSMILES();
+        products.push({ ...chemRef, smiles });
       }
     }
     this.add("products", products);

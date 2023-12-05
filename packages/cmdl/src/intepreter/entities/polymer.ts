@@ -125,6 +125,13 @@ export class PolymerEntity
     return this.graph.getGraphStr();
   }
 
+  public getSMILES() {
+    if (!this.graph) {
+      throw new Error(`polymer graph is undefined on ${this.name}`);
+    }
+    return this.graph.getGraphSmiles();
+  }
+
   public getConfigValues(): EntityConfigValues {
     if (!this.properties.mn_avg) {
       logger.warn(`Mn is not defined for ${this.name}...returning value of 1`);

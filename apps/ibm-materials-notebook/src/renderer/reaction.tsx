@@ -121,6 +121,20 @@ export const ReactionChemicals: FunctionComponent<{
             );
           })
         : null}
+      {reaction?.products && reaction.products.length
+        ? reaction.products.map((prod: any, index: number) => {
+            return (
+              <ReactionStructureItem
+                key={`product-${rxnName}-${prod.name}-${index}`}
+                smiles={prod.smiles}
+                name={prod.name}
+                rxnName={rxnName}
+                index={index}
+                type="product"
+              />
+            );
+          })
+        : null}
     </div>
   );
 };

@@ -24,7 +24,8 @@ export type CompiledRecord = {
   time: TYPES.NumericQty | null;
   chemicals: TYPES.ReactionChemicalOutput[];
   protocol: string | null;
-  results: TYPES.ResultExport[];
+  input_results: TYPES.ResultExport[];
+  products: TYPES.ResultExport[];
   charData: TYPES.CharDataExport[];
   repository: {
     name?: string;
@@ -53,6 +54,18 @@ export class FullRecordExport {
   }
 
   public compile(): CompiledRecord {
+    const inputResults = [];
+    const products = [];
+    const productNames = this.reaction.products.map((el) => el.name);
+
+    for (const result of this.results) {
+      if (productNames.length && productNames.includes(result.name)) {
+        products.push(result);
+      } else {
+        inputResults.push(result);
+      }
+    }
+
     return {
       date: this.reaction.date || null,
       name: this.reaction.name,
@@ -60,7 +73,8 @@ export class FullRecordExport {
       time: this.reaction.reaction_time || null,
       chemicals: this.reaction.reactants,
       protocol: this.reaction.protocol || null,
-      results: this.results,
+      input_results: inputResults,
+      products: products,
       charData: this.charData,
       repository: {
         filename: this.filename,

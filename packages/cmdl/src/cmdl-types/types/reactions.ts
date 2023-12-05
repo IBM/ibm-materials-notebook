@@ -7,14 +7,10 @@ import { ReactionChemicalOutput } from "./chemicals";
 import { ChemicalOutput } from "./chemicals";
 import { ReactorGroupOutput } from "./reactors";
 
-type ComplexComponents = {
-  name: string;
-};
-
 export type Product = {
   name: string;
+  smiles: string;
   [PROPERTIES.ROLES]: ReactionRoles[];
-  components?: ComplexComponents[];
 };
 
 /**
