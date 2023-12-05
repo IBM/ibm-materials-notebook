@@ -21,7 +21,6 @@ import {
   VariableGroupCstChildren,
   AliasClauseCstChildren,
   ImportFileStatementCstChildren,
-  ProtocolItemCstChildren,
   AssignmentPropertyCstChildren,
 } from "./parser-types";
 import {
@@ -41,7 +40,6 @@ import {
   VariableProperty,
   AngleProperty,
   ImportFileOp,
-  ProtocolGroup,
   AssignmentProperty,
 } from "./cmdl-tree";
 
@@ -157,13 +155,8 @@ export class CstRecordVisitor extends BaseVisitor {
 
     if (ctx.namedGroup && ctx.namedGroup.length) {
       const { nameToken, idToken } = this.visit(ctx.namedGroup);
-      if (ctx?.group[0].children.protocolItem) {
-        group = new ProtocolGroup(nameToken, idToken);
-        parent.add(group);
-      } else {
-        group = new NamedGroup(nameToken, idToken);
-        parent.add(group);
-      }
+      group = new NamedGroup(nameToken, idToken);
+      parent.add(group);
     } else if (ctx?.Identifier && ctx.Identifier.length) {
       token = this.extractToken(ctx.Identifier[0]);
       group = new GeneralGroup(token);
@@ -221,8 +214,6 @@ export class CstRecordVisitor extends BaseVisitor {
       for (const item of ctx.groupItem) {
         this.visit(item, parent);
       }
-    } else if (ctx?.protocolItem && ctx.protocolItem.length) {
-      this.visit(ctx.protocolItem[0], parent);
     }
   }
 
@@ -237,15 +228,6 @@ export class CstRecordVisitor extends BaseVisitor {
       this.visit(ctx.assignmentProperty, parent);
     } else {
       // create error => bad group item
-    }
-  }
-
-  protocolItem(ctx: ProtocolItemCstChildren, parent: ProtocolGroup) {
-    if (ctx.ProtocolText && ctx.ProtocolText.length) {
-      for (const textToken of ctx.ProtocolText) {
-        const protocolToken = this.extractToken(textToken);
-        parent.addToken(protocolToken);
-      }
     }
   }
 

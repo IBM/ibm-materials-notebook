@@ -1,4 +1,4 @@
-import { IGroup, GROUPS, ModelType } from "./group-types";
+import { IGroup, GROUPS } from "./group-types";
 import { PROPERTIES } from "../properties";
 
 /**
@@ -39,16 +39,16 @@ const source: IGroup = {
   ],
 };
 
-const protocol: IGroup = {
-  name: GROUPS.PROTOCOL,
-  modelType: ModelType.PROTOCOL,
-  description:
-    "Protocol template for an experiment or characterization measurement",
-  detail: "Protocol",
-  aliases: [],
-  referenceProps: [],
-  subGroups: [],
-  properties: [],
-};
+// const protocol: IGroup = {
+//   name: GROUPS.PROTOCOL,
+//   modelType: ModelType.PROTOCOL,
+//   description:
+//     "Protocol template for an experiment or characterization measurement",
+//   detail: "Protocol",
+//   aliases: [],
+//   referenceProps: [],
+//   subGroups: [],
+//   properties: [],
+// };
 
-export const exprimentGroups = [metadata, source, protocol];
+export const exprimentGroups = [metadata, source];

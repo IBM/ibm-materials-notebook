@@ -27,7 +27,6 @@ import {
   Group,
   Property,
   ImportFileOp,
-  ProtocolGroup,
   AssignmentProperty,
 } from "../cmdl-tree";
 import { CmdlStack } from "../cmdl-stack";
@@ -339,24 +338,6 @@ export class SymbolTableBuilder implements AstVisitor {
     }
 
     this.exitCurrentScope();
-  }
-
-  /**
-   * Creates a reference symbol and enters a new scope
-   * @param refGroup ProtocolGroup
-   */
-  public visitProtocol(protocolGroup: ProtocolGroup): void {
-    const declSymbol = new DeclarationSymbol(
-      {
-        name: protocolGroup.name,
-        token: protocolGroup.nameToken,
-        type: SymbolType.DECLARATION,
-        def: this.uri,
-      },
-      typeManager.getModel(protocolGroup.name)
-    );
-
-    this.addSymbol(declSymbol);
   }
 
   /**

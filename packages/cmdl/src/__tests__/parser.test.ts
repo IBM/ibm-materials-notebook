@@ -176,17 +176,6 @@ describe("Test parser on simple fragment", () => {
     expect(parserInstance.errors.length).toBe(0);
   });
 
-  it("it can parse multi-line strings for protocols", () => {
-    const protocol =
-      "protocol Rxn-1 {\n`This is a protocol.\nIt contains 'multi-lines' and [[@references]].`\n}";
-    const lexingResult = lexerInstance.tokenize(protocol);
-    parserInstance.input = lexingResult.tokens;
-    parserInstance.parseRecord();
-    // console.log(JSON.stringify(cst, null, 2));
-    // console.log(JSON.stringify(parserInstance.errors, null, 2));
-    expect(parserInstance.errors.length).toBe(0);
-  });
-
   it("it can parse assignments for SMILES fragments", () => {
     const fragments = `fragments {
       fragment1 =: "CCCO[R:1]";
@@ -195,8 +184,6 @@ describe("Test parser on simple fragment", () => {
     const lexingResult = lexerInstance.tokenize(fragments);
     parserInstance.input = lexingResult.tokens;
     parserInstance.parseRecord();
-    // console.log(JSON.stringify(cst, null, 2));
-    // console.log(JSON.stringify(parserInstance.errors, null, 2));
     expect(parserInstance.errors.length).toBe(0);
   });
   it("it can parse assignments for SMILES fragments in a named group", () => {

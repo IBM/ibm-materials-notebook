@@ -9,7 +9,6 @@ import {
   Property,
   ImportOp,
   ImportFileOp,
-  ProtocolGroup,
   AssignmentProperty,
 } from "../cmdl-tree";
 import path from "path";
@@ -20,7 +19,7 @@ import { CmdlStack } from "../cmdl-stack";
 import { logger } from "../logger";
 import { typeManager, ModelType, GROUPS } from "../cmdl-types";
 import { CmdlCompiler } from "../cmdl-compiler";
-import { Clonable, CharFileReader, ProtocolEntity } from "./entities";
+import { Clonable, CharFileReader } from "./entities";
 
 /**
  * Visits record tree and executes different models on elements
@@ -204,14 +203,5 @@ export class ModelVisitor implements AstVisitor {
       name: prop.name,
       value: prop.getValues(),
     });
-  }
-
-  public visitProtocolGroup(group: ProtocolGroup): void {
-    const protocolModel = new ProtocolEntity(group.identifier, "protocol");
-    const { protocol, references } = group.export();
-    protocolModel.initializeProtocol(protocol, references);
-
-    const globalAR = this.modelStack.peek();
-    globalAR.setValue(group.identifier, protocolModel);
   }
 }

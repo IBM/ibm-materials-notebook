@@ -8,7 +8,6 @@ export enum ModelType {
   FLOW_REACTION = "flow_reaction",
   POLYMER = "polymer",
   POLYMER_GRAPH = "polymer_graph",
-  PROTOCOL = "protocol",
   REACTION = "reaction",
   REACTOR_GRAPH = "reactor_graph",
   REACTOR = "reactor",
@@ -54,5 +53,4 @@ export enum GROUPS {
   CHEMICAL = "chemical",
   POLYMER = "polymer",
   COMPLEX = "complex",
-  PROTOCOL = "protocol",
 }

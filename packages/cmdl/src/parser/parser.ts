@@ -25,9 +25,9 @@ import {
   RAngle,
   LAngle,
   As,
-  BackTicClose,
-  BackTicOpen,
-  Protocol,
+  // BackTicClose,
+  // BackTicOpen,
+  // Protocol,
   Assignment,
 } from "./tokens";
 
@@ -114,7 +114,7 @@ class Parser extends CstParser {
   private group = this.RULE("group", () => {
     this.CONSUME(LCurly);
     this.OR([
-      { ALT: () => this.SUBRULE(this.protocolItem) },
+      // { ALT: () => this.SUBRULE(this.protocolItem) },
       {
         ALT: () =>
           this.MANY(() => {
@@ -135,13 +135,13 @@ class Parser extends CstParser {
     ]);
   });
 
-  private protocolItem = this.RULE("protocolItem", () => {
-    this.CONSUME(BackTicOpen);
-    this.MANY(() => {
-      this.CONSUME(Protocol);
-    });
-    this.CONSUME1(BackTicClose);
-  });
+  // private protocolItem = this.RULE("protocolItem", () => {
+  //   this.CONSUME(BackTicOpen);
+  //   this.MANY(() => {
+  //     this.CONSUME(Protocol);
+  //   });
+  //   this.CONSUME1(BackTicClose);
+  // });
 
   private arrowProperty = this.RULE("arrowProperty", () => {
     this.CONSUME(LAngle);

@@ -2,7 +2,7 @@ import { ChemicalSet } from "../../cmdl-chemicals";
 import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
 import { PROPERTIES, ModelType, TYPES } from "../../cmdl-types";
-import { ProtocolEntity, ReactionEntity } from "../entities";
+import { ReactionEntity } from "../entities";
 
 /**
  * Interpreter model to compute reaction stoichiometry for an experiment
@@ -35,24 +35,12 @@ export class Reaction extends BaseModel {
 
       const date = this.modelAR.getOptionalValue<string>(PROPERTIES.DATE);
 
-      const protocol = this.modelAR.getOptionalValue<TYPES.Reference>(
-        PROPERTIES.PROTOCOL
-      );
-
       const reactionModel = new ReactionEntity(this.name, this.type);
       reactionModel.add(PROPERTIES.TEMPERATURE, temperature);
       reactionModel.add(PROPERTIES.VOLUME, volume);
       reactionModel.add(PROPERTIES.REACTION_TIME, reaction_time);
       reactionModel.add(PROPERTIES.DATE, date);
       reactionModel.insertChemicals(chemicals, globalAR);
-
-      if (protocol) {
-        const protocolModel = globalAR.getValue<ProtocolEntity>(protocol.ref);
-        const reactionOutput = reactionModel.getReactionValues();
-        protocolModel.extractReferences(reactionOutput);
-        const serializedProtocol = protocolModel.serializeProtocol();
-        reactionModel.add(PROPERTIES.PROTOCOL, serializedProtocol);
-      }
 
       globalAR.setValue(this.name, reactionModel);
     } catch (error) {
