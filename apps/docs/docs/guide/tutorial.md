@@ -66,19 +66,19 @@ The autocomplete features will automatically prompt with acceptable values for f
 
 With the THF reference defined, we can execute the CMDL cell and see the output. By default the cell output will be displayed in JSON format.
 
-![JSON Cell Output](/images/cell_output_json.png)
+![JSON Cell Output](/cell_output_json.png)
 
 The mime type of the cell output can be changed to the custom IBM Materials Notebook renderer to display the values in a more concise format.
 
-![Material Cell Output](/images/materials_mime_type.png)
+![Material Cell Output](/materials_mime_type.png)
 
 Changing the display type can be accomplished by clicking the more actions menu next to the cell.
 
-![Change Cell Mime Type](/images/change_mime_type_1.png)
+![Change Cell Mime Type](/change_mime_type_1.png)
 
 And then selecting the desired output MIME type...
 
-![Select MIME Type](/images/change_mime_type_2.png)
+![Select MIME Type](/change_mime_type_2.png)
 
 ### Creating additional chemical references
 
@@ -102,7 +102,7 @@ Now all of the small molecule references are ready to be used inside the batch e
 
 The additional chemical references cell should look as follows:
 
-![Batch Chem Refs](/images/batch_chem_refs.png)
+![Batch Chem Refs](/batch_chem_refs.png)
 
 ## Polymer References
 
@@ -283,7 +283,7 @@ polymer mPEG-PLLA {
 
 With these values set, the CMDL interpreter will compute the weights for all of the edges within the polymer graph. As the targeted product is `mPEG-PLLA`, any characterization properties measured for the product will be set later.
 
-![Polymer Refs](/images/poly_refs.png)
+![Polymer Refs](/poly_refs.png)
 
 ## Batch Reactions
 
@@ -385,7 +385,7 @@ No quantity information should be provided here for any of the products. The rea
 
 With all of the values properly defined on `BatchRxn` we can now run the reaction cell and inspect the output. If you set the output MIME type to **x-application/ibm-materials-notebook**, you should see something like the following:
 
-![Rxn Group Output](/images/batch_tutorial_rxn_output.png)
+![Rxn Group Output](/batch_tutorial_rxn_output.png)
 
 The exact values for the stoichiometry may differ based on the quantity values entered for each reagent.
 
@@ -535,7 +535,7 @@ char_data Test-I-123A-gpc {
 
 Executing the cell containing samples `Test-I-123A` and `Test-I-123B` will provide an output the looks like the following:
 
-![Batch Sample Output](/images/batch_sample_output.png)
+![Batch Sample Output](/batch_sample_output.png)
 
 ## Experimental Protocols
 

@@ -1,13 +1,15 @@
 ---
-home: true
-title: IBM Materials Notebook
-actions:
-  - text: Get Started
-    link: /guide/
-    type: primary
-  - text: CMDL
-    link: /cmdl/
-    type: secondary
+layout: home
+
+hero:
+  name: IBM Materials Notebook
+  actions:
+    - text: Get Started
+      link: /guide/index.html
+      type: primary
+    - text: CMDL
+      link: /cmdl/index.html
+      type: secondary
 features:
   - title: Flexible Data Modeling and Representation
     details: CMDL syntax can be extended to cover a variety of use cases and data types.

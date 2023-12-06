@@ -5,5 +5,4 @@ node_modules
 *.vsix
 .DS_Store
 lib/node_modules
-.temp
-.cache
+cache

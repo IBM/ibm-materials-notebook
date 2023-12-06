@@ -2,13 +2,14 @@
   "name": "docs",
   "description": "Documentation for IBM Materials software",
   "private": true,
+  "type": "module",
   "devDependencies": {
-    "@vuepress/plugin-shiki": "^2.0.0-beta.61",
-    "vuepress": "^2.0.0-beta.68"
+    "vitepress": "^1.0.0-rc.31"
   },
   "scripts": {
-    "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs"
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "author": "npark",
   "license": "MIT"

@@ -354,7 +354,7 @@ solution Quench_Solution {
 
 Running the cell will compute the stoichiometry for each stock solution and provide an output similar to the following:
 
-![Stock Solution Output](/images/stock_solution_output.png)
+![Stock Solution Output](/stock_solution_output.png)
 
 ### Flow Reaction
 
@@ -426,7 +426,7 @@ flow_reaction FlowTest {
 
 With this we can run the flow reaction cell and see an cell output similar to the following:
 
-![Flow Reactor Output](/images/flow_reactor_output.png)
+![Flow Reactor Output](/flow_reactor_output.png)
 
 ### Defining the Samples and Results
 

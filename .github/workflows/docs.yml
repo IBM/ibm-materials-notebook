@@ -12,6 +12,10 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   #build vuepress site job
   build:
@@ -26,33 +30,33 @@ jobs:
         uses: actions/setup-node@v3
         with:
           # choose node.js version to use
-          node-version: "16"
+          node-version: "18"
+          cache: npm
 
       # cache node_modules
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        id: npm-cache
-        with:
-          path: |
-            **/node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
+      # - name: Cache dependencies
+      #   uses: actions/cache@v3
+      #   id: npm-cache
+      #   with:
+      #     path: |
+      #       **/node_modules
+      #     key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-npm-
 
       # install dependencies if the cache did not hit
       - name: Install dependencies
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm install
+        # if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci
 
       # run build script
-      - name: Build VuePress site
+      - name: Build VitePress site
         run: npm run docs:build
-      
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: apps/docs/docs/.vuepress/dist
 
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: apps/docs/docs/.vitepress/dist
 
   # Deploy vuepress site
   deploy:

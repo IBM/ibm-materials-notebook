@@ -188,7 +188,7 @@ reaction ChainExt {
 
 Running the cell will produce an output similar to the following:
 
-![Chain Extension Reaction](/images/chain_ext.png)
+![Chain Extension Reaction](/chain_ext.png)
 
 ### Defining the Characterization Data
 
