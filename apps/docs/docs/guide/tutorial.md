@@ -7,7 +7,7 @@ The notebook created in this tutorial will be used in other tutorials demonstrat
 
 ### Workspace Setup
 
-To install the IBM Materials Notebook extension and setup the workspace for this tutorial. Please see the [introduction](./README.md) to the guide section.
+To install the IBM Materials Notebook extension and setup the workspace for this tutorial. Please see the [introduction](./index.md) to the guide section.
 
 Once everything is setup, your home directory should look like the following:
 
@@ -20,7 +20,7 @@ For the initial tutorial, the exp and lib folders will largely not be used to pr
 
 ### Experiment Setup
 
-Using the create new notebook command outlined in the [introduction](./README.md) create a new blank Materials Notebook in the root directory and rename the file to 'batch_experiment.cmbnb'.
+Using the create new notebook command outlined in the [introduction](./index.md) create a new blank Materials Notebook in the root directory and rename the file to 'batch_experiment.cmbnb'.
 
 Your root directory should now have a new file:
 
@@ -41,7 +41,7 @@ Currently reference names starting with numbers, such as `1-pyrenebutanol` are n
 
 ### Create a chemical reference
 
-For this tutorial let's first define references for the small-molecule chemicals being used in the polymerization experiment. [Add a CMDL cell](./README.md) to the _batch_experiment.cmdnb_ and create a chemical group for tetrahydrofuran (THF):
+For this tutorial let's first define references for the small-molecule chemicals being used in the polymerization experiment. [Add a CMDL cell](./index.md) to the _batch_experiment.cmdnb_ and create a chemical group for tetrahydrofuran (THF):
 
 ```cmdl
 chemical THF {

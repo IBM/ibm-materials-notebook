@@ -457,4 +457,4 @@ sample Flow-Rxn-I-123 {
 
 ### Next Steps
 
-Now that you've completed all the tutorials, you can check out the [CMDL language guide](../cmdl/README.md) for more information on groups, properties and syntax. The GitHub repository for the IBM Materials Notebook has many examples of more complex polymers and flow reactors and others.
+Now that you've completed all the tutorials, you can check out the [CMDL language guide](../cmdl/index.md) for more information on groups, properties and syntax. The GitHub repository for the IBM Materials Notebook has many examples of more complex polymers and flow reactors and others.
