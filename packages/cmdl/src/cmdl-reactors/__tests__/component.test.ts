@@ -1,6 +1,6 @@
 import { ReactorChemicals } from "../reactor-chemicals";
 import { ReactorComponent } from "../reactor-component";
-import { flowRate } from "./reactor-chem.test";
+import { flowRate, testChemicals } from "./reactor-chem.test";
 import { TYPES } from "../../cmdl-types";
 import Big from "big.js";
 
@@ -36,7 +36,7 @@ describe("Tests for reactor component", () => {
   it("throws when input and sources are set", () => {
     const component = new ReactorComponent(NODE_A);
     const source = new ReactorComponent(NODE_B);
-    const input = new ReactorChemicals(flowRate);
+    const input = new ReactorChemicals(testChemicals, flowRate);
     component.addSource(source);
     component.setInput(input);
     expect(() => component.getInputs()).toThrow();
@@ -44,7 +44,7 @@ describe("Tests for reactor component", () => {
 
   it("returns the input if the input is set", () => {
     const component = new ReactorComponent(NODE_A);
-    const input = new ReactorChemicals(flowRate);
+    const input = new ReactorChemicals(testChemicals, flowRate);
     component.setInput(input);
     const nodeOutput = component.getInputs();
     expect(nodeOutput.length).toBe(1);
@@ -54,9 +54,9 @@ describe("Tests for reactor component", () => {
   it("returns the source input if when having sources", () => {
     const component = new ReactorComponent(NODE_A);
     const sourceB = new ReactorComponent(NODE_B);
-    const chemB = new ReactorChemicals(flowRate);
+    const chemB = new ReactorChemicals(testChemicals, flowRate);
     const sourceC = new ReactorComponent(NODE_C);
-    const chemC = new ReactorChemicals(flowRate);
+    const chemC = new ReactorChemicals(testChemicals, flowRate);
 
     sourceB.setInput(chemB);
     sourceC.setInput(chemC);

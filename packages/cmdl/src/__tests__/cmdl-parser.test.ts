@@ -63,7 +63,7 @@ describe("Tests for compilation and symbol table construction", () => {
     expect(globalTable.has("test-char-group")).toBeTruthy();
   });
 
-  it.skip(`recognizes a duplicate property`, () => {
+  it(`recognizes a duplicate property`, () => {
     const dualPropGroup = `
       chemical THF {
         molecular_weight: 80.1 g/mol;
@@ -76,7 +76,7 @@ describe("Tests for compilation and symbol table construction", () => {
       evalutateText(dualPropGroup);
 
     expect(parserErrors.length).toBe(0);
-    expect(semanticErrors.length).toBe(1);
+    expect(semanticErrors.length).toBe(0);
     expect(symbolErrors.length).toBe(1);
     expect(globalTable.has("THF")).toBeTruthy();
   });
@@ -174,7 +174,7 @@ describe("tests for compiler in parsing a reactor graph", () => {
     expect(globalTable.has("MonomerTank")).toBeTruthy();
   });
 
-  it.skip("recognizes a missing sub property on a reference", () => {
+  it("recognizes a missing sub property on a reference", () => {
     const reactorNode = `
       component PolyReactor {
           description: "A polymerization reactor";
@@ -190,7 +190,7 @@ describe("tests for compiler in parsing a reactor graph", () => {
 
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
-    expect(symbolErrors.length).toBe(1);
+    expect(symbolErrors.length).toBe(2);
     expect(globalTable.has("PolyReactor")).toBeTruthy();
     expect(globalTable.has("MonomerTank")).toBeTruthy();
   });
@@ -218,12 +218,18 @@ describe("tests for compiler in parsing a reactor graph", () => {
     expect(globalTable.has("PolyReactor")).toBeTruthy();
   });
 
-  it.skip("parses a full reactor graph", () => {
+  it("parses a full reactor graph", () => {
     const reactorA = `
       reactor_graph FlowTest {
 
-        component Collection {
-            description: "reactor output";
+        component MonomerTank {
+          description: "Tank for monomer solution";
+          target: @FlowTest.PolyReactor.Mixer;
+        };
+
+        component CatalystTank {
+          description: "Tank for catalyst solution";
+          target: @FlowTest.PolyReactor.Mixer;
         };
 
         reactor PolyReactor {
@@ -239,14 +245,8 @@ describe("tests for compiler in parsing a reactor graph", () => {
             };
         };
 
-        component MonomerTank {
-            description: "Tank for monomer solution";
-            target: @PolyReactor.Mixer;
-        };
-
-        component CatalystTank {
-            description: "Tank for catalyst solution";
-            target: @PolyReactor.Mixer;
+        component Collection {
+            description: "reactor output";
         };
     }`;
 
@@ -291,9 +291,6 @@ describe("Tests for parsing cmdl polymer graphs", () => {
     expect(parserErrors.length).toBe(0);
     expect(semanticErrors.length).toBe(0);
     expect(symbolErrors.length).toBe(0);
-    // expect(globalTable.has("egMeO_pVL")).toBeTruthy();
-    // expect(globalTable.has("pL-Lac")).toBeTruthy();
-    // expect(globalTable.has("egMeO")).toBeTruthy();
   });
 });
 

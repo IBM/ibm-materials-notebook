@@ -2,8 +2,8 @@ import { h, render, FunctionComponent, createContext } from "preact";
 import type { ActivationFunction } from "vscode-notebook-renderer";
 import { ChemicalRef, ComplexRef, PolymerlRef } from "./chemicals";
 import { Reaction } from "./reaction";
-// import { Solution } from "./flowRxn";
-// import { FlowRun } from "./flowRxn";
+import { Solution } from "./flowRxn";
+import { FlowRun } from "./flowRxn";
 import { CharData } from "./sample";
 import "./style.css";
 import { CellRenderOutput } from "@ibm-materials/cmdl";
@@ -18,7 +18,7 @@ const App: FunctionComponent<{
   data: CellRenderOutput;
   theme: "light" | "dark";
 }> = ({ data, theme }: { data: CellRenderOutput; theme: "light" | "dark" }) => {
-  const { chemicals, reactions, charData } = data;
+  const { chemicals, reactions, charData, solutions, flowReactions } = data;
 
   return (
     <StructureTheme.Provider value={theme}>
@@ -62,24 +62,19 @@ const App: FunctionComponent<{
                 <Reaction key={`reaction-${index}`} reaction={item} />
               ))
             : null}
+          {solutions.length
+            ? solutions.map((item, index) => {
+                return <Solution key={`solution-${index}`} solution={item} />;
+              })
+            : null}
+          {flowReactions.map((item, index) => {
+            return <FlowRun key={`flow-run-${index}`} run={item} />;
+          })}
           {charData.length
             ? charData.map((item, index) => (
                 <CharData key={`charaData-${index}`} charData={item} />
               ))
             : null}
-          {/* {data.map((item: any, index: number) => {
-            if (item.type === "reaction") {
-              return <Reaction key={`reaction-${index}`} reaction={item} />;
-            } else if (item.type === "flow_reaction") {
-              return <FlowRun key={`flow-run-${index}`} run={item} />;
-            } else if (item.type === "solution") {
-              return <Solution key={`solution-${index}`} solution={item} />;
-            } else if (item.type === "char_data") {
-              return <CharData key={`charaData-${index}`} charData={item} />;
-            } else {
-              return <div></div>;
-            }
-          })} */}
         </div>
       </div>
     </StructureTheme.Provider>

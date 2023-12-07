@@ -1,8 +1,15 @@
 import { ActivationRecord } from "../model-AR";
 import { BaseModel } from "./base-model";
-import { FlowRxnEntity, ReactorEntity, SolutionEntity } from "../entities";
+import {
+  ChemicalEntity,
+  FlowRxnEntity,
+  PolymerEntity,
+  ReactorEntity,
+  SolutionEntity,
+} from "../entities";
 import { ModelType, TYPES } from "../../cmdl-types";
 import { ReactorChemicals } from "../../cmdl-reactors";
+import { logger } from "../../logger";
 
 export class FlowReaction extends BaseModel {
   constructor(
@@ -24,8 +31,12 @@ export class FlowReaction extends BaseModel {
 
     const finalProducts: TYPES.Product[] = products.map(
       (el: TYPES.ChemicalReference) => {
+        const productEntity = globalAR.getValue<PolymerEntity | ChemicalEntity>(
+          el.name
+        );
         return {
           name: el.name,
+          smiles: productEntity.getSMILES(),
           roles: el.roles,
         };
       }
@@ -38,15 +49,21 @@ export class FlowReaction extends BaseModel {
 
     for (const solution of solutions) {
       const solutionModel = globalAR.getValue<SolutionEntity>(solution.name);
-
-      const solutionChemicals = new ReactorChemicals(solution.flow_rate);
-      solutionChemicals.setChemicals(solutionModel.getChemicalConfigs());
+      const solutionChemConfigs = solutionModel.getChemicalConfigs();
+      flowModel.addEntities({ ...solutionModel.entities });
+      const solutionChemicals = new ReactorChemicals(
+        solutionChemConfigs,
+        solution.flow_rate
+      );
       solutionChemicals.computeInitialValues();
 
       const inputId = solution.input.path[solution.input.path.length - 1];
       reactorModel.setInput(inputId, solutionChemicals);
     }
 
+    logger.debug(
+      `flow entities: ${Object.keys(flowModel.entities).join(", ")}`
+    );
     flowModel.processFlowRxn();
 
     globalAR.setValue(this.name, flowModel);

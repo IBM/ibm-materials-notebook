@@ -35,9 +35,6 @@ interface CompletionItem {
 
 /**
  * Controls CMDL functions for a given workspace
- * TODO: deprecate protocol group etc.
- * TODO: enable lookup of protocols from export method
- * TODO: handle reaction products and material records
  */
 export class CmdlCompiler {
   private readonly _parser = new CmdlParser();

@@ -243,9 +243,7 @@ function tokensToObjects(constructor: BigSMILESConstructor, tokens: Token[]) {
 }
 
 export function createParseTree(bigsmiles: BigSMILES) {
-  logger.info(`Creating parse tree for ${bigsmiles.input_text}`);
   const tokens = tokenize(bigsmiles.input_text);
   const constructor = new BigSMILESConstructor(bigsmiles);
   tokensToObjects(constructor, tokens);
-  logger.info(`Finished creating parse tree for ${bigsmiles}`);
 }

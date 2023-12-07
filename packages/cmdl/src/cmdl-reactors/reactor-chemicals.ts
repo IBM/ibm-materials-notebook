@@ -8,13 +8,15 @@ export class ReactorChemicals {
   private solution = new ChemicalSet();
   public flowRate: TYPES.BigQty;
 
-  constructor(flowRate: TYPES.BigQty) {
+  constructor(chemicals: TYPES.ChemicalConfig[], flowRate: TYPES.BigQty) {
+    this.solution.insertMany(chemicals);
     this.flowRate = flowRate;
   }
 
   /**
    * Adds chemicals to the solution property
    * @param chemicals ChemicalConfig[]
+   * @deprecated
    */
   public setChemicals(chemicals: TYPES.ChemicalConfig[]): void {
     this.solution.insertMany(chemicals);

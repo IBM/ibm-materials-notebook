@@ -1,5 +1,5 @@
 import { h, FunctionComponent } from "preact";
-import { ReactionTable } from "./reaction";
+import { ReactionTable, ReactionChemicals } from "./reaction";
 import { ChemicalStructure } from "./chemicals";
 import { StructureTheme } from ".";
 
@@ -13,21 +13,17 @@ export const FlowRun: FunctionComponent<{ run: any }> = ({ run }) => {
             <h4>Products:</h4>
             {run?.products && run.products.length
               ? run.products.map((el: any, index: any) => {
-                  if (el?.smiles) {
-                    return (
-                      <div className="reaction-item">
-                        <ChemicalStructure
-                          key={`product-${el.name}-${index}`}
-                          svgId={`product-structure-${el.name}-${index}`}
-                          smiles={el.smiles}
-                          theme={theme}
-                        />
-                        <small>{el.name}</small>
-                      </div>
-                    );
-                  } else {
-                    return null;
-                  }
+                  return (
+                    <div className="reaction-item">
+                      <ChemicalStructure
+                        key={`product-${el.name}-${index}`}
+                        svgId={`product-structure-${el.name}-${index}`}
+                        smiles={el.smiles}
+                        theme={theme}
+                      />
+                      <small>{el.name}</small>
+                    </div>
+                  );
                 })
               : null}
             {run.reactions.map((el: any, index: number) => {
@@ -57,7 +53,7 @@ const ReactorReaction: FunctionComponent<{ reaction: any }> = ({
         Residence Time:{" "}
         {`${reaction.residenceTime.value} ${reaction.residenceTime.unit}`}
       </p>
-      {/* <ReactionChemicals reaction={reaction} rxnName={reaction.name} /> */}
+      <ReactionChemicals reaction={reaction} rxnName={reaction.name} />
       <ReactionTable reaction={reaction} rxnName={reaction.name} />
     </div>
   );
@@ -69,7 +65,7 @@ export const Solution: FunctionComponent<{ solution: any }> = ({
   return (
     <div>
       <h3>{solution.name}</h3>
-      {/* <ReactionChemicals reaction={solution} rxnName={solution.name} /> */}
+      <ReactionChemicals reaction={solution} rxnName={solution.name} />
       <ReactionTable reaction={solution} rxnName={solution.name} />
     </div>
   );

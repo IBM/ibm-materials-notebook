@@ -69,18 +69,12 @@ export const testChemicals = [pMeBnOH, kOtbu, solvent];
 
 describe("Tests for reactor chemicals", () => {
   it("initializes correctly", () => {
-    const flowChem = new ReactorChemicals(flowRate);
+    const flowChem = new ReactorChemicals(testChemicals, flowRate);
     expect(flowChem.flowRate).toEqual(flowRate);
   });
 
-  it("can add a chemicals", () => {
-    const flowChem = new ReactorChemicals(flowRate);
-    expect(() => flowChem.setChemicals(testChemicals)).not.toThrow();
-  });
-
   it("can compute chemical values", () => {
-    const flowChem = new ReactorChemicals(flowRate);
-    flowChem.setChemicals(testChemicals);
+    const flowChem = new ReactorChemicals(testChemicals, flowRate);
     const computedValues = flowChem.computeValues();
 
     expect(computedValues.length).toBe(3);
@@ -90,8 +84,7 @@ describe("Tests for reactor chemicals", () => {
   });
 
   it("can get chemicals by volume", () => {
-    const flowChem = new ReactorChemicals(flowRate);
-    flowChem.setChemicals(testChemicals);
+    const flowChem = new ReactorChemicals(testChemicals, flowRate);
     flowChem.computeInitialValues();
     const volumeOutput = flowChem.getByVolume(totalFlowRate, reactorVolume);
 

@@ -116,9 +116,7 @@ export class Reactor implements ReactorNode {
       newConfigs = newConfigs.concat(chemMoles);
     }
 
-    const output = new ReactorChemicals(this.flowRate);
-    output.setChemicals(newConfigs);
-
+    const output = new ReactorChemicals(newConfigs, this.flowRate);
     this.reactorOutput = output.computeValues();
 
     return output;

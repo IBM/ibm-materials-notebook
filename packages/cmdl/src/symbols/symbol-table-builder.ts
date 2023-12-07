@@ -105,11 +105,11 @@ export class SymbolTableBuilder implements AstVisitor {
 
       if (newPath === otherPath) {
         const msg = `${table.scope} already has symbol ${symbol.name} defined`;
-        throw new DuplicationError(msg, symbol.token);
+        this.errors.add(this.uri, [new DuplicationError(msg, symbol.token)]);
       }
     } else {
       const msg = `${table.scope} already has symbol ${symbol.name} defined`;
-      throw new DuplicationError(msg, symbol.token);
+      this.errors.add(this.uri, [new DuplicationError(msg, symbol.token)]);
     }
   }
 

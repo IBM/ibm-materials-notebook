@@ -2,17 +2,21 @@ import { CmdlCompiler } from "./cmdl-compiler";
 import {
   CharDataRender,
   ChemicalRender,
+  FlowRxnRender,
   PolymerRender,
   ReactionRender,
   ResultRender,
+  SolutionRender,
 } from "./cmdl-types/types";
 import { ModelVisitor, ActivationRecordTable, Exportable } from "./intepreter";
 import {
   CharDataEntity,
   ChemicalEntity,
+  FlowRxnEntity,
   PolymerEntity,
   ReactionEntity,
   ResultEntity,
+  SolutionEntity,
 } from "./intepreter/entities";
 
 export type CellRenderOutput = {
@@ -21,6 +25,8 @@ export type CellRenderOutput = {
   polymers: PolymerRender[];
   charData: CharDataRender[];
   results: ResultRender[];
+  solutions: SolutionRender[];
+  flowReactions: FlowRxnRender[];
 };
 
 /**
@@ -77,7 +83,7 @@ export class ActivationRecordManager {
    * @todo update type scheme to elimnate unknown type
    * @param fileName name of file to retrieve AR from
    * @param uri uri of text document or cell to retrieve output for
-   * @returns unknown[]
+   * @returns CellRenderOutput
    */
   public getOutput(fileName: string, uri: string): CellRenderOutput {
     const outputRecord: CellRenderOutput = {
@@ -86,6 +92,8 @@ export class ActivationRecordManager {
       polymers: [],
       chemicals: [],
       charData: [],
+      solutions: [],
+      flowReactions: [],
     };
     const fileTable = this.get(fileName);
     const record = fileTable.getRecord(uri);
@@ -101,6 +109,10 @@ export class ActivationRecordManager {
         outputRecord.polymers.push(value.render());
       } else if (value instanceof ChemicalEntity) {
         outputRecord.chemicals.push(value.render());
+      } else if (value instanceof SolutionEntity) {
+        outputRecord.solutions.push(value.render());
+      } else if (value instanceof FlowRxnEntity) {
+        outputRecord.flowReactions.push(value.render());
       } else {
         continue;
       }

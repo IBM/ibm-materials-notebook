@@ -1,8 +1,8 @@
-import { BigQty, NumericQty } from "./quantities";
+import { BigQty, Export, NumericQty } from "./quantities";
 import { PROPERTIES } from "../properties";
 import { BaseModel, Reference } from "./reference";
 import { ModelType } from "../groups/group-types";
-import { ChemicalOutput } from "./chemicals";
+import { ChemicalOutput, ReactionChemicalOutput } from "./chemicals";
 
 export interface ReactorNode {
   name: string;
@@ -12,7 +12,7 @@ export interface ReactorNode {
   [PROPERTIES.OUTER_DIAMETER]?: BigQty;
   [PROPERTIES.VOLUME]?: BigQty;
   [PROPERTIES.LENGTH]?: BigQty;
-  [PROPERTIES.TARGET]: Reference;
+  [PROPERTIES.TARGET]?: Reference;
 }
 
 export interface Reactor {
@@ -32,3 +32,7 @@ export interface ReactorGroupOutput {
   volume: NumericQty;
   reactants: ChemicalOutput[];
 }
+
+export type ReactorGroupExport = Export<ReactorGroupOutput> & {
+  reactants: ReactionChemicalOutput[];
+};

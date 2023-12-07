@@ -5,7 +5,7 @@ import { ReactionRoles } from "../properties";
 import { BaseModel, Reference, StripType } from "./reference";
 import { ReactionChemicalOutput } from "./chemicals";
 import { ChemicalOutput } from "./chemicals";
-import { ReactorGroupOutput } from "./reactors";
+import { ReactorGroupExport, ReactorGroupOutput } from "./reactors";
 
 export type Product = {
   name: string;
@@ -13,14 +13,18 @@ export type Product = {
   [PROPERTIES.ROLES]: ReactionRoles[];
 };
 
-/**
- * TODO: add temperature
- */
 export interface FlowRxn extends BaseModel {
   type: ModelType.FLOW_REACTION;
+  [PROPERTIES.TEMPERATURE]?: BigQty;
   reactions: ReactorGroupOutput[];
   products: Product[];
 }
+
+export type FlowRxnExport = StripType<Export<FlowRxn>> & {
+  reactions: ReactorGroupExport[];
+};
+
+export type FlowRxnRender = Export<FlowRxn>;
 
 export interface Reaction extends BaseModel {
   type: ModelType.REACTION;
@@ -52,3 +56,9 @@ export interface Solution extends BaseModel {
   type: ModelType.SOLUTION;
   components: ChemicalOutput[];
 }
+
+export type SolutionExport = StripType<Export<Solution>> & {
+  components: ReactionChemicalOutput[];
+};
+
+export type SolutionRender = Export<Solution>;

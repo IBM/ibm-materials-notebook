@@ -11,7 +11,6 @@ import { BigSMILESError } from "./errors";
 import { runValidation } from "./validation";
 import { BigSMILES } from "./bigsmiles";
 import { Stack } from "./stack";
-import { logger } from "./logger";
 
 export enum States {
   start,
@@ -27,7 +26,6 @@ export enum States {
 }
 
 function checkAtomForMakingBond(bond: Bond, atom: Atom) {
-  logger.debug(`adding ${bond.print()} to ${atom.print()}`);
   if (atom.bondsAvailable === null) {
     atom.bonds.push(bond);
     return;

@@ -136,11 +136,9 @@ describe("Tests for reactor", () => {
   it("can get generate outputs", () => {
     const reactor = new Reactor(REACTOR_A);
 
-    const inputA = new ReactorChemicals(flowRate);
-    const inputB = new ReactorChemicals(flowRate);
-    inputA.setChemicals(testChemicals);
+    const inputA = new ReactorChemicals(testChemicals, flowRate);
+    const inputB = new ReactorChemicals(monomerSolution, flowRate);
     inputA.computeInitialValues();
-    inputB.setChemicals(monomerSolution);
     inputB.computeInitialValues();
 
     const nodeA = new ReactorComponent(NODE_A);

@@ -39,16 +39,4 @@ const source: IGroup = {
   ],
 };
 
-// const protocol: IGroup = {
-//   name: GROUPS.PROTOCOL,
-//   modelType: ModelType.PROTOCOL,
-//   description:
-//     "Protocol template for an experiment or characterization measurement",
-//   detail: "Protocol",
-//   aliases: [],
-//   referenceProps: [],
-//   subGroups: [],
-//   properties: [],
-// };
-
 export const exprimentGroups = [metadata, source];

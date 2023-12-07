@@ -19,9 +19,12 @@ export class ReactionEntity
   private chemicals = new ChemicalSet();
   entities = {} as Record<string, ChemicalEntity | PolymerEntity>;
 
-  private addEntity(entity: ChemicalEntity | PolymerEntity): void {
+  private addEntity(
+    entity: ChemicalEntity | PolymerEntity,
+    alias?: string
+  ): void {
     if (!(entity.name in this.entities)) {
-      this.entities[entity.name] = entity;
+      this.entities[alias || entity.name] = entity;
     }
   }
 
@@ -34,7 +37,9 @@ export class ReactionEntity
       const parentEntity = globalAR.getValue<PolymerEntity | ChemicalEntity>(
         chemRef.name
       );
-      this.addEntity(parentEntity);
+      const alias =
+        chemRef.name !== parentEntity.name ? chemRef.name : undefined;
+      this.addEntity(parentEntity, alias);
 
       if (!chemRef.roles.includes(TAGS.PRODUCT)) {
         const chemConfig = ChemicalTranslator.createChemicalConfig({
@@ -98,9 +103,12 @@ export class SolutionEntity
   private chemicals = new ChemicalSet();
   entities = {} as Record<string, ChemicalEntity | PolymerEntity>;
 
-  private addEntity(entity: ChemicalEntity | PolymerEntity): void {
+  private addEntity(
+    entity: ChemicalEntity | PolymerEntity,
+    alias?: string
+  ): void {
     if (!(entity.name in this.entities)) {
-      this.entities[entity.name] = entity;
+      this.entities[alias || entity.name] = entity;
     }
   }
 
@@ -112,7 +120,9 @@ export class SolutionEntity
       const parentEntity = globalAR.getValue<PolymerEntity | ChemicalEntity>(
         chemRef.name
       );
-      this.addEntity(parentEntity);
+      const alias =
+        chemRef.name !== parentEntity.name ? chemRef.name : undefined;
+      this.addEntity(parentEntity, alias);
 
       if (!chemRef.roles.includes(TAGS.PRODUCT)) {
         const chemConfig = ChemicalTranslator.createChemicalConfig({
@@ -129,12 +139,26 @@ export class SolutionEntity
     return this.chemicals.exportSet();
   }
 
-  public export(): TYPES.Solution {
+  public export(): TYPES.SolutionExport {
+    const chemOutput: TYPES.ReactionChemicalOutput[] =
+      this.chemicals.chemicalValues.map((el) => {
+        return {
+          ...el,
+          entity: this.entities[el.name].export(),
+        };
+      });
+
     return {
       ...this.properties,
       name: this.name,
+      components: chemOutput,
+    };
+  }
+
+  public render(): TYPES.SolutionRender {
+    return {
+      ...this.export(),
       type: ModelType.SOLUTION,
-      components: this.chemicals.chemicalValues,
     };
   }
 }
@@ -168,6 +192,7 @@ export class ReactorEntity extends Entity<TYPES.Reactor> {
 
 export class FlowRxnEntity extends Entity<TYPES.FlowRxn> {
   private reactorModel?: ReactorEntity;
+  entities = {} as Record<string, ChemicalEntity | PolymerEntity>;
 
   public addReactor(model: ReactorEntity): void {
     this.reactorModel = model;
@@ -181,11 +206,49 @@ export class FlowRxnEntity extends Entity<TYPES.FlowRxn> {
     this.reactorModel.setInput(id, chemicals);
   }
 
+  public addEntities(
+    solutionEntities: Record<string, ChemicalEntity | PolymerEntity>
+  ) {
+    this.entities = { ...this.entities, ...solutionEntities };
+  }
+
   public processFlowRxn() {
     if (!this.reactorModel) {
       throw new Error(`No reactor model is set!`);
     }
     const output = this.reactorModel.processFlowReactor();
     this.properties.reactions = output;
+  }
+
+  public export(): TYPES.FlowRxnExport {
+    const reactionOutput = this.properties.reactions.map((el) => {
+      const updatedReactants = [];
+      for (const reactant of el.reactants) {
+        const reactantEntity = this.entities[reactant.name].export();
+        updatedReactants.push({
+          ...reactant,
+          entity: reactantEntity,
+        });
+      }
+      return {
+        ...el,
+        reactants: updatedReactants,
+      };
+    });
+
+    return {
+      ...this.properties,
+      reactions: reactionOutput,
+      temperature: this.properties.temperature
+        ? convertQty(this.properties.temperature)
+        : undefined,
+    };
+  }
+
+  public render(): TYPES.FlowRxnRender {
+    return {
+      ...this.export(),
+      type: ModelType.FLOW_REACTION,
+    };
   }
 }

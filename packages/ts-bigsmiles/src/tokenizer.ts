@@ -104,7 +104,6 @@ export class Token {
 }
 
 export function tokenize(text: string): Token[] {
-  logger.info(`Starting tokenization of ${text}`);
   const result: any = [];
   let prior = 0;
 
@@ -147,6 +146,5 @@ export function tokenize(text: string): Token[] {
     result.push(newToken);
   }
 
-  logger.info(`Tokenization complete for ${text}`);
   return result;
 }

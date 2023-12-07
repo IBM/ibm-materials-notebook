@@ -60,22 +60,6 @@ export class ReferenceGroup extends Group implements SymbolReference {
     let msg: string;
     let err: BaseError;
 
-    // if (
-    //   (child instanceof GeneralGroup ||
-    //     child instanceof ReferenceGroup ||
-    //     child instanceof Property) &&
-    //   props.has(child.name)
-    // ) {
-    //   this.createDuplicationErr(child);
-    // } else if (child instanceof ReferenceGroup) {
-    //   const path = child.getPath().join(".");
-    //   const pathStr = path.length ? `.${path}` : "";
-    //   const fullName = `${child.name}${pathStr}`;
-    //   props.add(fullName);
-    // } else {
-    //   props.add(child.name);
-    // }
-
     if (child instanceof ReferenceGroup) {
       msg = `Reference groups may not be nested: ${child.name}`;
       err = new InvalidGroupError(msg, this.nameToken);

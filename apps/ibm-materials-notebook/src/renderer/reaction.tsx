@@ -107,6 +107,20 @@ export const ReactionChemicals: FunctionComponent<{
 }> = ({ reaction, rxnName }) => {
   return (
     <div className="reaction-scheme">
+      {reaction?.components && reaction?.components.length
+        ? reaction.components.map((el: any, index: number) => {
+            return (
+              <ReactionStructureItem
+                key={`component-${rxnName}-${el.name}-${index}`}
+                smiles={el.entity.smiles}
+                name={el.name}
+                rxnName={rxnName}
+                index={index}
+                type="reactant"
+              />
+            );
+          })
+        : null}
       {reaction?.reactants && reaction.reactants.length
         ? reaction.reactants.map((el: any, index: number) => {
             return (

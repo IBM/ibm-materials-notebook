@@ -2,101 +2,37 @@ import { ReactorContainer } from "../reactor-container";
 import { ReactorChemicals } from "../reactor-chemicals";
 import { flowRate, monomerSolution } from "./reactor-group.test";
 import { testChemicals } from "./reactor-chem.test";
+import { ReactorNode } from "../../cmdl-types/types";
 
-// const serializedReactor: SerializedReactor = {
-//   nodes: [
-//     {
-//       name: "MonomerTank",
-//       type: "component",
-//       sources: [],
-//       next: "Mixer",
-//       parent: null,
-//     },
-//     {
-//       name: "CatalystTank",
-//       type: "component",
-//       sources: [],
-//       next: "Mixer",
-//       parent: null,
-//     },
-//     {
-//       name: "Mixer",
-//       type: "component",
-//       sources: ["MonomerTank", "CatalystTank"],
-//       next: "ReactorTube",
-//       parent: "PolyReactor",
-//     },
-//     {
-//       name: "ReactorTube",
-//       type: "component",
-//       sources: ["Mixer"],
-//       next: "Collection",
-//       volume: {
-//         unit: "ml",
-//         value: 2,
-//         uncertainty: null,
-//       },
-//       parent: "PolyReactor",
-//     },
-//     {
-//       name: "Collection",
-//       type: "component",
-//       sources: ["ReactorTube"],
-//       next: null,
-//       parent: null,
-//     },
-//   ],
-//   edges: [
-//     {
-//       id: "MonomerTank",
-//       target: "Mixer",
-//     },
-//     {
-//       id: "CatalystTank",
-//       target: "Mixer",
-//     },
-//     {
-//       id: "Mixer",
-//       target: "ReactorTube",
-//     },
-//     {
-//       id: "ReactorTube",
-//       target: "Collection",
-//     },
-//     {
-//       id: "Collection",
-//       target: null,
-//     },
-//   ],
-//   outputNode: "Collection",
-//   reactors: [
-//     {
-//       name: "PolyReactor",
-//       type: "reactor",
-//       parent: null,
-//       children: ["Mixer", "ReactorTube"],
-//     },
-//   ],
-// };
+const monomerTankComp: ReactorNode = {
+  name: "MonomerTank",
+  type: "component",
+  description: "a tank full of monomer",
+  target: { ref: "T_Mixer", path: [] },
+};
+
+const catalystTankComp: ReactorNode = {
+  name: "CatalystTank",
+  type: "component",
+  description: "a tank full of catalyst",
+  target: { ref: "T_Mixer", path: [] },
+};
+
+const tmixerNode: ReactorNode = {
+  name: "T_Mixer",
+  type: "component",
+  description: "a t-mixer node",
+};
 
 describe("Tests for reactor container", () => {
-  it.skip("deserializes a reactor", () => {
+  it("adds inputs to nodes", () => {
     const container = new ReactorContainer();
-    // container.deserialize(serializedReactor);
-    expect(container.nodeMap.size).toBe(5);
-    expect(container.reactorMap.size).toBe(1);
-    expect(container.edgeMap.size).toBe(5);
-  });
-
-  it.skip("adds inputs to nodes", () => {
-    const container = new ReactorContainer();
-    // container.deserialize(serializedReactor);
-
-    const inputA = new ReactorChemicals(flowRate);
-    const inputB = new ReactorChemicals(flowRate);
-    inputA.setChemicals(testChemicals);
+    container.addNode(monomerTankComp);
+    container.addNode(catalystTankComp);
+    container.addNode(tmixerNode);
+    const inputA = new ReactorChemicals(testChemicals, flowRate);
+    const inputB = new ReactorChemicals(monomerSolution, flowRate);
     inputA.computeInitialValues();
-    inputB.setChemicals(monomerSolution);
     inputB.computeInitialValues();
 
     container.setNodeInput("MonomerTank", inputA);
@@ -109,20 +45,20 @@ describe("Tests for reactor container", () => {
     expect(catalystTank?.input).toBeTruthy();
   });
 
-  it.skip("processes inputs", () => {
+  it("processes inputs", () => {
     const container = new ReactorContainer();
-    // container.deserialize(serializedReactor);
-
-    const inputA = new ReactorChemicals(flowRate);
-    const inputB = new ReactorChemicals(flowRate);
-    inputA.setChemicals(testChemicals);
+    container.addNode(monomerTankComp);
+    container.addNode(catalystTankComp);
+    container.addNode(tmixerNode);
+    const inputA = new ReactorChemicals(testChemicals, flowRate);
+    const inputB = new ReactorChemicals(monomerSolution, flowRate);
     inputA.computeInitialValues();
-    inputB.setChemicals(monomerSolution);
     inputB.computeInitialValues();
 
     container.setNodeInput("MonomerTank", inputA);
     container.setNodeInput("CatalystTank", inputB);
 
+    container.linkNodeGraph();
     container.processReactor();
     const outputs = container.getOutputs();
 
