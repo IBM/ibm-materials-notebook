@@ -57,7 +57,6 @@ export class FullRecordExport {
     const inputResults = [];
     const products = [];
     const productNames = this.reaction.products.map((el) => el.name);
-
     for (const result of this.results) {
       if (productNames.length && productNames.includes(result.name)) {
         products.push(result);

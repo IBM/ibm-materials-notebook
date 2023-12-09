@@ -1,4 +1,3 @@
-import { CellRenderOutput } from "../activation-record-manager";
 import { CmdlCompiler } from "../cmdl-compiler";
 
 function evaluateModel(text: string) {
@@ -16,117 +15,10 @@ function evaluateModel(text: string) {
   return { errs, result };
 }
 
-function exportTest(text: string) {
-  const document = {
-    uri: "cmdl/test/uri",
-    fileName: "cmdlTest.cmdl",
-    version: 1,
-    text,
-  };
-  const controller = new CmdlCompiler();
-  controller.register(document);
-  const errs = controller.getErrors(document.uri, document.fileName);
-  controller.execute(document.uri);
-  const output = controller.exportFile(document.uri);
-  return { errs, output };
-}
-
+/**
+ * TODO: replace with top-level tests and mock files in cmdl-compiler.test.ts
+ */
 describe("Test model evaluation with compiler", () => {
-  it("evaluates a chemical model", () => {
-    const chemical = `
-      chemical THF {
-        molecular_weight: 80.1 g/mol;
-        density: 0.878 g/ml;
-      }`;
-
-    const { errs, result } = evaluateModel(chemical);
-    expect(errs.length).toBe(0);
-    expect(result).toHaveProperty("chemicals");
-    expect((result as CellRenderOutput).chemicals.length).toBe(1);
-  });
-
-  it("evaluates a reaction model", () => {
-    const reaction = `
-      chemical THF {
-        molecular_weight: 80.1 g/mol;
-        density: 0.878 g/ml;
-      }
-
-      chemical KOME {
-        molecular_weight: 70.132 g/mol;
-      }
-
-      chemical lLac {
-        molecular_weight: 144.12 g/mol;
-      }
-
-
-      reaction TestReaction {
-        temperature: 22 degC;
-
-        @KOME {
-          mass: 0.70 mg;
-          roles: ["catalyst"];
-        };
-
-        @lLac {
-          mass: 144 mg;
-          roles: ["monomer"];
-        };
-
-        @THF {
-          volume: 1 ml;
-          roles: ["solvent"];
-        };
-      }`;
-
-    const { errs, result } = evaluateModel(reaction);
-    console.log(JSON.stringify(result, null, 2));
-    expect(errs.length).toBe(0);
-  });
-
-  it("exports a basic record", () => {
-    const reaction = `
-      chemical THF {
-        molecular_weight: 80.1 g/mol;
-        density: 0.878 g/ml;
-      }
-
-      chemical KOME {
-        molecular_weight: 70.132 g/mol;
-      }
-
-      chemical lLac {
-        molecular_weight: 144.12 g/mol;
-      }
-
-
-      reaction TestReaction {
-        temperature: 22 degC;
-
-        @KOME {
-          mass: 0.70 mg;
-          roles: ["catalyst"];
-        };
-
-        @lLac {
-          mass: 144 mg;
-          roles: ["monomer"];
-        };
-
-        @THF {
-          volume: 1 ml;
-          roles: ["solvent"];
-        };
-      }`;
-
-    const { errs, output } = exportTest(reaction);
-    expect(errs.length).toBe(0);
-    expect(output[0]).toHaveProperty("chemicals");
-    expect(output[0]).toHaveProperty("temperature.value", 22);
-    expect(output[0]).toHaveProperty("temperature.unit", "degC");
-  });
-
   it("evaluates a solution model", () => {
     const solution = `chemical THF {
         molecular_weight: 80.1 g/mol;
@@ -159,11 +51,11 @@ describe("Test model evaluation with compiler", () => {
         };
       }`;
 
-    const { errs, result } = evaluateModel(solution);
-    console.log(JSON.stringify(result, null, 2));
+    const { errs } = evaluateModel(solution);
     expect(errs.length).toBe(0);
   });
-  it.skip("evaluates a reactor graph model", () => {
+
+  it("evaluates a reactor graph model", () => {
     const reactorA = `
       reactor_graph FlowTest {
 
@@ -186,20 +78,20 @@ describe("Test model evaluation with compiler", () => {
 
         component MonomerTank {
             description: "Tank for monomer solution";
-            target: @PolyReactor.Mixer;
+            target: @FlowTest.PolyReactor.Mixer;
         };
 
         component CatalystTank {
             description: "Tank for catalyst solution";
-            target: @PolyReactor.Mixer;
+            target: @FlowTest.PolyReactor.Mixer;
         };
     }`;
 
-    const { errs, result } = evaluateModel(reactorA);
-    console.log(JSON.stringify(result, null, 2));
+    const { errs } = evaluateModel(reactorA);
     expect(errs.length).toBe(0);
   });
-  it.skip("evaluates a flow reaction model", () => {
+
+  it("evaluates a flow reaction model", () => {
     const flowReaction = `
       chemical pMeBnOH {
         molecular_weight: 122.16 g/mol;
@@ -243,12 +135,12 @@ describe("Test model evaluation with compiler", () => {
 
         component MonomerTank {
             description: "Tank for monomer solution";
-            target: @PolyReactor.Mixer;
+            target: @FlowTest.PolyReactor.Mixer;
         };
 
         component CatalystTank {
             description: "Tank for catalyst solution";
-            target: @PolyReactor.Mixer;
+            target: @FlowTest.PolyReactor.Mixer;
         };
       }
     
@@ -299,30 +191,7 @@ describe("Test model evaluation with compiler", () => {
         };
       }`;
 
-    const { errs, result } = evaluateModel(flowReaction);
-    console.log(JSON.stringify(result, null, 2));
-    expect(errs.length).toBe(0);
-  });
-
-  it("evaluates a result model", () => {
-    const resultExample = `
-    chemical lLactide {
-      molecular_weight: 144.12 g/mol;
-      smiles: "CCOCC(=O)O";
-    }
-
-    char_data NHP-I-123-nmr {
-      technique: "nmr";
-      sample_id: "123-test";
-      time_point: 5 s;
-
-      @lLactide {
-        conversion: 86%;
-      };
-    }`;
-
-    const { errs, result } = evaluateModel(resultExample);
-    console.log(JSON.stringify(result, null, 2));
+    const { errs } = evaluateModel(flowReaction);
     expect(errs.length).toBe(0);
   });
 
@@ -351,8 +220,7 @@ describe("Test model evaluation with compiler", () => {
           };
       }`;
 
-    const { errs, result } = evaluateModel(polymerGraph);
-    console.log(JSON.stringify(result, null, 2));
+    const { errs } = evaluateModel(polymerGraph);
     expect(errs.length).toBe(0);
   });
 });
@@ -398,8 +266,7 @@ it("evaluates a result model with a material reference", () => {
       };
     }`;
 
-  const { errs, result } = evaluateModel(resultExample);
-  console.log(JSON.stringify(result, null, 2));
+  const { errs } = evaluateModel(resultExample);
   expect(errs.length).toBe(0);
 });
 
@@ -412,7 +279,7 @@ it.skip("evaluates a nested polymer graph model", () => {
         eg_MeO =: "CO[R:1]";
       }
 
-      polymer_graph BASE {
+      polymer_graph GraftPolymer {
         nodes: [ @eg_PyreneBuOH ];
         <@eg_PyreneBuOH.R => @Carbonate_Block.p_TMPcZ.R>;  
 
@@ -433,7 +300,7 @@ it.skip("evaluates a nested polymer graph model", () => {
         };
       }`;
 
-  const { errs, result } = evaluateModel(polymerGraphGrafted);
-  console.log(JSON.stringify(result, null, 2));
+  const { errs } = evaluateModel(polymerGraphGrafted);
+  console.log(JSON.stringify(errs, null, 2));
   expect(errs.length).toBe(0);
 });

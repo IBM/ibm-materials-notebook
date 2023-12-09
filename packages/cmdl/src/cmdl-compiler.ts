@@ -263,7 +263,6 @@ export class CmdlCompiler {
 
   /**
    * Unregisters file and removes symbols, errors, results, etc.
-   * TODO: add unit tests for unregistering
    * @param uri uri of file to delete from compiler
    */
   public unregister(uri: string): void {
@@ -571,8 +570,10 @@ export class CmdlCompiler {
     const output: CompiledRecord[] = [];
     for (const rxnName in reactions) {
       const rxn = reactions[rxnName];
-      rxn.results = rxn.results.concat(resultData[rxnName]);
-      rxn.charData = rxn.charData.concat(charData[rxnName]);
+      const results = rxnName in resultData ? resultData[rxnName] : [];
+      const rxnCharData = rxnName in charData ? charData[rxnName] : [];
+      rxn.results = rxn.results.concat(results);
+      rxn.charData = rxn.charData.concat(rxnCharData);
       output.push(rxn.compile());
     }
     return output;
