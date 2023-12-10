@@ -1,6 +1,7 @@
 import { CellRenderOutput } from "../activation-record-manager";
 import { CmdlCompiler } from "../cmdl-compiler";
 import { Notebook, NotebookDocument, Text, TextDocument } from "../document";
+import { logger } from "../logger";
 import {
   notebook1,
   notebook2,
@@ -56,6 +57,38 @@ const cmdlNotebook3: Notebook = {
     text: el.value,
   })),
 };
+
+const exampleInputResults = [
+  {
+    time_point: {
+      value: 20,
+      unit: "s",
+      uncertainty: null,
+    },
+    sample_id: "CC1865-A",
+    source: "CC1865-rxn",
+    conversion: [
+      {
+        value: 5,
+        unit: "%",
+        uncertainty: null,
+        technique: "nmr",
+        source: "CC1865-A",
+      },
+    ],
+    name: "Bn-DOA",
+    entity: {
+      molecular_weight: {
+        value: 221.11,
+        unit: "g/mol",
+        uncertainty: null,
+      },
+      smiles: "O=C1OCCN(CC2=CC=CC=C2)CCO1",
+      aliases: ["6-benzyl-1,3,6-dioxazocan-2-one"],
+      name: "Bn-DOA",
+    },
+  },
+];
 
 describe("Integration tests for CMDL compiler", () => {
   describe("document registration tests", () => {
@@ -261,6 +294,7 @@ describe("Integration tests for CMDL compiler", () => {
       }
       const output = compiler.exportFile(cmdlNotebook1.uri);
       expect(output.length).toBe(6);
+      expect(output[0].input_results).toEqual(exampleInputResults);
     });
 
     it("can export a whole repository", () => {

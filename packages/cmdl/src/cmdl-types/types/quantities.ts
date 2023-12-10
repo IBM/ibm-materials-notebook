@@ -52,6 +52,15 @@ export interface MeasuredProperty {
   source: string;
 }
 
+export interface NumericProperty {
+  value: number;
+  uncertainty: number | null;
+  unit: string | null;
+  technique: string;
+  path?: string[];
+  source: string;
+}
+
 export type QuantityNames =
   | PROPERTIES.MASS
   | PROPERTIES.VOLUME
@@ -67,7 +76,12 @@ export interface NamedQty extends BigQty {
 }
 
 type ConvertToNumeric<T> = T extends BigQty ? NumericQty : T;
+type ConvertMeasuredToNumeric<T> = T extends MeasuredProperty[]
+  ? NumericProperty[]
+  : T;
 
 export type Export<T> = {
-  [Property in keyof T]: ConvertToNumeric<T[Property]>;
+  [Property in keyof T]: T[Property] extends MeasuredProperty[]
+    ? ConvertMeasuredToNumeric<T[Property]>
+    : ConvertToNumeric<T[Property]>;
 };

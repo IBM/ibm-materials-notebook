@@ -4,6 +4,7 @@ import { ChemicalEntity } from "./chemicals";
 import { TYPES, TAGS, PROPERTIES, ModelType } from "../../cmdl-types";
 import Big from "big.js";
 import { convertQty } from "../../cmdl-units";
+import { Export } from "../../cmdl-types/types";
 
 export class ResultEntity
   extends Entity<TYPES.Result>
@@ -96,9 +97,39 @@ export class ResultEntity
     }
 
     const resultEntity = this.chemicalEntity.export();
+    const props = Object.entries(this.properties).reduce(
+      (prev, [key, value]) => {
+        if (!value || typeof value === "string") {
+          return { ...prev, [key]: value };
+        }
+
+        if (Array.isArray(value)) {
+          const updatedMeasurements: TYPES.NumericProperty[] = [];
+          for (const item of value) {
+            const newItem = {
+              ...item,
+              value: item.value.toNumber(),
+              uncertainty: item.uncertainty
+                ? item.uncertainty.toNumber()
+                : null,
+            };
+            updatedMeasurements.push(newItem);
+          }
+          return { ...prev, [key]: updatedMeasurements };
+        }
+
+        const newValue = {
+          ...value,
+          value: value.value.toNumber(),
+          uncertainty: value.uncertainty ? value.uncertainty.toNumber() : null,
+        };
+        return { ...prev, [key]: newValue };
+      },
+      {} as Export<TYPES.Result>
+    );
 
     return {
-      ...this.properties,
+      ...props,
       name: this.name,
       entity: resultEntity,
     };

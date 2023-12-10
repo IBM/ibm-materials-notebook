@@ -66,7 +66,9 @@ export type Result = Partial<MeasuredDataArray> & {
   [PROPERTIES.SOURCE]?: string;
 };
 
-export type ResultExport = Result & { entity: PolymerExport | ChemicalExport };
+export type ResultExport = Export<Result> & {
+  entity: PolymerExport | ChemicalExport;
+};
 export type ResultRender = ResultExport & { type: "result" };
 
 export type CharFile = {
