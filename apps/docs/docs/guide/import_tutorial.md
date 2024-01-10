@@ -80,7 +80,6 @@ import PEG_PLLA from "./lib/polymerGraphs.cmdl";
 
 polymer mPEG-PLLA {
     structure: @PEG_PLLA;
-    state: "solid";
 
     @PEG_PLLA.PEG_Block.PEO {
         degree_poly: 112.8;
@@ -112,21 +111,12 @@ polymer mPEG-PLLA {
 
 Note that we do not assign a value for the DP<sub>n</sub> of the lactide block in the `mPEG-PLLA` definition even though technically it is already somewhat defined by the starting material `mPEG-PLLA-Test-I-123A`. Since this block is being extended with an identical monomer, we can add the DP<sub>n</sub> during the characterization phase for this case. Were we creating a block copolymer with a different monomer we would then probably define the DP<sub>n</sub>.
 
-As a final bit of housekeeping we can add the `metadata` group as well to the import cell:
-
 ```cmdl
 import tetrahydrofuran as THF from "./lib/chemicals.cmdl";
 import potassium_tert-butoxide as kOtBu from "./lib/chemicals.cmdl";
 import dimethyl-1-4-dioxane-2-5-dione as lLactide from "./lib/chemicals.cmdl";
 import PEG_PLLA from "./lib/polymerGraphs.cmdl";
 import mPEG-PLLA-Test-I-123A from "./batch_experiment.cmdnb";
-
-metadata {
-    title: "Batch Experiment Tutorial";
-    date: "11/18/22";
-    exp_id: "Test-I-123";
-    template: "batch_experiment";
-}
 
 polymer mPEG-PLLA {
    structure: @PEG_PLLA_Graph;
@@ -141,24 +131,12 @@ Executing the the cell will complete the import process.
 
 ### Defining the Chain Extension Reaction
 
-With the references properly defined. We can create the chain extension `reaction` and a `protocol` group. For the `protocol`, in a new cell, define the following:
-
-```cmdl
-protocol ChainExtProc {
-`In a nitrogen filled glovbox, a vial was charged with [[@mPEG-PLLA-Test-I-123A]], [[@lLactide]],
-and [[@THF]]. While stirring vigorously, [[@kOtBu]] was added and the reaction mixture was stirred at
-room temperature for 10 s before quenching with excess benzoic acid in THF.
-An aliquot was removed and analyzed by 1H NMR and GPC.`
-}
-```
-
-Next, for the chain extension reaction, in a new cell define the `reaction` as follows:
+With the references properly defined. We can create the chain extension `reaction` group:
 
 ```cmdl
 reaction ChainExt {
    temperature: 22 degC;
    reaction_time: 10 s;
-   protocol: @ChainExtProc;
 
    @mPEG-PLLA-Test-I-123A {
       mass: 135 mg;
@@ -230,13 +208,6 @@ import dimethyl-1-4-dioxane-2-5-dione as lLactide from "./lib/chemicals.cmdl";
 import PEG_PLLA from "./lib/polymerGraphs.cmdl";
 import mPEG-PLLA-Test-I-123A from "./batch_experiment.cmdnb";
 import * as Test-123-gpc from "./data/test-123-gpc.csv";
-
-metadata {
-    title: "Batch Experiment Tutorial";
-    date: "11/18/22";
-    exp_id: "Test-I-123";
-    template: "batch_experiment";
-}
 
 polymer mPEG-PLLA {
    structure: @PEG_PLLA_Graph;

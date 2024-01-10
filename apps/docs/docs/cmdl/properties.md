@@ -17,19 +17,6 @@ polymer PEO-PPO {
 }
 ```
 
-### Citation
-
----
-
-- **_Description_**: Citation for journal article source of an experiment
-- **_Example_**:
-
-```cmdl
-source {
-    citation: "Example Journal, 12, 1, 123-125.";
-}
-```
-
 ### Date
 
 ---
@@ -38,12 +25,6 @@ source {
 - **_Example_**:
 
 **Note**: Currently only supports mm/dd/yy date format.
-
-```cmdl{2}
-metadata {
-    date: "1/23/22";
-}
-```
 
 ### Description
 
@@ -58,32 +39,6 @@ component Monomer_Syringe {
 }
 ```
 
-### DOI
-
----
-
-- **_Description_**: DOI for a journal article source
-- **_Example_**:
-
-```cmdl
-source {
-    doi: "10.1021/acs.macromol.0c01571";
-}
-```
-
-### Experiment Id
-
----
-
-- **_Description_**: Identifier given to an experimental record by user, such as a notebook number
-- **_Example_**:
-
-```cmdl
-metadata {
-    exp_id: "EXP-I-123";
-}
-```
-
 ### Inchi Key
 
 ---
@@ -94,32 +49,6 @@ metadata {
 ```cmdl
 chemical TEA {
     inchi_key: "ZMANZCXQSJIPKH-UHFFFAOYSA-N";
-}
-```
-
-### Owner
-
----
-
-- **_Description_**: Owner or generator of experimental record.
-- **_Example_**:
-
-```cmdl
-metadata {
-    owner: "Test Owner";
-}
-```
-
-### Physical State
-
----
-
-- **_Description_**: Physical state of a chemical or material in terms of solid, liquid, or gas under standard conditions. Used for computing stochiometry.
-- **_Example_**:
-
-```cmdl
-chemical Solid_Chemical {
-    state: "solid";
 }
 ```
 
@@ -154,13 +83,6 @@ reaction Example_RXN {
     };
 }
 ```
-
-### Ratio
-
----
-
-- **_Description_**: Ratio of components in a macromolecular complex
-- **_Example_**: _under development_
 
 ### Reaction Roles
 
@@ -218,19 +140,6 @@ chemical THF {
 }
 ```
 
-### Source Type
-
----
-
-- **_Description_**: Type of source referenced in source group
-- **_Example_**:
-
-```cmdl
-source {
-    source_type: "notebook";
-}
-```
-
 ### Tags
 
 ---
@@ -265,33 +174,7 @@ reactor_graph Test_Reactor {
 }
 ```
 
-### Template Type
-
----
-
-- **_Description_**: Type of template for the current record in the notebook document. Instructs CMDL on how to export the record upon saving.
-- **_Example_**:
-
-```cmdl
-metadata {
-    template: "batch_experiment";
-}
-```
-
-### Title
-
----
-
-- **_Description_**: Title of an experiment or record.
-- **_Example_**:
-
-```cmdl
-metadata {
-    title: "Important example experiment title";
-}
-```
-
-### Tree
+### Structure
 
 ---
 
@@ -300,7 +183,7 @@ metadata {
 
 ```cmdl{2}
 polymer mPEG-OH {
-   tree: @PEG_BASE;
+   structure: @PEG_BASE;
    mn_avg: 5000 g/mol;
 
    @PEG_BASE.PEG_Block.p_PEO {
@@ -310,25 +193,6 @@ polymer mPEG-OH {
 ```
 
 ## Physical Properties
-
-### Boiling Point
-
----
-
-- **_Description_**: Boiling point of a chemical compound
-- **_Units_**:
-  - degC
-  - degK
-- **_Example_**: _in progress_
-
-### Cell Viability
-
----
-
-- **_Description_**: Viability of a cell following treatment with a therapeutic compound at a given conenctration
-- **_Units_**:
-  - Percent (%)
-- **_Example_**: _in progress_
 
 ### Collection Time
 
@@ -347,29 +211,21 @@ polymer mPEG-OH {
   - Percent (%)
 - **_Example_**:
 
-```cmdl
-sample Test-I-123A {
-   time_point: 5 s;
+```cmdl{7}
+char_data Test-I-123B-nmr {
+   time_point: 10 s;
+   sample_id: "Test-I-123B";
+   technique: "nmr";
 
-   nmr Test-I-123A-nmr {
-      nmr_nuclei: "1H";
+   @lLactide {
+      conversion: 99%;
+   };
 
-      @lLactide {
-         conversion: 75%;
-      };
+   @mPEG-PLLA.PLLA_Block.lLac {
+      degree_poly: 80;
    };
 }
 ```
-
-### Crystallization Temperature
-
----
-
-- **_Description_**: Temperature of crystallization of a chemical compound.
-- **_Units_**:
-  - degC
-  - degK
-- **_Example_**: _in progress_
 
 ### Degree of Polymerization
 
@@ -379,16 +235,18 @@ sample Test-I-123A {
 - **_Units_**: None
 - **_Example_**:
 
-```cmdl
-sample Test-I-123A {
-   time_point: 5 s;
+```cmdl{11}
+char_data Test-I-123B-nmr {
+   time_point: 10 s;
+   sample_id: "Test-I-123B";
+   technique: "nmr";
 
-   nmr Test-I-123A-nmr {
-      nmr_nuclei: "1H";
+   @lLactide {
+      conversion: 99%;
+   };
 
-       @mPEG-PLLA.Lactide_Block.p_lLac {
-         degree_poly: 78;
-      };
+   @mPEG-PLLA.PLLA_Block.lLac {
+      degree_poly: 80;
    };
 }
 ```
@@ -402,11 +260,10 @@ sample Test-I-123A {
   - g/ml
 - **_Example_**:
 
-```cmdl{2}
+```cmdl{3}
 chemical THF {
     molecular_weight: 72.1 g/mol;
     density: 0.88 g/ml;
-    state: "liquid";
     smiles: "C1CCOC1";
 }
 ```
@@ -419,15 +276,15 @@ chemical THF {
 - **_Units_**: None
 - **_Example_**:
 
-```cmdl{11-13}
-sample Test-I-123A {
+```cmdl{7}
+char_data Test-I-123A-gpc {
    time_point: 5 s;
+   sample_id: "Test-I-123A";
+   technique: "gpc";
 
-   gpc Test-I-123A-gpc {
-      @mPEG-PLLA {
-         dispersity: 1.34;
-         mn_avg: 12000 g/mol;
-      };
+   @mPEG-PLLA {
+      dispersity: 1.45;
+      mn_avg: 14000 g/mol;
    };
 }
 ```
@@ -441,21 +298,21 @@ sample Test-I-123A {
   - ml/min
 - **_Example_**:
 
-```cmdl
+```cmdl{6,10,14}
 flow_reaction FlowTest {
     reactor: @ReactorTest;
     temperature: 22 degC;
 
     @Monomer_Solution {
-        flow_rate: 10 ml/min;
+      flow_rate: 10 ml/min;
     };
 
     @Catalyst_Solution {
-        flow_rate: 10 ml/min;
+      flow_rate: 10 ml/min;
     };
 
     @Quench_Solution {
-        flow_rate: 10 ml/min;
+      flow_rate: 10 ml/min;
     };
 }
 ```
@@ -561,7 +418,6 @@ reactor QuenchReactor {
 chemical THF {
     molecular_weight: 72.1 g/mol;
     density: 0.88 g/ml;
-    state: "liquid";
     smiles: "C1CCOC1";
 }
 ```
@@ -605,15 +461,15 @@ reactor QuenchReactor {
   - kDa
 - **_Example_**:
 
-```cmdl{6}
-sample Test-I-123A {
+```cmdl{8}
+char_data Test-I-123A-gpc {
    time_point: 5 s;
+   sample_id: "Test-I-123A";
+   technique: "gpc";
 
-   gpc Test-I-123A-gpc {
-      @mPEG-PLLA {
-         dispersity: 1.34;
-         mn_avg: 12000 g/mol;
-      };
+   @mPEG-PLLA {
+      dispersity: 1.45;
+      mn_avg: 14000 g/mol;
    };
 }
 ```
@@ -629,16 +485,16 @@ sample Test-I-123A {
   - kDa
 - **_Example_**:
 
-```cmdl{7}
-sample Test-I-123A {
+```cmdl{9}
+char_data Test-I-123A-gpc {
    time_point: 5 s;
+   sample_id: "Test-I-123A";
+   technique: "gpc";
 
-   gpc Test-I-123A-gpc {
-      @mPEG-PLLA {
-         dispersity: 1.34;
-         mn_avg: 12000 g/mol;
-         mw_avg: 16080 g/mol;
-      };
+   @mPEG-PLLA {
+      dispersity: 1.45;
+      mn_avg: 14000 g/mol;
+      mw_avg: 16080 g/mol;
    };
 }
 ```
@@ -727,29 +583,6 @@ reaction BatchRxn {
 - **_Units_**:
 - **_Example_**: _in progress_
 
-### Quantity
-
----
-
-- **_Description_**: Quantity of a particular item or entity.
-- **_Units_**: None
-- **_Example_**:
-
-```cmdl{5,9}
-fragment p_Llac {
-   molecular_weight: 144.04 g/mol;
-   smiles: "O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C";
-
-   point R {
-      quantity: 1;
-   };
-
-   point Q {
-      quantity: 1;
-   };
-}
-```
-
 ### Reaction Time
 
 ---
@@ -795,19 +628,15 @@ reaction BatchRxn {
 - **_Example_**:
 
 ```cmdl{2}
-sample Test-I-123B {
+char_data Test-I-123A-gpc {
    time_point: 5 s;
+   sample_id: "Test-I-123A";
+   technique: "gpc";
 
-   nmr Test-I-123B-nmr {
-      nmr_nuclei: "1H";
-
-      @lLactide {
-         conversion: 99%;
-      };
-
-      @mPEG-PLLA.PLLA_Block.p_lLac {
-         degree_poly: 80;
-      }
+   @mPEG-PLLA {
+      dispersity: 1.45;
+      mn_avg: 14000 g/mol;
+      mw_avg: 16080 g/mol;
    };
 }
 ```
@@ -884,21 +713,19 @@ reaction BatchRxn {
 - **_Units_**:
 - **_Example_**:
 
-```cmdl{2}
-sample Test-I-123B {
-   time_point: 5 s;
+```cmdl{11}
+char_data Test-I-123B-nmr {
+   time_point: 10 s;
+   sample_id: "Test-I-123B";
+   technique: "nmr";
 
-   nmr Test-I-123B-nmr {
-      nmr_nuclei: "1H";
-
-      @lLactide {
-         conversion: 99%;
-      };
-
-      @mPEG-PLLA {
-         yield: 80%;
-      }
+   @lLactide {
+      conversion: 99%;
    };
+
+   @mPEG-PLLA {
+      yield: 80%;
+   }
 }
 ```
 

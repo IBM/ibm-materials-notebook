@@ -13,22 +13,15 @@ Setup a new workspace and copy the JSON files from the [`/examples/flow_tutorial
 In a new cell in the notebook add the following imports, metadata, and polymer reference definition:
 
 ```cmdl
-import tetrahydrofuran as THF from "cmdl.lib";
-import bis-3-5-bistrifluoromethylphenylurea from "cmdl.lib";
-import potassium_methoxide as KOMe from "cmdl.lib";
-import benzoic_acid as BzOH from "cmdl.lib";
-import benzyl_5-methyl-2-oxo-1_3-dioxane-5-carboxylate as TMC-Bn from "cmdl.lib";
-import egMeO-pTMC-Bn from "cmdl.lib";
-
-metadata {
-    title: "Flow Tutorial Experiment";
-    date: "11/18/2022";
-    exp_id: "FlowTest-I-123";
-    template: "flow_experiment";
-}
+import tetrahydrofuran as THF from "./lib/chemicals.cmdl";
+import bis-3-5-bistrifluoromethylphenylurea from "./lib/chemicals.cmdl";
+import potassium_methoxide as KOMe from "./lib/chemicals.cmdl";
+import benzoic_acid as BzOH from "./lib/chemicals.cmdl";
+import benzyl_5-methyl-2-oxo-1_3-dioxane-5-carboxylate as TMC-Bn from "./lib/chemicals.cmdl";
+import egMeO-pTMC-Bn from "./lib/polymerGraphs.cmdl";
 
 polymer MeO-pTMC-Bn {
-    tree: @egMeO-pTMC-Bn;
+    structure: @egMeO-pTMC-Bn;
 }
 ```
 
@@ -433,25 +426,29 @@ With this we can run the flow reaction cell and see an cell output similar to th
 As with the batch experiment tutorials, we can create sample groups to assign characterization values to chemical inputs and outputs from the reaction.
 
 ```cmdl
-sample Flow-Rxn-I-123 {
-    time_point: 2 s;
+char_data Flow-Rxn-I-123-nmr {
+	time_point: 2 s;
+	sample_id: Rxn-I-123A;
+	technique: "nmr";
 
-    nmr Flow-Rxn-I-123-nmr {
-        @TMC-Bn {
-            conversion: 99%;
-        };
-
-        @MeO-pTMC-Bn.Carbonate_Block.p_TMCBn {
-            degree_poly: 53;
-        };
+	@TMC-Bn {
+        conversion: 99%;
     };
 
-    gpc Flow-Rxn-I-123-gpc {
-        @MeO-pTMC-Bn {
-            dispersity: 1.12;
-            mn_avg: 12000 g/mol;
-        };
-    };
+	@MeO-pTMC-Bn.Carbonate_Block.p_TMCBn {
+		degree_poly: 53;
+	};
+}
+
+char_data Flow-Rxn-I-123-gpc {
+	time_point: 2 s;
+	sample_id: Rxn-I-123A;
+	technique: "gpc";
+
+	@MeO-pTMC-Bn {
+		dispersity: 1.12;
+		mn_avg: 12000 g/mol;
+	};
 }
 ```
 

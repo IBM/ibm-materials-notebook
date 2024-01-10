@@ -49,13 +49,12 @@ chemical THF {
 }
 ```
 
-With the group created we can define additional properties on the chemical to enable it to be used for reaction stochiometry calculations down the line. See the CMDL guide for available properties for a chemical reference. Note: the `state` property must be included on all chemical or polymer references that are involved in any kind of stochiometry calculation as this indicates how the CMDL interpreter should treat the chemcial or polymer reference.
+With the group created we can define additional properties on the chemical to enable it to be used for reaction stochiometry calculations down the line. See the CMDL guide for available properties for a chemical reference.
 
 ```cmdl
 chemical THF {
     molecular_weight: 72.1 g/mol;
     density: 0.88 g/ml;
-    state: "liquid";
     smiles: "C1CCOC1";
 }
 ```
@@ -87,13 +86,11 @@ Now that we have created the first chemical reference. Add the following additio
 ```cmdl
 chemical kOtBu {
     molecular_weight: 112.212 g/mol;
-    state: "solid";
     smiles: "[K+].CC(C)(C)[O-]";
 }
 
 chemical lLactide {
     molecular_weight: 144.12 g/mol;
-    state: "solid";
     smiles: "C[C@H]1C(=O)O[C@H](C(=O)O1)C";
 }
 ```
@@ -233,7 +230,7 @@ polymer_graph PEG_PLLA_Base {
 
 With both polymer graphs for the macroinitiator and the polymer product defined we can now define the polymer references. In a new cell, lets define both the reference to the `mPEG-OH` initiator and the `mPEG-PLLA` product. The polymer graphs created above can be referenced as a by the `structure` property on the `polymer` group.
 
-```cmdl{3,6}
+```cmdl{2,6}
 polymer mPEG-OH {
    structure: @PEG_BASE;
 }
@@ -243,18 +240,16 @@ polymer mPEG-PLLA {
 }
 ```
 
-Since we'll be using `mPEG-OH` as an initiator in the batch polymerization reaction, we can define an M<sub>n</sub> value on the polymer itself. This will allow for the CMDL intepreter to estimate the stochiometry when the `mPEG-OH` is referenced in the reaction itself. The `state` property
+Since we'll be using `mPEG-OH` as an initiator in the batch polymerization reaction, we can define an M<sub>n</sub> value on the polymer itself. This will allow for the CMDL intepreter to estimate the stochiometry when the `mPEG-OH` is referenced in the reaction itself.
 
 ```cmdl{3}
 polymer mPEG-OH {
    structure: @PEG_BASE;
    mn_avg: 5000 g/mol;
-   state: "solid";
 }
 
 polymer mPEG-PLLA {
    structure: @PEG_PLLA_Base;
-   state: "solid";
 }
 ```
 
@@ -264,7 +259,6 @@ We can also define DP<sub>n</sub> on the `PEO` node repeat unit both in the `mPE
 polymer mPEG-OH {
    structure: @PEG_BASE;
    mn_avg: 5000 g/mol;
-   state: "solid";
 
    @PEG_BASE.PEG_Block.p_PEO {
       degree_poly: 112.8;
@@ -273,7 +267,6 @@ polymer mPEG-OH {
 
 polymer mPEG-PLLA {
    structure: @PEG_PLLA_Base;
-   state: "solid";
 
    @PEG_PLLA_Base.PEG_Block.p_PEO {
       degree_poly: 112.8;
@@ -448,7 +441,7 @@ Now we can add specific results for different chemicals which participated in th
 
 **Note**: _All of the properties for `conversion`, `mn_avg`, `yield`, and the like are values based off of the users interpretation of the characterization data_
 
-```cmdl{7-9,14-17}
+```cmdl{6-8,16-19}
 char_data Test-I-123A-nmr {
    time_point: 5 s;
    sample_id: "Test-I-123A";
@@ -473,7 +466,7 @@ char_data Test-I-123A-gpc {
 
 We can also add values for specific components of the polymer product, such as the theoretical DP<sub>n</sub> for `lLac` repeat unit based off of monomer conversion.
 
-```cmdl{8-10}
+```cmdl{10-12}
 char_data Test-I-123A-nmr {
    time_point: 5 s;
    sample_id: "Test-I-123A";
@@ -543,87 +536,15 @@ Currently writing of experimental protocols is not directly supported in TYPES. 
 
 ### Example Protocol
 
-Protocols describing the reaction conditions, workup, purification, and sample preparation are critical to facilitating reproducibility. In CMDL, protocols can be constructed, templated, and referenced in different within a CMDL defined experiment. Currently, CMDL supports simple templating in `protocol` groups and referencing of protocols in `reaction` groups.
-
-In the `batch_experiment.cmdnb` tutorial notebook, we can add another CMDL cell above the cell containing the `reaction` group. In the cell we can define a protocol group as follows:
-
-```cmdl
-protocol testProtocol {
-
-}
-```
-
-The name `testProtocol` allows us to reference this protocol in one or more `reaction` groups. Future versions of CMDL will allow them to be referenced on other groups, such as `char_data` or `solution` to define protocols for their preparation. Unlike other groups, protocols are enclosed with backtics:
-
-```cmdl
-protocol testProtocol {
-   `In a nitrogen filled glovebox, a 20 ml scintillation vial was charged with [[@lLactide]], [[@mPEG-OH]], [[@THF]], and a magnetic stir-bar. The mixture was stirred until fully homogenous, approximately 5 min. While stirring vigorously, a solution of [[@kOtBu]] in [[@THF]] was added. After 5 s, an aliquout was removed and quenched with a solution of excess benzoic acid in THF and analyzed by 1H NMR and GPC. After 10 s, the reaction mixture was quenched by the addition of a solution of benzoic acid in THF. A sample of the crude reaction mixture was analyzed by 1H NMR and GPC and the remainder of the material was purified by precipitation from MeOH. The solids were collected via centrifugation and decanting of the supernatent. This process of precipation and centrifugation was repeated a total of three times. The isolated material was dried in a vacuum oven at 40 °C until a constant mass was achieved.`
-}
-```
-
-Within the protocol references to chemical entities defined in the reaction are enclosed in double square brackets, eg. `[[@lactide]]`. When referenced in a reaction group. The defined quanties for the templated references will be inserted. After running the protocol cell, it may be referenced in a reaction group as follows:
-
-```cmdl{3}
-reaction BatchRxn {
-   temperature: 22 degC;
-   reaction_time: 10 s;
-   protocol: @testProtocol;
-
-   @mPEG-OH {
-      mass: 5 mg;
-      roles: [ "initiator" ];
-      limiting: true;
-   };
-
-   @kOtBu {
-      mass: 5 mg;
-      roles: [ "catalyst", "reagent" ];
-   };
-
-   @lLactide {
-      mass: 1440 mg;
-      roles: [ "monomer" ];
-   };
-
-   @THF {
-      volume: 2 ml;
-      roles: [ "solvent" ];
-   };
-
-   @mPEG-PLLA {
-      roles: [ "product" ];
-   };
-}
-```
+:::warning
+Protocols are have are being migrated to use a customized version of markdown to write protocols mork expressively in natural language. This will be used in notebooks alongside regular CMDL for representing reactions and characterization data. This section will be updated once the protocol feature is finished.
+:::
 
 ## Experiment Metadata
 
 If at any point you have saved the notebook document during this tutorial, you would have a pop-up notification looking like the following screenshot:
 
 The notification indicates that the record was not exported to JSON as no metadata for the record was set. The notebook document itself is always saved, however, without any user-defined metadata, it will not automatically export to the JSON format.
-
-### Defining the Metadata group
-
-We can define the metadata for the record using the `metadata` group. Note that this group does not include an identifier as only one should be defined per notebook document.
-
-```cmdl
-metadata {
-
-}
-```
-
-To the metadata group, we can add additional information such as the record `title`, `exp_id`, `template` and `date`:
-
-```cmdl
-metadata {
-   title: "Batch Experiment Tutorial";
-   date: "11/18/22";
-   exp_id: "Test-I-123";
-   template: "batch_experiment";
-}
-```
-
-Details surrounding the nature of these fields can be found in the CMDL reference.
 
 ### Saving and exporting the CMDL notebook
 

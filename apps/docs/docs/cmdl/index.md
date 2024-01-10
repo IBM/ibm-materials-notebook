@@ -12,12 +12,13 @@ As CMDL exists primarily to assist in experimental documentation there are no co
 
 ### Groups
 
-Groups collect related proprties under a single term or keyword. An example, shown below collects properties related to the metadata of a particular experiment:
+Groups collect related proprties under a single term or keyword. An example is assigning SMILES strings for reference in polymer graphs:
 
 ```cmdl
-metadata {
-    exp_id: "Example-I-123";
-    dateCreated: "10/1/2022";
+fragments {
+   MeO =: "CO[R]";
+   PEO =: "[Q]OCC[R]";
+   Llac =: "O=C(O[C@H](C([R])=O)C)[C@@H](O[Q])C";
 }
 ```
 
