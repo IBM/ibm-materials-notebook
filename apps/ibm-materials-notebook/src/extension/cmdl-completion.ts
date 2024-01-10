@@ -274,10 +274,7 @@ export class CmdlCompletions {
     arr: CMDLTypes.IGroup[]
   ): vscode.CompletionItem[] {
     return arr.map((item) => {
-      if (
-        item.name !== CMDLTypes.GROUPS.FRAGMENTS &&
-        item.name !== CMDLTypes.GROUPS.META
-      ) {
+      if (item.name !== CMDLTypes.GROUPS.FRAGMENTS) {
         return this.createNamedGroupCompletion(item);
       } else {
         return this.createGeneralGroupCompletion(item);

@@ -32,6 +32,7 @@ const polymer: IGroup = {
   referenceProps: [PROPERTIES.DEGREE_POLY],
   subGroups: [],
   properties: [
+    PROPERTIES.TAGS,
     PROPERTIES.MN_AVG,
     PROPERTIES.MW_AVG,
     PROPERTIES.DISPERSITY,

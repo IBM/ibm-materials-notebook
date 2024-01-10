@@ -411,7 +411,7 @@ export const notebook1 = {
       kind: 2,
       language: "cmdl",
       value:
-        '\nimport BnOH from "./lib/chemicals.cmdl";\nimport CF3-4-U from "./lib/chemicals.cmdl";\nimport DBU from "./lib/chemicals.cmdl";\nimport Bn-DOA from "./lib/chemicals.cmdl";\nimport THF from "./lib/chemicals.cmdl";\nimport BnO-BnDOA from "./lib/polymer_graphs.cmdl";\nimport Ph-1-CF3-U from "./lib/chemicals.cmdl";\n\nmetadata {\n\ttitle: "Synthesis of polycarbonate BnOH-p(Bn-DOA)100";\n\ttags: ["ring-opening polymerization"];\n\tdate: "6/1/2018";\n\texp_id: "CC1865";\n}\n\n\npolymer PC-BnOH-pBn-DOA100 {\n\tstructure: @BnO-BnDOA;\n}',
+        '\nimport BnOH from "./lib/chemicals.cmdl";\nimport CF3-4-U from "./lib/chemicals.cmdl";\nimport DBU from "./lib/chemicals.cmdl";\nimport Bn-DOA from "./lib/chemicals.cmdl";\nimport THF from "./lib/chemicals.cmdl";\nimport BnO-BnDOA from "./lib/polymer_graphs.cmdl";\nimport Ph-1-CF3-U from "./lib/chemicals.cmdl";\n\npolymer PC-BnOH-pBn-DOA100 {\n\tstructure: @BnO-BnDOA;\n}',
       outputs: [],
     },
     {
@@ -465,7 +465,7 @@ export const notebook2 = {
       kind: 2,
       language: "cmdl",
       value:
-        '\nimport Potassium_Methoxide from "./lib/chemicals.cmdl";\nimport CF3-4-U from "./lib/chemicals.cmdl";\nimport Ph-Ph-U from "./lib/chemicals.cmdl";\nimport Ph-1-CF3-TU from "./lib/chemicals.cmdl";\nimport TMP-OAllyl from "./lib/chemicals.cmdl";\nimport THF from "./lib/chemicals.cmdl";\nimport DCM from "./lib/chemicals.cmdl";\nimport MeO-TMPOAllyl from "./lib/polymer_graphs.cmdl";\n\nmetadata {\n\ttitle: "PC-KOMe-p(AOME-TMC)100";\n\ttags: ["ring-opening polymerization"];\n\tdate: "4/1/2018";\n\texp_id: "CC1810";\n}\n\n\npolymer PC-KOMe-pAOME-TMC100 {\n\tstructure: @MeO-TMPOAllyl;\n}',
+        '\nimport Potassium_Methoxide from "./lib/chemicals.cmdl";\nimport CF3-4-U from "./lib/chemicals.cmdl";\nimport Ph-Ph-U from "./lib/chemicals.cmdl";\nimport Ph-1-CF3-TU from "./lib/chemicals.cmdl";\nimport TMP-OAllyl from "./lib/chemicals.cmdl";\nimport THF from "./lib/chemicals.cmdl";\nimport DCM from "./lib/chemicals.cmdl";\nimport MeO-TMPOAllyl from "./lib/polymer_graphs.cmdl";\n\npolymer PC-KOMe-pAOME-TMC100 {\n\tstructure: @MeO-TMPOAllyl;\n}',
       outputs: [],
     },
     {
@@ -519,7 +519,7 @@ export const notebook3 = {
       kind: 2,
       language: "cmdl",
       value:
-        '\nimport Potassium_Methoxide from "./lib/chemicals.cmdl";\nimport CF3-4-U from "./lib/chemicals.cmdl";\nimport Ph-1-CF3-U from "./lib/chemicals.cmdl";\nimport Cy-2-CF3-TU from "./lib/chemicals.cmdl";\nimport DE-TMC from "./lib/chemicals.cmdl";\nimport THF from "./lib/chemicals.cmdl";\nimport DCM from "./lib/chemicals.cmdl";\nimport MeO-DETMC from "./lib/polymer_graphs.cmdl";\n\nmetadata {\n\ttitle: "PC-KOMe-p(DE-TMC)25";\n\ttags: ["ring-opening polymerization"];\n\tdate: "5/3/2018";\n\texp_id: "CC1839";\n}\n\n\npolymer MeO-pDE-TMC {\n\tstructure: @MeO-DETMC;\n}',
+        '\nimport Potassium_Methoxide from "./lib/chemicals.cmdl";\nimport CF3-4-U from "./lib/chemicals.cmdl";\nimport Ph-1-CF3-U from "./lib/chemicals.cmdl";\nimport Cy-2-CF3-TU from "./lib/chemicals.cmdl";\nimport DE-TMC from "./lib/chemicals.cmdl";\nimport THF from "./lib/chemicals.cmdl";\nimport DCM from "./lib/chemicals.cmdl";\nimport MeO-DETMC from "./lib/polymer_graphs.cmdl";\n\npolymer MeO-pDE-TMC {\n\tstructure: @MeO-DETMC;\n}',
       outputs: [],
     },
     {

@@ -24,7 +24,7 @@ export class GeneralGroup extends Group {
       return;
     }
 
-    if (this.name !== GROUPS.META && this.name !== GROUPS.FRAGMENTS) {
+    if (this.name !== GROUPS.FRAGMENTS) {
       const msg = `${this.name} is a named group and is missing an identifier`;
       const err = new InvalidGroupError(msg, this.nameToken);
       this.errors.push(err);

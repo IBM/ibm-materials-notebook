@@ -1,5 +1,5 @@
 import { ActivationRecord } from "../model-AR";
-import { GROUPS, ModelType, TYPES } from "../../cmdl-types";
+import { ModelType, TYPES } from "../../cmdl-types";
 import { BaseModel } from "./base-model";
 import { Entity, ChemicalEntity, FragmentsGroup } from "../entities";
 
@@ -16,11 +16,7 @@ export class GroupModel extends BaseModel {
   }
 
   public execute(globalAR: ActivationRecord): void {
-    if (this.name === GROUPS.META) {
-      const groupModel = new Entity<TYPES.MetaData>(this.name, this.type);
-      this.copyProperties<TYPES.MetaData>(groupModel);
-      globalAR.setValue(this.name, groupModel);
-    } else if (this.type === ModelType.CHEMICAL) {
+    if (this.type === ModelType.CHEMICAL) {
       const chemModel = new ChemicalEntity(this.name, this.type);
       this.copyProperties<TYPES.Chemical>(chemModel);
       globalAR.setValue(this.name, chemModel);

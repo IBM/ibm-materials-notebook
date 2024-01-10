@@ -1,42 +1,69 @@
-import { IGroup, GROUPS } from "./group-types";
+import { IGroup, GROUPS, ModelType } from "./group-types";
 import { PROPERTIES } from "../properties";
 
-/**
- * TODO: Deprecate record_id, template, owner, name
- */
-const metadata: IGroup = {
-  name: GROUPS.META,
-  description: "Metadata definition for the notebook document",
-  detail: "Exp. Metadata",
+export const reaction: IGroup = {
+  name: GROUPS.REACTION,
+  modelType: ModelType.REACTION,
+  description: "Reaction group",
+  detail: "Reaction",
   aliases: [],
-  referenceProps: [],
-  subGroups: [GROUPS.SOURCE],
-  properties: [
-    PROPERTIES.TITLE,
-    PROPERTIES.NAME,
-    PROPERTIES.DATE,
-    PROPERTIES.TAGS,
-    PROPERTIES.EXP_ID,
+  referenceProps: [
+    PROPERTIES.MASS,
+    PROPERTIES.VOLUME,
+    PROPERTIES.MOLES,
+    PROPERTIES.PRESSURE,
+    PROPERTIES.ROLES,
+    PROPERTIES.STATE,
+    PROPERTIES.LIMITING,
   ],
-};
-
-//TODO: available only in manifest file
-//?deprecated
-const source: IGroup = {
-  name: GROUPS.SOURCE,
-  description:
-    "Describes a journal article or notebook source for a particular experiment record.",
-  detail: "Journal article",
-  aliases: [],
-  referenceProps: [],
   subGroups: [],
   properties: [
-    PROPERTIES.TITLE,
+    PROPERTIES.TAGS,
     PROPERTIES.DATE,
-    PROPERTIES.SOURCE_TYPE,
-    PROPERTIES.DOI,
-    PROPERTIES.CITATION,
+    PROPERTIES.TEMPERATURE,
+    PROPERTIES.VOLUME,
+    PROPERTIES.REACTION_TIME,
+    PROPERTIES.PROTOCOL,
   ],
 };
 
-export const exprimentGroups = [metadata, source];
+/**
+ * TODO: merge with reaction group?
+ */
+export const flowRection: IGroup = {
+  name: GROUPS.FLOW_REACTION,
+  modelType: ModelType.FLOW_REACTION,
+  description: "Flow reaction group",
+  detail: "Flow reaction",
+  aliases: [],
+  referenceProps: [PROPERTIES.INPUT, PROPERTIES.FLOW_RATE, PROPERTIES.ROLES],
+  subGroups: [],
+  properties: [
+    PROPERTIES.TAGS,
+    PROPERTIES.DATE,
+    PROPERTIES.REACTOR,
+    PROPERTIES.TEMPERATURE,
+    PROPERTIES.COLLECTION_TIME,
+  ],
+};
+
+export const solution: IGroup = {
+  name: GROUPS.SOLUTION,
+  modelType: ModelType.SOLUTION,
+  description:
+    "Describes a stock solution of reagents for use in a flow reaction.",
+  detail: "Stock solution",
+  aliases: [],
+  referenceProps: [
+    PROPERTIES.MASS,
+    PROPERTIES.VOLUME,
+    PROPERTIES.MOLES,
+    PROPERTIES.PRESSURE,
+    PROPERTIES.ROLES,
+    PROPERTIES.LIMITING,
+  ],
+  subGroups: [],
+  properties: [],
+};
+
+export const experimentGroups = [reaction, flowRection, solution];

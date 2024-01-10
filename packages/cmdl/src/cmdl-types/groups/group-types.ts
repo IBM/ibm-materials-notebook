@@ -31,10 +31,6 @@ export interface IGroup {
 }
 
 export enum GROUPS {
-  //experiment metadata
-  META = "metadata",
-  SOURCE = "source",
-
   //structure
   POLYMER_GRAPH = "polymer_graph",
   CONTAINER = "container",

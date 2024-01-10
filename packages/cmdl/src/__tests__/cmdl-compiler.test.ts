@@ -1,7 +1,6 @@
 import { CellRenderOutput } from "../activation-record-manager";
 import { CmdlCompiler } from "../cmdl-compiler";
 import { Notebook, NotebookDocument, Text, TextDocument } from "../document";
-import { logger } from "../logger";
 import {
   notebook1,
   notebook2,
