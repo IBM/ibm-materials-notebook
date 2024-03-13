@@ -32,6 +32,9 @@ const title: IProperty = {
   aliases: [],
 };
 
+/**
+ * @deprecated
+ */
 const doi: IProperty = {
   description: "Digitial object identifier",
   detail: "doi",
@@ -40,6 +43,9 @@ const doi: IProperty = {
   aliases: [],
 };
 
+/**
+ * @deprecated
+ */
 const citation: IProperty = {
   description: "Journal article citation",
   detail: "citation",
@@ -48,6 +54,9 @@ const citation: IProperty = {
   aliases: [],
 };
 
+/**
+ * @deprecated
+ */
 const expID: IProperty = {
   description: "Id for experiment",
   detail: "experiment ID",
@@ -80,6 +89,9 @@ const smiles: IProperty = {
   aliases: [],
 };
 
+/**
+ * @deprecated
+ */
 const bigSmiles: IProperty = {
   description: "BigSMILES line notation",
   detail: "BigSMILES",
@@ -104,14 +116,9 @@ const inchiKey: IProperty = {
   aliases: [],
 };
 
-// const recordId: IProperty = {
-//   description: "Record Id",
-//   detail: "Record Id",
-//   name: PROPERTIES.RECORD_ID,
-//   type: PropertyTypes.TEXT,
-//   aliases: [],
-// };
-
+/**
+ * @deprecated
+ */
 const refId: IProperty = {
   description: "Reference Id",
   detail: "Reference Id",
@@ -140,7 +147,6 @@ export const textProperties = [
   citation,
   title,
   description,
-  // recordId,
   limiting,
   refId,
   aliases,

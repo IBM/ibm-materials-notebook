@@ -23,6 +23,7 @@ import { Clonable, CharFileReader } from "./entities";
 
 /**
  * Visits record tree and executes different models on elements
+ * TODO: simplify to build and execute models that are needed. Many operations are simply copying...
  */
 export class ModelVisitor implements AstVisitor {
   uri: string;

@@ -6,7 +6,8 @@ import { BaseError } from "../errors";
 import { ModelVisitor } from "../intepreter";
 
 /**
- * Handles angle properties in polymer graph definitions
+ * Handles angle properties in graph definitions
+ * TODO: merge polymer and reactor graph representations into single syntax
  */
 export class AngleProperty extends Property {
   protected lhs: ReferenceValue[] = [];

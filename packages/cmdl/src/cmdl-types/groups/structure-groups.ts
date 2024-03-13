@@ -4,16 +4,16 @@ import { PROPERTIES } from "../properties";
 /**
  * ?: Assignment properties will move to global scope for file
  */
-const polymerFragment: IGroup = {
-  name: GROUPS.FRAGMENTS,
-  modelType: ModelType.FRAGMENTS,
-  description: "SMILES fragments for polymer graph",
-  detail: "Polymer graph fragments",
-  aliases: [],
-  referenceProps: [],
-  subGroups: [],
-  properties: [PROPERTIES.FRAGMENT],
-};
+// const polymerFragment: IGroup = {
+//   name: GROUPS.FRAGMENTS,
+//   modelType: ModelType.FRAGMENTS,
+//   description: "SMILES fragments for polymer graph",
+//   detail: "Polymer graph fragments",
+//   aliases: [],
+//   referenceProps: [],
+//   subGroups: [],
+//   properties: [PROPERTIES.FRAGMENT],
+// };
 
 const polymerContainer: IGroup = {
   name: GROUPS.CONTAINER,
@@ -64,6 +64,6 @@ export const structureGroups = [
   reactorGraph,
   reactorGraphNode,
   polymerContainer,
-  polymerFragment,
+  // polymerFragment,
   polymerGraph,
 ];

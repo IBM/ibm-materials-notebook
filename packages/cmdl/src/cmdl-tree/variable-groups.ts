@@ -4,6 +4,7 @@ import { NamedGroup } from "./named-group";
 
 /**
  * Handles variable groups within CMDL record trees
+ * @deprecated replace with pseudo-inheritance
  */
 export class VariableGroup extends NamedGroup {
   constructor(token: CmdlToken, idToken: CmdlToken) {

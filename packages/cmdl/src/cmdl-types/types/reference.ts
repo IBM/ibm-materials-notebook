@@ -5,6 +5,9 @@ export interface Reference {
   path: string[];
 }
 
+/**
+ * @deprecated remove model types
+ */
 export interface BaseModel {
   name: string;
   type: ModelType;

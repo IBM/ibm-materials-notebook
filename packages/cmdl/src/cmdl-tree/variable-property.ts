@@ -5,6 +5,7 @@ import { BaseError } from "../errors";
 
 /**
  * Handles variable properties with CMDL record trees
+ * @deprecated replace with property assignments and pseudo-inheritance
  */
 export class VariableProperty extends Property {
   protected value: string = "";

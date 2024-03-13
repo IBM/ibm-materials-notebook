@@ -5,7 +5,6 @@ export interface ITag {
   aliases: string[];
 }
 
-//TODO: remove underscore in tags
 export enum TAGS {
   H = "1H",
   C = "13C",
@@ -32,19 +31,10 @@ export enum TAGS {
   LIQUID = "liquid",
   GAS = "gas",
 
-  SMALL_MOLECULE = "small_molecule",
+  SMALL_MOLECULE = "small-molecule",
   MATERIAL = "material",
   REACTOR = "reactor",
   ORGANISM = "organism",
-
-  /**
-   * @deprecated
-   **/
-  NOTEBOOK = "notebook",
-  /**
-   * @deprecated
-   **/
-  JOURNAL = "journal",
 
   ATMOSPHERE = "atmosphere",
   CATALYST = "catalyst",
@@ -56,8 +46,8 @@ export enum TAGS {
   SOLVENT = "solvent",
 
   HOMOPOLYMER = "homopolymer",
-  BLOCK_COPOLYMER = "block_copolymer",
-  STAT_COPOLYMER = "statistical_copolymer",
+  BLOCK_COPOLYMER = "block copolymer",
+  STAT_COPOLYMER = "statistical copolymer",
   GRAFT = "graft",
   BRUSH = "brush",
   LINEAR = "linear",
@@ -65,8 +55,7 @@ export enum TAGS {
   CROSS_LINKED = "cross-linked",
   STAR = "star",
   COMPLEX = "complex",
-
-  MIXED_MICELLES = "mixed_micelles",
+  MICELLE = "micelle",
 
   POLYBUTADIENE = "polybutadiene",
   POLYSILOXANE = "polysiloxane",
@@ -81,10 +70,6 @@ export enum TAGS {
   POLYLACTIDE = "polylactide",
   POLYVINYLPYRIDINE = "poly(vinylpyridine)",
 
-  /**
-   * @deprecated
-   **/
-  POLYMERIZATION = "polymerization",
   BULK_POLYMERIZATION = "bulk polymerization",
   ROP = "ring-opening polymerization",
   ZROP = "zwitterionic ring-opening polymerization",

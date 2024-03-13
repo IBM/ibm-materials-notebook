@@ -8,6 +8,7 @@ import { AssignmentProperty } from "./assignment-property";
 
 /**
  * Handles general, unnamed groups in CMDL record trees
+ * @deprecated
  */
 export class GeneralGroup extends Group {
   constructor(token: CmdlToken) {

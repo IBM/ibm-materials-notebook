@@ -5,6 +5,7 @@ import { RecordNode } from "./base-components";
 
 /**
  * Represents a condensed AST for validation and interpretation (execution of models) of CMDL
+ * TODO: merge with CMDL AST
  */
 export class CmdlTree {
   name = "CmdlTree";

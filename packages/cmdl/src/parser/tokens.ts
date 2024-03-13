@@ -9,13 +9,10 @@ const tokenVocabulary: Record<string, TokenType> = {};
 
 const IDENT_REGEX = /[_a-zA-Z0-9-/%]+/;
 const LINK = /@[_a-zA-Z0-9-]+/;
-// const ProtocolRef = /\[\[@[_a-zA-Z0-9-]+\]\]/;
 const VARIABLE = /\$[_a-zA-Z0-9-]+/;
 const STRING_LITERAL = /"(?:[^"]|\\(?:[bfnrtv"/]|u[0-9a-fA-F]{4}))+"/;
 const NUM_REGEX = /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/;
 const UNC_REGEX = /±|\+-/;
-// const MultiLineText = /[_a-zA-Z0-9-',/%.\s\\n\\r\\t]+/;
-
 const True = createToken({ name: "True", pattern: /true/ });
 const False = createToken({ name: "False", pattern: /false/ });
 const Star = createToken({ name: "Star", pattern: /\*/ });
@@ -23,7 +20,7 @@ const LCurly = createToken({ name: "LCurly", pattern: /{/ });
 const LSquare = createToken({ name: "LSquare", pattern: /\[/ });
 const LAngle = createToken({ name: "LAngle", pattern: /</ });
 const Dot = createToken({ name: "Dot", pattern: /\./ });
-const Arrow = createToken({ name: "Arrow", pattern: /=>/ });
+const Arrow = createToken({ name: "Arrow", pattern: /=>/ }); //? add other arrow types to signify directions in graph
 const Pipe = createToken({ name: "Pipe", pattern: /\|/ });
 const RSquare = createToken({ name: "RSquare", pattern: /\]/ });
 const RCurly = createToken({ name: "RCurly", pattern: /}/ });
@@ -33,31 +30,7 @@ const Colon = createToken({ name: "Colon", pattern: /:/ });
 const SemiColon = createToken({ name: "Semicolon", pattern: /;/ });
 const Link = createToken({ name: "Link", pattern: LINK });
 const Variable = createToken({ name: "Variable", pattern: VARIABLE });
-const Assignment = createToken({ name: "Assignment", pattern: /=:/ });
-// const BackTicOpen = createToken({
-//   name: "BackTic",
-//   pattern: /`/,
-//   push_mode: "protocol_mode",
-// });
-// const BackTicClose = createToken({
-//   name: "BackTic",
-//   pattern: /`/,
-//   pop_mode: true,
-// });
-// const Protocol = createToken({
-//   name: "ProtocolText",
-//   pattern: Lexer.NA,
-// });
-// const ProtoReference = createToken({
-//   name: "ProtocolRef",
-//   pattern: ProtocolRef,
-//   categories: [Protocol],
-// });
-// const MultiLineStr = createToken({
-//   name: "MultiLineStr",
-//   pattern: MultiLineText,
-//   categories: [Protocol],
-// });
+const Assignment = createToken({ name: "Assignment", pattern: /:=/ });
 
 const Identifier = createToken({
   name: "Identifier",
@@ -84,6 +57,16 @@ const As = createToken({
   name: "As",
   pattern: /as/,
   longer_alt: Identifier,
+});
+
+const Group = createToken({
+  name: "Group",
+  pattern: /group/,
+});
+
+const Graph = createToken({
+  name: "Graph",
+  pattern: /graph/,
 });
 
 const UncertaintyOperator = createToken({
@@ -115,7 +98,6 @@ const multiModeLexer: IMultiModeLexerDefinition = {
       True,
       False,
       Link,
-      // BackTicOpen,
       Variable,
       Identifier,
       UncertaintyOperator,
@@ -148,7 +130,6 @@ const allTokens = [
   True,
   False,
   Link,
-  // BackTicOpen,
   Variable,
   Identifier,
   UncertaintyOperator,
@@ -203,7 +184,5 @@ export {
   RAngle,
   LAngle,
   As,
-  // BackTicOpen,
-  // BackTicClose,
   Assignment,
 };

@@ -2,6 +2,9 @@ import { IProperty, PROPERTIES, PropertyTypes } from "./property-types";
 import { THERMAL_UNITS } from "./thermal-properties";
 import { UNITS } from "../units";
 
+/**
+ * @todo move unit arrays to units module
+ */
 const TIME_UNITS = [UNITS.MS, UNITS.SEC, UNITS.MIN, UNITS.HOUR, UNITS.DAY];
 const VOL_UNITS = [
   UNITS.PL,
@@ -139,6 +142,9 @@ const percentYield: IProperty = {
   units: [UNITS.PERCENT],
 };
 
+/**
+ * @deprecated replace with time
+ */
 const reaction_time: IProperty = {
   description: "Full time duration of a reaction as measured experimentally.",
   detail: "Time of reaction.",
@@ -159,6 +165,9 @@ const time_point: IProperty = {
   units: TIME_UNITS,
 };
 
+/**
+ * @deprecated replace with time
+ */
 const run_time: IProperty = {
   description: "full time duration of the flow reaction",
   detail: "run time of flow reactor",
@@ -169,6 +178,9 @@ const run_time: IProperty = {
   units: TIME_UNITS,
 };
 
+/**
+ * @deprecated replace with time
+ */
 const collection_time: IProperty = {
   description: "collection time point from the flow reactor",
   detail: "collection time of flow reactor",
@@ -178,16 +190,6 @@ const collection_time: IProperty = {
   aliases: [],
   units: TIME_UNITS,
 };
-
-// const reaction_volume: IProperty = {
-//   description: "volume of the reaction vessel",
-//   detail: "volume of reaction vessel",
-//   name: PROPERTIES.VOLUME,
-//   type: PropertyTypes.NUMERICAL_UNIT,
-//   baseUnit: UNITS.ML,
-//   aliases: [],
-//   units: VOL_UNITS,
-// };
 
 const reaction_temp: IProperty = {
   description: "overall temperature of the reaction",
@@ -264,7 +266,6 @@ export const reactionProperties = [
   conversion,
   percentYield,
   reaction_temp,
-  // reaction_volume,
   reaction_time,
   run_time,
   collection_time,

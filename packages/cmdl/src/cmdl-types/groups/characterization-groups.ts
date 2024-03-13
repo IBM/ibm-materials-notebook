@@ -1,6 +1,9 @@
 import { IGroup, GROUPS, ModelType } from "./group-types";
 import { PROPERTIES } from "../properties";
 
+/**
+ * @deprecated break into sub groups
+ */
 const characteriztionGroup: IGroup = {
   name: GROUPS.CHAR_DATA,
   modelType: ModelType.CHAR_DATA,

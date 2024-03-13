@@ -1,11 +1,5 @@
 import { TAGS, ITag } from "./tag-types";
 
-const polymerization: ITag = {
-  description: "Polymerization",
-  detail: "Polymerization",
-  name: TAGS.POLYMERIZATION,
-  aliases: [],
-};
 const bulkPolymerization: ITag = {
   description: "Bulk polymerization",
   detail: "Bulk polymerization",
@@ -51,5 +45,4 @@ export const techniqueTags = [
   romp,
   postPolyFunc,
   chainExtension,
-  polymerization,
 ];

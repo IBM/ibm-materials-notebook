@@ -6,7 +6,7 @@ import { ChemicalOutput, ReactionChemicalOutput } from "./chemicals";
 
 export interface ReactorNode {
   name: string;
-  type: "component";
+  type: "component"; //! deprecate component types => sub-type of group
   [PROPERTIES.DESCRIPTION]?: string;
   [PROPERTIES.INNER_DIAMETER]?: BigQty;
   [PROPERTIES.OUTER_DIAMETER]?: BigQty;
@@ -21,6 +21,9 @@ export interface Reactor {
   components: ReactorNode[];
 }
 
+/**
+ * @deprecated FlowReactors are now built-in type of group
+ */
 export interface FlowReactor extends BaseModel {
   type: ModelType.REACTOR_GRAPH;
 }

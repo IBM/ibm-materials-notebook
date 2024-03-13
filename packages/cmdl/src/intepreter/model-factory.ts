@@ -15,7 +15,7 @@ import { BaseModel } from "./models/base-model";
 
 /**
  * Factory class to create models based on record tree node type
- * TODO: change to model builder factory
+ * @deprecated correct models from computation will derive from group type
  */
 export class ModelFactory {
   /**

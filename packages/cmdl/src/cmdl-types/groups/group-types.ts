@@ -1,3 +1,11 @@
+/**
+ * TODO: enable derivation of CMDL Types to TS Types for type checking in exports
+ * TODO: all group types derive from a base built-in group
+ */
+
+/**
+ * @deprecated
+ */
 export enum ModelType {
   CHAR_DATA = "char_data",
   CHEMICAL = "chemical",
@@ -30,13 +38,16 @@ export interface IGroup {
   referenceProps: string[];
 }
 
+/**
+ * ?@deprecated
+ */
 export enum GROUPS {
-  //structure
+  // structure
   POLYMER_GRAPH = "polymer_graph",
   CONTAINER = "container",
   FRAGMENTS = "fragments",
 
-  //flow reactors
+  // flow reactors
   REACTOR_GRAPH = "reactor_graph",
   REACTOR = "reactor",
   COMPONENT = "component",

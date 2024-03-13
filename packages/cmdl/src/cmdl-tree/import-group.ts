@@ -72,6 +72,11 @@ export class ImportOp implements RecordNode {
   }
 }
 
+/**
+ * TODO: replace with file group.
+ * TODO: images only for reference.
+ * TODO: reference api of CMDL char file and metadata processer -> python
+ */
 export class ImportFileOp implements RecordNode {
   name: string;
   nameToken: CmdlToken;

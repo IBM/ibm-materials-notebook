@@ -16,14 +16,17 @@ const input: IProperty = {
   aliases: [],
 };
 
-const polymerNodes: IProperty = {
-  description: "Nodes for a polymer container",
-  detail: "polymer nodes",
+const graphNodes: IProperty = {
+  description: "Nodes for a graph data structure",
+  detail: "graph nodes",
   name: PROPERTIES.NODES,
   type: PropertyTypes.REF_MULTI,
   aliases: [],
 };
 
+/**
+ * @deprecated
+ */
 const target: IProperty = {
   description: "Targets for current node in a graph",
   detail: "Node targets",
@@ -32,6 +35,9 @@ const target: IProperty = {
   aliases: [],
 };
 
+/**
+ * @deprecated
+ */
 const sources: IProperty = {
   description: "Targets for current node in a graph",
   detail: "Node targets",
@@ -48,6 +54,9 @@ const source: IProperty = {
   aliases: [],
 };
 
+/**
+ * @deprecated
+ */
 const component: IProperty = {
   description: "Targets for current node in a graph",
   detail: "Node targets",
@@ -56,6 +65,9 @@ const component: IProperty = {
   aliases: [],
 };
 
+/**
+ * @deprecated
+ */
 const components: IProperty = {
   description: "Component containers in a polymer graph",
   detail: "Graph components",
@@ -72,6 +84,9 @@ const connection: IProperty = {
   aliases: [],
 };
 
+/**
+ * @deprecated
+ */
 const fragment: IProperty = {
   description: "Create fragment elements for polymer graph",
   detail: "Fragment for polymer graph",
@@ -88,6 +103,9 @@ const file: IProperty = {
   aliases: [],
 };
 
+/**
+ * @deprecated
+ */
 const protocol: IProperty = {
   description: "references a protocol",
   detail: "protocol",
@@ -108,7 +126,7 @@ export const referenceProperties = [
   sources,
   component,
   target,
-  polymerNodes,
+  graphNodes,
   connection,
   components,
   file,

@@ -22,6 +22,7 @@ export interface AstVisitor {
 
 /**
  * Manages symbols for a particular scope
+ * ?TODO: turn to actual table of primatives
  */
 export class SymbolTable {
   manager: SymbolTableManager;
@@ -296,6 +297,7 @@ export class SymbolTable {
 
   /**
    * Helper method to identify if a notebook has template variables
+   * @deprecated
    * @returns boolean
    */
   public hasVariables(): boolean {
@@ -331,6 +333,7 @@ export class SymbolTable {
 
   /**
    * Exports array of variables and their type to be written to a CSV template
+   * @deprecated
    * @returns BaseSymbol[]
    */
   public exportVariables(): BaseSymbol[] {
