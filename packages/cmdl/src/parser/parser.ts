@@ -12,23 +12,23 @@ import {
   True,
   False,
   Identifier,
-  Link,
+  Reference,
+  Record,
+  Graph,
+  Collection,
+  Prop,
   Import,
-  Star,
   From,
   LSquare,
   RSquare,
   Dot,
-  Variable,
   Arrow,
   Pipe,
   RAngle,
   LAngle,
   As,
-  // BackTicClose,
-  // BackTicOpen,
-  // Protocol,
   Assignment,
+  End,
 } from "./tokens";
 
 /**
@@ -41,37 +41,52 @@ class Parser extends CstParser {
     this.performSelfAnalysis();
   }
 
-  public parseRecord = this.RULE("record", () => {
+  public parse = this.RULE("cmdl-document", () => {
     this.MANY(() => {
-      this.SUBRULE(this.statement);
+      this.OR([
+        { ALT: () => this.SUBRULE(this.importStatement) },
+        { ALT: () => this.SUBRULE(this.collectionDeclaration) },
+        { ALT: () => this.SUBRULE(this.recordDeclaration) },
+        { ALT: () => this.SUBRULE(this.graphDeclaration) },
+        { ALT: () => this.SUBRULE(this.assignmentDeclaration) },
+      ]);
     });
   });
 
-  private statement = this.RULE("statement", () => {
-    this.OR([
-      { ALT: () => this.SUBRULE(this.importFileStatement) },
-      { ALT: () => this.SUBRULE(this.importStatement) },
-      { ALT: () => this.SUBRULE(this.groupDeclaration) },
-    ]);
-  });
-
-  private importStatement = this.RULE("importStatement", () => {
-    this.CONSUME(Import);
-    this.CONSUME(Identifier);
-    this.OPTION(() => {
-      this.SUBRULE(this.aliasClause, { LABEL: "alias" });
-    });
-    this.CONSUME(From);
+  private assignmentDeclaration = this.RULE("assignmentProperty", () => {
+    this.CONSUME(Prop, { LABEL: "Keyword" });
+    this.CONSUME(Identifier, { LABEL: "Identifier" });
+    this.CONSUME(Colon);
+    this.CONSUME1(Identifier, { LABEL: "Type" });
+    this.CONSUME(Assignment);
     this.CONSUME(StringLiteral);
     this.CONSUME(SemiColon);
   });
 
-  private importFileStatement = this.RULE("importFileStatement", () => {
-    this.CONSUME(Import);
-    this.CONSUME(Star);
-    this.CONSUME(As);
+  private collectionDeclaration = this.RULE("collectionDeclaration", () => {
+    this.CONSUME(Collection, { LABEL: "keyword" });
+    this.CONSUME(Identifier, { LABEL: "collectionName" });
+    this.OPTION(() => {
+      this.MANY(() => {
+        this.OR([
+          { ALT: () => this.SUBRULE(this.assignmentDeclaration) },
+          { ALT: () => this.SUBRULE(this.recordDeclaration) },
+          { ALT: () => this.SUBRULE(this.graphDeclaration) },
+          { ALT: () => this.SUBRULE(this.collectionDeclaration) },
+        ]);
+      });
+    });
+    this.CONSUME(End);
+    this.CONSUME1(Identifier, { LABEL: "collectionName" });
+  });
+
+  private importStatement = this.RULE("importStatement", () => {
+    this.CONSUME(Import, { LABEL: "Keyword" });
     this.CONSUME(Identifier);
-    this.CONSUME(From);
+    this.OPTION(() => {
+      this.SUBRULE(this.aliasClause, { LABEL: "Alias" });
+    });
+    this.CONSUME(From, { LABEL: "Keyword" });
     this.CONSUME(StringLiteral);
     this.CONSUME(SemiColon);
   });
@@ -81,67 +96,58 @@ class Parser extends CstParser {
     this.CONSUME1(Identifier);
   });
 
-  private groupDeclaration = this.RULE("groupDeclaration", () => {
-    this.OR([
-      { ALT: () => this.SUBRULE(this.namedGroup) },
-      { ALT: () => this.SUBRULE(this.variableGroup) },
-      { ALT: () => this.SUBRULE(this.referenceDeclaration) },
-      { ALT: () => this.CONSUME(Identifier) },
-    ]);
-    this.SUBRULE(this.group);
+  private recordDeclaration = this.RULE("recordDeclaration", () => {
+    this.CONSUME(Record, { LABEL: "Keyword" });
+    this.CONSUME(Identifier, { LABEL: "Identifier" });
+    this.CONSUME(Colon);
+    this.CONSUME1(Identifier, { LABEL: "Type" });
+    this.CONSUME(LCurly);
+    this.MANY(() => {
+      this.OR1([
+        { ALT: () => this.SUBRULE(this.propertyItem) },
+        { ALT: () => this.SUBRULE(this.referenceDeclaration) },
+      ]);
+      this.CONSUME(SemiColon);
+    });
+    this.CONSUME(RCurly);
   });
 
-  private namedGroup = this.RULE("namedGroup", () => {
-    this.CONSUME(Identifier, { LABEL: "Keyword" });
-    this.CONSUME1(Identifier);
-  });
-
-  private variableGroup = this.RULE("variableGroup", () => {
-    this.CONSUME(Identifier, { LABEL: "Keyword" });
-    this.CONSUME1(Variable);
+  private graphDeclaration = this.RULE("graphDeclaration", () => {
+    this.CONSUME(Graph, { LABEL: "Keyword" });
+    this.CONSUME(Identifier, { LABEL: "Identifier" });
+    this.CONSUME(Colon);
+    this.CONSUME1(Identifier, { LABEL: "Type" });
+    this.CONSUME(LCurly);
+    this.MANY(() => {
+      this.OR([
+        { ALT: () => this.SUBRULE(this.arrowProperty) },
+        { ALT: () => this.SUBRULE(this.propertyItem) },
+      ]);
+      this.CONSUME(SemiColon);
+    });
+    this.CONSUME(RCurly);
   });
 
   private referenceDeclaration = this.RULE("referenceDeclaration", () => {
-    this.CONSUME(Link);
+    this.CONSUME(Reference, { LABEL: "Reference" });
     this.OPTION(() => {
       this.MANY(() => {
         this.CONSUME(Dot);
-        this.CONSUME(Identifier);
+        this.CONSUME(Identifier, { LABEL: "Member" });
       });
     });
-  });
-
-  private group = this.RULE("group", () => {
     this.CONSUME(LCurly);
     this.OR([
-      // { ALT: () => this.SUBRULE(this.protocolItem) },
       {
         ALT: () =>
-          this.MANY(() => {
-            this.SUBRULE(this.groupItem);
+          this.MANY1(() => {
+            this.SUBRULE(this.propertyItem);
             this.CONSUME(SemiColon);
           }),
       },
     ]);
     this.CONSUME(RCurly);
   });
-
-  private groupItem = this.RULE("groupItem", () => {
-    this.OR([
-      { ALT: () => this.SUBRULE(this.arrowProperty) },
-      { ALT: () => this.SUBRULE(this.assignmentProperty) },
-      { ALT: () => this.SUBRULE(this.propertyItem) },
-      { ALT: () => this.SUBRULE(this.groupDeclaration) },
-    ]);
-  });
-
-  // private protocolItem = this.RULE("protocolItem", () => {
-  //   this.CONSUME(BackTicOpen);
-  //   this.MANY(() => {
-  //     this.CONSUME(Protocol);
-  //   });
-  //   this.CONSUME1(BackTicClose);
-  // });
 
   private arrowProperty = this.RULE("arrowProperty", () => {
     this.CONSUME(LAngle);
@@ -155,39 +161,42 @@ class Parser extends CstParser {
     });
   });
 
-  private assignmentProperty = this.RULE("assignmentProperty", () => {
-    this.CONSUME(Identifier);
-    this.CONSUME(Assignment);
-    this.CONSUME(StringLiteral);
-  });
-
   private referencePipe = this.RULE("referencePipe", () => {
-    this.SUBRULE(this.referenceDeclaration);
+    this.SUBRULE(this.refValue);
     this.OPTION(() => {
       this.MANY(() => {
         this.CONSUME(Pipe);
-        this.SUBRULE1(this.referenceDeclaration);
+        this.SUBRULE1(this.refValue);
       });
     });
   });
 
   private propertyItem = this.RULE("propertyItem", () => {
-    this.CONSUME(Identifier);
+    this.CONSUME(Identifier, { LABEL: "propertyName" });
     this.CONSUME(Colon);
     this.SUBRULE(this.value);
   });
 
-  private value = this.RULE("value", () => {
+  private value = this.RULE("propertyValue", () => {
     this.OR([
       { ALT: () => this.CONSUME(True) },
       { ALT: () => this.CONSUME(False) },
       { ALT: () => this.CONSUME(StringLiteral) },
-      { ALT: () => this.CONSUME(Variable) },
       { ALT: () => this.SUBRULE(this.numericalValue) },
-      { ALT: () => this.SUBRULE(this.referenceDeclaration) },
+      { ALT: () => this.SUBRULE(this.refValue) },
       { ALT: () => this.SUBRULE(this.list) },
       { ALT: () => this.SUBRULE(this.referenceList) },
     ]);
+  });
+
+  private refValue = this.RULE("referenceValue", () => {
+    this.CONSUME(Reference, { LABEL: "Reference" });
+    this.OPTION(() => {
+      this.MANY(() => {
+        this.CONSUME(Dot);
+        this.CONSUME(Identifier, { LABEL: "Member" });
+      });
+    });
   });
 
   private list = this.RULE("list", () => {
@@ -207,14 +216,14 @@ class Parser extends CstParser {
     this.MANY_SEP({
       SEP: Comma,
       DEF: () => {
-        this.SUBRULE(this.referenceDeclaration);
+        this.SUBRULE(this.refValue);
       },
     });
     this.CONSUME(RSquare);
   });
 
   private numericalValue = this.RULE("numericalValue", () => {
-    this.CONSUME(NumberLiteral, { LABEL: "value" });
+    this.CONSUME(NumberLiteral, { LABEL: "number" });
     this.OPTION(() =>
       this.SUBRULE(this.uncertaintyExpression, { LABEL: "uncertainty" })
     );

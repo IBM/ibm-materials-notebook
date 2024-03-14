@@ -8,8 +8,7 @@ import {
 const tokenVocabulary: Record<string, TokenType> = {};
 
 const IDENT_REGEX = /[_a-zA-Z0-9-/%]+/;
-const LINK = /@[_a-zA-Z0-9-]+/;
-const VARIABLE = /\$[_a-zA-Z0-9-]+/;
+const REF = /@[_a-zA-Z0-9-]+/;
 const STRING_LITERAL = /"(?:[^"]|\\(?:[bfnrtv"/]|u[0-9a-fA-F]{4}))+"/;
 const NUM_REGEX = /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/;
 const UNC_REGEX = /±|\+-/;
@@ -28,8 +27,7 @@ const RAngle = createToken({ name: "RAngle", pattern: />/ });
 const Comma = createToken({ name: "Comma", pattern: /,/ });
 const Colon = createToken({ name: "Colon", pattern: /:/ });
 const SemiColon = createToken({ name: "Semicolon", pattern: /;/ });
-const Link = createToken({ name: "Link", pattern: LINK });
-const Variable = createToken({ name: "Variable", pattern: VARIABLE });
+const Reference = createToken({ name: "Reference", pattern: REF });
 const Assignment = createToken({ name: "Assignment", pattern: /:=/ });
 
 const Identifier = createToken({
@@ -59,14 +57,29 @@ const As = createToken({
   longer_alt: Identifier,
 });
 
-const Group = createToken({
-  name: "Group",
-  pattern: /group/,
+const Record = createToken({
+  name: "Record",
+  pattern: /record/,
 });
 
 const Graph = createToken({
   name: "Graph",
   pattern: /graph/,
+});
+
+const Collection = createToken({
+  name: "Collection",
+  pattern: /collection/,
+});
+
+const End = createToken({
+  name: "End",
+  pattern: /end/,
+});
+
+const Prop = createToken({
+  name: "Property",
+  pattern: /prop/,
 });
 
 const UncertaintyOperator = createToken({
@@ -91,14 +104,18 @@ const multiModeLexer: IMultiModeLexerDefinition = {
     cmdl_mode: [
       WhiteSpace,
       NumberLiteral,
+      Graph,
+      Record,
+      Prop,
+      Collection,
+      End,
       Import,
       Star,
       As,
       From,
       True,
       False,
-      Link,
-      Variable,
+      Reference,
       Identifier,
       UncertaintyOperator,
       Dot,
@@ -123,14 +140,18 @@ const multiModeLexer: IMultiModeLexerDefinition = {
 const allTokens = [
   WhiteSpace,
   NumberLiteral,
+  Graph,
+  Record,
+  Collection,
+  End,
+  Prop,
   Import,
   Star,
   As,
   From,
   True,
   False,
-  Link,
-  Variable,
+  Reference,
   Identifier,
   UncertaintyOperator,
   Dot,
@@ -176,8 +197,7 @@ export {
   Comma,
   True,
   False,
-  Link,
-  Variable,
+  Reference,
   Dot,
   Arrow,
   Pipe,
@@ -185,4 +205,9 @@ export {
   LAngle,
   As,
   Assignment,
+  Graph,
+  Record,
+  Collection,
+  Prop,
+  End,
 };
