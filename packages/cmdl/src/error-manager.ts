@@ -1,4 +1,4 @@
-import { BaseError } from "./errors";
+import { CMDLError } from "./errors";
 
 export class DiagnosticManager {
   private _tables = new Map<string, ErrorTable>();
@@ -57,14 +57,14 @@ export class DiagnosticManager {
  * Manages errors for each cell in notebook
  */
 export class ErrorTable {
-  private _expErrors = new Map<string, BaseError[]>();
+  private _expErrors = new Map<string, CMDLError[]>();
 
   /**
    * Adds errors for a given cell or text document
    * @param uri uri of cell or text document for errors
    * @param errors BaseError[]
    */
-  public add(uri: string, errors: BaseError[]): void {
+  public add(uri: string, errors: CMDLError[]): void {
     const currentErrs = this._expErrors.get(uri);
     if (!currentErrs) {
       this._expErrors.set(uri, errors);
@@ -79,7 +79,7 @@ export class ErrorTable {
    * @param uri uri of cell or text document
    * @returns BaseError[]
    */
-  public get(uri: string): BaseError[] {
+  public get(uri: string): CMDLError[] {
     const errors = this._expErrors.get(uri);
 
     if (!errors) {
@@ -101,8 +101,8 @@ export class ErrorTable {
    * Retrieves all errors for notebook document
    * @returns BaseError[]
    */
-  public all(): BaseError[] {
-    let allErrors: BaseError[] = [];
+  public all(): CMDLError[] {
+    let allErrors: CMDLError[] = [];
 
     for (const cellErrors of this._expErrors.values()) {
       allErrors = allErrors.concat(cellErrors);
@@ -115,8 +115,8 @@ export class ErrorTable {
    * TODO: convert method to return a string instead of dict
    * @returns Record<string, BaseError[]>
    */
-  public print(): Record<string, BaseError[]> {
-    const output: Record<string, BaseError[]> = {};
+  public print(): Record<string, CMDLError[]> {
+    const output: Record<string, CMDLError[]> = {};
 
     for (const [key, value] of this._expErrors.entries()) {
       output[key] = value;

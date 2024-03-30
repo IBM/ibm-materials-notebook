@@ -5,6 +5,42 @@ import {
   IMultiModeLexerDefinition,
 } from "chevrotain";
 
+export enum TokenTypes {
+  ALIAS = "ALIAS",
+  ARROW = "ARROW",
+  AS = "AS",
+  ASSIGNMENT = "ASSIGNMENT",
+  COLLECTION = "COLLECTION",
+  COLON = "COLON",
+  COMMA = "COMMA",
+  DOT = "DOT",
+  END = "END",
+  FALSE = "FALSE",
+  FROM = "FROM",
+  GRAPH = "GRAPH",
+  IMPORT = "IMPORT",
+  IDENTIFIER = "IDENTIFIER",
+  LANGLE = "LANGLE",
+  LCURL = "LCURL",
+  LSQUARE = "LSQUARE",
+  NUM = "NUMBER_LITERAL",
+  PIPE = "PIPE",
+  PROP = "PROPERTY",
+  RANGLE = "RANGLE",
+  RCURL = "RCURL",
+  RECORD = "RECORD",
+  REF = "REFERENCE",
+  RSQUARE = "RSQUARE",
+  SEMICOLON = "SEMICOLON",
+  STAR = "STAR",
+  STRING = "STRING_LITERAL",
+  SPACE = "WHITESPACE",
+  TRUE = "TRUE",
+  UNIT = "UNIT",
+  UNC_OP = "UNCERTAINTY_OPERATOR",
+  VALUE = "VALUE",
+}
+
 const tokenVocabulary: Record<string, TokenType> = {};
 
 const IDENT_REGEX = /[_a-zA-Z0-9-/%]+/;
@@ -12,87 +48,87 @@ const REF = /@[_a-zA-Z0-9-]+/;
 const STRING_LITERAL = /"(?:[^"]|\\(?:[bfnrtv"/]|u[0-9a-fA-F]{4}))+"/;
 const NUM_REGEX = /-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/;
 const UNC_REGEX = /±|\+-/;
-const True = createToken({ name: "True", pattern: /true/ });
-const False = createToken({ name: "False", pattern: /false/ });
-const Star = createToken({ name: "Star", pattern: /\*/ });
-const LCurly = createToken({ name: "LCurly", pattern: /{/ });
-const LSquare = createToken({ name: "LSquare", pattern: /\[/ });
-const LAngle = createToken({ name: "LAngle", pattern: /</ });
-const Dot = createToken({ name: "Dot", pattern: /\./ });
-const Arrow = createToken({ name: "Arrow", pattern: /=>/ }); //? add other arrow types to signify directions in graph
-const Pipe = createToken({ name: "Pipe", pattern: /\|/ });
-const RSquare = createToken({ name: "RSquare", pattern: /\]/ });
-const RCurly = createToken({ name: "RCurly", pattern: /}/ });
-const RAngle = createToken({ name: "RAngle", pattern: />/ });
-const Comma = createToken({ name: "Comma", pattern: /,/ });
-const Colon = createToken({ name: "Colon", pattern: /:/ });
-const SemiColon = createToken({ name: "Semicolon", pattern: /;/ });
-const Reference = createToken({ name: "Reference", pattern: REF });
-const Assignment = createToken({ name: "Assignment", pattern: /:=/ });
+const True = createToken({ name: TokenTypes.TRUE, pattern: /true/ });
+const False = createToken({ name: TokenTypes.FALSE, pattern: /false/ });
+const Star = createToken({ name: TokenTypes.STAR, pattern: /\*/ });
+const LCurly = createToken({ name: TokenTypes.LCURL, pattern: /{/ });
+const LSquare = createToken({ name: TokenTypes.LSQUARE, pattern: /\[/ });
+const LAngle = createToken({ name: TokenTypes.LANGLE, pattern: /</ });
+const Dot = createToken({ name: TokenTypes.DOT, pattern: /\./ });
+const Arrow = createToken({ name: TokenTypes.ARROW, pattern: /=>/ }); //? add other arrow types to signify directions in graph
+const Pipe = createToken({ name: TokenTypes.PIPE, pattern: /\|/ });
+const RSquare = createToken({ name: TokenTypes.RSQUARE, pattern: /\]/ });
+const RCurly = createToken({ name: TokenTypes.RCURL, pattern: /}/ });
+const RAngle = createToken({ name: TokenTypes.RANGLE, pattern: />/ });
+const Comma = createToken({ name: TokenTypes.COMMA, pattern: /,/ });
+const Colon = createToken({ name: TokenTypes.COLON, pattern: /:/ });
+const SemiColon = createToken({ name: TokenTypes.SEMICOLON, pattern: /;/ });
+const Reference = createToken({ name: TokenTypes.REF, pattern: REF });
+const Assignment = createToken({ name: TokenTypes.ASSIGNMENT, pattern: /:=/ });
 
 const Identifier = createToken({
-  name: "Identifier",
+  name: TokenTypes.IDENTIFIER,
   pattern: IDENT_REGEX,
 });
 
 const StringLiteral = createToken({
-  name: "StringLiteral",
+  name: TokenTypes.STRING,
   pattern: STRING_LITERAL,
 });
 const From = createToken({
-  name: "From",
+  name: TokenTypes.FROM,
   pattern: /from/,
   longer_alt: Identifier,
 });
 
 const Import = createToken({
-  name: "Import",
+  name: TokenTypes.IMPORT,
   pattern: /import/,
   longer_alt: Identifier,
 });
 
 const As = createToken({
-  name: "As",
+  name: TokenTypes.AS,
   pattern: /as/,
   longer_alt: Identifier,
 });
 
 const Record = createToken({
-  name: "Record",
+  name: TokenTypes.RECORD,
   pattern: /record/,
 });
 
 const Graph = createToken({
-  name: "Graph",
+  name: TokenTypes.GRAPH,
   pattern: /graph/,
 });
 
 const Collection = createToken({
-  name: "Collection",
+  name: TokenTypes.COLLECTION,
   pattern: /collection/,
 });
 
 const End = createToken({
-  name: "End",
+  name: TokenTypes.END,
   pattern: /end/,
 });
 
 const Prop = createToken({
-  name: "Property",
+  name: TokenTypes.PROP,
   pattern: /prop/,
 });
 
 const UncertaintyOperator = createToken({
-  name: "UncertaintyOperator",
+  name: TokenTypes.UNC_OP,
   pattern: UNC_REGEX,
 });
 const NumberLiteral = createToken({
-  name: "NumberLiteral",
+  name: TokenTypes.NUM,
   pattern: NUM_REGEX,
 });
 
 const WhiteSpace = createToken({
-  name: "WhiteSpace",
+  name: TokenTypes.SPACE,
   pattern: /\s+/,
   group: Lexer.SKIPPED,
 });

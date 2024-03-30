@@ -1,7 +1,8 @@
 import { typeManager, IGroup, IProperty } from "../cmdl-types";
 import { CmdlToken } from "../cmdl-ast";
+
 import {
-  BaseError,
+  CMDLError,
   DuplicationError,
   InvalidGroupError,
   InvalidPropertyError,
@@ -12,45 +13,17 @@ import { AstVisitor } from "../symbols";
 import { ReferenceValue } from "./reference-list-property";
 
 /**
- * Interface for a record node in the CMDL component AST
+ * @deprecated
  */
-export interface RecordNode {
-  name: string;
-  nameToken: CmdlToken;
-  parent: RecordNode | CmdlTree | null;
-  errors: BaseError[];
-
-  /**
-   * Perform validation logic on record node
-   */
-  doValidation(): BaseError[];
-  /**
-   * Set parent node of current node
-   * @param arg RecordNode | CMDLTree
-   */
-  setParent(arg: RecordNode | CmdlTree): void;
-  /**
-   * Accept a visitor to current record node in AST
-   * @param visitor AstVisitor
-   */
-  accept(visitor: AstVisitor): void;
-  /**
-   * Convert node to string for printing to console
-   */
-  print(): string;
-}
-
 export abstract class Group implements RecordNode {
   name: string;
-  nameToken: CmdlToken;
-  parent: RecordNode | CmdlTree | null = null;
-  errors: BaseError[] = [];
+  parent: CMDLNode | CmdlTree | null = null;
+  errors: CMDLError[] = [];
   children: RecordNode[] = [];
   protected groupProps?: IGroup;
 
   constructor(token: CmdlToken) {
     this.name = token.image;
-    this.nameToken = token;
   }
 
   /**
@@ -134,12 +107,13 @@ export abstract class Group implements RecordNode {
 
 /**
  * Base class for properties in CMDL RecordTrees
+ * @deprecated
  */
 export abstract class Property implements RecordNode {
   name: string;
   nameToken: CmdlToken;
   parent: RecordNode | CmdlTree | null = null;
-  errors: BaseError[] = [];
+  errors: CMDLError[] = [];
   protected value: string[] | string | boolean | ReferenceValue[] | null = null;
   protected valueToken?: CmdlToken | CmdlToken[];
   protected propertyType?: IProperty;

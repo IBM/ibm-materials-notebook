@@ -1,5 +1,5 @@
 import { CmdlToken } from "../cmdl-ast";
-import { BaseError, InvalidGroupError } from "../errors";
+import { CMDLError, InvalidGroupError } from "../errors";
 import { Group, Property, RecordNode } from "./base-components";
 import { IGroup } from "../cmdl-types";
 import { CmdlTree } from "../cmdl-tree";
@@ -7,6 +7,9 @@ import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
 import { typeManager } from "../cmdl-types";
 
+/**
+ * @deprecated
+ */
 export interface SymbolReference extends RecordNode {
   path: CmdlToken[];
   getPath(): string[];
@@ -15,6 +18,7 @@ export interface SymbolReference extends RecordNode {
 /**
  * Component for handling references to defined or imported components (chemicals, materials, etc.) and
  * new properties defined for them. Validates nested properites for parent group reference.
+ * @deprecated
  *
  */
 export class ReferenceGroup extends Group implements SymbolReference {
@@ -58,7 +62,7 @@ export class ReferenceGroup extends Group implements SymbolReference {
    */
   private checkNesting(child: RecordNode): void {
     let msg: string;
-    let err: BaseError;
+    let err: CMDLError;
 
     if (child instanceof ReferenceGroup) {
       msg = `Reference groups may not be nested: ${child.name}`;
@@ -99,7 +103,7 @@ export class ReferenceGroup extends Group implements SymbolReference {
    * Calls validation procedure for reference group
    * @returns BaseError[]
    */
-  public doValidation(): BaseError[] {
+  public doValidation(): CMDLError[] {
     this.setParentGroupProps();
     this.validateChildren(this.checkNesting);
     return this.errors;

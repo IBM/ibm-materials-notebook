@@ -2,12 +2,13 @@ import { CmdlToken } from "../cmdl-ast";
 import { Property } from "./base-components";
 import { ReferenceValue } from "./reference-list-property";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
-import { BaseError } from "../errors";
+import { CMDLError } from "../errors";
 import { ModelVisitor } from "../intepreter";
 
 /**
  * Handles angle properties in graph definitions
  * TODO: merge polymer and reactor graph representations into single syntax
+ * @deprecated
  */
 export class AngleProperty extends Property {
   protected lhs: ReferenceValue[] = [];
@@ -58,7 +59,7 @@ export class AngleProperty extends Property {
     }
   }
 
-  public doValidation(): BaseError[] {
+  public doValidation(): CMDLError[] {
     this.getPropertyType();
     this.validateProperty();
 

@@ -1,5 +1,5 @@
 import { CmdlToken } from "../cmdl-ast";
-import { BaseError, RefError } from "../errors";
+import { CMDLError, RefError } from "../errors";
 import { RecordNode } from "./base-components";
 import { parseStringImage } from "./utils";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
@@ -7,6 +7,7 @@ import { ModelVisitor } from "../intepreter";
 
 /**
  * Component AST node for handling import operations
+ * @deprecated
  */
 export class ImportOp implements RecordNode {
   name: string;
@@ -14,7 +15,7 @@ export class ImportOp implements RecordNode {
   alias?: string;
   aliasToken?: CmdlToken;
   parent: RecordNode | null = null;
-  errors: BaseError[] = [];
+  errors: CMDLError[] = [];
   source: string;
   sourceToken: CmdlToken;
 
@@ -34,7 +35,7 @@ export class ImportOp implements RecordNode {
   }
 
   // ? Set module reference -> have symbol compiler parse and resolve imports/export
-  public doValidation(): BaseError[] {
+  public doValidation(): CMDLError[] {
     if (!this.source || !this.name) {
       const msg = `Invalid import operation, source or name is invalid`;
       const err = new RefError(msg, this.nameToken);
@@ -76,12 +77,13 @@ export class ImportOp implements RecordNode {
  * TODO: replace with file group.
  * TODO: images only for reference.
  * TODO: reference api of CMDL char file and metadata processer -> python
+ * @deprecated
  */
 export class ImportFileOp implements RecordNode {
   name: string;
   nameToken: CmdlToken;
   parent: RecordNode | null = null;
-  errors: BaseError[] = [];
+  errors: CMDLError[] = [];
   source: string;
   sourceToken: CmdlToken;
 
@@ -96,7 +98,7 @@ export class ImportFileOp implements RecordNode {
     this.parent = arg;
   }
 
-  public doValidation(): BaseError[] {
+  public doValidation(): CMDLError[] {
     if (!this.source || !this.name) {
       const msg = `Invalid import operation, source or name is invalid`;
       const err = new RefError(msg, this.nameToken);

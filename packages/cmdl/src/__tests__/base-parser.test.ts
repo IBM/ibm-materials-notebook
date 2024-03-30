@@ -40,7 +40,8 @@ describe("Parser tests on record declarations", () => {
     }`;
     const lexingResult = lexerInstance.tokenize(groupWithPropRef);
     parserInstance.input = lexingResult.tokens;
-    parserInstance.parse();
+    const result = parserInstance.parse();
+    console.log(JSON.stringify(result, null, 2));
     expect(parserInstance.errors.length).toBe(0);
   });
 
@@ -172,6 +173,7 @@ describe("Parser tests on collection declarations", () => {
     const lexingResult = lexerInstance.tokenize(fragments);
     parserInstance.input = lexingResult.tokens;
     parserInstance.parse();
+    // console.log(JSON.stringify(output, null, 2));
     expect(parserInstance.errors.length).toBe(0);
   });
 });

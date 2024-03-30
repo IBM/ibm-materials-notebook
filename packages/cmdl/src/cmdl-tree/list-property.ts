@@ -1,5 +1,5 @@
 import { CmdlToken } from "../cmdl-ast";
-import { BaseError, InvalidPropertyError } from "../errors";
+import { CMDLError, InvalidPropertyError } from "../errors";
 import { parseStringImage } from "./utils";
 import { Property } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
@@ -8,6 +8,7 @@ import { ModelVisitor } from "../intepreter";
 
 /**
  * Handles list properties in CMDL record trees
+ * @deprecated
  */
 export class ListProperty extends Property {
   protected value: string[] = [];
@@ -28,7 +29,11 @@ export class ListProperty extends Property {
     this.valueToken = token;
   }
 
-  public doValidation(): BaseError[] {
+  /**
+   *
+   * @deprecated move to validation visitor
+   */
+  public doValidation(): CMDLError[] {
     this.getPropertyType();
     this.validateProperty();
     this.validateList();
@@ -38,11 +43,11 @@ export class ListProperty extends Property {
 
   /**
    * Performs validation logic on list property
-   * @returns void
+   * @deprecated move to validation visitor
    */
   private validateList(): void {
     let msg: string;
-    let err: BaseError;
+    let err: CMDLError;
 
     if (!this.propertyType) {
       return;

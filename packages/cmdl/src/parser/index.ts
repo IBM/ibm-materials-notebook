@@ -1,2 +1,2 @@
-export { lexerInstance } from "./tokens";
-export { parserInstance } from "./parser";
+export { lexerInstance, TokenTypes } from "./tokens";
+export { parserInstance, TokenLabel } from "./parser";

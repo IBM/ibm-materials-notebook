@@ -4,10 +4,11 @@ import { Property, Group } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { SymbolReference } from "./reference-group";
 import { ModelVisitor } from "../intepreter";
-import { BaseError } from "../errors";
+import { CMDLError } from "../errors";
 
 /**
  * Handles reference properties within CMDL record trees
+ * @deprecated
  */
 export class RefProperty extends Property implements SymbolReference {
   protected value: string = "";
@@ -34,7 +35,7 @@ export class RefProperty extends Property implements SymbolReference {
     this.path = tokens;
   }
 
-  public doValidation(): BaseError[] {
+  public doValidation(): CMDLError[] {
     this.getPropertyType();
     this.validateProperty();
     this.validateRef();

@@ -1,7 +1,7 @@
 import { CmdlToken } from "../cmdl-ast";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { Property } from "./base-components";
-import { BaseError } from "../errors";
+import { CMDLError } from "../errors";
 
 /**
  * Handles variable properties with CMDL record trees
@@ -24,7 +24,7 @@ export class VariableProperty extends Property {
     this.valueToken = token;
   }
 
-  public doValidation(): BaseError[] {
+  public doValidation(): CMDLError[] {
     this.getPropertyType();
     this.validateProperty();
     return this.errors;

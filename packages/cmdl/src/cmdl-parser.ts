@@ -25,7 +25,7 @@ export class CmdlParser {
   } {
     const lexingResult = lexerInstance.tokenize(text);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    const cst = parserInstance.parse();
     const recordTree: CmdlTree = this.treeVisitor.visit(cst);
     const parserErrors = this.createParserErrors(parserInstance.errors);
 
@@ -44,7 +44,7 @@ export class CmdlParser {
   } {
     const lexingResult = lexerInstance.tokenize(text);
     parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parseRecord();
+    const cst = parserInstance.parse();
     let ast: CmdlAst | undefined;
     try {
       ast = this.astVisitor.visit(cst, new CmdlAst());

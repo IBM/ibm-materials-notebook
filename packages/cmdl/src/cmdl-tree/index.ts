@@ -2,7 +2,22 @@ export { CmdlTree } from "./cmdl-tree";
 export { AngleProperty } from "./angle-property";
 export { GeneralGroup } from "./general-group";
 export { NamedGroup } from "./named-group";
-export { RecordNode, Group, Property } from "./base-components";
+export {
+  CMDLCollection,
+  CMDLGraph,
+  CMDLImport,
+  CMDLNode,
+  CMDLBoolProp,
+  CMDLListProp,
+  CMDLNumProp,
+  CMDLRefProp,
+  CMDLRoot,
+  CMDLRecord,
+  CMDLReference,
+  CMDLAssignProp,
+  CMDLRefListProp,
+  CMDLEdgeProp,
+} from "./nodes";
 export { ReferenceGroup, SymbolReference } from "./reference-group";
 export { RefListProperty, ReferenceValue } from "./reference-list-property";
 export { RefProperty } from "./reference-property";

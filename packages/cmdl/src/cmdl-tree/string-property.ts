@@ -4,11 +4,12 @@ import { Property } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
 import { PROPERTIES, PropertyTypes } from "../cmdl-types";
-import { BaseError, InvalidPropertyError } from "../errors";
+import { CMDLError, InvalidPropertyError } from "../errors";
 import { BigSMILES } from "@ibm-materials/ts-bigsmiles";
 
 /**
  * Handles and string and text properties within CMDL record trees
+ * @deprecated
  */
 export class StringProperty extends Property {
   protected value: string = "";
@@ -27,7 +28,11 @@ export class StringProperty extends Property {
     this.valueToken = token;
   }
 
-  public doValidation(): BaseError[] {
+  /**
+   *
+   * @deprecated move to validation visitor
+   */
+  public doValidation(): CMDLError[] {
     this.getPropertyType();
     this.validateProperty();
 

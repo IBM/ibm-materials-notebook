@@ -17,7 +17,7 @@ import { CmdlParser } from "./cmdl-parser";
 import { CmdlTree } from "./cmdl-tree";
 import { BaseSymbol, SymbolTable, SymbolTableBuilder } from "./symbols";
 import { logger } from "./logger";
-import { BaseError } from "./errors";
+import { CMDLError } from "./errors";
 import { CompiledRecord, FullRecordExport } from "./export/full-export";
 import { ActivationRecordTable, Exportable } from "./intepreter";
 import { TYPES } from "./cmdl-types";
@@ -449,7 +449,7 @@ export class CmdlCompiler {
    * @param fileName name of file to retrieve errors
    * @returns BaseError[]
    */
-  public getErrors(uri: string, fileName: string): BaseError[] {
+  public getErrors(uri: string, fileName: string): CMDLError[] {
     try {
       const notebookErrs = this._errors.get(fileName);
       const cellErrors = notebookErrs.get(uri);

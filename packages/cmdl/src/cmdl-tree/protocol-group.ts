@@ -1,5 +1,5 @@
 import { CmdlToken } from "../cmdl-ast";
-import { BaseError } from "../errors";
+import { CMDLError } from "../errors";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
 import { Group, RecordNode } from "./base-components";
@@ -9,6 +9,9 @@ type ProtocolRef = {
   token: CmdlToken;
 };
 
+/**
+ * @deprecated
+ */
 export class ProtocolGroup extends Group {
   public identifier: string;
   protected idToken: CmdlToken;
@@ -21,7 +24,7 @@ export class ProtocolGroup extends Group {
     this.idToken = idToken;
   }
 
-  public doValidation(): BaseError[] {
+  public doValidation(): CMDLError[] {
     return [];
   }
 

@@ -1,5 +1,5 @@
 import { CmdlToken } from "../cmdl-ast";
-import { BaseError, InvalidGroupError, InvalidPropertyError } from "../errors";
+import { CMDLError, InvalidGroupError, InvalidPropertyError } from "../errors";
 import { Group, Property, RecordNode } from "./base-components";
 import { GeneralGroup } from "./general-group";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
@@ -10,7 +10,7 @@ import { PROPERTIES } from "../cmdl-types";
 
 /**
  * Handles named groups in the CMDL record trees
- * TODO: additional validation for char groups
+ * @deprecated
  */
 export class NamedGroup extends Group {
   public identifier: string;
@@ -35,7 +35,7 @@ export class NamedGroup extends Group {
     }
 
     let msg: string;
-    let err: BaseError;
+    let err: CMDLError;
 
     if (child instanceof AngleProperty) {
       if (!this.groupProps.properties.includes(PROPERTIES.CONNECTIONS)) {
@@ -80,7 +80,7 @@ export class NamedGroup extends Group {
     }
   }
 
-  public doValidation(): BaseError[] {
+  public doValidation(): CMDLError[] {
     this.setGroupProps();
     this.validateChildren(this.validateGroupChild);
     return this.errors;

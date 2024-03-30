@@ -11,7 +11,7 @@ import {
   GroupSymbol,
   ImportSymbol,
 } from "./cmdl-symbol-base";
-import { BaseError, DuplicationError, RefError } from "../errors";
+import { CMDLError, DuplicationError, RefError } from "../errors";
 import { ModelType, typeManager } from "../cmdl-types";
 import {
   AngleProperty,
@@ -151,7 +151,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * Gets any generated errors during symbol table construction
    * @returns BaseError[]
    */
-  public getErrors(): BaseError[] | undefined {
+  public getErrors(): CMDLError[] | undefined {
     return this.errors.get(this.uri);
   }
 
@@ -163,7 +163,7 @@ export class SymbolTableBuilder implements AstVisitor {
     try {
       node.accept(this);
     } catch (error) {
-      this.errors.add(this.uri, [error] as BaseError[]);
+      this.errors.add(this.uri, [error] as CMDLError[]);
       logger.warn(
         `Unable to visit node ${node.name}:\n-${(error as Error).message}`
       );

@@ -18,7 +18,7 @@ export enum ErrorCode {
 /**
  * Base error class for CMDL
  */
-export abstract class BaseError {
+export abstract class CMDLError {
   readonly start: number;
   readonly stop: number;
 
@@ -56,7 +56,7 @@ export abstract class BaseError {
 /**
  * Errors encountered during CMDL parsing
  */
-export class ParserError extends BaseError {
+export class ParserError extends CMDLError {
   constructor(err: IRecognitionException) {
     super(err.name as ErrorCode, err.message, err.token);
   }
@@ -65,7 +65,7 @@ export class ParserError extends BaseError {
 /**
  * Describes error for duplication of a CMDL property or group
  */
-export class DuplicationError extends BaseError {
+export class DuplicationError extends CMDLError {
   constructor(msg: string, token?: CmdlToken) {
     super(ErrorCode.DuplicateItem, msg, token);
   }
@@ -74,7 +74,7 @@ export class DuplicationError extends BaseError {
 /**
  * Error for an invalid group or invalid group nesting in CMDL
  */
-export class InvalidGroupError extends BaseError {
+export class InvalidGroupError extends CMDLError {
   constructor(msg: string, token?: CmdlToken) {
     super(ErrorCode.InvalidGroup, msg, token);
   }
@@ -83,7 +83,7 @@ export class InvalidGroupError extends BaseError {
 /**
  * Invalid property error for properties not defined on a given group
  */
-export class InvalidPropertyError extends BaseError {
+export class InvalidPropertyError extends CMDLError {
   constructor(msg: string, token?: CmdlToken) {
     super(ErrorCode.InvalidProperty, msg, token);
   }
@@ -92,7 +92,7 @@ export class InvalidPropertyError extends BaseError {
 /**
  * Error with references inside CMDL
  */
-export class RefError extends BaseError {
+export class RefError extends CMDLError {
   constructor(msg: string, token?: CmdlToken) {
     super(ErrorCode.ReferenceError, msg, token);
   }
@@ -101,7 +101,7 @@ export class RefError extends BaseError {
 /**
  * Value for CMDL property outside of allowable range
  */
-export class RangeError extends BaseError {
+export class RangeError extends CMDLError {
   constructor(msg: string, token?: CmdlToken) {
     super(ErrorCode.RangeError, msg, token);
   }
@@ -110,7 +110,7 @@ export class RangeError extends BaseError {
 /**
  * Value for a CMDL property is not found
  */
-export class MissingValueError extends BaseError {
+export class MissingValueError extends CMDLError {
   constructor(msg: string, token?: CmdlToken) {
     super(ErrorCode.MissingValue, msg, token);
   }
@@ -119,7 +119,7 @@ export class MissingValueError extends BaseError {
 /**
  * Errors for imported files which are not found
  */
-export class FileError extends BaseError {
+export class FileError extends CMDLError {
   constructor(msg: string, token: CmdlToken) {
     super(ErrorCode.FileNotFound, msg, token);
   }

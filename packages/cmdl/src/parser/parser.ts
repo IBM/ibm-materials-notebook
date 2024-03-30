@@ -31,6 +31,26 @@ import {
   End,
 } from "./tokens";
 
+export enum TokenLabel {
+  BOOL_VALUE = "BOOLEAN_VALUE",
+  COL_NAME = "COLLECTION_NAME",
+  EDGE_VALUE = "EDGE_VALUE",
+  END_COL_NAME = "END_COLLECTION_NAME",
+  GRAPH_NAME = "GRAPH_NAME",
+  IMPORT_ALIAS = "IMPORT_ALIAS",
+  IMPORT_NAME = "IMPORT_NAME",
+  IMPORT_SOURCE = "IMPORT_SOURCE",
+  NUM_VALUE = "NUM_VALUE",
+  NUM_UNIT = "NUM_UNIT",
+  PROP_NAME = "PROP_NAME",
+  RECORD_NAME = "RECORD_NAME",
+  REF_NAME = "REFERENCE_NAME",
+  REF_ITEM = "REF_ITEM",
+  STR_VALUE = "STR_VALUE",
+  TYPE = "TYPE",
+  UNC_VALUE = "UNC_VALUE",
+}
+
 /**
  * Parser class for CMDL
  */
@@ -41,7 +61,7 @@ class Parser extends CstParser {
     this.performSelfAnalysis();
   }
 
-  public parse = this.RULE("cmdl-document", () => {
+  public parse = this.RULE("document", () => {
     this.MANY(() => {
       this.OR([
         { ALT: () => this.SUBRULE(this.importStatement) },
@@ -54,18 +74,18 @@ class Parser extends CstParser {
   });
 
   private assignmentDeclaration = this.RULE("assignmentProperty", () => {
-    this.CONSUME(Prop, { LABEL: "Keyword" });
-    this.CONSUME(Identifier, { LABEL: "Identifier" });
+    this.CONSUME(Prop);
+    this.CONSUME(Identifier, { LABEL: TokenLabel.PROP_NAME });
     this.CONSUME(Colon);
-    this.CONSUME1(Identifier, { LABEL: "Type" });
+    this.CONSUME1(Identifier, { LABEL: TokenLabel.TYPE });
     this.CONSUME(Assignment);
     this.CONSUME(StringLiteral);
     this.CONSUME(SemiColon);
   });
 
   private collectionDeclaration = this.RULE("collectionDeclaration", () => {
-    this.CONSUME(Collection, { LABEL: "keyword" });
-    this.CONSUME(Identifier, { LABEL: "collectionName" });
+    this.CONSUME(Collection);
+    this.CONSUME(Identifier, { LABEL: TokenLabel.COL_NAME });
     this.OPTION(() => {
       this.MANY(() => {
         this.OR([
@@ -77,17 +97,17 @@ class Parser extends CstParser {
       });
     });
     this.CONSUME(End);
-    this.CONSUME1(Identifier, { LABEL: "collectionName" });
+    this.CONSUME1(Identifier, { LABEL: TokenLabel.END_COL_NAME });
   });
 
   private importStatement = this.RULE("importStatement", () => {
-    this.CONSUME(Import, { LABEL: "Keyword" });
-    this.CONSUME(Identifier);
+    this.CONSUME(Import);
+    this.CONSUME(Identifier, { LABEL: TokenLabel.IMPORT_NAME });
     this.OPTION(() => {
-      this.SUBRULE(this.aliasClause, { LABEL: "Alias" });
+      this.SUBRULE(this.aliasClause, { LABEL: TokenLabel.IMPORT_ALIAS });
     });
-    this.CONSUME(From, { LABEL: "Keyword" });
-    this.CONSUME(StringLiteral);
+    this.CONSUME(From);
+    this.CONSUME(StringLiteral, { LABEL: TokenLabel.IMPORT_SOURCE });
     this.CONSUME(SemiColon);
   });
 
@@ -97,10 +117,10 @@ class Parser extends CstParser {
   });
 
   private recordDeclaration = this.RULE("recordDeclaration", () => {
-    this.CONSUME(Record, { LABEL: "Keyword" });
-    this.CONSUME(Identifier, { LABEL: "Identifier" });
+    this.CONSUME(Record);
+    this.CONSUME(Identifier, { LABEL: TokenLabel.RECORD_NAME });
     this.CONSUME(Colon);
-    this.CONSUME1(Identifier, { LABEL: "Type" });
+    this.CONSUME1(Identifier, { LABEL: TokenLabel.TYPE });
     this.CONSUME(LCurly);
     this.MANY(() => {
       this.OR1([
@@ -113,10 +133,10 @@ class Parser extends CstParser {
   });
 
   private graphDeclaration = this.RULE("graphDeclaration", () => {
-    this.CONSUME(Graph, { LABEL: "Keyword" });
-    this.CONSUME(Identifier, { LABEL: "Identifier" });
+    this.CONSUME(Graph);
+    this.CONSUME(Identifier, { LABEL: TokenLabel.GRAPH_NAME });
     this.CONSUME(Colon);
-    this.CONSUME1(Identifier, { LABEL: "Type" });
+    this.CONSUME1(Identifier, { LABEL: TokenLabel.TYPE });
     this.CONSUME(LCurly);
     this.MANY(() => {
       this.OR([
@@ -129,11 +149,11 @@ class Parser extends CstParser {
   });
 
   private referenceDeclaration = this.RULE("referenceDeclaration", () => {
-    this.CONSUME(Reference, { LABEL: "Reference" });
+    this.CONSUME(Reference, { LABEL: TokenLabel.REF_NAME });
     this.OPTION(() => {
       this.MANY(() => {
         this.CONSUME(Dot);
-        this.CONSUME(Identifier, { LABEL: "Member" });
+        this.CONSUME(Identifier, { LABEL: TokenLabel.REF_ITEM });
       });
     });
     this.CONSUME(LCurly);
@@ -157,7 +177,7 @@ class Parser extends CstParser {
     this.CONSUME(RAngle);
     this.OPTION(() => {
       this.CONSUME(Colon);
-      this.CONSUME(NumberLiteral);
+      this.CONSUME(NumberLiteral, { LABEL: TokenLabel.EDGE_VALUE });
     });
   });
 
@@ -172,16 +192,14 @@ class Parser extends CstParser {
   });
 
   private propertyItem = this.RULE("propertyItem", () => {
-    this.CONSUME(Identifier, { LABEL: "propertyName" });
+    this.CONSUME(Identifier, { LABEL: TokenLabel.PROP_NAME });
     this.CONSUME(Colon);
-    this.SUBRULE(this.value);
-  });
-
-  private value = this.RULE("propertyValue", () => {
     this.OR([
-      { ALT: () => this.CONSUME(True) },
-      { ALT: () => this.CONSUME(False) },
-      { ALT: () => this.CONSUME(StringLiteral) },
+      { ALT: () => this.CONSUME(True, { LABEL: TokenLabel.BOOL_VALUE }) },
+      { ALT: () => this.CONSUME(False, { LABEL: TokenLabel.BOOL_VALUE }) },
+      {
+        ALT: () => this.CONSUME(StringLiteral, { LABEL: TokenLabel.STR_VALUE }),
+      },
       { ALT: () => this.SUBRULE(this.numericalValue) },
       { ALT: () => this.SUBRULE(this.refValue) },
       { ALT: () => this.SUBRULE(this.list) },
@@ -190,22 +208,22 @@ class Parser extends CstParser {
   });
 
   private refValue = this.RULE("referenceValue", () => {
-    this.CONSUME(Reference, { LABEL: "Reference" });
+    this.CONSUME(Reference, { LABEL: TokenLabel.REF_NAME });
     this.OPTION(() => {
       this.MANY(() => {
         this.CONSUME(Dot);
-        this.CONSUME(Identifier, { LABEL: "Member" });
+        this.CONSUME(Identifier, { LABEL: TokenLabel.REF_ITEM });
       });
     });
   });
 
   private list = this.RULE("list", () => {
     this.CONSUME(LSquare);
-    this.CONSUME(StringLiteral);
+    this.CONSUME(StringLiteral, { LABEL: TokenLabel.STR_VALUE });
     this.OPTION(() => {
       this.MANY(() => {
         this.CONSUME(Comma);
-        this.CONSUME1(StringLiteral);
+        this.CONSUME1(StringLiteral, { LABEL: TokenLabel.STR_VALUE });
       });
     });
     this.CONSUME(RSquare);
@@ -223,18 +241,14 @@ class Parser extends CstParser {
   });
 
   private numericalValue = this.RULE("numericalValue", () => {
-    this.CONSUME(NumberLiteral, { LABEL: "number" });
-    this.OPTION(() =>
-      this.SUBRULE(this.uncertaintyExpression, { LABEL: "uncertainty" })
-    );
-    this.OPTION1(() => {
-      this.CONSUME(Identifier, { LABEL: "unit" });
-    });
-  });
-
-  private uncertaintyExpression = this.RULE("uncertaintyExpression", () => {
-    this.CONSUME(UncertaintyOperator);
     this.CONSUME(NumberLiteral);
+    this.OPTION(() => {
+      this.CONSUME(UncertaintyOperator);
+      this.CONSUME1(NumberLiteral, { LABEL: TokenLabel.UNC_VALUE });
+    });
+    this.OPTION1(() => {
+      this.CONSUME(Identifier, { LABEL: TokenLabel.NUM_UNIT });
+    });
   });
 }
 

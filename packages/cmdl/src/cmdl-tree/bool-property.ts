@@ -2,11 +2,12 @@ import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { CmdlToken } from "../cmdl-ast";
 import { Property } from "./base-components";
 import { ModelVisitor } from "../intepreter";
-import { BaseError, InvalidPropertyError } from "../errors";
+import { CMDLError, InvalidPropertyError } from "../errors";
 import { PropertyTypes } from "../cmdl-types";
 
 /**
  * Handles boolean properties in CMDL Record trees
+ * @deprecated
  */
 export class BoolProperty extends Property {
   protected value: string = "";
@@ -25,7 +26,11 @@ export class BoolProperty extends Property {
     this.valueToken = token;
   }
 
-  public doValidation(): BaseError[] {
+  /**
+   *
+   * @deprecated move to validation visitor
+   */
+  public doValidation(): CMDLError[] {
     this.getPropertyType();
     this.validateProperty();
 

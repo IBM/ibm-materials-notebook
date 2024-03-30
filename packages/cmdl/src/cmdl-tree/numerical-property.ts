@@ -1,6 +1,6 @@
 import { CmdlToken } from "../cmdl-ast";
 import {
-  BaseError,
+  CMDLError,
   InvalidPropertyError,
   MissingValueError,
   RangeError,
@@ -14,6 +14,7 @@ import Big from "big.js";
 
 /**
  * Handles numberical properties within CMDL Record Trees
+ * @deprecated
  */
 export class NumericalProperty extends Property {
   protected value: string | null = null;
@@ -58,7 +59,7 @@ export class NumericalProperty extends Property {
     this.uncertaintyToken = token;
   }
 
-  public doValidation(): BaseError[] {
+  public doValidation(): CMDLError[] {
     this.getPropertyType();
     this.validateProperty();
     this.validateUnit();
@@ -69,11 +70,12 @@ export class NumericalProperty extends Property {
 
   /**
    * Validates the value of the numerical property
+   * @deprecated => move to validator visitor
    * @returns void
    */
   private validateValue(): void {
     let msg: string;
-    let err: BaseError;
+    let err: CMDLError;
     if (!this.propertyType) {
       return;
     }
@@ -100,11 +102,12 @@ export class NumericalProperty extends Property {
 
   /**
    * Validates unit of numerical property
+   * @deprecated move to validator visitor
    * @returns void
    */
   private validateUnit(): void {
     let msg: string;
-    let err: BaseError;
+    let err: CMDLError;
     if (!this.propertyType) {
       return;
     }

@@ -1,156 +1,16 @@
 import type { CstNode, ICstVisitor, IToken } from "chevrotain";
 
-export interface RecordCstNode extends CstNode {
-  name: "record";
-  children: RecordCstChildren;
+export interface DocumentCstNode extends CstNode {
+  name: "document";
+  children: DocumentCstChildren;
 }
 
-export type RecordCstChildren = {
-  statement?: StatementCstNode[];
-};
-
-export interface StatementCstNode extends CstNode {
-  name: "statement";
-  children: StatementCstChildren;
-}
-
-export type StatementCstChildren = {
-  importFileStatement?: ImportFileStatementCstNode[];
+export type DocumentCstChildren = {
   importStatement?: ImportStatementCstNode[];
-  groupDeclaration?: GroupDeclarationCstNode[];
-};
-
-export interface ImportStatementCstNode extends CstNode {
-  name: "importStatement";
-  children: ImportStatementCstChildren;
-}
-
-export type ImportStatementCstChildren = {
-  Import: IToken[];
-  Identifier: IToken[];
-  alias?: AliasClauseCstNode[];
-  From: IToken[];
-  StringLiteral: IToken[];
-  Semicolon: IToken[];
-};
-
-export interface ImportFileStatementCstNode extends CstNode {
-  name: "importFileStatement";
-  children: ImportFileStatementCstChildren;
-}
-
-export type ImportFileStatementCstChildren = {
-  Import: IToken[];
-  Star: IToken[];
-  As: IToken[];
-  Identifier: IToken[];
-  From: IToken[];
-  StringLiteral: IToken[];
-  Semicolon: IToken[];
-};
-
-export interface AliasClauseCstNode extends CstNode {
-  name: "aliasClause";
-  children: AliasClauseCstChildren;
-}
-
-export type AliasClauseCstChildren = {
-  As: IToken[];
-  Identifier: IToken[];
-};
-
-export interface GroupDeclarationCstNode extends CstNode {
-  name: "groupDeclaration";
-  children: GroupDeclarationCstChildren;
-}
-
-export type GroupDeclarationCstChildren = {
-  namedGroup?: NamedGroupCstNode[];
-  variableGroup?: VariableGroupCstNode[];
-  referenceDeclaration?: ReferenceDeclarationCstNode[];
-  Identifier?: IToken[];
-  group: GroupCstNode[];
-};
-
-export interface NamedGroupCstNode extends CstNode {
-  name: "namedGroup";
-  children: NamedGroupCstChildren;
-}
-
-export type NamedGroupCstChildren = {
-  Keyword: IToken[];
-  Identifier: IToken[];
-};
-
-export interface VariableGroupCstNode extends CstNode {
-  name: "variableGroup";
-  children: VariableGroupCstChildren;
-}
-
-export type VariableGroupCstChildren = {
-  Keyword: IToken[];
-  Variable: IToken[];
-};
-
-export interface ReferenceDeclarationCstNode extends CstNode {
-  name: "referenceDeclaration";
-  children: ReferenceDeclarationCstChildren;
-}
-
-export type ReferenceDeclarationCstChildren = {
-  Link: IToken[];
-  Dot?: IToken[];
-  Identifier?: IToken[];
-};
-
-export interface GroupCstNode extends CstNode {
-  name: "group";
-  children: GroupCstChildren;
-}
-
-export type GroupCstChildren = {
-  LCurly: IToken[];
-  protocolItem?: ProtocolItemCstNode[];
-  groupItem?: GroupItemCstNode[];
-  Semicolon?: IToken[];
-  RCurly: IToken[];
-};
-
-export interface GroupItemCstNode extends CstNode {
-  name: "groupItem";
-  children: GroupItemCstChildren;
-}
-
-export type GroupItemCstChildren = {
-  arrowProperty?: ArrowPropertyCstNode[];
+  collectionDeclaration?: CollectionDeclarationCstNode[];
+  recordDeclaration?: RecordDeclarationCstNode[];
+  graphDeclaration?: GraphDeclarationCstNode[];
   assignmentProperty?: AssignmentPropertyCstNode[];
-  propertyItem?: PropertyItemCstNode[];
-  groupDeclaration?: GroupDeclarationCstNode[];
-};
-
-export interface ProtocolItemCstNode extends CstNode {
-  name: "protocolItem";
-  children: ProtocolItemCstChildren;
-}
-
-export type ProtocolItemCstChildren = {
-  BackTic: (IToken)[];
-  ProtocolText?: IToken[];
-};
-
-export interface ArrowPropertyCstNode extends CstNode {
-  name: "arrowProperty";
-  children: ArrowPropertyCstChildren;
-}
-
-export type ArrowPropertyCstChildren = {
-  LAngle: IToken[];
-  lhs: ReferencePipeCstNode[];
-  Arrow: IToken[];
-  rhs: ReferencePipeCstNode[];
-  RAngle: IToken[];
-  Colon?: IToken[];
-  NumberLiteral?: IToken[];
 };
 
 export interface AssignmentPropertyCstNode extends CstNode {
@@ -159,9 +19,117 @@ export interface AssignmentPropertyCstNode extends CstNode {
 }
 
 export type AssignmentPropertyCstChildren = {
-  Identifier: IToken[];
-  Assignment: IToken[];
-  StringLiteral: IToken[];
+  PROPERTY: IToken[];
+  PROP_NAME: IToken[];
+  COLON: IToken[];
+  TYPE: IToken[];
+  ASSIGNMENT: IToken[];
+  STRING_LITERAL: IToken[];
+  SEMICOLON: IToken[];
+};
+
+export interface CollectionDeclarationCstNode extends CstNode {
+  name: "collectionDeclaration";
+  children: CollectionDeclarationCstChildren;
+}
+
+export type CollectionDeclarationCstChildren = {
+  COLLECTION: IToken[];
+  COLLECTION_NAME: IToken[];
+  assignmentProperty?: AssignmentPropertyCstNode[];
+  recordDeclaration?: RecordDeclarationCstNode[];
+  graphDeclaration?: GraphDeclarationCstNode[];
+  collectionDeclaration?: CollectionDeclarationCstNode[];
+  END: IToken[];
+  END_COLLECTION_NAME: IToken[];
+};
+
+export interface ImportStatementCstNode extends CstNode {
+  name: "importStatement";
+  children: ImportStatementCstChildren;
+}
+
+export type ImportStatementCstChildren = {
+  IMPORT: IToken[];
+  IMPORT_NAME: IToken[];
+  IMPORT_ALIAS?: AliasClauseCstNode[];
+  FROM: IToken[];
+  IMPORT_SOURCE: IToken[];
+  SEMICOLON: IToken[];
+};
+
+export interface AliasClauseCstNode extends CstNode {
+  name: "aliasClause";
+  children: AliasClauseCstChildren;
+}
+
+export type AliasClauseCstChildren = {
+  AS: IToken[];
+  IDENTIFIER: IToken[];
+};
+
+export interface RecordDeclarationCstNode extends CstNode {
+  name: "recordDeclaration";
+  children: RecordDeclarationCstChildren;
+}
+
+export type RecordDeclarationCstChildren = {
+  RECORD: IToken[];
+  RECORD_NAME: IToken[];
+  COLON: IToken[];
+  TYPE: IToken[];
+  LCURL: IToken[];
+  propertyItem?: PropertyItemCstNode[];
+  referenceDeclaration?: ReferenceDeclarationCstNode[];
+  SEMICOLON?: IToken[];
+  RCURL: IToken[];
+};
+
+export interface GraphDeclarationCstNode extends CstNode {
+  name: "graphDeclaration";
+  children: GraphDeclarationCstChildren;
+}
+
+export type GraphDeclarationCstChildren = {
+  GRAPH: IToken[];
+  GRAPH_NAME: IToken[];
+  COLON: IToken[];
+  TYPE: IToken[];
+  LCURL: IToken[];
+  arrowProperty?: ArrowPropertyCstNode[];
+  propertyItem?: PropertyItemCstNode[];
+  SEMICOLON?: IToken[];
+  RCURL: IToken[];
+};
+
+export interface ReferenceDeclarationCstNode extends CstNode {
+  name: "referenceDeclaration";
+  children: ReferenceDeclarationCstChildren;
+}
+
+export type ReferenceDeclarationCstChildren = {
+  REFERENCE_NAME: IToken[];
+  DOT?: IToken[];
+  REF_ITEM?: IToken[];
+  LCURL: IToken[];
+  propertyItem?: PropertyItemCstNode[];
+  SEMICOLON?: IToken[];
+  RCURL: IToken[];
+};
+
+export interface ArrowPropertyCstNode extends CstNode {
+  name: "arrowProperty";
+  children: ArrowPropertyCstChildren;
+}
+
+export type ArrowPropertyCstChildren = {
+  LANGLE: IToken[];
+  lhs: ReferencePipeCstNode[];
+  ARROW: IToken[];
+  rhs: ReferencePipeCstNode[];
+  RANGLE: IToken[];
+  COLON?: IToken[];
+  EDGE_VALUE?: IToken[];
 };
 
 export interface ReferencePipeCstNode extends CstNode {
@@ -170,8 +138,8 @@ export interface ReferencePipeCstNode extends CstNode {
 }
 
 export type ReferencePipeCstChildren = {
-  referenceDeclaration: (ReferenceDeclarationCstNode)[];
-  Pipe?: IToken[];
+  referenceValue: (ReferenceValueCstNode)[];
+  PIPE?: IToken[];
 };
 
 export interface PropertyItemCstNode extends CstNode {
@@ -180,25 +148,25 @@ export interface PropertyItemCstNode extends CstNode {
 }
 
 export type PropertyItemCstChildren = {
-  Identifier: IToken[];
-  Colon: IToken[];
-  value: ValueCstNode[];
-};
-
-export interface ValueCstNode extends CstNode {
-  name: "value";
-  children: ValueCstChildren;
-}
-
-export type ValueCstChildren = {
-  True?: IToken[];
-  False?: IToken[];
-  StringLiteral?: IToken[];
-  Variable?: IToken[];
+  PROP_NAME: IToken[];
+  COLON: IToken[];
+  BOOLEAN_VALUE?: (IToken)[];
+  STR_VALUE?: IToken[];
   numericalValue?: NumericalValueCstNode[];
-  referenceDeclaration?: ReferenceDeclarationCstNode[];
+  referenceValue?: ReferenceValueCstNode[];
   list?: ListCstNode[];
   refList?: RefListCstNode[];
+};
+
+export interface ReferenceValueCstNode extends CstNode {
+  name: "referenceValue";
+  children: ReferenceValueCstChildren;
+}
+
+export type ReferenceValueCstChildren = {
+  REFERENCE_NAME: IToken[];
+  DOT?: IToken[];
+  REF_ITEM?: IToken[];
 };
 
 export interface ListCstNode extends CstNode {
@@ -207,10 +175,10 @@ export interface ListCstNode extends CstNode {
 }
 
 export type ListCstChildren = {
-  LSquare: IToken[];
-  StringLiteral: (IToken)[];
-  Comma?: IToken[];
-  RSquare: IToken[];
+  LSQUARE: IToken[];
+  STR_VALUE: (IToken)[];
+  COMMA?: IToken[];
+  RSQUARE: IToken[];
 };
 
 export interface RefListCstNode extends CstNode {
@@ -219,10 +187,10 @@ export interface RefListCstNode extends CstNode {
 }
 
 export type RefListCstChildren = {
-  LSquare: IToken[];
-  referenceDeclaration?: ReferenceDeclarationCstNode[];
-  Comma?: IToken[];
-  RSquare: IToken[];
+  LSQUARE: IToken[];
+  referenceValue?: ReferenceValueCstNode[];
+  COMMA?: IToken[];
+  RSQUARE: IToken[];
 };
 
 export interface NumericalValueCstNode extends CstNode {
@@ -231,41 +199,26 @@ export interface NumericalValueCstNode extends CstNode {
 }
 
 export type NumericalValueCstChildren = {
-  value: IToken[];
-  uncertainty?: UncertaintyExpressionCstNode[];
-  unit?: IToken[];
-};
-
-export interface UncertaintyExpressionCstNode extends CstNode {
-  name: "uncertaintyExpression";
-  children: UncertaintyExpressionCstChildren;
-}
-
-export type UncertaintyExpressionCstChildren = {
-  UncertaintyOperator: IToken[];
-  NumberLiteral: IToken[];
+  NUMBER_LITERAL: IToken[];
+  UNCERTAINTY_OPERATOR?: IToken[];
+  UNC_VALUE?: IToken[];
+  NUM_UNIT?: IToken[];
 };
 
 export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
-  record(children: RecordCstChildren, param?: IN): OUT;
-  statement(children: StatementCstChildren, param?: IN): OUT;
-  importStatement(children: ImportStatementCstChildren, param?: IN): OUT;
-  importFileStatement(children: ImportFileStatementCstChildren, param?: IN): OUT;
-  aliasClause(children: AliasClauseCstChildren, param?: IN): OUT;
-  groupDeclaration(children: GroupDeclarationCstChildren, param?: IN): OUT;
-  namedGroup(children: NamedGroupCstChildren, param?: IN): OUT;
-  variableGroup(children: VariableGroupCstChildren, param?: IN): OUT;
-  referenceDeclaration(children: ReferenceDeclarationCstChildren, param?: IN): OUT;
-  group(children: GroupCstChildren, param?: IN): OUT;
-  groupItem(children: GroupItemCstChildren, param?: IN): OUT;
-  protocolItem(children: ProtocolItemCstChildren, param?: IN): OUT;
-  arrowProperty(children: ArrowPropertyCstChildren, param?: IN): OUT;
+  document(children: DocumentCstChildren, param?: IN): OUT;
   assignmentProperty(children: AssignmentPropertyCstChildren, param?: IN): OUT;
+  collectionDeclaration(children: CollectionDeclarationCstChildren, param?: IN): OUT;
+  importStatement(children: ImportStatementCstChildren, param?: IN): OUT;
+  aliasClause(children: AliasClauseCstChildren, param?: IN): OUT;
+  recordDeclaration(children: RecordDeclarationCstChildren, param?: IN): OUT;
+  graphDeclaration(children: GraphDeclarationCstChildren, param?: IN): OUT;
+  referenceDeclaration(children: ReferenceDeclarationCstChildren, param?: IN): OUT;
+  arrowProperty(children: ArrowPropertyCstChildren, param?: IN): OUT;
   referencePipe(children: ReferencePipeCstChildren, param?: IN): OUT;
   propertyItem(children: PropertyItemCstChildren, param?: IN): OUT;
-  value(children: ValueCstChildren, param?: IN): OUT;
+  referenceValue(children: ReferenceValueCstChildren, param?: IN): OUT;
   list(children: ListCstChildren, param?: IN): OUT;
   refList(children: RefListCstChildren, param?: IN): OUT;
   numericalValue(children: NumericalValueCstChildren, param?: IN): OUT;
-  uncertaintyExpression(children: UncertaintyExpressionCstChildren, param?: IN): OUT;
 }

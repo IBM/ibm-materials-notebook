@@ -3,11 +3,12 @@ import { Property } from "./base-components";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
 import { SymbolReference } from "./reference-group";
-import { BaseError } from "../errors";
+import { CMDLError } from "../errors";
 import { TYPES } from "../cmdl-types";
 
 /**
  * Represents individual references within a reference list property
+ * @deprecated
  */
 export class ReferenceValue extends Property implements SymbolReference {
   path: CmdlToken[];
@@ -80,7 +81,7 @@ export class RefListProperty extends Property {
     this.value.push(refValue);
   }
 
-  public doValidation(): BaseError[] {
+  public doValidation(): CMDLError[] {
     this.getPropertyType();
     this.validateProperty();
 

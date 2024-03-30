@@ -4,8 +4,11 @@ import { Property } from "./base-components";
 import { SymbolTableBuilder } from "../symbols";
 import { ModelVisitor } from "../intepreter";
 import { parseStringImage } from "./utils";
-import { BaseError } from "../errors";
+import { CMDLError } from "../errors";
 
+/**
+ * @deprecated
+ */
 export class AssignmentProperty extends Property {
   protected value: string = "";
 
@@ -15,7 +18,7 @@ export class AssignmentProperty extends Property {
     this.valueToken = valueToken;
   }
 
-  public doValidation(): BaseError[] {
+  public doValidation(): CMDLError[] {
     this.validateProperty();
     return this.errors;
   }

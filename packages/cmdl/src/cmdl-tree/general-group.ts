@@ -1,5 +1,5 @@
 import { CmdlToken } from "../cmdl-ast";
-import { BaseError, InvalidGroupError, InvalidPropertyError } from "../errors";
+import { CMDLError, InvalidGroupError, InvalidPropertyError } from "../errors";
 import { Group, Property, RecordNode } from "./base-components";
 import { GROUPS, PROPERTIES } from "../cmdl-types";
 import { AstVisitor, SymbolTableBuilder } from "../symbols";
@@ -44,7 +44,7 @@ export class GeneralGroup extends Group {
     }
 
     let msg: string;
-    let err: BaseError;
+    let err: CMDLError;
 
     if (child instanceof AssignmentProperty) {
       if (!this.groupProps.properties.includes(PROPERTIES.FRAGMENT)) {
@@ -76,7 +76,7 @@ export class GeneralGroup extends Group {
     }
   }
 
-  public doValidation(): BaseError[] {
+  public doValidation(): CMDLError[] {
     this.setGroupProps();
     this.validateGroupName();
     this.validateChildren(this.validateGroupChild);

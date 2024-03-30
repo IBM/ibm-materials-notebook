@@ -1,28 +1,36 @@
 import { ModelVisitor } from "../intepreter";
 import { AstVisitor } from "../symbols";
-import { BaseError } from "../errors";
-import { RecordNode } from "./base-components";
+import { CMDLError } from "../errors";
+import { CMDLNode } from "./nodes";
 
 /**
  * Represents a condensed AST for validation and interpretation (execution of models) of CMDL
  * TODO: merge with CMDL AST
+ * TODO: implement printable interface
  */
 export class CmdlTree {
-  name = "CmdlTree";
-  private children: RecordNode[] = [];
-  errors: BaseError[] = [];
+  private root: CMDLNode;
+  /**
+   * @deprecated
+   */
+  private children: CMDLNode[] = [];
+
+  constructor(root: CMDLNode) {
+    this.root = root;
+  }
 
   /**
    * Method to add a component to the CMDL tree
-   * @param component RecordNode
+   * @deprecated
+   * @param component CMDLNode
    */
-  public add(component: RecordNode): void {
+  public add(component: CMDLNode): void {
     this.children.push(component);
-    component.setParent(this);
   }
 
   /**
    * Method for determining whether node in tree has children
+   * @deprecated
    * @returns boolean
    */
   public isComposite(): boolean {
@@ -31,18 +39,30 @@ export class CmdlTree {
 
   /**
    * Method for validating CMDL tree, returns an array of errors
+   * @deprecated
    * @returns BaseError[]
    */
-  public validate(): BaseError[] {
+  public validate(): CMDLError[] {
+    // for (const child of this.children) {
+    //   const childErrors = child.doValidation();
+    //   this.errors = this.errors.concat(childErrors);
+    // }
+    return [];
+  }
+
+  /**
+   * Iterate over CMDLTree with a visitor
+   * @param visitor AstVisitor
+   */
+  public visit(visitor: AstVisitor): void {
     for (const child of this.children) {
-      const childErrors = child.doValidation();
-      this.errors = this.errors.concat(childErrors);
+      visitor.visit(child);
     }
-    return this.errors;
   }
 
   /**
    * Interprets CMDL tree and computes output
+   * @deprecated
    * @param visitor ModelVisitor
    */
   public evaluate(visitor: ModelVisitor): void {
@@ -53,6 +73,7 @@ export class CmdlTree {
 
   /**
    * Constructs symbol table from CMDL ast
+   * @deprecated
    * @param builder AstVisitor
    */
   public createSymbolTable(builder: AstVisitor): void {
@@ -61,15 +82,21 @@ export class CmdlTree {
     }
   }
 
+  public findByImage(image: string) {
+    throw new Error("Not implemented!");
+  }
+
+  public findClosestGroup() {
+    throw new Error("Not Implemented!");
+  }
+
   /**
    * Method for printing tree to console
-   * TODO: have return string instead of object
-   * @returns any
+   * @returns string
    */
-  public print() {
-    return {
-      name: "RECORD",
-      children: this.children.map((el) => el.print()),
-    };
+  public print(): string {
+    const childrenStr = this.children.map((el) => el.print());
+
+    return `CMDL AST\n-------------\nNode: ROOT\nChildren:${this.children.length}\n---------------\n${childrenStr}`;
   }
 }

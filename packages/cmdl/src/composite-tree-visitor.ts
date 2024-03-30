@@ -1,47 +1,38 @@
-import { IToken } from "chevrotain";
-import { CmdlToken } from "./cmdl-ast";
+import { CMDLToken } from "./cmdl-ast";
 import { parserInstance } from "./parser";
 import {
-  GroupCstChildren,
-  GroupDeclarationCstChildren,
-  GroupItemCstChildren,
   ImportStatementCstChildren,
   NumericalValueCstChildren,
   PropertyItemCstChildren,
-  StatementCstChildren,
-  UncertaintyExpressionCstChildren,
-  ValueCstChildren,
   ListCstChildren,
-  RecordCstChildren,
   ReferenceDeclarationCstChildren,
-  NamedGroupCstChildren,
   RefListCstChildren,
   ArrowPropertyCstChildren,
   ReferencePipeCstChildren,
-  VariableGroupCstChildren,
   AliasClauseCstChildren,
-  ImportFileStatementCstChildren,
   AssignmentPropertyCstChildren,
+  DocumentCstChildren,
+  RecordDeclarationCstChildren,
+  GraphDeclarationCstChildren,
+  CollectionDeclarationCstChildren,
+  ReferenceValueCstChildren,
 } from "./parser-types";
 import {
-  ImportOp,
-  GeneralGroup,
-  Group,
+  CMDLCollection,
   CmdlTree,
-  NamedGroup,
-  ReferenceGroup,
-  VariableGroup,
-  ListProperty,
-  BoolProperty,
-  NumericalProperty,
-  RefListProperty,
-  RefProperty,
-  StringProperty,
-  VariableProperty,
-  AngleProperty,
-  ImportFileOp,
-  AssignmentProperty,
+  CMDLRecord,
+  CMDLGraph,
+  CMDLReference,
+  CMDLBoolProp,
+  CMDLImport,
+  CMDLListProp,
+  CMDLNumProp,
+  CMDLRefProp,
+  CMDLRoot,
+  CMDLNode,
+  CMDLAssignProp,
 } from "./cmdl-tree";
+import { CMDLEdgeProp, CMDLRefListProp, CMDLStrProp } from "./cmdl-tree/nodes";
 
 const BaseVisitor = parserInstance.getBaseCstVisitorConstructor();
 
@@ -55,61 +46,35 @@ export class CstRecordVisitor extends BaseVisitor {
   }
 
   /**
-   * Constructs root node for CMDL
-   * @param ctx RecordCstChildren
+   * Constructs CMDL AST
+   * @param ctx DocumentCstChildren
    * @returns CMDLtree
    */
-  public record(ctx: RecordCstChildren): CmdlTree {
-    const rootNode = new CmdlTree();
+  public document(ctx: DocumentCstChildren): CmdlTree {
+    const rootNode = new CMDLRoot();
+    const tree = new CmdlTree(rootNode);
 
-    if (!ctx.statement) {
-      return rootNode;
+    if (ctx.importStatement) {
+      this.visit(ctx.importStatement, rootNode);
     }
 
-    for (const statement of ctx.statement) {
-      this.visit(statement, rootNode);
+    if (ctx.collectionDeclaration) {
+      this.visit(ctx.collectionDeclaration, rootNode);
     }
 
-    return rootNode;
-  }
-
-  /**
-   * Evaluates statement declarations
-   * @param ctx StatementCstChildren
-   * @param parent Group
-   */
-  public statement(ctx: StatementCstChildren, parent: Group): void {
-    if (ctx?.importFileStatement) {
-      this.visit(ctx.importFileStatement, parent);
-    } else if (ctx?.importStatement) {
-      this.visit(ctx.importStatement, parent);
-    } else if (ctx?.groupDeclaration) {
-      this.visit(ctx.groupDeclaration, parent);
-    } else {
-      //? push errors to AST class?
-      // throw new Error('Unhandled statement type');
-    }
-  }
-
-  public importFileStatement(
-    ctx: ImportFileStatementCstChildren,
-    parent: CmdlTree
-  ): void {
-    let idToken: CmdlToken | undefined;
-    let locationToken: CmdlToken | undefined;
-
-    if (ctx.Identifier && ctx.Identifier.length) {
-      idToken = this.extractToken(ctx.Identifier[0]);
+    if (ctx.recordDeclaration) {
+      this.visit(ctx.recordDeclaration, rootNode);
     }
 
-    if (ctx.StringLiteral && ctx.StringLiteral.length) {
-      locationToken = this.extractToken(ctx.StringLiteral[0]);
+    if (ctx.graphDeclaration) {
+      this.visit(ctx.graphDeclaration, rootNode);
     }
 
-    if (idToken && locationToken) {
-      const fileReference = new ImportFileOp(idToken, locationToken);
-      parent.add(fileReference);
+    if (ctx.assignmentProperty) {
+      this.visit(ctx.assignmentProperty, rootNode);
     }
+
+    return tree;
   }
 
   /**
@@ -119,89 +84,191 @@ export class CstRecordVisitor extends BaseVisitor {
    */
   public importStatement(
     ctx: ImportStatementCstChildren,
-    parent: CmdlTree
+    parent: CMDLNode
   ): void {
-    let idToken: CmdlToken | undefined;
-    let locationToken: CmdlToken | undefined;
-    let aliasToken: CmdlToken | undefined;
-    if (ctx.Identifier && ctx.Identifier.length) {
-      idToken = this.extractToken(ctx.Identifier[0]);
-    }
+    let importNode: CMDLImport;
+    const importToken = new CMDLToken(ctx.IMPORT[0]);
+    const importId = new CMDLToken(ctx.IMPORT_NAME[0]);
+    const fromToken = new CMDLToken(ctx.FROM[0]);
+    const sourceToken = new CMDLToken(ctx.IMPORT_SOURCE[0]);
+    const semicolonToken = new CMDLToken(ctx.SEMICOLON[0]);
 
-    if (ctx.alias && ctx.alias.length) {
-      aliasToken = this.visit(ctx.alias);
-    }
-
-    if (ctx.StringLiteral && ctx.StringLiteral.length) {
-      locationToken = this.extractToken(ctx.StringLiteral[0]);
-    }
-
-    if (idToken && locationToken) {
-      const reference = new ImportOp(idToken, locationToken, aliasToken);
-      parent.add(reference);
-    }
-  }
-
-  aliasClause(ctx: AliasClauseCstChildren) {
-    if (ctx.Identifier && ctx.Identifier.length) {
-      return this.extractToken(ctx.Identifier[0]);
-    }
-  }
-
-  groupDeclaration(ctx: GroupDeclarationCstChildren, parent: Group) {
-    let group: Group;
-
-    let token: CmdlToken;
-
-    if (ctx.namedGroup && ctx.namedGroup.length) {
-      const { nameToken, idToken } = this.visit(ctx.namedGroup);
-      group = new NamedGroup(nameToken, idToken);
-      parent.add(group);
-    } else if (ctx?.Identifier && ctx.Identifier.length) {
-      token = this.extractToken(ctx.Identifier[0]);
-      group = new GeneralGroup(token);
-      parent.add(group);
-    } else if (ctx?.variableGroup && ctx.variableGroup.length) {
-      const { nameToken, variableToken } = this.visit(ctx.variableGroup);
-      group = new VariableGroup(nameToken, variableToken);
-      parent.add(group);
-    } else if (ctx?.referenceDeclaration && ctx.referenceDeclaration.length) {
-      const { refToken, pathTokens } = this.visit(ctx.referenceDeclaration);
-      group = new ReferenceGroup(refToken, pathTokens);
-      parent.add(group);
+    if (ctx.IMPORT_ALIAS) {
+      const { asToken, aliasToken } = this.visit(ctx.IMPORT_ALIAS);
+      importNode = new CMDLImport(
+        importToken,
+        importId,
+        asToken,
+        aliasToken,
+        fromToken,
+        sourceToken,
+        semicolonToken
+      );
     } else {
-      //create error => missing group identifier
-      throw new Error("unable to parse");
+      importNode = new CMDLImport(
+        importToken,
+        importId,
+        fromToken,
+        sourceToken,
+        semicolonToken
+      );
     }
 
-    if (ctx?.group && ctx.group.length) {
-      this.visit(ctx.group[0], group);
+    parent.addChildNode(importNode);
+  }
+
+  aliasClause(ctx: AliasClauseCstChildren): {
+    asToken: CMDLToken;
+    aliasToken: CMDLToken;
+  } {
+    const asToken = new CMDLToken(ctx.AS[0]);
+    const aliasToken = new CMDLToken(ctx.IDENTIFIER[0]);
+
+    return { asToken, aliasToken };
+  }
+
+  collectionDeclaration(
+    ctx: CollectionDeclarationCstChildren,
+    parent: CMDLNode
+  ) {
+    const collectionToken = new CMDLToken(ctx.COLLECTION[0]);
+    const collectionNameToken = new CMDLToken(ctx.COLLECTION_NAME[0]);
+    const endToken = new CMDLToken(ctx.END[0]);
+    const endName = new CMDLToken(ctx.END_COLLECTION_NAME[0]);
+
+    const collection = new CMDLCollection(
+      collectionToken,
+      collectionNameToken,
+      endToken,
+      endName
+    );
+
+    parent.addChildNode(collection);
+
+    if (ctx.collectionDeclaration) {
+      for (const node of ctx.collectionDeclaration) {
+        this.visit(node, collection);
+      }
+    }
+
+    if (ctx.recordDeclaration) {
+      for (const node of ctx.recordDeclaration) {
+        this.visit(node, collection);
+      }
+    }
+
+    if (ctx.graphDeclaration) {
+      for (const node of ctx.graphDeclaration) {
+        this.visit(node, collection);
+      }
+    }
+
+    if (ctx.assignmentProperty) {
+      for (const node of ctx.assignmentProperty) {
+        this.visit(node, collection);
+      }
     }
   }
 
-  namedGroup(ctx: NamedGroupCstChildren) {
-    const idToken = this.extractToken(ctx.Identifier[0]);
-    const nameToken = this.extractToken(ctx.Keyword[0]);
+  recordDeclaration(ctx: RecordDeclarationCstChildren, parent: CMDLNode) {
+    const recordToken = new CMDLToken(ctx.RECORD[0]);
+    const recordNameToken = new CMDLToken(ctx.RECORD_NAME[0]);
+    const colonToken = new CMDLToken(ctx.COLON[0]);
+    const typeToken = new CMDLToken(ctx.TYPE[0]);
+    const lcurl = new CMDLToken(ctx.LCURL[0]);
+    const rcurl = new CMDLToken(ctx.RCURL[0]);
 
-    return { idToken, nameToken };
+    const record = new CMDLRecord(
+      recordToken,
+      recordNameToken,
+      colonToken,
+      typeToken,
+      lcurl,
+      rcurl
+    );
+
+    parent.addChildNode(record);
+
+    if (ctx.propertyItem) {
+      for (const node of ctx.propertyItem) {
+        this.visit(node, record);
+      }
+    }
+
+    if (ctx.referenceDeclaration) {
+      for (const node of ctx.referenceDeclaration) {
+        this.visit(node, record);
+      }
+    }
   }
 
-  variableGroup(ctx: VariableGroupCstChildren) {
-    const variableToken = this.extractToken(ctx.Variable[0]);
-    const nameToken = this.extractToken(ctx.Keyword[0]);
+  graphDeclaration(ctx: GraphDeclarationCstChildren, parent: CMDLNode) {
+    const graphToken = new CMDLToken(ctx.GRAPH[0]);
+    const graphNameToken = new CMDLToken(ctx.GRAPH_NAME[0]);
+    const colonToken = new CMDLToken(ctx.COLON[0]);
+    const typeToken = new CMDLToken(ctx.TYPE[0]);
+    const lcurl = new CMDLToken(ctx.LCURL[0]);
+    const rcurl = new CMDLToken(ctx.RCURL[0]);
 
-    return { variableToken, nameToken };
+    const graph = new CMDLGraph(
+      graphToken,
+      graphNameToken,
+      colonToken,
+      typeToken,
+      lcurl,
+      rcurl
+    );
+
+    parent.addChildNode(graph);
+
+    if (ctx.arrowProperty) {
+      for (const node of ctx.arrowProperty) {
+        this.visit(node, graph);
+      }
+    }
+
+    if (ctx.propertyItem) {
+      for (const node of ctx.propertyItem) {
+        this.visit(node, graph);
+      }
+    }
   }
 
-  referenceDeclaration(ctx: ReferenceDeclarationCstChildren) {
-    const refToken = this.extractToken(ctx.Link[0]);
+  referenceDeclaration(ctx: ReferenceDeclarationCstChildren, parent: CMDLNode) {
+    const refToken = new CMDLToken(ctx.REFERENCE_NAME[0]);
+    const lcurl = new CMDLToken(ctx.LCURL[0]);
+    const rcurl = new CMDLToken(ctx.RCURL[0]);
 
-    const pathTokens: CmdlToken[] = [];
-    if (ctx?.Identifier && ctx.Identifier.length) {
-      let token: CmdlToken;
+    const pathTokens: CMDLToken[] = [];
 
-      for (const subId of ctx.Identifier) {
-        token = this.extractToken(subId);
+    if (ctx.REF_ITEM) {
+      let token: CMDLToken;
+      for (const subId of ctx.REF_ITEM) {
+        token = new CMDLToken(subId);
+        pathTokens.push(token);
+      }
+    }
+
+    const reference = new CMDLReference(refToken, ...pathTokens, lcurl, rcurl);
+
+    parent.addChildNode(reference);
+
+    if (ctx.propertyItem) {
+      for (const node of ctx.propertyItem) {
+        this.visit(node, reference);
+      }
+    }
+  }
+
+  refValue(ctx: ReferenceValueCstChildren) {
+    const refToken = new CMDLToken(ctx.REFERENCE_NAME[0]);
+
+    const pathTokens: CMDLToken[] = [];
+
+    if (ctx.REF_ITEM) {
+      let token: CMDLToken;
+      for (const subId of ctx.REF_ITEM) {
+        token = new CMDLToken(subId);
         pathTokens.push(token);
       }
     }
@@ -209,200 +276,178 @@ export class CstRecordVisitor extends BaseVisitor {
     return { refToken, pathTokens };
   }
 
-  group(ctx: GroupCstChildren, parent: Group) {
-    if (ctx?.groupItem && ctx.groupItem.length) {
-      for (const item of ctx.groupItem) {
-        this.visit(item, parent);
+  assignmentProperty(ctx: AssignmentPropertyCstChildren, parent: CMDLNode) {
+    const propToken = new CMDLToken(ctx.PROPERTY[0]);
+    const propName = new CMDLToken(ctx.PROP_NAME[0]);
+    const colonToken = new CMDLToken(ctx.COLON[0]);
+    const typeToken = new CMDLToken(ctx.TYPE[0]);
+    const assignmentToken = new CMDLToken(ctx.ASSIGNMENT[0]);
+    const value = new CMDLToken(ctx.STRING_LITERAL[0]);
+    const semicolonToken = new CMDLToken(ctx.SEMICOLON[0]);
+
+    const assignmentProp = new CMDLAssignProp(
+      propToken,
+      propName,
+      colonToken,
+      typeToken,
+      assignmentToken,
+      value,
+      semicolonToken
+    );
+
+    parent.addChildNode(assignmentProp);
+  }
+
+  arrowProperty(ctx: ArrowPropertyCstChildren, parent: CMDLNode) {
+    const lAngle = new CMDLToken(ctx.LANGLE[0]);
+    const rAngle = new CMDLToken(ctx.RANGLE[0]);
+    const arrowToken = new CMDLToken(ctx.ARROW[0]);
+    const colonToken = ctx.COLON ? new CMDLToken(ctx.COLON[0]) : undefined;
+    const numberToken = ctx.EDGE_VALUE
+      ? new CMDLToken(ctx.EDGE_VALUE[0])
+      : undefined;
+
+    const lhsValues = this.visit(ctx.lhs);
+    const rhsValues = this.visit(ctx.rhs);
+
+    const arrowProp = new CMDLEdgeProp(
+      lAngle,
+      ...lhsValues.pipeTokens,
+      arrowToken,
+      ...rhsValues.pipeTokens,
+      rAngle,
+      colonToken,
+      numberToken
+    );
+
+    arrowProp.addRefs(lhsValues.refs, "lhs");
+    arrowProp.addRefs(rhsValues.refs, "rhs");
+
+    parent.addChildNode(arrowProp);
+  }
+
+  referencePipe(ctx: ReferencePipeCstChildren) {
+    const pipeTokens: CMDLToken[] = [];
+    const refs: CMDLReference[] = [];
+
+    if (ctx.PIPE) {
+      for (const token of ctx.PIPE) {
+        const pipeToken = new CMDLToken(token);
+        pipeTokens.push(pipeToken);
       }
     }
+
+    for (const reference of ctx.referenceValue) {
+      const { refToken, pathTokens } = this.visit(reference);
+      const ref = new CMDLReference(refToken, ...pathTokens);
+      refs.push(ref);
+    }
+    return { pipeTokens, refs };
   }
 
-  groupItem(ctx: GroupItemCstChildren, parent: Group) {
-    if (ctx?.groupDeclaration) {
-      this.visit(ctx.groupDeclaration, parent);
-    } else if (ctx?.propertyItem) {
-      this.visit(ctx.propertyItem, parent);
-    } else if (ctx?.arrowProperty) {
-      this.visit(ctx.arrowProperty, parent);
-    } else if (ctx?.assignmentProperty) {
-      this.visit(ctx.assignmentProperty, parent);
-    } else {
-      // create error => bad group item
-    }
-  }
+  propertyItem(ctx: PropertyItemCstChildren, parent: CMDLNode) {
+    const idToken = new CMDLToken(ctx.PROP_NAME[0]);
+    const colonToken = new CMDLToken(ctx.COLON[0]);
 
-  assignmentProperty(ctx: AssignmentPropertyCstChildren, parent: Group) {
-    if (ctx.Identifier && ctx.StringLiteral) {
-      const identifier = this.extractToken(ctx.Identifier[0]);
-      const value = this.extractToken(ctx.StringLiteral[0]);
-      const assignmentProp = new AssignmentProperty(identifier, value);
-      parent.add(assignmentProp);
-    }
-  }
-
-  arrowProperty(ctx: ArrowPropertyCstChildren, parent: Group) {
-    const lAngle = this.extractToken(ctx.LAngle[0]);
-    const rAngle = this.extractToken(ctx.RAngle[0]);
-    const angleProperty = new AngleProperty(lAngle, rAngle);
-    parent.add(angleProperty);
-
-    if (ctx.lhs && ctx.lhs.length) {
-      angleProperty.setCurrentSide("lhs");
-      this.visit(ctx.lhs, angleProperty);
-    }
-
-    if (ctx.rhs && ctx.rhs.length) {
-      angleProperty.setCurrentSide("rhs");
-      this.visit(ctx.rhs, angleProperty);
-    }
-
-    if (ctx.NumberLiteral && ctx.NumberLiteral.length) {
-      const value = this.extractToken(ctx.NumberLiteral[0]);
-      angleProperty.setValue(value);
-    }
-  }
-
-  referencePipe(ctx: ReferencePipeCstChildren, parent: AngleProperty) {
-    if (ctx.referenceDeclaration && ctx.referenceDeclaration.length) {
-      for (const ref of ctx.referenceDeclaration) {
-        const { refToken, pathTokens } = this.visit(ref);
-        parent.addReference(refToken, pathTokens);
-      }
-    }
-  }
-
-  propertyItem(ctx: PropertyItemCstChildren, parent: Group) {
-    let idToken: CmdlToken | null = null;
-    if (ctx.Identifier.length) {
-      idToken = this.extractToken(ctx.Identifier[0]);
-    }
-
-    if (ctx.value.length) {
-      this.visit(ctx.value, { parent, idToken });
-    }
-  }
-
-  value(
-    ctx: ValueCstChildren,
-    { parent, idToken }: { parent: Group; idToken: CmdlToken }
-  ) {
-    if (!idToken) {
-      return;
-    }
-
-    let property:
-      | NumericalProperty
-      | BoolProperty
-      | VariableProperty
-      | RefProperty
-      | StringProperty
-      | ListProperty
-      | RefListProperty
-      | AngleProperty;
-
-    let token: CmdlToken;
-
-    if (ctx?.numericalValue) {
-      property = new NumericalProperty(idToken);
-      parent.add(property);
-      this.visit(ctx.numericalValue, property);
-    } else if (ctx?.list) {
-      property = new ListProperty(idToken);
-      parent.add(property);
-      this.visit(ctx.list, property);
-    } else if (ctx?.StringLiteral && ctx.StringLiteral.length) {
-      token = this.extractToken(ctx.StringLiteral[0]);
-      property = new StringProperty(idToken);
-      property.setValue(token.image, token);
-      parent.add(property);
-    } else if (ctx?.referenceDeclaration) {
-      property = new RefProperty(idToken);
-      parent.add(property);
-      const { refToken, pathTokens } = this.visit(ctx.referenceDeclaration);
-      property.setValue(refToken);
-      property.setPath(pathTokens);
-    } else if (ctx?.True && ctx.True.length) {
-      token = this.extractToken(ctx.True[0]);
-      property = new BoolProperty(idToken);
-      property.setValue(token.image, token);
-      parent.add(property);
-    } else if (ctx?.False && ctx.False.length) {
-      token = this.extractToken(ctx.False[0]);
-      property = new BoolProperty(idToken);
-      property.setValue(token.image, token);
-      parent.add(property);
-    } else if (ctx?.Variable && ctx.Variable.length) {
-      token = this.extractToken(ctx.Variable[0]);
-      property = new VariableProperty(idToken);
-      property.setValue(token.image, token);
-      parent.add(property);
-    } else if (ctx?.refList && ctx.refList.length) {
-      property = new RefListProperty(idToken);
-      parent.add(property);
-      this.visit(ctx.refList, property);
+    if (ctx.numericalValue) {
+      const numPropTokens = this.visit(ctx.numericalValue, {
+        idToken,
+        colonToken,
+      });
+      const numProp = new CMDLNumProp(...numPropTokens);
+      parent.addChildNode(numProp);
+    } else if (ctx.list) {
+      const listProp = this.visit(ctx.list, { idToken, colonToken });
+      parent.addChildNode(listProp);
+    } else if (ctx.STR_VALUE) {
+      const strToken = new CMDLToken(ctx.STR_VALUE[0]);
+      const strProp = new CMDLStrProp(idToken, colonToken, strToken);
+      parent.addChildNode(strProp);
+    } else if (ctx.referenceValue) {
+      const { refToken, pathTokens } = this.visit(ctx.referenceValue);
+      const refProp = new CMDLRefProp(
+        idToken,
+        colonToken,
+        refToken,
+        ...pathTokens
+      );
+      parent.addChildNode(refProp);
+    } else if (ctx.BOOLEAN_VALUE) {
+      const bool = new CMDLToken(ctx.BOOLEAN_VALUE[0]);
+      const boolProp = new CMDLBoolProp(idToken, colonToken, bool);
+      parent.addChildNode(boolProp);
+    } else if (ctx.refList) {
+      const refListProp = this.visit(ctx.refList, { idToken, colonToken });
+      parent.addChildNode(refListProp);
     } else {
       //! push errors to AST class
     }
   }
 
-  list(ctx: ListCstChildren, parent: ListProperty) {
-    const tokens: CmdlToken[] = [];
-    let token: CmdlToken;
-    const values: string[] = [];
-    for (const value of ctx.StringLiteral) {
-      token = this.extractToken(value);
-      tokens.push(token);
-      values.push(token.image);
-    }
-    parent.setValue(values, tokens);
-  }
+  list(ctx: ListCstChildren, parent: CMDLNode) {
+    const lSquare = new CMDLToken(ctx.LSQUARE[0]);
+    const rSquare = new CMDLToken(ctx.RSQUARE[0]);
+    const valueTokens: CMDLToken[] = [];
+    const commas: CMDLToken[] = [];
 
-  refList(ctx: RefListCstChildren, parent: RefListProperty) {
-    if (ctx.referenceDeclaration && ctx.referenceDeclaration.length) {
-      for (const ref of ctx.referenceDeclaration) {
-        const { refToken, pathTokens } = this.visit(ref);
-        parent.addReference(refToken, pathTokens);
+    let token, comma: CMDLToken;
+    if (ctx.COMMA) {
+      for (const item of ctx.COMMA) {
+        comma = new CMDLToken(item);
+        commas.push(comma);
       }
     }
+
+    for (const value of ctx.STR_VALUE) {
+      token = new CMDLToken(value);
+      valueTokens.push(token);
+    }
+
+    const listProp = new CMDLListProp(
+      lSquare,
+      ...valueTokens,
+      ...commas,
+      rSquare
+    );
+    parent.addChildNode(listProp);
   }
 
-  numericalValue(ctx: NumericalValueCstChildren, parent: NumericalProperty) {
-    let valueToken: CmdlToken;
-    if (ctx?.value && ctx.value.length) {
-      valueToken = this.extractToken(ctx.value[0]);
-      parent.setValue(valueToken.image, valueToken);
+  refList(ctx: RefListCstChildren, parent: CMDLNode) {
+    const lSquare = new CMDLToken(ctx.LSQUARE[0]);
+    const rSquare = new CMDLToken(ctx.RSQUARE[0]);
+    const refs: CMDLReference[] = [];
+    const commas: CMDLToken[] = [];
+
+    let comma: CMDLToken;
+    if (ctx.COMMA) {
+      for (const item of ctx.COMMA) {
+        comma = new CMDLToken(item);
+        commas.push(comma);
+      }
     }
 
-    if (ctx?.uncertainty && ctx.uncertainty.length) {
-      this.visit(ctx.uncertainty, parent);
+    if (ctx.referenceValue) {
+      for (const ref of ctx.referenceValue) {
+        const { refToken, pathTokens } = this.visit(ref);
+        const cmdlRef = new CMDLReference(refToken, ...pathTokens);
+        refs.push(cmdlRef);
+      }
     }
 
-    let unitToken: CmdlToken;
-    if (ctx?.unit && ctx.unit.length) {
-      unitToken = this.extractToken(ctx.unit[0]);
-      parent.setUnit(unitToken.image, unitToken);
-    }
+    const reflist = new CMDLRefListProp(lSquare, ...refs, ...commas, rSquare);
+    parent.addChildNode(reflist);
   }
 
-  uncertaintyExpression(
-    ctx: UncertaintyExpressionCstChildren,
-    parent: NumericalProperty
-  ) {
-    let token: CmdlToken;
-    if (ctx?.NumberLiteral && ctx.NumberLiteral.length) {
-      token = this.extractToken(ctx.NumberLiteral[0]);
-      parent.setUncertainty(token.image, token);
-    }
-  }
+  numericalValue(ctx: NumericalValueCstChildren) {
+    const valueToken = new CMDLToken(ctx.NUMBER_LITERAL[0]);
+    const unitToken = ctx.NUM_UNIT ? new CMDLToken(ctx.NUM_UNIT[0]) : undefined;
+    const uncOp = ctx.UNCERTAINTY_OPERATOR
+      ? new CMDLToken(ctx.UNCERTAINTY_OPERATOR[0])
+      : undefined;
+    const uncValue = ctx.UNC_VALUE
+      ? new CMDLToken(ctx.UNC_VALUE[0])
+      : undefined;
 
-  private extractToken(token: IToken): CmdlToken {
-    return {
-      image: token.image,
-      type: token.tokenType.name,
-      startLine: token.startLine,
-      endLine: token.endLine,
-      startOffset: token.startOffset,
-      endOffset: token.endOffset,
-    };
+    return [valueToken, unitToken, uncOp, uncValue];
   }
 }
