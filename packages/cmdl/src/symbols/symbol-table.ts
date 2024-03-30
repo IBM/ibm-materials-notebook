@@ -1,44 +1,59 @@
 import { RefError } from "../errors";
-import { logger } from "../logger";
-import {
-  AngleSymbol,
-  BaseSymbol,
-  DeclarationSymbol,
-  PropertySymbol,
-  ReferenceSymbol,
-  SymbolType,
-  ImportSymbol,
-} from "./cmdl-symbol-base";
-import { RecordNode } from "../cmdl-tree";
+import { CMDLNode } from "../cmdl-tree";
 import { ErrorTable } from "../error-manager";
-import { SymbolTableManager } from "../symbol-manager";
+
+/**
+ * Enum specfiying the different symbol types within CMDL
+ */
+export enum SymbolType {
+  ASSIGN = "ASSIGNMENT",
+  PROPERTY = "PROPERTY",
+  GRAPH = "GRAPH",
+  EDGE = "EDGE",
+  RECORD = "RECORD",
+  REFERENCE = "REFERENCE",
+  COLLECTION = "COLLECTION",
+  IMPORT = "IMPORT",
+}
 
 /**
  * Interface for defining an AST visitor
  */
 export interface AstVisitor {
-  visit(arg: RecordNode): void;
+  visit(arg: CMDLNode): void;
+}
+
+/**
+ * Interface for CMDL symbol configuraton
+ */
+export interface CMDLSymbol {
+  name: string;
+  alias?: string;
+  path?: string[];
+  symbolType: SymbolType;
+  valueType: string;
+  scope: string;
+  uri: string;
 }
 
 /**
  * Manages symbols for a particular scope
- * ?TODO: turn to actual table of primatives
  */
 export class SymbolTable {
-  manager: SymbolTableManager;
   scope: string;
+  uri: string;
   enclosingScope: SymbolTable | null;
   nestedScopes: SymbolTable[] = [];
-  readonly _symbols = new Map<string, BaseSymbol>();
+  readonly _symbols = new Map<string, CMDLSymbol>();
 
   constructor(
     scope: string,
-    manager: SymbolTableManager,
+    uri: string,
     parentScope: SymbolTable | null = null
   ) {
     this.scope = scope;
+    this.uri = uri;
     this.enclosingScope = parentScope;
-    this.manager = manager;
     parentScope?.nestedScopes.push(this);
   }
 
@@ -57,8 +72,8 @@ export class SymbolTable {
    * @param id string
    * @param symbol BaseSymbol
    */
-  public add(id: string, symbol: BaseSymbol): void {
-    this._symbols.set(id, symbol);
+  public add(symbol: CMDLSymbol): void {
+    this._symbols.set(symbol.name, symbol);
   }
 
   /**
@@ -75,7 +90,7 @@ export class SymbolTable {
    * @param id string
    * @returns BaseSymbol
    */
-  public get(id: string): BaseSymbol {
+  public get(id: string): CMDLSymbol {
     const symbol = this._symbols.get(id);
 
     if (!symbol) {
@@ -87,6 +102,7 @@ export class SymbolTable {
 
   /**
    * Helper method to recursively access a global scope symbol
+   * @deprecated
    * @param id string
    * @returns SymbolTable | undefined
    */
@@ -102,6 +118,7 @@ export class SymbolTable {
 
   /**
    * Retrieves a nested scope by string value, throws an error if not found
+   * @rename to getScope
    * @param scope string
    * @returns SymbolTable
    */
@@ -117,14 +134,15 @@ export class SymbolTable {
 
   /**
    * Gets all the symbols defined for a given cell
+   * ?deprecated
    * @param uri string - Cell uri
-   * @returns BaseSymbol[]
+   * @returns CMDLSymbol[]
    */
-  public getByUri(uri: string): BaseSymbol[] {
-    const cellSymbols: BaseSymbol[] = [];
+  public getByUri(uri: string): CMDLSymbol[] {
+    const cellSymbols: CMDLSymbol[] = [];
 
     for (const symbol of this._symbols.values()) {
-      if (symbol.def === uri) {
+      if (symbol.uri === uri) {
         cellSymbols.push(symbol);
       }
     }
@@ -133,12 +151,12 @@ export class SymbolTable {
   }
 
   /**
-   * Deletes all symbols and nested scopes from a given cell
+   * Deletes all symbols and nested scopes from a given cell or document
    * @param uri string - Cell uri
    */
   public remove(uri: string): void {
     for (const symbol of this._symbols.values()) {
-      if (symbol.def === uri) {
+      if (symbol.uri === uri) {
         this.nestedScopes = this.nestedScopes.filter(
           (el) => el.scope !== symbol.name
         );
@@ -150,78 +168,76 @@ export class SymbolTable {
 
   /**
    * Retrieves all DeclarationSymbols or VariableDeclaration from current symbol table
+   * @deprecated
    * @returns BaseSymbol[]
    */
-  public getBaseSymbols(): BaseSymbol[] {
-    return [...this._symbols.values()].filter(
-      (el) =>
-        el.type === SymbolType.DECLARATION ||
-        el.type === SymbolType.VARIABLE_DEC
-    );
+  public getBaseSymbols(): CMDLSymbol[] {
+    return [...this._symbols.values()];
   }
 
   /**
    * Retrieves all DeclarationSymbols from notebook. Excludes those imported from local storage
+   * @deprecated
    * @returns BaseSymbol[]
    */
-  public getDeclaredEntities(): BaseSymbol[] {
-    return [...this._symbols.values()].filter(
-      (el) =>
-        el.type === SymbolType.DECLARATION || el.type === SymbolType.IMPORT
-    );
+  public getDeclaredEntities(): CMDLSymbol[] {
+    return [...this._symbols.values()];
   }
 
   /**
    * Retrieves array of symbol members of nested symbol table
+   * @deprecated replace with single lookup function
    * @param path string[]
    * @returns BaseSymbol[]
    */
-  public getSymbolMembers(path: string[]): BaseSymbol[] | undefined {
-    const currentScope = path[0];
-    const newPath = path.slice(1);
+  public getSymbolMembers(path: string[]): CMDLSymbol[] | undefined {
+    // const currentScope = path[0];
+    // const newPath = path.slice(1);
 
-    if (!currentScope) {
-      return;
-    }
+    // if (!currentScope) {
+    //   return;
+    // }
 
-    const symbol = this._symbols.get(currentScope);
+    // const symbol = this._symbols.get(currentScope);
 
-    if (!symbol) {
-      return;
-    }
+    // if (!symbol) {
+    //   return;
+    // }
 
-    if (symbol.type === SymbolType.IMPORT) {
-      const sourcePath = (symbol as ImportSymbol).source.split("/");
-      const fileName = sourcePath[sourcePath.length - 1];
-      return this.manager.lookupMembers(fileName, path);
-    }
+    // if (symbol.type === SymbolType.IMPORT) {
+    //   const sourcePath = (symbol as ImportSymbol).source.split("/");
+    //   const fileName = sourcePath[sourcePath.length - 1];
+    //   return this.manager.lookupMembers(fileName, path);
+    // }
 
-    const scope = this.nestedScopes.find((el) => el.scope === currentScope);
+    // const scope = this.nestedScopes.find((el) => el.scope === currentScope);
 
-    if (!scope && symbol.type === SymbolType.REF_PROXY) {
-      logger.debug(`Attempting to get members for proxy ${symbol.name}...`);
-      if (this.enclosingScope) {
-        return this.enclosingScope.getSymbolMembers(path);
-      }
-      return;
-    }
+    // if (!scope && symbol.type === SymbolType.REF_PROXY) {
+    //   logger.debug(`Attempting to get members for proxy ${symbol.name}...`);
+    //   if (this.enclosingScope) {
+    //     return this.enclosingScope.getSymbolMembers(path);
+    //   }
+    //   return;
+    // }
 
-    if (!scope) {
-      return;
-    }
+    // if (!scope) {
+    //   return;
+    // }
 
-    if (newPath.length) {
-      return scope.getSymbolMembers(newPath);
-    }
+    // if (newPath.length) {
+    //   return scope.getSymbolMembers(newPath);
+    // }
 
-    return [...scope._symbols.values()].filter(
-      (el) =>
-        el.type === SymbolType.REF_PROXY || el.type === SymbolType.DECLARATION
-    );
+    // return [...scope._symbols.values()].filter(
+    //   (el) =>
+    //     el.type === SymbolType.REF_PROXY || el.type === SymbolType.DECLARATION
+    // );
+    return [];
   }
 
   /**
    * Returns a list of symbol names based on a query. Used for completion providers.
+   * @rename to search
    * @param query string
    * @returns string[]
    */
@@ -233,7 +249,7 @@ export class SymbolTable {
     const symbolKeys = [];
 
     for (const [key, value] of this._symbols.entries()) {
-      if (value instanceof DeclarationSymbol) {
+      if (value.symbolType !== SymbolType.REFERENCE) {
         symbolKeys.push(key);
       }
     }
@@ -248,335 +264,211 @@ export class SymbolTable {
   }
 
   /**
-   * Retrieves all variable symbols
-   * @param value string
-   * @returns PropertySymbol<any>
-   */
-  public findVarSymbol(value: string): PropertySymbol<any> | undefined {
-    const queue: SymbolTable[] = [this];
-    let curr: SymbolTable | undefined;
-
-    while (queue.length) {
-      curr = queue.shift();
-
-      if (!curr) {
-        break;
-      }
-
-      for (const sym of curr._symbols.values()) {
-        if (sym instanceof PropertySymbol && sym.value === value) {
-          return sym;
-        }
-      }
-
-      if (curr.nestedScopes.length) {
-        curr.nestedScopes.forEach((scope) => {
-          queue.push(scope);
-        });
-      }
-    }
-  }
-
-  /**
-   * Returns all symbols in current table
-   * @deprecated
-   * @returns IterableIterator<BaseSymbol>
-   */
-  public all(): IterableIterator<BaseSymbol> {
-    return this._symbols.values();
-  }
-
-  /**
-   * Clears current symbol table of symbols and nested scopes
-   * @Deprecated
-   */
-  public clear(): void {
-    this._symbols.clear();
-    this.nestedScopes = [];
-  }
-
-  /**
-   * Helper method to identify if a notebook has template variables
-   * @deprecated
-   * @returns boolean
-   */
-  public hasVariables(): boolean {
-    const queue: SymbolTable[] = [this];
-    const variableSymbols: BaseSymbol[] = [];
-
-    let curr: SymbolTable | undefined;
-
-    while (queue.length) {
-      curr = queue.shift();
-
-      if (!curr) {
-        break;
-      }
-
-      for (const sym of curr._symbols.values()) {
-        if (
-          sym.type === SymbolType.VARIABLE_DEC ||
-          sym.type === SymbolType.VARIABLE_PROP
-        ) {
-          variableSymbols.push(sym);
-        }
-      }
-
-      if (curr.nestedScopes.length) {
-        curr.nestedScopes.forEach((scope) => {
-          queue.push(scope);
-        });
-      }
-    }
-    return variableSymbols.length !== 0;
-  }
-
-  /**
-   * Exports array of variables and their type to be written to a CSV template
-   * @deprecated
-   * @returns BaseSymbol[]
-   */
-  public exportVariables(): BaseSymbol[] {
-    const queue: SymbolTable[] = [this];
-    const variableSymbols: BaseSymbol[] = [];
-
-    let curr: SymbolTable | undefined;
-
-    while (queue.length) {
-      curr = queue.shift();
-
-      if (!curr) {
-        break;
-      }
-
-      for (const sym of curr._symbols.values()) {
-        if (
-          sym.type === SymbolType.VARIABLE_DEC ||
-          sym.type === SymbolType.VARIABLE_PROP
-        ) {
-          variableSymbols.push(sym);
-        }
-      }
-
-      if (curr.nestedScopes.length) {
-        curr.nestedScopes.forEach((scope) => {
-          queue.push(scope);
-        });
-      }
-    }
-    return variableSymbols;
-  }
-
-  /**
    * Validates existence of all references in document and their properties
-   * TODO: validate variable properties and groups
+   * @deprecated move to validator class
    * @param errTable ErrorTable
    * @param globalTable SymbolTable
    */
   public validate(errTable: ErrorTable, globalTable: SymbolTable = this): void {
-    for (const symbol of this._symbols.values()) {
-      if (symbol instanceof ReferenceSymbol) {
-        const referenceError = this.lookup(symbol, globalTable);
-
-        if (referenceError) {
-          errTable.add(symbol.def, [referenceError]);
-        }
-      } else if (
-        symbol instanceof PropertySymbol &&
-        symbol.value instanceof ReferenceSymbol
-      ) {
-        const refPropError = this.lookup(symbol.value, globalTable);
-
-        if (refPropError) {
-          errTable.add(symbol.def, [refPropError]);
-        }
-      } else if (
-        symbol instanceof PropertySymbol &&
-        Array.isArray(symbol.value) &&
-        symbol.value[0] instanceof ReferenceSymbol
-      ) {
-        const refErrArr = this.validateRefArr(symbol.value, globalTable);
-        errTable.add(symbol.def, refErrArr);
-      } else if (symbol instanceof AngleSymbol) {
-        this.validateAngleSymbol(symbol, errTable, globalTable);
-      } else {
-        continue;
-      }
-    }
-
-    for (const nestedScope of this.nestedScopes) {
-      nestedScope.validate(errTable, globalTable);
-    }
+    // for (const symbol of this._symbols.values()) {
+    //   // if (symbol.symbolType === SymbolType.REFERENCE) {
+    //   //   const referenceError = this.lookup(symbol, globalTable);
+    //   //   if (referenceError) {
+    //   //     errTable.add(symbol.uri, [referenceError]);
+    //   //   }
+    //   // } else if (
+    //   //   symbol instanceof PropertySymbol &&
+    //   //   symbol.value instanceof ReferenceSymbol
+    //   // ) {
+    //   //   const refPropError = this.lookup(symbol.value, globalTable);
+    //   //   if (refPropError) {
+    //   //     errTable.add(symbol.def, [refPropError]);
+    //   //   }
+    //   // } else if (
+    //   //   symbol instanceof PropertySymbol &&
+    //   //   Array.isArray(symbol.value) &&
+    //   //   symbol.value[0] instanceof ReferenceSymbol
+    //   // ) {
+    //   //   const refErrArr = this.validateRefArr(symbol.value, globalTable);
+    //   //   errTable.add(symbol.def, refErrArr);
+    //   // } else if (symbol instanceof AngleSymbol) {
+    //   //   this.validateAngleSymbol(symbol, errTable, globalTable);
+    //   // } else {
+    //   //   continue;
+    //   // }
+    // }
+    // for (const nestedScope of this.nestedScopes) {
+    //   nestedScope.validate(errTable, globalTable);
+    // }
   }
 
   /**
    * Helper method for validate reference lists
+   * @deprecated
    * @param refArr ReferenceSymbol[]
    * @param globalTable SymbolTable
    * @returns RefError[]
    */
-  private validateRefArr(
-    refArr: ReferenceSymbol[],
-    globalTable: SymbolTable
-  ): RefError[] {
-    const refErrors = [];
-    for (const refListItem of refArr) {
-      const refListErr = this.lookup(refListItem, globalTable);
+  // private validateRefArr(
+  //   refArr: ReferenceSymbol[],
+  //   globalTable: SymbolTable
+  // ): RefError[] {
+  //   const refErrors = [];
+  //   for (const refListItem of refArr) {
+  //     const refListErr = this.lookup(refListItem, globalTable);
 
-      if (refListErr) {
-        refErrors.push(refListErr);
-      }
-    }
-    return refErrors;
-  }
+  //     if (refListErr) {
+  //       refErrors.push(refListErr);
+  //     }
+  //   }
+  //   return refErrors;
+  // }
 
   /**
    * Helper method for validating polymer graph connection properties
+   * @deprecated
    * @param symbol AngleSymbol
    * @param globalTable SymbolTable
    */
-  private validateAngleSymbol(
-    symbol: AngleSymbol,
-    errTable: ErrorTable,
-    globalTable: SymbolTable
-  ): void {
-    for (const conn of symbol.connections) {
-      const sourcErrs = this.validateRefArr(conn.sources, globalTable);
-      const targetErr = this.validateRefArr(conn.targets, globalTable);
+  // private validateAngleSymbol(
+  //   symbol: AngleSymbol,
+  //   errTable: ErrorTable,
+  //   globalTable: SymbolTable
+  // ): void {
+  //   for (const conn of symbol.connections) {
+  //     const sourcErrs = this.validateRefArr(conn.sources, globalTable);
+  //     const targetErr = this.validateRefArr(conn.targets, globalTable);
 
-      errTable.add(symbol.def, sourcErrs);
-      errTable.add(symbol.def, targetErr);
-    }
-  }
+  //     errTable.add(symbol.def, sourcErrs);
+  //     errTable.add(symbol.def, targetErr);
+  //   }
+  // }
 
   /**
    * Helper method to recursively traverse symbol table to find referenced symbol
    * if symbol is found, passes the symbol path to the validate path method
+   * @refactor merge with find method
    * @param symbol ReferenceSymbol
    * @param globalTable SymbolTable
    * @returns RefError | undefined
    */
-  public lookup(
-    symbol: ReferenceSymbol,
-    globalTable: SymbolTable
-  ): RefError | undefined {
+  public lookup(name: string) {
     //check current scope => should check current scope for nodes
-    const referenceBase = this._symbols.get(symbol.base);
-
-    //Found symbol
-    if (referenceBase && !symbol.path.length) {
-      return;
-    }
-
-    if (referenceBase && symbol.path.length) {
-      return this.validatePath(
-        symbol,
-        [symbol.base, ...symbol.path],
-        globalTable
-      );
-    }
-
-    //not found
-    if (!referenceBase) {
-      if (this.enclosingScope) {
-        return this.enclosingScope.lookup(symbol, globalTable);
-      } else if (this._symbols.has("fragments")) {
-        const fragmentTable = this.nestedScopes.find(
-          (el) => el.scope === "fragments"
-        );
-        if (fragmentTable && fragmentTable.has(symbol.base)) {
-          //!TODO => check if referenced declaration is fragment => check if Q,R,Z,X exists on SMILES
-          return;
-        } else {
-          return new RefError(
-            `${symbol.base} is not defined on ${this.scope}`,
-            symbol.token
-          );
-        }
-      } else {
-        return new RefError(`${symbol.base} is not defined`, symbol.token);
-      }
-    }
+    // const referenceBase = this._symbols.get(symbol.base);
+    // //Found symbol
+    // if (referenceBase && !symbol.path.length) {
+    //   return;
+    // }
+    // if (referenceBase && symbol.path.length) {
+    //   return this.validatePath(
+    //     symbol,
+    //     [symbol.base, ...symbol.path],
+    //     globalTable
+    //   );
+    // }
+    // //not found
+    // if (!referenceBase) {
+    //   if (this.enclosingScope) {
+    //     return this.enclosingScope.lookup(symbol, globalTable);
+    //   } else if (this._symbols.has("fragments")) {
+    //     const fragmentTable = this.nestedScopes.find(
+    //       (el) => el.scope === "fragments"
+    //     );
+    //     if (fragmentTable && fragmentTable.has(symbol.base)) {
+    //       //!TODO => check if referenced declaration is fragment => check if Q,R,Z,X exists on SMILES
+    //       return;
+    //     } else {
+    //       return new RefError(
+    //         `${symbol.base} is not defined on ${this.scope}`,
+    //         symbol.token
+    //       );
+    //     }
+    //   } else {
+    //     return new RefError(`${symbol.base} is not defined`, symbol.token);
+    //   }
+    // }
   }
 
   /**
    * Helper method to validate path on nested scopes of a found symbol. Method will check global scope if item is not found locally.
    * This behavior is primarly for polymer graphs, where fragments are declared globally.
+   * @todo refactor for new data structures
    * @param symbol ReferenceSymbol
    * @param path string[]
    * @param globalTable SymbolTable
    * @returns RefError | undefined
    */
-  private validatePath(
-    symbol: ReferenceSymbol,
-    path: string[],
-    globalTable: SymbolTable
-  ): RefError | undefined {
-    //checks current scope for path item
-    const pathItem = this._symbols.get(path[0]);
-    const nextScope = this.nestedScopes.find((el) => el.scope === path[0]);
-    const newPath = path.slice(1);
+  // private validatePath(
+  //   symbol: ReferenceSymbol,
+  //   path: string[],
+  //   globalTable: SymbolTable
+  // ): RefError | undefined {
+  //   //checks current scope for path item
+  //   const pathItem = this._symbols.get(path[0]);
+  //   const nextScope = this.nestedScopes.find((el) => el.scope === path[0]);
+  //   const newPath = path.slice(1);
 
-    if (pathItem && !newPath.length && !nextScope) {
-      return;
-    }
+  //   if (pathItem && !newPath.length && !nextScope) {
+  //     return;
+  //   }
 
-    if (!pathItem || !nextScope) {
-      //if path item does not exist on current scope, it checks global scope
-      const globalItem = globalTable._symbols.get(path[0]);
-      const globalItemScope = globalTable.nestedScopes.find(
-        (el) => el.scope === path[0]
-      );
-      const fragmentTable = globalTable.nestedScopes.find(
-        (el) => el.scope === "fragments"
-      );
+  //   if (!pathItem || !nextScope) {
+  //     //if path item does not exist on current scope, it checks global scope
+  //     const globalItem = globalTable._symbols.get(path[0]);
+  //     const globalItemScope = globalTable.nestedScopes.find(
+  //       (el) => el.scope === path[0]
+  //     );
+  //     const fragmentTable = globalTable.nestedScopes.find(
+  //       (el) => el.scope === "fragments"
+  //     );
 
-      if (!globalItem && fragmentTable?.has(path[0])) {
-        //!TODO => check if referenced declaration is fragment => check if Q,R,Z,X exists on SMILES
-        return;
-      }
+  //     if (!globalItem && fragmentTable?.has(path[0])) {
+  //       //!TODO => check if referenced declaration is fragment => check if Q,R,Z,X exists on SMILES
+  //       return;
+  //     }
 
-      if (globalItem && !globalItemScope) {
-        const sourcePath = (globalItem as ImportSymbol).source.split("/");
-        const fileName = sourcePath[sourcePath.length - 1];
+  //     if (globalItem && !globalItemScope) {
+  //       const sourcePath = (globalItem as ImportSymbol).source.split("/");
+  //       const fileName = sourcePath[sourcePath.length - 1];
 
-        const newRef = new ReferenceSymbol(
-          {
-            name: globalItem.name,
-            token: globalItem.token,
-            type: SymbolType.REFERENCE,
-            def: "import ref",
-          },
-          globalItem.name,
-          newPath
-        );
-        return this.manager.lookupReference(fileName, newRef);
-      }
+  //       const newRef = new ReferenceSymbol(
+  //         {
+  //           name: globalItem.name,
+  //           token: globalItem.token,
+  //           type: SymbolType.REFERENCE,
+  //           def: "import ref",
+  //         },
+  //         globalItem.name,
+  //         newPath
+  //       );
+  //       return this.manager.lookupReference(fileName, newRef);
+  //     }
 
-      if (!globalItem || !globalItemScope) {
-        return new RefError(
-          `Property ${path[0]} is not defined on scope ${this.scope}`,
-          symbol.token
-        );
-      }
+  //     if (!globalItem || !globalItemScope) {
+  //       return new RefError(
+  //         `Property ${path[0]} is not defined on scope ${this.scope}`,
+  //         symbol.token
+  //       );
+  //     }
 
-      if (newPath.length) {
-        //re-initiates path search if item found on global scope
-        return globalItemScope.validatePath(symbol, newPath, globalTable);
-      } else {
-        return;
-      }
-    }
+  //     if (newPath.length) {
+  //       //re-initiates path search if item found on global scope
+  //       return globalItemScope.validatePath(symbol, newPath, globalTable);
+  //     } else {
+  //       return;
+  //     }
+  //   }
 
-    if (!newPath.length) {
-      return;
-    }
+  //   if (!newPath.length) {
+  //     return;
+  //   }
 
-    return nextScope.validatePath(symbol, newPath, globalTable);
-  }
+  //   return nextScope.validatePath(symbol, newPath, globalTable);
+  // }
 
   /**
    * Converts symbol table to a string for logging purposes.
+   * @todo implement interface
    * @returns string
    */
   public print(): string {
@@ -588,7 +480,7 @@ export class SymbolTable {
 
     let table = "Table:";
     for (const value of this._symbols.values()) {
-      table = table + "\n" + `\t${value.print()}`;
+      table = table + "\n" + `\t${value.name}`;
     }
 
     const footer = "\n-------------------\n";

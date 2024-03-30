@@ -17,6 +17,7 @@ export {
   CMDLAssignProp,
   CMDLRefListProp,
   CMDLEdgeProp,
+  CMDLProperties,
 } from "./nodes";
 export { ReferenceGroup, SymbolReference } from "./reference-group";
 export { RefListProperty, ReferenceValue } from "./reference-list-property";

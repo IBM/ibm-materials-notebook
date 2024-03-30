@@ -3,6 +3,14 @@ import { CMDLToken } from "../cmdl-ast";
 import { AstVisitor } from "../symbols";
 import Big from "big.js";
 
+export type CMDLProperties =
+  | CMDLRefProp
+  | CMDLBoolProp
+  | CMDLStrProp
+  | CMDLListProp
+  | CMDLNumProp
+  | CMDLRefListProp;
+
 /**
  * Interface for a record node in the CMDL component AST
  */
@@ -58,10 +66,6 @@ class NodeTokenManager {
       tokenType === TokenTypes.IMPORT ||
       tokenType === TokenTypes.REF
     );
-  }
-
-  private isBodyToken(tokenType: TokenTypes): boolean {
-    return tokenType === TokenTypes.LCURL;
   }
 
   visit() {
