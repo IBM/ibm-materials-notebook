@@ -1,4 +1,5 @@
-import { parserInstance, lexerInstance } from "../parser";
+import { lexerInstance } from "../tokens";
+import { parserInstance } from "../parser";
 
 describe("Parser tests on import statements", () => {
   it("parses an import statement", () => {

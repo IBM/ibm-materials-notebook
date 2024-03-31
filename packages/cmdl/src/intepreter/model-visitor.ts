@@ -7,7 +7,7 @@ import {
   CMDLProperties,
   CMDLRecord,
   CMDLReference,
-} from "../cmdl-tree";
+} from "../ast";
 import { AstVisitor } from "../symbols";
 import { ActivationRecord } from "./model-AR";
 import { CmdlStack } from "../cmdl-stack";

@@ -1,4 +1,4 @@
-import { lexerInstance } from "../parser";
+import { lexerInstance } from "../tokens";
 
 const numericalProp = `temp_boiling: 100.23±1.2 degC;`;
 const molarMass = `molecular_weight: 100.2 g/mol;`;

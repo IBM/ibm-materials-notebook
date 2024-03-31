@@ -1,5 +1,8 @@
 import { CMDLError } from "./errors";
 
+/**
+ * @deprecated
+ */
 export class DiagnosticManager {
   private _tables = new Map<string, ErrorTable>();
 
@@ -54,7 +57,17 @@ export class DiagnosticManager {
 }
 
 /**
+ * ?include link to document?
+ */
+interface ErrorItem {
+  filename: string;
+  uri: string;
+  errors: CMDLError[];
+}
+
+/**
  * Manages errors for each cell in notebook
+ * @todo update types for error item key === filename
  */
 export class ErrorTable {
   private _expErrors = new Map<string, CMDLError[]>();

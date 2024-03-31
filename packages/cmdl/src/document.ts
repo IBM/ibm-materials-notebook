@@ -1,4 +1,4 @@
-import { CmdlTree } from "./cmdl-tree";
+import { CmdlTree } from "./ast";
 
 export interface Document {
   readonly uri: string;

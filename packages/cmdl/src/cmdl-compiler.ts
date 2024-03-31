@@ -14,7 +14,7 @@ import {
   CMDPCell,
 } from "./document";
 import { CmdlParser } from "./cmdl-parser";
-import { CmdlTree } from "./cmdl-tree";
+import { CmdlTree } from "./ast";
 import { SymbolTable, SymbolTableBuilder } from "./symbols";
 import { logger } from "./logger";
 import { CMDLError } from "./errors/errors";

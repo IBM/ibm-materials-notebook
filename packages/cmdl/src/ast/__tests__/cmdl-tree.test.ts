@@ -6,8 +6,10 @@ import {
   RefError,
 } from "../../errors/errors";
 import { CmdlParser } from "../../cmdl-parser";
-import { CmdlTree } from "../cmdl-tree";
+import { CMDLAst } from "../cmdl-ast";
 import { logger } from "../../logger";
+
+//!TODO: move to integration tests and update for new types/syntax
 
 const compiler = new CmdlParser();
 
@@ -38,7 +40,7 @@ describe("Tests for compiler validation errors", () => {
 
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(0);
-    expect(recordTree).toBeInstanceOf(CmdlTree);
+    expect(recordTree).toBeInstanceOf(CMDLAst);
   });
 
   it(`identifies an invalid property`, () => {

@@ -73,6 +73,7 @@ export class DuplicationError extends CMDLError {
 
 /**
  * Error for an invalid group or invalid group nesting in CMDL
+ * @deprecated
  */
 export class InvalidGroupError extends CMDLError {
   constructor(msg: string, token?: CMDLToken) {
@@ -91,6 +92,7 @@ export class InvalidPropertyError extends CMDLError {
 
 /**
  * Error with references inside CMDL
+ * @deprecated rename to ReferenceError
  */
 export class RefError extends CMDLError {
   constructor(msg: string, token?: CMDLToken) {
@@ -100,6 +102,7 @@ export class RefError extends CMDLError {
 
 /**
  * Value for CMDL property outside of allowable range
+ * @deprecated
  */
 export class RangeError extends CMDLError {
   constructor(msg: string, token?: CMDLToken) {
@@ -118,6 +121,7 @@ export class MissingValueError extends CMDLError {
 
 /**
  * Errors for imported files which are not found
+ * @deprecated rename to IOError
  */
 export class FileError extends CMDLError {
   constructor(msg: string, token: CMDLToken) {

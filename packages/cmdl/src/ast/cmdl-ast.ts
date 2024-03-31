@@ -1,14 +1,14 @@
 import { ModelVisitor } from "../intepreter";
 import { AstVisitor } from "../symbols";
 import { CMDLError } from "../errors/errors";
-import { CMDLNode } from "./nodes";
+import { CMDLNode } from "./collections";
 
 /**
  * Represents a condensed AST for validation and interpretation (execution of models) of CMDL
  * TODO: merge with CMDL AST
  * TODO: implement printable interface
  */
-export class CmdlTree {
+export class CMDLAst {
   private root: CMDLNode;
   /**
    * @deprecated
@@ -95,8 +95,8 @@ export class CmdlTree {
    * @returns string
    */
   public print(): string {
-    const childrenStr = this.children.map((el) => el.print());
+    // const childrenStr = this.children.map((el) => el.print());
 
-    return `CMDL AST\n-------------\nNode: ROOT\nChildren:${this.children.length}\n---------------\n${childrenStr}`;
+    return `CMDL AST\n-------------\nNode: ROOT\nChildren:${this.children.length}\n---------------\n`;
   }
 }

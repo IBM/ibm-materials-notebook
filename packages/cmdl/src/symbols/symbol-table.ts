@@ -1,5 +1,5 @@
 import { RefError } from "../errors/errors";
-import { CMDLNode } from "../cmdl-tree";
+import { CMDLNode } from "../ast";
 import { ErrorTable } from "../errors/error-manager";
 
 /**

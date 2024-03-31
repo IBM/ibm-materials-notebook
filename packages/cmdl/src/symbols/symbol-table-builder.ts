@@ -15,7 +15,7 @@ import {
   CMDLReference,
   CMDLAssignProp,
   CMDLEdgeProp,
-} from "../cmdl-tree";
+} from "../ast";
 import { CmdlStack } from "../cmdl-stack";
 import { ErrorTable } from "../errors/error-manager";
 

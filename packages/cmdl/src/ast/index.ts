@@ -1,18 +1,21 @@
-export { CmdlTree } from "./cmdl-tree";
+export { CMDLAst as CmdlTree } from "./cmdl-ast";
 export {
   CMDLCollection,
   CMDLGraph,
   CMDLImport,
   CMDLNode,
+  CMDLRoot,
+  CMDLRecord,
+  CMDLReference,
+} from "./collections";
+
+export {
   CMDLBoolProp,
   CMDLListProp,
   CMDLNumProp,
   CMDLRefProp,
-  CMDLRoot,
-  CMDLRecord,
-  CMDLReference,
   CMDLAssignProp,
+  CMDLProperties,
   CMDLRefListProp,
   CMDLEdgeProp,
-  CMDLProperties,
-} from "./nodes";
+} from "./properties";
