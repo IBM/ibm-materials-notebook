@@ -1,7 +1,7 @@
 import { CSTVisitor } from "./cmdl-cst-visitor";
 import { lexerInstance, parserInstance } from "./parser";
 import { CmdlTree } from "./cmdl-tree";
-import { ParserError } from "./errors";
+import { ParserError } from "./errors/errors";
 import { IRecognitionException } from "chevrotain";
 
 /**

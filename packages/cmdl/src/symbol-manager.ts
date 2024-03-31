@@ -1,4 +1,4 @@
-import { RefError } from "./errors";
+import { RefError } from "./errors/errors";
 import { logger } from "./logger";
 import { SymbolTable } from "./symbols";
 

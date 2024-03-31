@@ -1,7 +1,7 @@
-import { DuplicationError, ErrorCode } from "../errors";
+import { DuplicationError, ErrorCode } from "../errors/errors";
 import { CmdlParser } from "../cmdl-parser";
 import { SymbolTable, SymbolTableBuilder } from "../symbols";
-import { ErrorTable } from "../error-manager";
+import { ErrorTable } from "../errors/error-manager";
 import { SymbolTableManager } from "../symbol-manager";
 
 const compiler = new CmdlParser();

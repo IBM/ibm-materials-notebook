@@ -5,7 +5,7 @@ import {
   SymbolType,
   CMDLSymbol,
 } from "./symbol-table";
-import { CMDLError } from "../errors";
+import { CMDLError } from "../errors/errors";
 import {
   CMDLNode,
   CMDLRecord,
@@ -17,7 +17,7 @@ import {
   CMDLEdgeProp,
 } from "../cmdl-tree";
 import { CmdlStack } from "../cmdl-stack";
-import { ErrorTable } from "../error-manager";
+import { ErrorTable } from "../errors/error-manager";
 
 /**
  * Visits record tree and constructs symbol table for entire document

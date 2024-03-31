@@ -4,7 +4,7 @@ import {
   InvalidGroupError,
   InvalidPropertyError,
   RefError,
-} from "../../errors";
+} from "../../errors/errors";
 import { CmdlParser } from "../../cmdl-parser";
 import { CmdlTree } from "../cmdl-tree";
 import { logger } from "../../logger";

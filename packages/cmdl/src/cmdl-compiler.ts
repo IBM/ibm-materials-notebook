@@ -2,7 +2,7 @@ import {
   ActivationRecordManager,
   CellRenderOutput,
 } from "./activation-record-manager";
-import { DiagnosticManager, ErrorTable } from "./error-manager";
+import { DiagnosticManager, ErrorTable } from "./errors";
 import { SymbolTableManager } from "./symbol-manager";
 import {
   Text,
@@ -17,7 +17,7 @@ import { CmdlParser } from "./cmdl-parser";
 import { CmdlTree } from "./cmdl-tree";
 import { SymbolTable, SymbolTableBuilder } from "./symbols";
 import { logger } from "./logger";
-import { CMDLError } from "./errors";
+import { CMDLError } from "./errors/errors";
 import { CompiledRecord, FullRecordExport } from "./export/full-export";
 import { ActivationRecordTable, Exportable } from "./intepreter";
 import { TYPES } from "./cmdl-types";

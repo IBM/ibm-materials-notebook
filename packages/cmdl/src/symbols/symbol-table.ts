@@ -1,6 +1,6 @@
-import { RefError } from "../errors";
+import { RefError } from "../errors/errors";
 import { CMDLNode } from "../cmdl-tree";
-import { ErrorTable } from "../error-manager";
+import { ErrorTable } from "../errors/error-manager";
 
 /**
  * Enum specfiying the different symbol types within CMDL

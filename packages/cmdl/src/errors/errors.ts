@@ -1,5 +1,5 @@
 import { IRecognitionException, IToken } from "chevrotain";
-import { CmdlToken } from "./cmdl-ast";
+import { CMDLToken } from "../cmdl-cst-visitor";
 
 export enum ErrorCode {
   MismatchedTokenException = "MismatchedTokenException",
@@ -31,7 +31,7 @@ export abstract class CMDLError {
   constructor(
     readonly code: ErrorCode,
     readonly message: string,
-    token: CmdlToken | IToken | undefined
+    token: CMDLToken | IToken | undefined
   ) {
     const [start, stop] = this.getErrorRange(token);
     this.start = start;
@@ -40,10 +40,10 @@ export abstract class CMDLError {
 
   /**
    * Gets text range of error based on recieved tokens
-   * @param arg CmdlToken | IToken | undefined
+   * @param arg CMDLToken | IToken | undefined
    * @returns number[]
    */
-  private getErrorRange(arg: CmdlToken | IToken | undefined) {
+  private getErrorRange(arg: CMDLToken | IToken | undefined) {
     if (!arg) {
       return [0, 1];
     }
@@ -66,7 +66,7 @@ export class ParserError extends CMDLError {
  * Describes error for duplication of a CMDL property or group
  */
 export class DuplicationError extends CMDLError {
-  constructor(msg: string, token?: CmdlToken) {
+  constructor(msg: string, token?: CMDLToken) {
     super(ErrorCode.DuplicateItem, msg, token);
   }
 }
@@ -75,7 +75,7 @@ export class DuplicationError extends CMDLError {
  * Error for an invalid group or invalid group nesting in CMDL
  */
 export class InvalidGroupError extends CMDLError {
-  constructor(msg: string, token?: CmdlToken) {
+  constructor(msg: string, token?: CMDLToken) {
     super(ErrorCode.InvalidGroup, msg, token);
   }
 }
@@ -84,7 +84,7 @@ export class InvalidGroupError extends CMDLError {
  * Invalid property error for properties not defined on a given group
  */
 export class InvalidPropertyError extends CMDLError {
-  constructor(msg: string, token?: CmdlToken) {
+  constructor(msg: string, token?: CMDLToken) {
     super(ErrorCode.InvalidProperty, msg, token);
   }
 }
@@ -93,7 +93,7 @@ export class InvalidPropertyError extends CMDLError {
  * Error with references inside CMDL
  */
 export class RefError extends CMDLError {
-  constructor(msg: string, token?: CmdlToken) {
+  constructor(msg: string, token?: CMDLToken) {
     super(ErrorCode.ReferenceError, msg, token);
   }
 }
@@ -102,7 +102,7 @@ export class RefError extends CMDLError {
  * Value for CMDL property outside of allowable range
  */
 export class RangeError extends CMDLError {
-  constructor(msg: string, token?: CmdlToken) {
+  constructor(msg: string, token?: CMDLToken) {
     super(ErrorCode.RangeError, msg, token);
   }
 }
@@ -111,7 +111,7 @@ export class RangeError extends CMDLError {
  * Value for a CMDL property is not found
  */
 export class MissingValueError extends CMDLError {
-  constructor(msg: string, token?: CmdlToken) {
+  constructor(msg: string, token?: CMDLToken) {
     super(ErrorCode.MissingValue, msg, token);
   }
 }
@@ -120,7 +120,7 @@ export class MissingValueError extends CMDLError {
  * Errors for imported files which are not found
  */
 export class FileError extends CMDLError {
-  constructor(msg: string, token: CmdlToken) {
+  constructor(msg: string, token: CMDLToken) {
     super(ErrorCode.FileNotFound, msg, token);
   }
 }

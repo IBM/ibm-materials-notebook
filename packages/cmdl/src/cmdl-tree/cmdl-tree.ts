@@ -1,6 +1,6 @@
 import { ModelVisitor } from "../intepreter";
 import { AstVisitor } from "../symbols";
-import { CMDLError } from "../errors";
+import { CMDLError } from "../errors/errors";
 import { CMDLNode } from "./nodes";
 
 /**
