@@ -64,10 +64,12 @@ export class NodeTokenManager {
     throw new Error("Not implemented!");
   }
 
-  checkRange(offset: number) {
-    //check if offset is within node range
-    //return true or false
-    throw new Error("Not Implemented");
+  checkRange(offset: number): boolean {
+    if (offset >= this.start && offset <= this.stop) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

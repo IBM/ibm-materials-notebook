@@ -18,4 +18,5 @@ export {
   CMDLProperties,
   CMDLRefListProp,
   CMDLEdgeProp,
+  CMDLStrProp,
 } from "./properties";

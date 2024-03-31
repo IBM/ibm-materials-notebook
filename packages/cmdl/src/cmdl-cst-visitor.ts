@@ -32,8 +32,10 @@ import {
   CMDLRoot,
   CMDLNode,
   CMDLAssignProp,
+  CMDLEdgeProp,
+  CMDLRefListProp,
+  CMDLStrProp,
 } from "./ast";
-import { CMDLEdgeProp, CMDLRefListProp, CMDLStrProp } from "./ast/collections";
 
 export class CMDLToken {
   image: string;
