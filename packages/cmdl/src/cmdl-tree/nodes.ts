@@ -1,5 +1,5 @@
 import { TokenLabel, TokenTypes } from "../parser";
-import { CMDLToken } from "../cmdl-ast";
+import { CMDLToken } from "../cmdl-cst-visitor";
 import { AstVisitor } from "../symbols";
 import Big from "big.js";
 

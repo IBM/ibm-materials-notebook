@@ -21,6 +21,7 @@ import { ErrorTable } from "../error-manager";
 
 /**
  * Visits record tree and constructs symbol table for entire document
+ * @rename to semantic analyzer
  * @todo enable builder reset
  */
 export class SymbolTableBuilder implements AstVisitor {

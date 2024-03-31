@@ -1,5 +1,6 @@
 /**
  * Activation record for managing computed model values and properties for each scope
+ * TODO: limit values/types which can be written to activation record => only values needed for computation
  */
 export class ActivationRecord {
   private properties = {} as Record<string, unknown>;
@@ -8,6 +9,7 @@ export class ActivationRecord {
 
   /**
    * Method to compile values into an array on the AR. Creates an array if does not exist.
+   * @deprecated
    * @param key string
    * @param value T - item to be merged into an array
    */
@@ -49,6 +51,7 @@ export class ActivationRecord {
 
   /**
    * Attempts to retrieve a property on the AR. Returns undefined if not found.
+   * @deprecated
    * @param key string
    * @returns T[K]
    */
@@ -64,6 +67,7 @@ export class ActivationRecord {
 
   /**
    * Returns iterator for entries of the AR.
+   * @deprecated
    * @returns [IterableIterator]
    */
   public all() {
@@ -72,6 +76,7 @@ export class ActivationRecord {
 
   /**
    * Returns iterator for values of the AR.
+   * @deprecated
    * @returns [IterableIterator]
    */
   public values() {
@@ -100,6 +105,7 @@ export class ActivationRecord {
 
 /**
  * Facade class for global memory which proxies all inherited methods to ModelARManager
+ * @deprecated
  */
 class GlobalActivationRecord extends ActivationRecord {
   manager: ActivationRecordTable;

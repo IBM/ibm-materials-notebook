@@ -15,7 +15,7 @@ import {
 } from "./document";
 import { CmdlParser } from "./cmdl-parser";
 import { CmdlTree } from "./cmdl-tree";
-import { BaseSymbol, SymbolTable, SymbolTableBuilder } from "./symbols";
+import { SymbolTable, SymbolTableBuilder } from "./symbols";
 import { logger } from "./logger";
 import { CMDLError } from "./errors";
 import { CompiledRecord, FullRecordExport } from "./export/full-export";
@@ -353,7 +353,7 @@ export class CmdlCompiler {
     results.recordTree.createSymbolTable(builder);
 
     const semanticErrors = results.recordTree.validate();
-    symbols.validate(errs);
+    // symbols.validate(errs);
     errs.add(uri, results.parserErrors);
     errs.add(uri, semanticErrors);
 
@@ -366,7 +366,7 @@ export class CmdlCompiler {
    */
   public updateDocument(doc: Text) {
     const symbolTable = this._symbols.get(doc.fileName);
-    symbolTable.clear();
+    // symbolTable.clear(); //!<---check if needed again
 
     const errTable = this._errors.get(doc.fileName);
     errTable.delete(doc.uri);
@@ -620,12 +620,10 @@ export class CmdlCompiler {
    * query. Used to provide completions for dot notations (polymer structures)
    * @param fileName file to look up symbol members from
    * @param query string to match symbol members
+   * @deprecated
    * @returns BaseSymbol[]
    */
-  public getFileSymbolMembers(
-    fileName: string,
-    query: string
-  ): BaseSymbol[] | undefined {
+  public getFileSymbolMembers(fileName: string, query: string) {
     return this._symbols.lookupMembers(fileName, query.split("."));
   }
 
@@ -634,7 +632,7 @@ export class CmdlCompiler {
    * @param fileName name of file to lookup
    * @returns BaseSymbol[]
    */
-  public getFileDeclarations(fileName: string): BaseSymbol[] {
+  public getFileDeclarations(fileName: string) {
     return this._symbols.lookupDeclarations(fileName);
   }
 }

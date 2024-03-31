@@ -1,18 +1,14 @@
-import { CstRecordVisitor } from "./composite-tree-visitor";
-import { CstVisitor } from "./cst-visitor";
+import { CSTVisitor } from "./cmdl-cst-visitor";
 import { lexerInstance, parserInstance } from "./parser";
-import { CmdlAst } from "./cmdl-ast";
 import { CmdlTree } from "./cmdl-tree";
 import { ParserError } from "./errors";
-import { ILexingError, IRecognitionException } from "chevrotain";
-import { logger } from "./logger";
+import { IRecognitionException } from "chevrotain";
 
 /**
  * Compiler for TYPES. Lexes and parses CMDL syntax.
  */
 export class CmdlParser {
-  private readonly astVisitor = new CstVisitor();
-  private readonly treeVisitor = new CstRecordVisitor();
+  private readonly treeVisitor = new CSTVisitor();
 
   /**
    * Lexes and parses CMDL into a CMDLTree for further evaluation
@@ -34,28 +30,25 @@ export class CmdlParser {
 
   /**
    * Lexes and parses CMDL into CMDLAst. Used in CMDL completion providers
+   * @deprecated
    * @param text string
    * @returns Object<string, CMDLAst | IRecognitionExemption[] | ILexingError[]>
    */
-  public parseAST(text: string): {
-    ast: CmdlAst | undefined;
-    parserErrors: IRecognitionException[];
-    lexErrors: ILexingError[];
-  } {
-    const lexingResult = lexerInstance.tokenize(text);
-    parserInstance.input = lexingResult.tokens;
-    const cst = parserInstance.parse();
-    let ast: CmdlAst | undefined;
-    try {
-      ast = this.astVisitor.visit(cst, new CmdlAst());
-    } catch (error) {
-      logger.error(`error creating CMDLAst: ${error}`);
-    }
-    return {
-      ast,
-      parserErrors: parserInstance.errors,
-      lexErrors: lexingResult.errors,
-    };
+  public parseAST(text: string) {
+    // const lexingResult = lexerInstance.tokenize(text);
+    // parserInstance.input = lexingResult.tokens;
+    // const cst = parserInstance.parse();
+    // let ast: CmdlAst | undefined;
+    // try {
+    //   ast = this.astVisitor.visit(cst, new CmdlAst());
+    // } catch (error) {
+    //   logger.error(`error creating CMDLAst: ${error}`);
+    // }
+    // return {
+    //   ast,
+    //   parserErrors: parserInstance.errors,
+    //   lexErrors: lexingResult.errors,
+    // };
   }
 
   /**

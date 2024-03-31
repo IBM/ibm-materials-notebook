@@ -1,5 +1,5 @@
 import { parserInstance, lexerInstance } from "../parser";
-import { CstVisitor } from "../cst-visitor";
+import { CstVisitor } from "../cmdl-cst-visitor";
 import { CmdlAst } from "../cmdl-ast";
 
 const importStatement = `import polymerA from "place";`;

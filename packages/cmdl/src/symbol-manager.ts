@@ -1,6 +1,6 @@
 import { RefError } from "./errors";
 import { logger } from "./logger";
-import { ReferenceSymbol, SymbolTable } from "./symbols";
+import { SymbolTable } from "./symbols";
 
 export class SymbolTableManager {
   private readonly _tables = new Map<string, SymbolTable>();
@@ -47,18 +47,15 @@ export class SymbolTableManager {
    * @param symbol Reference symbol
    * @returns RefError | undefined
    */
-  public lookupReference(fileName: string, symbol: ReferenceSymbol) {
+  public lookupReference(fileName: string, symbol: string) {
     try {
       const sourceTable = this.get(fileName);
-      return sourceTable.lookup(symbol, sourceTable);
+      return sourceTable.lookup(symbol);
     } catch (error) {
       logger.error(
-        `Error looking up reference ${symbol.name} in ${fileName}:\n${error}`
+        `Error looking up reference ${symbol} in ${fileName}:\n${error}`
       );
-      return new RefError(
-        `Compiler error in finding ${symbol.name}`,
-        symbol.token
-      );
+      return new RefError(`Compiler error in finding ${symbol}`);
     }
   }
 
@@ -68,7 +65,7 @@ export class SymbolTableManager {
    * @returns SymbolTable
    */
   public create(fileName: string) {
-    const newTable = new SymbolTable(fileName, this);
+    const newTable = new SymbolTable(fileName, fileName); //!<--Temporary patch until symbol table updated
     this._tables.set(fileName, newTable);
     return newTable;
   }
