@@ -168,15 +168,23 @@ export class CMDLListProp extends ASTNode {
 
 export class CMDLRefProp extends ASTNode {
   name?: string;
-  refName?: string;
-  refPath: string[] = [];
+  value?: CMDLReference;
 
-  constructor(...tokens: CMDLToken[]) {
+  constructor(...items: (CMDLToken | CMDLReference)[]) {
     super();
-    tokens.forEach((token) => {
-      //set collection name
-      this.nodeTokens.add(token);
-    });
+    for (const item of items) {
+      if (item instanceof CMDLReference) {
+        this.value = item;
+        this.addChildNode(item);
+        continue;
+      }
+
+      if (item.label === TokenLabel.PROP_NAME) {
+        this.name = item.image;
+      }
+
+      this.nodeTokens.add(item);
+    }
   }
 
   accept(visitor: AstVisitor): void {
@@ -241,6 +249,7 @@ export class CMDLEdgeProp extends ASTNode {
       this.rhs.push(...refs);
     }
     refs.forEach((el) => this.addChildNode(el));
+    return this;
   }
 
   accept(visitor: AstVisitor): void {

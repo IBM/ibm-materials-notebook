@@ -36,7 +36,6 @@ export enum TokenTypes {
   STRING = "STRING_LITERAL",
   SPACE = "WHITESPACE",
   TRUE = "TRUE",
-  UNIT = "UNIT",
   UNC_OP = "UNCERTAINTY_OPERATOR",
   VALUE = "VALUE",
 }

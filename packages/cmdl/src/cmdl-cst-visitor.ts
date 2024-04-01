@@ -414,12 +414,8 @@ export class CSTVisitor extends BaseVisitor {
       parent.addChildNode(strProp);
     } else if (ctx.referenceValue) {
       const { refToken, pathTokens } = this.visit(ctx.referenceValue);
-      const refProp = new CMDLRefProp(
-        idToken,
-        colonToken,
-        refToken,
-        ...pathTokens
-      );
+      const cmdlRef = new CMDLReference(refToken, ...pathTokens);
+      const refProp = new CMDLRefProp(idToken, colonToken, cmdlRef);
       parent.addChildNode(refProp);
     } else if (ctx.BOOLEAN_VALUE) {
       const bool = new CMDLToken(ctx.BOOLEAN_VALUE[0]);
