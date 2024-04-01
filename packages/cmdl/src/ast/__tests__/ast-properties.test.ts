@@ -35,7 +35,11 @@ function makeColonToken() {
   return token;
 }
 
-function makeValueToken(value: string, type: TokenTypes, label: TokenLabel) {
+export function makeValueToken(
+  value: string,
+  type: TokenTypes,
+  label?: TokenLabel
+) {
   const token = new CMDLToken({
     image: `${value}`,
     startOffset: 26,
@@ -83,7 +87,7 @@ function makeRefToken(name: string) {
   return token;
 }
 
-function createRef(name: string, path: string[]) {
+export function createRef(name: string, path: string[]) {
   const refToken = makeRefToken(name);
   const pathTokens = [];
   for (const pathItem of path) {
