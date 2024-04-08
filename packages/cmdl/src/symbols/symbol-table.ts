@@ -1,6 +1,5 @@
 import { RefError } from "../errors/errors";
 import { CMDLNode } from "../ast";
-import { ErrorTable } from "../errors/error-manager";
 
 /**
  * Enum specfiying the different symbol types within CMDL
@@ -167,75 +166,6 @@ export class SymbolTable {
   }
 
   /**
-   * Retrieves all DeclarationSymbols or VariableDeclaration from current symbol table
-   * @deprecated
-   * @returns BaseSymbol[]
-   */
-  public getBaseSymbols(): CMDLSymbol[] {
-    return [...this._symbols.values()];
-  }
-
-  /**
-   * Retrieves all DeclarationSymbols from notebook. Excludes those imported from local storage
-   * @deprecated
-   * @returns BaseSymbol[]
-   */
-  public getDeclaredEntities(): CMDLSymbol[] {
-    return [...this._symbols.values()];
-  }
-
-  /**
-   * Retrieves array of symbol members of nested symbol table
-   * @deprecated replace with single lookup function
-   * @param path string[]
-   * @returns BaseSymbol[]
-   */
-  public getSymbolMembers(path: string[]): CMDLSymbol[] | undefined {
-    // const currentScope = path[0];
-    // const newPath = path.slice(1);
-
-    // if (!currentScope) {
-    //   return;
-    // }
-
-    // const symbol = this._symbols.get(currentScope);
-
-    // if (!symbol) {
-    //   return;
-    // }
-
-    // if (symbol.type === SymbolType.IMPORT) {
-    //   const sourcePath = (symbol as ImportSymbol).source.split("/");
-    //   const fileName = sourcePath[sourcePath.length - 1];
-    //   return this.manager.lookupMembers(fileName, path);
-    // }
-
-    // const scope = this.nestedScopes.find((el) => el.scope === currentScope);
-
-    // if (!scope && symbol.type === SymbolType.REF_PROXY) {
-    //   logger.debug(`Attempting to get members for proxy ${symbol.name}...`);
-    //   if (this.enclosingScope) {
-    //     return this.enclosingScope.getSymbolMembers(path);
-    //   }
-    //   return;
-    // }
-
-    // if (!scope) {
-    //   return;
-    // }
-
-    // if (newPath.length) {
-    //   return scope.getSymbolMembers(newPath);
-    // }
-
-    // return [...scope._symbols.values()].filter(
-    //   (el) =>
-    //     el.type === SymbolType.REF_PROXY || el.type === SymbolType.DECLARATION
-    // );
-    return [];
-  }
-
-  /**
    * Returns a list of symbol names based on a query. Used for completion providers.
    * @deprecated merge to one lookup
    * @rename to search
@@ -265,35 +195,25 @@ export class SymbolTable {
   }
 
   /**
-   * Validates existence of all references in document and their properties
-   * @deprecated move to validator class
-   * @param errTable ErrorTable
-   * @param globalTable SymbolTable
-   */
-  public validate(errTable: ErrorTable, globalTable: SymbolTable): void {}
-
-  /**
-   * Helper method to recursively traverse symbol table to find referenced symbol
+   * Recursively traverses symbol table to find referenced symbol
    * if symbol is found, passes the symbol path to the validate path method
-   * @refactor merge with find method
-   * @returns RefError | undefined
+   * @returns CMDLSymbol
    */
-  public lookup(name: string) {
-    //check current scope, if not get enclosing scope until global scope is reached
-    //if not found => not defined error
-    //if found and no path return
-    //if path => check path
-  }
-
-  /**
-   * Helper method to validate path on nested scopes of a found symbol.
-   * @param symbol ReferenceSymbol
-   * @param path string[]
-   * @returns RefError | undefined
-   */
-  private validateSymbolPath(path: string[], table: SymbolTable) {
-    //check table nested scope recursively to find each item in path
-    //throw not found error if item missing
+  public lookup(name: string, path?: string[]): CMDLSymbol {
+    if (this.has(name)) {
+      if (!path?.length) {
+        return this.get(name);
+      } else {
+        const nestedScope = this.getNestedScope(name);
+        return nestedScope.lookup(path[0], path.slice(1));
+      }
+    } else {
+      if (!this.enclosingScope) {
+        throw new Error(`${name} is undefined`);
+      } else {
+        return this.enclosingScope.lookup(name, path);
+      }
+    }
   }
 
   /**
