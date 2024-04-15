@@ -5,7 +5,7 @@ import {
   SymbolType,
   CMDLSymbol,
 } from "./symbol-table";
-import { CMDLError } from "../errors/errors";
+import { CMDLError, DuplicationError } from "../errors/errors";
 import {
   CMDLNode,
   CMDLRecord,
@@ -18,6 +18,7 @@ import {
 } from "../ast";
 import { CmdlStack } from "../cmdl-stack";
 import { ErrorTable } from "../errors/error-manager";
+import { ASTNode, CMDLCollection } from "../ast/collections";
 
 /**
  * Visits record tree and constructs symbol table for entire document
@@ -27,16 +28,9 @@ import { ErrorTable } from "../errors/error-manager";
 export class SymbolTableBuilder implements AstVisitor {
   private tableStack = new CmdlStack<SymbolTable>();
   errors: ErrorTable;
-  fileName: string; //?deprecated
   uri: string; //?deprecated
 
-  constructor(
-    global: SymbolTable,
-    errors: ErrorTable,
-    fileName: string,
-    uri: string
-  ) {
-    this.fileName = fileName;
+  constructor(global: SymbolTable, errors: ErrorTable, uri: string) {
     this.uri = uri;
     this.errors = errors;
     this.tableStack.push(global);
@@ -46,14 +40,18 @@ export class SymbolTableBuilder implements AstVisitor {
    * Adds a symbol to the table at the top of the stack
    * Throws an error if symbol already exists
    * Merges connection symbols into a single connection property
-   * @todo refactor and remove validation logic
    * @param symbol CMDLSymbol
    */
-  private addSymbol(symbol: CMDLSymbol): void {
+  private addSymbol(symbol: CMDLSymbol, node: ASTNode): void {
     const table = this.tableStack.peek();
 
     if (table.has(symbol.name)) {
-      //raise error
+      const error = new DuplicationError(
+        `${symbol.name} already exists on scope ${table.scope}`,
+        node.nodeTokens.start,
+        node.nodeTokens.stop
+      );
+      this.errors.add(this.uri, [error]);
     } else {
       table.add(symbol);
     }
@@ -81,17 +79,8 @@ export class SymbolTableBuilder implements AstVisitor {
     if (this.tableStack.size > 1) {
       this.tableStack.pop();
     } else {
-      logger.warn("Cannot exit global scope");
+      throw new Error("Cannot exit global scope while building symbol table");
     }
-  }
-
-  /**
-   * Gets any generated errors during symbol table construction
-   * @deprecated errors will be pushed automatically to error table
-   * @returns BaseError[]
-   */
-  public getErrors(): CMDLError[] | undefined {
-    return this.errors.get(this.uri);
   }
 
   /**
@@ -105,6 +94,37 @@ export class SymbolTableBuilder implements AstVisitor {
       this.errors.add(this.uri, [error] as CMDLError[]);
       logger.warn(`Unable to visit node:\n-${(error as Error).message}`);
     }
+  }
+
+  private vistNodeChildren(scope: string, node: ASTNode) {
+    this.enterNewScope(scope);
+
+    node.children.forEach((child) => {
+      this.visit(child);
+    });
+
+    this.exitCurrentScope();
+  }
+
+  /**
+   * Adds new record to current scope and its dependents
+   * @param record CMDLRecord
+   */
+  public visitCollection(record: CMDLCollection): void {
+    if (!record.name) {
+      throw new Error("Malformed record definition");
+    }
+
+    const recordSymbol: CMDLSymbol = {
+      name: record.name,
+      scope: this.getCurrentScope(),
+      symbolType: SymbolType.COLLECTION,
+      valueType: "collection",
+      uri: this.uri,
+    };
+
+    this.addSymbol(recordSymbol, record);
+    this.vistNodeChildren(record.name, record);
   }
 
   /**
@@ -124,14 +144,8 @@ export class SymbolTableBuilder implements AstVisitor {
       uri: this.uri,
     };
 
-    this.addSymbol(recordSymbol);
-    this.enterNewScope(record.name);
-
-    record.children.forEach((child) => {
-      this.visit(child);
-    });
-
-    this.exitCurrentScope();
+    this.addSymbol(recordSymbol, record);
+    this.vistNodeChildren(record.name, record);
   }
 
   /**
@@ -151,14 +165,8 @@ export class SymbolTableBuilder implements AstVisitor {
       uri: this.uri,
     };
 
-    this.addSymbol(graphSymbol);
-    this.enterNewScope(graph.name);
-
-    graph.children.forEach((child) => {
-      this.visit(child);
-    });
-
-    this.exitCurrentScope();
+    this.addSymbol(graphSymbol, graph);
+    this.vistNodeChildren(graph.name, graph);
   }
 
   /**
@@ -177,12 +185,11 @@ export class SymbolTableBuilder implements AstVisitor {
       scope: this.getCurrentScope(),
       uri: this.uri,
     };
-    this.addSymbol(propSymbol);
+    this.addSymbol(propSymbol, property);
   }
 
   /**
-   * Creates a declaration symbol and adds to current scope
-   * @todo refactor for new syntax
+   * Visits an import declaration
    * @param node CMDLImport
    */
   public visitImport(node: CMDLImport): void {
@@ -199,7 +206,7 @@ export class SymbolTableBuilder implements AstVisitor {
       uri: this.uri,
     };
 
-    this.addSymbol(importSymbol);
+    this.addSymbol(importSymbol, node);
   }
 
   /**
@@ -219,14 +226,8 @@ export class SymbolTableBuilder implements AstVisitor {
       uri: this.uri,
     };
 
-    this.addSymbol(refSymbol);
-    this.enterNewScope(ref.name);
-
-    ref.children.forEach((child) => {
-      this.visit(child);
-    });
-
-    this.exitCurrentScope();
+    this.addSymbol(refSymbol, ref);
+    this.vistNodeChildren(ref.name, ref);
   }
 
   public visitAssignmentProp(prop: CMDLAssignProp) {
@@ -242,7 +243,7 @@ export class SymbolTableBuilder implements AstVisitor {
       uri: this.uri,
     };
 
-    this.addSymbol(assignmentSymbol);
+    this.addSymbol(assignmentSymbol, prop);
   }
 
   /**
@@ -250,7 +251,7 @@ export class SymbolTableBuilder implements AstVisitor {
    * @todo generate names for edges
    * @param angleProp AngleProperty
    */
-  public visitEdgeProp(angleProp: CMDLEdgeProp): void {
+  public visitEdgeProp(edgeProp: CMDLEdgeProp): void {
     const propSymbol: CMDLSymbol = {
       name: "connection",
       valueType: "edge",
@@ -259,6 +260,7 @@ export class SymbolTableBuilder implements AstVisitor {
       uri: this.uri,
     };
 
-    this.addSymbol(propSymbol);
+    this.addSymbol(propSymbol, edgeProp);
+    this.vistNodeChildren("edge", edgeProp);
   }
 }

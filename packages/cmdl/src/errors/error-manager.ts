@@ -56,14 +56,14 @@ export class DiagnosticManager {
   }
 }
 
-/**
- * ?include link to document?
- */
-interface ErrorItem {
-  filename: string;
-  uri: string;
-  errors: CMDLError[];
-}
+// /**
+//  * ?include link to document?
+//  */
+// interface ErrorItem {
+//   filename: string;
+//   uri: string;
+//   errors: CMDLError[];
+// }
 
 /**
  * Manages errors for each cell in notebook

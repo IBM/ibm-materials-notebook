@@ -1,4 +1,3 @@
-import { RefError } from "../errors/errors";
 import { CMDLNode } from "../ast";
 
 /**
@@ -93,7 +92,7 @@ export class SymbolTable {
     const symbol = this._symbols.get(id);
 
     if (!symbol) {
-      throw new RefError(`${id} is not defined on ${this.scope}`);
+      throw new Error(`${id} is not defined on ${this.scope}`);
     }
 
     return symbol;
@@ -125,7 +124,7 @@ export class SymbolTable {
     const nestedScope = this.nestedScopes.find((el) => el.scope === scope);
 
     if (!nestedScope) {
-      throw new RefError(`scope ${scope} is not defined on ${this.scope}`);
+      throw new Error(`scope ${scope} is not defined on ${this.scope}`);
     }
 
     return nestedScope;

@@ -1,4 +1,4 @@
-import { RefError } from "./errors/errors";
+// import { RefError } from "./errors/errors";
 import { logger } from "./logger";
 import { SymbolTable } from "./symbols";
 
@@ -22,23 +22,25 @@ export class SymbolTableManager {
 
   /**
    * Method to lookup symbols in a given file
+   * @deprecated
    * @param fileName file name to look up
    * @param path path of symbol
    * @returns BaseSymbol[] | undefined
    */
   public lookupMembers(fileName: string, path: string[]) {
-    const sourceTable = this.get(fileName);
-    return sourceTable.getSymbolMembers(path);
+    // const sourceTable = this.get(fileName);
+    // return sourceTable.getSymbolMembers(path);
   }
 
   /**
    * Method to lookup declarations
+   * @deprecated
    * @param fileName file name to look up declarations
    * @returns BaseSymbol[]
    */
   public lookupDeclarations(fileName: string) {
-    const sourceTable = this.get(fileName);
-    return sourceTable.getDeclaredEntities();
+    // const sourceTable = this.get(fileName);
+    // return sourceTable.getDeclaredEntities();
   }
 
   /**
@@ -55,7 +57,7 @@ export class SymbolTableManager {
       logger.error(
         `Error looking up reference ${symbol} in ${fileName}:\n${error}`
       );
-      return new RefError(`Compiler error in finding ${symbol}`);
+      return new Error(`Compiler error in finding ${symbol}`);
     }
   }
 

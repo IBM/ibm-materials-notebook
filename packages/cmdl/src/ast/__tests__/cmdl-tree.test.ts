@@ -66,7 +66,7 @@ describe("Tests for compiler validation errors", () => {
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(InvalidPropertyError);
-    expect(errors[0].code).toBe(ErrorCode.InvalidProperty);
+    expect(errors[0].code).toBe(ErrorCode.InvalidEntity);
   });
 
   it.skip(`identifies an duplicate property`, () => {
@@ -138,7 +138,7 @@ describe("Tests for compiler validation errors", () => {
     expect(parserErrors.length).toBe(0);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(InvalidPropertyError);
-    expect(errors[0].code).toBe(ErrorCode.InvalidProperty);
+    expect(errors[0].code).toBe(ErrorCode.InvalidEntity);
   });
 
   it(`recognizes a reference group with a missing name and creates an error`, () => {

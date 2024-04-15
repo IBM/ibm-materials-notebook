@@ -349,7 +349,7 @@ export class CmdlCompiler {
     errs: ErrorTable;
   }): CmdlTree {
     const results = this._parser.parse(text);
-    const builder = new SymbolTableBuilder(symbols, errs, fileName, uri);
+    const builder = new SymbolTableBuilder(symbols, errs, uri);
     results.recordTree.createSymbolTable(builder);
 
     const semanticErrors = results.recordTree.validate();

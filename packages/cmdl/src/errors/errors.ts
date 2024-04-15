@@ -1,14 +1,12 @@
-import { IRecognitionException, IToken } from "chevrotain";
-import { CMDLToken } from "../cmdl-cst-visitor";
+import { IRecognitionException } from "chevrotain";
 
 export enum ErrorCode {
   MismatchedTokenException = "MismatchedTokenException",
   NotAllInputParsedException = "NotAllInputParsedException",
   NoViableAltException = "NoViableAltException",
   EarlyExitException = "EarlyExitException",
-  DuplicateItem = "DuplicateItem",
-  InvalidProperty = "InvalidProperty",
-  InvalidGroup = "InvalidGroup",
+  DuplicatationError = "DuplicatationError",
+  InvalidEntity = "InvalidEntity",
   ReferenceError = "ReferenceError",
   RangeError = "RangeError",
   MissingValue = "MissingValue",
@@ -19,9 +17,6 @@ export enum ErrorCode {
  * Base error class for CMDL
  */
 export abstract class CMDLError {
-  readonly start: number;
-  readonly stop: number;
-
   /**
    * Creates a new instance of an Error for CMDL
    * @param code ErrorCode
@@ -31,11 +26,12 @@ export abstract class CMDLError {
   constructor(
     readonly code: ErrorCode,
     readonly message: string,
-    token: CMDLToken | IToken | undefined
+    readonly start: number,
+    readonly stop: number
   ) {
-    const [start, stop] = this.getErrorRange(token);
-    this.start = start;
-    this.stop = stop;
+    // const [start, stop] = this.getErrorRange(token);
+    // this.start = start;
+    // this.stop = stop;
   }
 
   /**
@@ -43,14 +39,14 @@ export abstract class CMDLError {
    * @param arg CMDLToken | IToken | undefined
    * @returns number[]
    */
-  private getErrorRange(arg: CMDLToken | IToken | undefined) {
-    if (!arg) {
-      return [0, 1];
-    }
-    const start = arg?.startOffset ? arg.startOffset : 0;
-    const stop = arg?.endOffset ? arg?.endOffset + 1 : 1;
-    return [start, stop];
-  }
+  // private getErrorRange(arg: CMDLToken | IToken | undefined) {
+  //   if (!arg) {
+  //     return [0, 1];
+  //   }
+  //   const start = arg?.startOffset ? arg.startOffset : 0;
+  //   const stop = arg?.endOffset ? arg?.endOffset + 1 : 1;
+  //   return [start, stop];
+  // }
 }
 
 /**
@@ -58,7 +54,12 @@ export abstract class CMDLError {
  */
 export class ParserError extends CMDLError {
   constructor(err: IRecognitionException) {
-    super(err.name as ErrorCode, err.message, err.token);
+    super(
+      err.name as ErrorCode,
+      err.message,
+      err.token.startOffset,
+      err.token.endOffset ? err.token.endOffset : err.token.startOffset
+    );
   }
 }
 
@@ -66,18 +67,8 @@ export class ParserError extends CMDLError {
  * Describes error for duplication of a CMDL property or group
  */
 export class DuplicationError extends CMDLError {
-  constructor(msg: string, token?: CMDLToken) {
-    super(ErrorCode.DuplicateItem, msg, token);
-  }
-}
-
-/**
- * Error for an invalid group or invalid group nesting in CMDL
- * @deprecated
- */
-export class InvalidGroupError extends CMDLError {
-  constructor(msg: string, token?: CMDLToken) {
-    super(ErrorCode.InvalidGroup, msg, token);
+  constructor(msg: string, start: number, stop: number) {
+    super(ErrorCode.DuplicatationError, msg, start, stop);
   }
 }
 
@@ -85,28 +76,17 @@ export class InvalidGroupError extends CMDLError {
  * Invalid property error for properties not defined on a given group
  */
 export class InvalidPropertyError extends CMDLError {
-  constructor(msg: string, token?: CMDLToken) {
-    super(ErrorCode.InvalidProperty, msg, token);
+  constructor(msg: string, start: number, stop: number) {
+    super(ErrorCode.InvalidEntity, msg, start, stop);
   }
 }
 
 /**
  * Error with references inside CMDL
- * @deprecated rename to ReferenceError
  */
 export class RefError extends CMDLError {
-  constructor(msg: string, token?: CMDLToken) {
-    super(ErrorCode.ReferenceError, msg, token);
-  }
-}
-
-/**
- * Value for CMDL property outside of allowable range
- * @deprecated
- */
-export class RangeError extends CMDLError {
-  constructor(msg: string, token?: CMDLToken) {
-    super(ErrorCode.RangeError, msg, token);
+  constructor(msg: string, start: number, stop: number) {
+    super(ErrorCode.ReferenceError, msg, start, stop);
   }
 }
 
@@ -114,17 +94,16 @@ export class RangeError extends CMDLError {
  * Value for a CMDL property is not found
  */
 export class MissingValueError extends CMDLError {
-  constructor(msg: string, token?: CMDLToken) {
-    super(ErrorCode.MissingValue, msg, token);
+  constructor(msg: string, start: number, stop: number) {
+    super(ErrorCode.MissingValue, msg, start, stop);
   }
 }
 
 /**
  * Errors for imported files which are not found
- * @deprecated rename to IOError
  */
-export class FileError extends CMDLError {
-  constructor(msg: string, token: CMDLToken) {
-    super(ErrorCode.FileNotFound, msg, token);
+export class IOError extends CMDLError {
+  constructor(msg: string, start: number, stop: number) {
+    super(ErrorCode.FileNotFound, msg, start, stop);
   }
 }
