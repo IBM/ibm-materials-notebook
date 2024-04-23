@@ -1,5 +1,5 @@
 import { NodeTokenManager } from "../collections";
-import { CMDLToken } from "../../cmdl-cst-visitor";
+import { CMDLToken } from "../../parser/cst-visitor";
 import { TokenTypes } from "../../parser";
 import { IToken } from "chevrotain";
 

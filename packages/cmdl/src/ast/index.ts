@@ -1,4 +1,4 @@
-export { CMDLAst as CmdlTree } from "./cmdl-ast";
+export { CMDLAst } from "./cmdl-ast";
 export {
   CMDLCollection,
   CMDLGraph,

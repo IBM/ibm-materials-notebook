@@ -14,7 +14,7 @@ import {
   CMDPCell,
 } from "./document";
 import { CmdlParser } from "./cmdl-parser";
-import { CmdlTree } from "./ast";
+import { CMDLAst } from "./ast";
 import { SymbolTable, SymbolTableBuilder } from "./symbols";
 import { logger } from "./logger";
 import { CMDLError } from "./errors/errors";
@@ -347,15 +347,15 @@ export class CmdlCompiler {
     fileName: string;
     symbols: SymbolTable;
     errs: ErrorTable;
-  }): CmdlTree {
+  }): CMDLAst {
     const results = this._parser.parse(text);
     const builder = new SymbolTableBuilder(symbols, errs, uri);
-    results.recordTree.createSymbolTable(builder);
+    results.recordTree.visit(builder);
 
-    const semanticErrors = results.recordTree.validate();
+    // const semanticErrors = results.recordTree.validate();
     // symbols.validate(errs);
     errs.add(uri, results.parserErrors);
-    errs.add(uri, semanticErrors);
+    // errs.add(uri, semanticErrors);
 
     return results.recordTree;
   }

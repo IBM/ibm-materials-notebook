@@ -1,6 +1,6 @@
-import { TokenLabel, TokenTypes } from "./parser";
+import { TokenLabel, TokenTypes } from ".";
 import { IToken } from "chevrotain";
-import { parserInstance } from "./parser";
+import { parserInstance } from ".";
 import {
   ImportStatementCstChildren,
   NumericalValueCstChildren,
@@ -20,7 +20,6 @@ import {
 } from "./parser-types";
 import {
   CMDLCollection,
-  CmdlTree,
   CMDLRecord,
   CMDLGraph,
   CMDLReference,
@@ -29,13 +28,13 @@ import {
   CMDLListProp,
   CMDLNumProp,
   CMDLRefProp,
-  CMDLRoot,
   CMDLNode,
   CMDLAssignProp,
   CMDLEdgeProp,
   CMDLRefListProp,
   CMDLStrProp,
-} from "./ast";
+  CMDLRoot,
+} from "../ast";
 
 export class CMDLToken {
   image: string;
@@ -99,31 +98,26 @@ export class CSTVisitor extends BaseVisitor {
    * @param ctx DocumentCstChildren
    * @returns CMDLtree
    */
-  public document(ctx: DocumentCstChildren): CmdlTree {
-    const rootNode = new CMDLRoot();
-    const tree = new CmdlTree(rootNode);
-
+  public document(ctx: DocumentCstChildren, root: CMDLRoot) {
     if (ctx.importStatement) {
-      this.visit(ctx.importStatement, rootNode);
+      this.visit(ctx.importStatement, root);
     }
 
     if (ctx.collectionDeclaration) {
-      this.visit(ctx.collectionDeclaration, rootNode);
+      this.visit(ctx.collectionDeclaration, root);
     }
 
     if (ctx.recordDeclaration) {
-      this.visit(ctx.recordDeclaration, rootNode);
+      this.visit(ctx.recordDeclaration, root);
     }
 
     if (ctx.graphDeclaration) {
-      this.visit(ctx.graphDeclaration, rootNode);
+      this.visit(ctx.graphDeclaration, root);
     }
 
     if (ctx.assignmentProperty) {
-      this.visit(ctx.assignmentProperty, rootNode);
+      this.visit(ctx.assignmentProperty, root);
     }
-
-    return tree;
   }
 
   /**
@@ -309,7 +303,7 @@ export class CSTVisitor extends BaseVisitor {
     }
   }
 
-  refValue(ctx: ReferenceValueCstChildren) {
+  referenceValue(ctx: ReferenceValueCstChildren) {
     const refToken = new CMDLToken(ctx.REFERENCE_NAME[0]);
 
     const pathTokens: CMDLToken[] = [];
@@ -429,7 +423,10 @@ export class CSTVisitor extends BaseVisitor {
     }
   }
 
-  list(ctx: ListCstChildren, parent: CMDLNode) {
+  list(
+    ctx: ListCstChildren,
+    parent: { idToken: CMDLToken; colonToken: CMDLToken }
+  ) {
     const lSquare = new CMDLToken(ctx.LSQUARE[0]);
     const rSquare = new CMDLToken(ctx.RSQUARE[0]);
     const valueTokens: CMDLToken[] = [];
@@ -449,15 +446,20 @@ export class CSTVisitor extends BaseVisitor {
     }
 
     const listProp = new CMDLListProp(
+      parent.idToken,
+      parent.colonToken,
       lSquare,
       ...valueTokens,
       ...commas,
       rSquare
     );
-    parent.addChildNode(listProp);
+    return listProp;
   }
 
-  refList(ctx: RefListCstChildren, parent: CMDLNode) {
+  refList(
+    ctx: RefListCstChildren,
+    parent: { idToken: CMDLToken; colonToken: CMDLToken }
+  ) {
     const lSquare = new CMDLToken(ctx.LSQUARE[0]);
     const rSquare = new CMDLToken(ctx.RSQUARE[0]);
     const refs: CMDLReference[] = [];
@@ -479,8 +481,15 @@ export class CSTVisitor extends BaseVisitor {
       }
     }
 
-    const reflist = new CMDLRefListProp(lSquare, ...refs, ...commas, rSquare);
-    parent.addChildNode(reflist);
+    const reflist = new CMDLRefListProp(
+      parent.idToken,
+      parent.colonToken,
+      lSquare,
+      ...refs,
+      ...commas,
+      rSquare
+    );
+    return reflist;
   }
 
   numericalValue(ctx: NumericalValueCstChildren) {

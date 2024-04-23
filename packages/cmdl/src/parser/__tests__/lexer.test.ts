@@ -4,11 +4,11 @@ const numericalProp = `temp_boiling: 100.23±1.2 degC;`;
 const molarMass = `molecular_weight: 100.2 g/mol;`;
 const conversion = `conversion: 20 %;`;
 const importStmt = `import polymerA as polymerB from "placeC";`;
-const reaction = `reaction ABC {
+const reaction = `record ABC : reaction {
   temperature: 100 degC;
 }`;
 
-const text = `record {
+const text = `record Test : reaction {
   temp_boiling: 100.23±1.2 degC;
   smiles: "CCC#N[Q:1]";
   @THF {
@@ -35,16 +35,16 @@ describe("Test lexer on grouped fragments with newlines", () => {
     expect(lexingResult.tokens.length).toBe(5);
   });
 
-  it("correctly lexes an unnamed group", () => {
+  it("correctly lexes an large record", () => {
     const lexingResult = lexerInstance.tokenize(text);
     expect(lexingResult.errors.length).toBe(0);
-    expect(lexingResult.tokens.length).toBe(22);
+    expect(lexingResult.tokens.length).toBe(25);
   });
 
-  it("correctly lexes a named group", () => {
+  it("correctly lexes a short record", () => {
     const lexingResult = lexerInstance.tokenize(reaction);
     expect(lexingResult.errors.length).toBe(0);
-    expect(lexingResult.tokens.length).toBe(9);
+    expect(lexingResult.tokens.length).toBe(11);
   });
 
   it("correctly lexes an import statment", () => {

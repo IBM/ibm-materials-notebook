@@ -1,6 +1,6 @@
 import { TokenLabel } from "../parser";
-import { CMDLToken } from "../cmdl-cst-visitor";
-import { AstVisitor } from "../symbols";
+import { CMDLToken } from "../parser/cst-visitor";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
 import { ASTNode, CMDLReference } from "./collections";
 import Big from "big.js";
 
@@ -32,10 +32,12 @@ export class CMDLStrProp extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitProperty(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    return `string prop ${this.name}: ${this.value}`;
   }
 }
 
@@ -64,10 +66,12 @@ export class CMDLAssignProp extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitProperty(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    return `assign prop ${this.name} of ${this.type}: ${this.value}`;
   }
 }
 
@@ -91,10 +95,12 @@ export class CMDLBoolProp extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitProperty(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    return `bool prop ${this.name}: ${this.value}`;
   }
 }
 
@@ -132,10 +138,14 @@ export class CMDLNumProp extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitProperty(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    return `num prop ${this.name}: ${this.value}${
+      this.uncertainty ? `± ${this.uncertainty}` : ""
+    }${this.unit ? ` ${this.unit}` : ""}`;
   }
 }
 
@@ -159,10 +169,12 @@ export class CMDLListProp extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitProperty(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    return `list prop ${this.name}: ${this.values.join(", ")}`;
   }
 }
 
@@ -188,10 +200,12 @@ export class CMDLRefProp extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitProperty(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    return `ref prop ${this.name}: ${this.value?.print()}`;
   }
 }
 
@@ -215,10 +229,14 @@ export class CMDLRefListProp extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitProperty(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    return `ref list prop ${this.name}:\n ${this.children
+      .map((el) => el.print())
+      .join(`\n\t-`)}`;
   }
 }
 
@@ -253,9 +271,13 @@ export class CMDLEdgeProp extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitEdgeProp(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    return `edge prop:\n\tlhs: ${this.lhs
+      .map((el) => el.print())
+      .join("\n\t-")}\n\trhs:${this.rhs.map((el) => el.print()).join("\n\t-")}`;
   }
 }

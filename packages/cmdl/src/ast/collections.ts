@@ -1,6 +1,6 @@
 import { TokenLabel, TokenTypes } from "../parser";
-import { CMDLToken } from "../cmdl-cst-visitor";
-import { AstVisitor } from "../symbols";
+import { CMDLToken } from "../parser/cst-visitor";
+import { AstVisitor, SymbolTableBuilder } from "../symbols";
 
 /**
  * Interface for a record node in the CMDL component AST
@@ -75,18 +75,18 @@ export class NodeTokenManager {
 
 export abstract class ASTNode implements CMDLNode, Serialize {
   nodeTokens: NodeTokenManager = new NodeTokenManager();
-  parent: CMDLNode | null = null;
-  children: CMDLNode[] = [];
+  parent: ASTNode | null = null;
+  children: ASTNode[] = [];
 
   abstract accept(visitor: AstVisitor): void;
   abstract print(): string;
 
-  public addChildNode(node: CMDLNode): void {
+  public addChildNode(node: ASTNode): void {
     node.setParent(this);
     this.children.push(node);
   }
 
-  public setParent(arg: CMDLNode): void {
+  public setParent(arg: ASTNode): void {
     this.parent = arg;
   }
 
@@ -97,10 +97,15 @@ export abstract class ASTNode implements CMDLNode, Serialize {
 
 export class CMDLRoot extends ASTNode {
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    for (const child of this.children) {
+      visitor.visit(child);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    const header = `root node:\n`;
+    const sep = "____________________________________";
+    const body = this.children.map((el) => el.print()).join("\n\t");
+    return `${header}${sep}${body}`;
   }
 }
 
@@ -134,10 +139,14 @@ export class CMDLImport extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitImport(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    return `import ${this.name} from ${this.source}${
+      this.alias ? ` from ${this.alias}` : ""
+    }`;
   }
 }
 
@@ -160,10 +169,16 @@ export class CMDLGraph extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitGraph(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    const header = `graph ${this.name} of ${this.type}:\n`;
+    const sep = `-------------------------------------`;
+    const body = this.children.map((el) => el.print()).join("\n\t");
+    const footer = `\nend graph ${this.name}`;
+    return `${header}${sep}${body}${footer}`;
   }
 }
 
@@ -186,10 +201,14 @@ export class CMDLReference extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitReference(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    return `ref ${this.name}${
+      this.path.length ? ` with path of ${this.path.join(" ,")}` : ""
+    }`;
   }
 }
 
@@ -208,10 +227,16 @@ export class CMDLCollection extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitCollection(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    const header = `collection ${this.name}:\n`;
+    const sep = `-------------------------------------`;
+    const body = this.children.map((el) => el.print()).join("\n\t");
+    const footer = `\nend collection ${this.name}`;
+    return `${header}${sep}${body}${footer}`;
   }
 }
 
@@ -235,9 +260,15 @@ export class CMDLRecord extends ASTNode {
   }
 
   accept(visitor: AstVisitor): void {
-    throw new Error("Method not implemented.");
+    if (visitor instanceof SymbolTableBuilder) {
+      visitor.visitRecord(this);
+    }
   }
   print(): string {
-    throw new Error("Method not implemented.");
+    const header = `record ${this.name} of ${this.type}:\n`;
+    const sep = `-------------------------------------`;
+    const body = this.children.map((el) => el.print()).join("\n\t");
+    const footer = `\nend record ${this.name}`;
+    return `${header}${sep}${body}${footer}`;
   }
 }

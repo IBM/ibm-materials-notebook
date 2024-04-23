@@ -9,7 +9,7 @@ import {
   CMDLStrProp,
 } from "../properties";
 import { CMDLReference } from "../collections";
-import { CMDLToken } from "../../cmdl-cst-visitor";
+import { CMDLToken } from "../../parser/cst-visitor";
 import { TokenLabel, TokenTypes } from "../../parser";
 
 function makePropNameToken() {
